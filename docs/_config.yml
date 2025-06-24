@@ -1,9 +1,14 @@
-remote_theme: pages-themes/hacker@v0.2.0
-title: [Playgrounds]
-description: [A collection of code and designs played with]
-show_downloads: ["false"]
-# google_anlaytics:
-# github:
-#   zip_url:
-#   repository_url:
-#   tar_url:
+plugins:
+  - jekyll-relative-links
+relative_links:
+  enabled: true
+  collections: true
+include:
+  - CONTRIBUTING.md
+  - README.md
+  - LICENSE.md
+  - COPYING.md
+  - CODE_OF_CONDUCT.md
+  - CONTRIBUtING.md
+  - ISSUE_TEMPLATE.md
+  - PULL_REQUEST_TEMPLATE.md
