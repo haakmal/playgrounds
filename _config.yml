@@ -12,3 +12,5 @@ include:
   - CONTRIBUtING.md
   - ISSUE_TEMPLATE.md
   - PULL_REQUEST_TEMPLATE.md
+show_downloads:
+  enabled: false
