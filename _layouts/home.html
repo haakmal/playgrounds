@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title>{{ site.title }}</title>
-  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="stylesheet" href="{{ site.baseurl }}/assets/style.css">
 </head>
 
 <body>
@@ -26,7 +26,7 @@
           {% if info.external %}
           <h3><a href="{{ info.url }}" target="_blank">{{ info.title }}</a> <span>↗</span></h3>
           {% else %}
-          <h3><a href="{{ info.url }}">{{ info.title }}</a></h3>
+          <h3><a href="{{ site.baseurl }}{{ info.url }}">{{ info.title }}</a></h3>
           {% endif %}
           <p>{{ info.description }}</p>
           <small><span>👥</span> {{ info.credits }}</small>

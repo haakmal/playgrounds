@@ -10,3 +10,6 @@ collections:
   projects:
     output: true
     permalink: /projects/:name/
+
+baseurl: "/playgrounds"
+url: "https://haakmal.github.io"
