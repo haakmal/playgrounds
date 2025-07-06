@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>EmojiDice</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <main>
+    <h1>🎲 EmojiDice</h1>
+
+    <div class="controls">
+      <label for="diceCount">Number of Dice: </label>
+      <select id="diceCount">
+        <option value="3">3</option>
+        <option value="6">6</option>
+        <option value="9">9</option>
+      </select>
+      <button onclick="rollDice()">Roll</button>
+    </div>
+
+    <div id="dice" class="dice-container"></div>
+  </main>
+
+  <script src="script.js" defer></script>
+</body>
+
+</html>
