@@ -1,0 +1,50 @@
+[
+	{
+		"name": "Interviews",
+		"stages": ["Discovery"],
+		"description": "One-on-one conversations with users to gather deep insights about their needs, experiences, and expectations.",
+		"steps": ["Plan your questions", "Recruit participants", "Conduct interviews", "Analyse responses"]
+	},
+	{
+		"name": "Empathy Mapping",
+		"stages": ["Discovery", "Define"],
+		"description": "A visual tool to articulate what users say, think, feel, and do, helping designers empathise with the user's experience.",
+		"steps": ["Plan your questions", "Recruit participants", "Conduct interviews", "Analyse responses"]
+	},
+	{
+		"name": "Affinity Diagrams",
+		"stages": ["Discovery", "Define"],
+		"description": "Used to organise and synthesise ideas and findings into meaningful groups based on natural relationships.",
+		"steps": ["Plan your questions", "Recruit participants", "Conduct interviews", "Analyse responses"]
+	},
+	{
+		"name": "Wireframing",
+		"stages": ["Develop"],
+		"description": "Creating low-fidelity visual guides that represent the skeletal structure of a digital product.",
+		"steps": ["Plan your questions", "Recruit participants", "Conduct interviews", "Analyse responses"]
+	},
+	{
+		"name": "Prototyping",
+		"stages": ["Develop"],
+		"description": "Creating early, simplified versions of a product to test and explore design ideas quickly.",
+		"steps": ["Plan your questions", "Recruit participants", "Conduct interviews", "Analyse responses"]
+	},
+	{
+		"name": "Usability Testing",
+		"stages": ["Develop", "Deliver"],
+		"description": "Evaluating a product by testing it with real users to identify and improve usability.",
+		"steps": ["Plan your questions", "Recruit participants", "Conduct interviews", "Analyse responses"]
+	},
+	{
+		"name": "Design Critique",
+		"stages": ["Develop"],
+		"description": "Structured feedback sessions where team members provide constructive input on design work.",
+		"steps": ["Plan your questions", "Recruit participants", "Conduct interviews", "Analyse responses"]
+	},
+	{
+		"name": "Pilot Testing",
+		"stages": ["Deliver"],
+		"description": "Running a product with a small group of users in a real environment to validate performance before full-scale release.",
+		"steps": ["Plan your questions", "Recruit participants", "Conduct interviews", "Analyse responses"]
+	},
+]
