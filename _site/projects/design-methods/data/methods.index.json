@@ -1,0 +1,36 @@
+[
+  {
+    "id": "interviews",
+    "name": "Interviews",
+    "stages": [
+      "Discovery"
+    ],
+    "summary": "One-on-one conversations to gather deep user insights."
+  },
+  {
+    "id": "empathy-mapping",
+    "name": "Empathy Mapping",
+    "stages": [
+      "Discovery",
+      "Define"
+    ],
+    "summary": "Visual tool to empathise with what user say, think, feel, and do."
+  },
+  {
+    "id": "affinity-diagrams",
+    "name": "Affinity Diagrams",
+    "stages": [
+      "Discovery",
+      "Define"
+    ],
+    "summary": "Group and organise insights into meaningful themes."
+  },
+  {
+    "id": "wireframing",
+    "name": "Wireframing",
+    "stages": [
+      "Develop"
+    ],
+    "summary": "Low-fidelity visual layouts for early interface exploration."
+  }
+]

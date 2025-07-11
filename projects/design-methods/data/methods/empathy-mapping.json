@@ -1,0 +1,26 @@
+{
+  "name": "Empathy Mapping",
+  "stages": [
+    "Discovery"
+  ],
+  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
+  "steps": [
+    "Define your research objectives",
+    "Draft a flexible interview guide",
+    "Recruit participants from your target audience",
+    "Conduct interviews in a neutral, open-ended manner",
+    "Synthesise key findings and themes"
+  ],
+  "resources": [
+    {
+      "type": "link",
+      "title": "IDEO Design Kit: Interviewing",
+      "url": "https://www.designkit.org/methods/interview"
+    },
+    {
+      "type": "download",
+      "title": "Interview Template (PDF)",
+      "url": "assets/templates/interview-template.pdf"
+    }
+  ]
+}
