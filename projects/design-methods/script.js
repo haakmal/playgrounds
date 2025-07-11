@@ -19,7 +19,7 @@ function showModal(method) {
 	document.getElementById('method-description').textContent = method.description || '';
 	// Placeholder for future fields like steps/examples
 	document.getElementById('method-details').innerHTML = method.steps
-		? '<h4>Steps</h4><ul>${method.steps.map(s => '<li>${s}</li>').join('')}</ul>'
+		? `<h4>Steps</h4><ul>${method.steps.map(s => `<li>${s}</li>`).join('')}</ul>`
 		: '';
 	document.getElementById('modal').classList.remove('hidden');
 }
