@@ -9,13 +9,27 @@
 </head>
 
 <body>
-  <h1>Design Research Methods</h1>
+  <header>
+    <h1>Design Research Methods</h1>
+    <div id="header-tools">
+      <input type="text" id="search" placeholder="Search methods...">
+      <button id="help-btn" title="Help">?</button>
+    </div>
+  </header>
   <div id="timeline">
     <div class="grid-container">
-      <h2 class="grid-label">Discovery</h2>
-      <h2 class="grid-label">Define</h2>
-      <h2 class="grid-label">Develop</h2>
-      <h2 class="grid-label">Deliver</h2>
+      <h2 class="grid-label">Discovery
+        <label class="filters">focus <input type="checkbox" value="Discovery"></label>
+      </h2>
+      <h2 class="grid-label">Define
+        <label class="filters">focus <input type="checkbox" value="Define"></label>
+      </h2>
+      <h2 class="grid-label">Develop
+        <label class="filters">focus <input type="checkbox" value="Develop"></label>
+      </h2>
+      <h2 class="grid-label">Deliver
+        <label class="filters">focus <input type="checkbox" value="Deliver"></label>
+      </h2>
     </div>
     <div class="method-grid" id="method-grid"></div>
   </div>
@@ -31,6 +45,21 @@
     </div>
   </div>
 
+  <!-- Help screen -->
+  <div id="help-modal" class="hidden">
+    <div class="modal-content">
+      <span id="help-close-btn" class="close-btn">&times;</span>
+      <h2>How to use this interface</h2>
+      <ul>
+        <li><strong>Search:</strong> Use the search bar to find a method by name.</li>
+        <li><strong>Filter:</strong> Use the checkboxes in the phase headers to focus on relevant stages of the design
+          process.</li>
+        <li><strong>Click: </strong> Click on any method to view detailed info, steps, and resources.</li>
+        <li><strong>Responsive:</strong> The interface adapts to smaller screens and shows sticky headers when
+          scrolling.</li>
+      </ul>
+    </div>
+  </div>
   <script src="script.js"></script>
 </body>
 

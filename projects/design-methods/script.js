@@ -8,6 +8,7 @@ fetch('data/methods.index.json')
     data.forEach(method => {
       const methodDiv = document.createElement('div');
       methodDiv.classList.add('method');
+      methodDiv.setAttribute('data-stages', method.stages.join(','));
 
       // Span columns according to stages
       const first = stageOrder.indexOf(method.stages[0]) + 1;
@@ -79,3 +80,68 @@ document.getElementById('modal').addEventListener('click', e => {
   }
 });
 
+// Get all phase checkboxes inside .filters
+const phaseCheckboxes = document.querySelectorAll('.filters input[type="checkbox"]');
+
+phaseCheckboxes.forEach(checkbox => {
+  checkbox.addEventListener('change', updatePhaseFilter);
+});
+
+function updatePhaseFilter() {
+  const activePhases = Array.from(phaseCheckboxes)
+    .filter(cb => cb.checked)
+    .map(cb => cb.value);
+
+  //console.log('Active phases:', activePhases);
+
+  const noFilter = activePhases.length === 0;
+
+  document.querySelectorAll('.method').forEach(methodDiv => {
+    const methodStages = methodDiv.getAttribute('data-stages')?.split(',') || [];
+
+    const matches = noFilter || methodStages.some(stage => activePhases.includes(stage));
+    methodDiv.classList.toggle('disabled', !matches);
+  });
+}
+
+// Search function 
+document.getElementById('search').addEventListener('input', function (e) {
+  const query = e.target.value.toLowerCase();
+
+  document.querySelectorAll('.method').forEach(methodDiv => {
+    const name = methodDiv.textContent.toLowerCase();
+    const match = fuzzyMatch(query, name);
+    methodDiv.style.display = match ? '' : 'none';
+  });
+});
+
+function fuzzyMatch(needle, haystack) {
+  if (!needle) return true;
+let hIndex = 0;
+  for (let i = 0; i < needle.length; i++) {
+    const nChar = needle[i];
+    hIndex = haystack.indexOf(nChar, hIndex);
+    if (hIndex === -1) return false;
+  hIndex++;
+  }
+  return true;
+}
+
+// Help modal
+const helpModal = document.getElementById('help-modal');
+const helpBtn = document.getElementById('help-btn');
+const helpCloseBtn = document.getElementById('help-close-btn');
+
+helpBtn.addEventListener('click', () => {
+  helpModal.classList.remove('hidden');
+});
+
+helpCloseBtn.addEventListener('click', () => {
+  helpModal.classList.add('hidden');
+});
+
+helpModal.addEventListener('click', (e) => {
+  if (e.target.id === 'help-modal') {
+    helpModal.classList.add('hidden');
+  }
+});

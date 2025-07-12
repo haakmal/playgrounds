@@ -5,6 +5,14 @@
     grid-template-columns: 1fr 1fr;
     /* or 1fr */
   }
+
+  label.filters {
+    visibility: hidden;
+  }
+
+  label.filters input {
+    visibility: visible !important;
+  }
 }
 
 body {
@@ -15,12 +23,94 @@ body {
 }
 
 h1 {
+  position: sticky;
+  top: 0;
+  z-index: 30;
   text-align: left;
   font-size: 1.2rem;
   font-weight: normal;
-  border: 1px solid #999;
   margin: 0;
-  padding: 0.5rem;
+  padding: 0.5rem 1rem;
+}
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: rgba(255, 254, 0, 1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+#header-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#help-btn {
+  background: rgba(255, 254, 0, 1);
+  color: #000;
+  border: none;
+  width: 50px;
+  height: 50px;
+  font-weight: bold;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+#help-btn:hover {
+  background: rgba(255, 219, 0, 1);
+}
+
+#help-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#help-modal.hidden {
+  display: none;
+}
+
+#help-modal .modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 500px;
+  width: 90%;
+  position: relative;
+}
+
+#search {
+  background: rgba(255, 254, 0, 1);
+  padding: 8px;
+  font-size: 0.8rem;
+  border: none;
+  font-style: italic;
+  border-bottom: 2px solid #999;
+  flex: 1;
+  max-width: 300px;
+  /* remove OS default highlighting */
+  outline: none;
+}
+
+#search:focus {
+  border-bottom: 3px solid #000;
+}
+
+#search::placeholder {
+  color: #888;
+  opacity: 0.8;
 }
 
 #timeline {
@@ -29,6 +119,11 @@ h1 {
 }
 
 .grid-container {
+  position: sticky;
+  top: 50px;
+  /* below header and filters */
+  background: rgba(255, 254, 0, 1);
+  z-index: 25;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   text-align: center;
@@ -47,7 +142,9 @@ h2 {
 }
 
 .grid-label {
-  padding: 10px;
+  padding: 1rem 1rem 1rem 1rem;
+  text-align: left;
+  position: relative;
 }
 
 .method-grid {
@@ -87,6 +184,32 @@ h2 {
 
 .method[data-span='4'] {
   grid-column: span 4;
+}
+
+.method.disabled {
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+#filters {
+  margin: 10px auto 20px;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  background: #f8f8f8;
+  padding: 10px;
+  z-index: 20;
+}
+
+.filters {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.8rem;
+  font-style: italic;
+  color: #555;
+  user-select: none;
 }
 
 /* Modal Styles */
