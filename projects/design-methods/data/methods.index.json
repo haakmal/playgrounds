@@ -32,5 +32,585 @@
       "Develop"
     ],
     "summary": "Low-fidelity visual layouts for early interface exploration."
+  },
+  {
+    "id": "five-whys",
+    "name": "Five Whys",
+    "stages": [
+      "Discovery",
+      "Define"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "ab-testing",
+    "name": "A/B Testing",
+    "stages": [
+      "Develop",
+      "Deliver",
+      "Define"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "autobiography-diary",
+    "name": "Autobiographical Diary",
+    "stages": [
+      "Discovery",
+      "Define"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "backcasting",
+    "name": "Backcasting",
+    "stages": [
+      "Discovery",
+      "Define",
+      "Develop"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "bodystorming",
+    "name": "Bodystorming",
+    "stages": [
+      "Discovery",
+      "Define",
+      "Develop"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "bodymaps",
+    "name": "Body Mapping",
+    "stages": [
+      "Discovery",
+      "Define"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "business-model-canvas",
+    "name": "Business Model Canvas",
+    "stages": [
+      "Discovery",
+      "Define"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "card-sorting",
+    "name": "Card Sorting",
+    "stages": [
+      "Define",
+      "Develop"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "cartographic-mapping",
+    "name": "Cartographic Mapping",
+    "stages": [
+      "Discovery",
+      "Define"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "codesign-workshop",
+    "name": "Co-Design Workshops",
+    "stages": [
+      "Discovery",
+      "Define",
+      "Develop"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "competitor-analysis",
+    "name": "Competitor Analysis",
+    "stages": [
+      "Discovery",
+      "Define",
+      "Deliver"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "contextual-inquiry",
+    "name": "Contextual Inquiry",
+    "stages": [
+      "Discovery"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "contextual-observation",
+    "name": "Contextual Observation",
+    "stages": [
+      "Discovery"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "cultural-probe",
+    "name": "Cultural Probe",
+    "stages": [
+      "Discovery"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "design-matrix",
+    "name": "Design Matrices",
+    "stages": [
+      "Discovery",
+      "Define"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "design-critique",
+    "name": "Design Critique",
+    "stages": [
+      "Discovery",
+      "Define",
+      "Develop"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "design-timescape",
+    "name": "Design Timescapes",
+    "stages": [
+      "Discovery",
+      "Define",
+      "Develop"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "design-metaphor",
+    "name": "Design Metaphors",
+    "stages": [
+      "Define",
+      "Develop"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "focus-groups",
+    "name": "Focus Groups",
+    "stages": [
+      "Discovery",
+      "Define"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "speculative-storytelling",
+    "name": "Specluative Storytelling",
+    "stages": [
+      "Develop"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "ecology-mapping",
+    "name": "Ecology Mapping",
+    "stages": [
+      "Discovery",
+      "Define"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "impact-ripple-canvas",
+    "name": "Impact Ripple Canvas",
+    "stages": [
+      "Define",
+      "Develop"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "interaction-relabelling",
+    "name": "Interaction Relabelling",
+    "stages": [
+      "Define",
+      "Develop"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "crazy-8",
+    "name": "Crazy Eights",
+    "stages": [
+      "Define",
+      "Develop"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "laddering",
+    "name": "Laddering",
+    "stages": [
+      "Discovery",
+      "Define"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "low-fidelity-prototyping",
+    "name": "Low-Fidelity Prototyping",
+    "stages": [
+      "Develop",
+      "Deliver"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "spatial-mapping",
+    "name": "Spatial Mapping",
+    "stages": [
+      "Discovery"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "material-exploration",
+    "name": "Material Exploration",
+    "stages": [
+      "Develop"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "mind-mapping",
+    "name": "Mind Mapping",
+    "stages": [
+      "Discovery",
+      "Define",
+      "Develop"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "mock-ups",
+    "name": "Mock Ups",
+    "stages": [
+      "Develop",
+      "Deliver"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "mood-boards",
+    "name": "Mood Boards",
+    "stages": [
+      "Develop",
+      "Deliver"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "morphological-chart",
+    "name": "Morphological Charts",
+    "stages": [
+      "Discovery",
+      "Define"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "thing-ethnography",
+    "name": "Thing Ethnography",
+    "stages": [
+      "Discovery",
+      "Define",
+      "Develop"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "online-ethnography",
+    "name": "Online Ethnography",
+    "stages": [
+      "Discovery"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "thing-from-the-future",
+    "name": "The Thing From The Future",
+    "stages": [
+      "Develop"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "brainstorming",
+    "name": "Brainstorming",
+    "stages": [
+      "Develop"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "persona-walkthroughs",
+    "name": "Persona-based Walkthroughs",
+    "stages": [
+      "Discovery",
+      "Define",
+      "Develop"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "personas",
+    "name": "Personas",
+    "stages": [
+      "Define",
+      "Develop",
+      "Deliver"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "pop-up-installation",
+    "name": "Pop-up Installations",
+    "stages": [
+      "Develop",
+      "Deliver"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "questionnaires",
+    "name": "Questionnaires",
+    "stages": [
+      "Discovery",
+      "Define",
+      "Develop"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "reframing",
+    "name": "Reframing",
+    "stages": [
+      "Define",
+      "Develop"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "roleplay",
+    "name": "Role Playing",
+    "stages": [
+      "Define",
+      "Develop"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "step-method",
+    "name": "STEP Method",
+    "stages": [
+      "Discovery",
+      "Define"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "scenarios",
+    "name": "Scenarios",
+    "stages": [
+      "Define",
+      "Develop",
+      "Deliver"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "science-fiction-prototyping",
+    "name": "Science Fiction Prototyping",
+    "stages": [
+      "Develop",
+      "Deliver"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "service-blueprint",
+    "name": "Service Blueprint",
+    "stages": [
+      "Define",
+      "Develop",
+      "Deliver"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "sketching",
+    "name": "Sketching",
+    "stages": [
+      "Develop",
+      "Deliver"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "critical-speculation",
+    "name": "Critical Speculations",
+    "stages": [
+      "Define",
+      "Develop",
+      "Deliver"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "storyboarding",
+    "name": "Storboarding",
+    "stages": [
+      "Develop",
+      "Deliver"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "futures-cone",
+    "name": "Futures Cone",
+    "stages": [
+      "Define",
+      "Develop"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "systems-mapping",
+    "name": "Systems Mapping",
+    "stages": [
+      "Discovery",
+      "Define",
+      "Develop"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "thematic-analysis",
+    "name": "Thematic Analysis",
+    "stages": [
+      "Discovery",
+      "Define"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "think-aloud",
+    "name": "Think-Aloud Protocol",
+    "stages": [
+      "Discovery"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "usability-testing",
+    "name": "Usability Testing",
+    "stages": [
+      "Develop",
+      "Deliver"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "speed-testing",
+    "name": "Speed Testing",
+    "stages": [
+      "Develop",
+      "Deliver"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "user-journey-mapping",
+    "name": "User Journey Mapping",
+    "stages": [
+      "Discovery",
+      "Define",
+      "Develop",
+      "Deliver"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "user-profiles",
+    "name": "User Profiles",
+    "stages": [
+      "Define",
+      "Develop",
+      "Deliver"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "value-proposition",
+    "name": "Value Proposition Canvas",
+    "stages": [
+      "Define",
+      "Develop",
+      "Deliver"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "video-prototyping",
+    "name": "Video Prototyping",
+    "stages": [
+      "Develop",
+      "Deliver"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "user-flow",
+    "name": "User Flow Diagram",
+    "stages": [
+      "Discovery",
+      "Develop",
+      "Deliver"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "task-flow",
+    "name": "Task Flow Diagram",
+    "stages": [
+      "Discovery",
+      "Develop",
+      "Deliver"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "design-fiction",
+    "name": "Design Fictions",
+    "stages": [
+      "Develop",
+      "Deliver"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "provocative-artifacts",
+    "name": "Provocative Artifacts",
+    "stages": [
+      "Define",
+      "Develop",
+      "Deliver"
+    ],
+    "summary": " "
   }
 ]
