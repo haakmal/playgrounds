@@ -5,26 +5,51 @@ const grid = document.getElementById('method-grid');
 fetch('data/methods.index.json')
   .then(res => res.json())
   .then(data => {
+    // Sort method alphabetically by name
+    data.sort((a, b) => a.name.localeCompare(b.name));
+    
+    // console.log('Sorted methods:', data.map(m => m.name));
     data.forEach(method => {
       const methodDiv = document.createElement('div');
       methodDiv.classList.add('method');
       methodDiv.setAttribute('data-stages', method.stages.join(','));
 
-      // Span columns according to stages
-      const first = stageOrder.indexOf(method.stages[0]) + 1;
-      const last = stageOrder.indexOf(method.stages[method.stages.length - 1]) + 1;
+      const first = stageOrder.indexOf(method.stages[0]);
+      const last = stageOrder.indexOf(method.stages[method.stages.length - 1]);
       const span = last - first + 1;
 
-      methodDiv.style.gridColumn = `${first} / span ${span}`;
-      methodDiv.setAttribute('data-span', span);
-      methodDiv.textContent = method.name;
+      methodDiv.style.gridColumn = `${first + 1} / span ${span}`;
 
-      // Click to load full details
+      // Add phase segments inside method box
+      for (let i = first; i <= last; i++) {
+        const phase = stageOrder[i];
+        const segment = document.createElement('div');
+        segment.classList.add('phase-segment');
+
+        if (method.stages.includes(phase)) {
+          segment.classList.add('solid');
+        } else {
+          segment.classList.add('dashed');
+        }
+
+        // Attach label in first used phase
+        if (i === first) {
+          const label = document.createElement('span');
+          label.classList.add('method-label');
+          label.textContent = method.name;
+          segment.appendChild(label);
+        }
+
+        methodDiv.appendChild(segment);
+      }
+
       methodDiv.addEventListener('click', () => {
-        loadMethodDetails(method.id);
+        if (!methodDiv.classList.contains('disabled')) {
+          loadMethodDetails(method.id);
+        }
       });
 
-      grid.appendChild(methodDiv);
+      grid.appendChild(methodDiv)
     });
   });
 
@@ -145,3 +170,4 @@ helpModal.addEventListener('click', (e) => {
     helpModal.classList.add('hidden');
   }
 });
+

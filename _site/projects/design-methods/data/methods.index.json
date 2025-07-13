@@ -46,9 +46,9 @@
     "id": "ab-testing",
     "name": "A/B Testing",
     "stages": [
+      "Define",
       "Develop",
-      "Deliver",
-      "Define"
+      "Deliver"
     ],
     "summary": " "
   },

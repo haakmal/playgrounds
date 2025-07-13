@@ -1,3 +1,5 @@
+:root {}
+
 @media (max-width: 768px) {
 
   .grid-container,
@@ -158,6 +160,7 @@ h2 {
   margin-bottom: 2rem;
 }
 
+/*
 .method {
   font-size: 0.8rem;
   padding: 0.4rem 0.2rem;
@@ -173,9 +176,9 @@ h2 {
   font-weight: bold;
   border-bottom: 2px solid rgba(0, 0, 256, 0.8);
 }
-
+*/
 /* Span across grid columns dynamically */
-.method[data-span='2'] {
+/*.method[data-span='2'] {
   grid-column: span 2;
 }
 
@@ -186,7 +189,7 @@ h2 {
 .method[data-span='4'] {
   grid-column: span 4;
 }
-
+*/
 .method.disabled {
   opacity: 0.2;
   pointer-events: none;
@@ -248,3 +251,85 @@ h2 {
   font-size: 24px;
   cursor: pointer;
 }
+
+.method {
+  display: flex;
+  height: 50px;
+  position: relative;
+  cursor: pointer;
+}
+
+.phase-segment {
+  flex: 1;
+  display: flex;
+  border-bottom: 3px solid transparent;
+  align-items: flex-end;
+  justify-content: flex-start;
+  min-width: 0;
+  padding: 0 4px;
+  overflow: visible;
+}
+
+.phase-segment.solid {
+  border-bottom: 3px solid #333;
+}
+
+.phase-segment.dashed {
+  border-bottom: 3px dashed #aaa;
+}
+
+.method-label {
+  font-size: 0.9em;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  padding: 2px 4px;
+}
+
+.phase-segment:first-child {
+  min-width: 0;
+  /* allow shrinking */
+}
+
+.method-label {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/*
+.method-label {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
+  padding: 2px 4px;
+  border-bottom: 3px solid #333 !important;
+}
+
+.method-phase {
+  flex: 1;
+  height: 100%;
+  border-bottom: 3px solid transparent;
+}
+
+.method-phase.solid {
+  border-bottom: 3px solid #333;
+}
+
+.method-phase.dashed {
+  border-bottom: 3px dashed #aaa;
+}
+
+.method.disabled .method-phase {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.method:hover .method-phase.solid {
+  border-color: #007bff;
+}*/
