@@ -11,5 +11,5 @@ collections:
     output: true
     permalink: /projects/:name/
 
-baseurl: "/"
+baseurl: "/playgrounds"
 url: "https://haakmal.github.io"
