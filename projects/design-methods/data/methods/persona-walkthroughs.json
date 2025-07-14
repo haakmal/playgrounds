@@ -1,8 +1,9 @@
 {
-  "name": "Affinity Diagrams",
+  "name": "Persona Walkthroughs",
   "stages": [
     "Discovery",
-    "Define"
+    "Define",
+	"Develop"
   ],
   "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
   "steps": [

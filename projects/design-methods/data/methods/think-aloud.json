@@ -1,8 +1,7 @@
 {
-  "name": "Affinity Diagrams",
+  "name": "Think-Aloud Protocol",
   "stages": [
-    "Discovery",
-    "Define"
+    "Discovery"
   ],
   "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
   "steps": [

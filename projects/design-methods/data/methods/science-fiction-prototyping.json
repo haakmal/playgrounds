@@ -1,8 +1,8 @@
 {
-  "name": "Affinity Diagrams",
+  "name": "Science Fiction Prototyping",
   "stages": [
-    "Discovery",
-    "Define"
+    "Develop",
+	"Deliver"
   ],
   "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
   "steps": [
