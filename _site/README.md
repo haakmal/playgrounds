@@ -1,4 +1,4 @@
-# DrDaft's Playgrounds
+# Dr Daft's Playgrounds
 
 This is a sandbox-style GitHub repo intended for an assortment of curious (mostly speculative) design and coding work, including but not limited to:
 
@@ -11,7 +11,7 @@ This is a sandbox-style GitHub repo intended for an assortment of curious (mostl
 
 This repository uses custom and minimal Jekyll to display projects over a single homepage. Each project is independent and works out of individual folders so if you would like to unpack them feel free to!
 
-Here's a break down of how the Jekyll side of things is managed but a more detailed explanation is on my blog post.
+Here's a break down of how the Jekyll side of things is managed but a more detailed explanation is on my [blog post](https://blog.hakmal.com/post/jekyll-playground/).
 
 ```bash
 _data/projects/  # project metadata as .yml files

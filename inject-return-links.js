@@ -1,32 +1,9 @@
-<!DOCTYPE html>
-<html>
+const fs = require("fs");
+const path = require("path");
 
-<head>
-  <meta charset="UTF-8">
-  <title>EmojiDice</title>
-  <link rel="stylesheet" href="style.css">
-</head>
+const projectsDir = path.join(__dirname, "projects");
 
-<body>
-  <main>
-    <h1>🎲 EmojiDice</h1>
-
-    <div class="controls">
-      <label for="diceCount">Number of Dice: </label>
-      <select id="diceCount">
-        <option value="3">3</option>
-        <option value="6">6</option>
-        <option value="9">9</option>
-      </select>
-      <button onclick="rollDice()">Roll</button>
-    </div>
-
-    <div id="dice" class="dice-container"></div>
-  </main>
-
-  <script src="script.js" defer></script>
-
-
+const returnLinkHTML = `
 <!-- BEGIN RETURN LINK -->
 <script>
 // inject-home-link.js
@@ -61,7 +38,27 @@
 })();
 </script>
 <!-- END RETURN LINK -->
+`;
 
-</body>
-
-</html>
+fs.readdirSync(projectsDir).forEach((project) => {
+	const indexPath = path.join(projectsDir, project, "index.html");
+	
+	if (fs.existsSync(indexPath)) {
+		const contents = fs.readFileSync(indexPath, "utf8");
+		
+		// Check if return link already exists
+		if (!contents.includes("<!-- BEGIN RETURN LINK -->")) {
+			const updated = contents.replace(
+				/<\/body>/i,
+				`${returnLinkHTML}\n</body>`
+			);
+			fs.writeFileSync(indexPath, updated, "utf8");
+			console.log(`✅ Injected return link into: ${project}/index.html`);
+		} else {
+			console.log(`☑️ Already has return link: ${project}/index.html`);
+		}
+	} else {
+		console.log(`❌ No index.html found in: ${project}/`);			
+		}
+	}
+);

@@ -155,9 +155,11 @@
   },
   {
     "id": "cultural-probe",
-    "name": "Cultural Probe",
+    "name": "Cultural Probes",
     "stages": [
-      "Discovery"
+      "Discovery",
+	  "Define",
+	  "Deliver"
     ],
     "summary": " "
   },
@@ -298,7 +300,7 @@
   },
   {
     "id": "mock-ups",
-    "name": "Mock Ups",
+    "name": "Mock Up's",
     "stages": [
       "Develop",
       "Deliver"
@@ -345,7 +347,8 @@
     "id": "thing-from-the-future",
     "name": "The Thing From The Future",
     "stages": [
-      "Develop"
+      "Define",
+	  "Develop"
     ],
     "summary": " "
   },
@@ -379,7 +382,7 @@
   },
   {
     "id": "pop-up-installation",
-    "name": "Pop-up Installations",
+    "name": "Pop-Up Installations",
     "stages": [
       "Develop",
       "Deliver"
@@ -579,6 +582,7 @@
     "name": "User Flow Diagram",
     "stages": [
       "Discovery",
+	  "Define",
       "Develop",
       "Deliver"
     ],
@@ -610,6 +614,15 @@
       "Define",
       "Develop",
       "Deliver"
+    ],
+    "summary": " "
+  },
+  {
+    "id": "slow-design",
+    "name": "Slow Design",
+    "stages": [
+      "Define",
+      "Develop"
     ],
     "summary": " "
   }
