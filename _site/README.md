@@ -23,3 +23,29 @@ projects/        # where all projects reside
 To add new projects simply import them into the `projects/` folder and add the respective metadata in `_data/projects/[project-folder].yml`. **The YAML file should have the same name as the project folder.**
 
 For projects that are not in the `projects/` folder use `external: true` in YAML with a direct link in the `url` field
+
+## Injecting Navigation
+
+Since all projects are independent of the main Jekyll site, adding links back to the root index requires manually inserting a return link. This is tedious and unintutive because any change requires updating all links individually. As a work around the `inject-return-links.js` and `remove-return-links.js` scripts can be used to add/remove the return to root back-link at the bottom of each `index.html`.
+
+Using the script is simple and can be done from the terminal.
+
+```bash
+node inject-return-links.js
+node remove-return-links.js
+```
+
+When any changes are needed such as styling or adding/removing content from the links, the `inject-return-links.js` script can be updated.
+
+## Local Testing
+
+This repo is designed to use Github Pages to deliver content through Github provided Jekyll and a custom setup. To test locally Ruby and Jekyll need to be installed on a local machine where this git repo has been cloned. After installing Ruby + Jekyll the following commands can be run in terminal to test locally from the root of the repo. **The `Gemfile` must be in the root folder for these commands to work.**
+
+```bash
+# Ensure all required gems are installed first
+bundle install
+# Start a local testing copy of site
+# The baseurl is setup this way to ensure links are all working
+# as they would in Github Pages with the repo name
+bundle exec jekyll serve --baseurl="/playgrounds"
+```
