@@ -13,3 +13,5 @@ collections:
 
 baseurl: "/playgrounds"
 url: "https://haakmal.github.io"
+github: https://github.com/haakmal/playgrounds
+blog: https://blog.hakmal.com/

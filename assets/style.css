@@ -52,4 +52,21 @@ footer {
   border-top: 1px solid #ddd;
   margin-top: 1.5rem;
   color: #999;
+  text-align: left;
+}
+
+footer .social-icons {
+	margin-bottom: 1rem;
+}
+
+footer .social-icons a {
+	margin: 0 0.5rem;
+	font-size: 1.4rem;
+	color: #333;
+	text-decoration: none;
+	transition: color 0.3s ease;
+}
+
+footer .social-icons a:hover {
+	color: #007acc;
 }

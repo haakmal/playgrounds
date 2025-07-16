@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <title>{{ site.title }}</title>
   <link rel="stylesheet" href="{{ site.baseurl }}/assets/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-HASH" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body>
@@ -36,6 +37,14 @@
   </main>
 
   <footer>
+	  <div class="social-icons">
+		  <a href="{{ site.github }}" target="_blank" aria-label="GitHub">
+			  <i class="fab fa-github"></i>
+		  </a>
+		  <a href="{{ site.blog}}" target="_blank" aria-label="Blog">
+			  <i class="fab fa-blog"></i>
+		  </a>
+	  </div>
     <p>Attribution-ShareAlike 4.0 International<br />&copy;  {{ site.time | date: "%Y" }} {{ site.author }}</p>
   </footer>
 </body>

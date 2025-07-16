@@ -1,7 +1,7 @@
 // inject-home-link.js
 (function () {
 	const link = document.createElement("a");
-	link.href = "/";
+	link.href = "/playgrounds/";
 	link.textContent = "← Back to Playgrounds";
 	link.style.position = "fixed";
 	link.style.bottom = "20px";
