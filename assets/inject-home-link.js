@@ -2,7 +2,7 @@
 (function () {
 	const link = document.createElement("a");
 	link.href = "/playgrounds/";
-	link.textContent = "← Back to Playgrounds";
+	link.textContent = "← Back to <i class='fab fa-github'><i> Playgrounds";
 	link.style.position = "fixed";
 	link.style.bottom = "20px";
 	link.style.right = "20px";
