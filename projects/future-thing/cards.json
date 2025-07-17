@@ -1,0 +1,36 @@
+{
+	"arc": ["Collapse", "Discipline", "Growth", "Transform"],
+	"generations": ["over a few years", "over a decade", "over a generation", "over two generations", "over a century", "over a millennium"],
+	"terrain": [
+		"Agriculture", "The Brain", " Childhood", "Citizenship", "Class", "Climate",
+		"Cloning", "Communications", "Court", "Disease", "Drones", "The Economy",
+		"Education", "Entertainment", "Environment", "Equality", "Family", "Fashion",
+		"Flight", "Forests", "Genetics", "Gender", "Governance", "Health", "Hobbies",
+		"Home", "Identity", "Insects", "Intellectural Property", "Journalism",
+		"Justice", "Learning", "Memory", "Mining", "The Moon", "Music", "Oceans",
+		"Oil", "Old Age", "Pets", "Power", "Religion", "Robots", "Sex", "Shopping",
+		"Space", "Sports", "Theatre", "Travel", "War", "Water", "Wealth", "Women",
+		"Work", "Zombies", "The Zoo", "Wildcard"
+	],
+	"object": [
+		"Advertisement", "Artwork", "Beverage", "Book", "Bottle", "Box", "Brochure",
+		"Building", "Candy", "Clothing", "Corporation", "Device", "Document", "Event",
+		"Festival", "Flag", "Game", "Gift", "Headline", "Implant", "Instrument",
+		"Jewellery", "Kit", " Law", "Logo", "Lotion", "Machine", "Magazine Cover",
+		"Map", "Mask", "Monument", "Passport", "Pill", "Plant", "Postcard", "Poster",
+		"Product", "Prosthetic", "Public Service Announcement", "Relic", "Ritual",
+		"Show", "Slogan", "Snack", "Song", "Souvenir", "Statue", "Sticker", "Symbol",
+		"T-Shirt", "Tattoo", "Tool", "Toy", "Vehicle", "Video", "Weapon", "Wildcard"
+	],
+	"mood": [
+		"Admmiration", "Alienation", "Amusement", "Anger", "Anxiety", "Awkwardness",
+		"Calm", "Charm", "Cheer", "Contentment", "Curiosity", "Decadence", "Delight",
+		"Dignity", "Disgust", "Dread", "Embarrassment", "Excitement", "Exhilaration",
+		"Fascination", "Fervor", "Frustration", "Gratitude", "Happiness", "Hilarity",
+		"Hope", "Longing", "Malaise", "Meloncholy", "Melodrama", "Nostalgia", "Optimism",
+		"Outrage", "Pathos", "Pleasure", "Pride", "Ratinoality", "Relief", "Resentment",
+		"Respect", "Sadness", "Satisfaction", "Serenity", "Shame", "Shock", "Sorrow",
+		"Surprise", "Unease", "Warmth", "Weirdness", "Wellbeing", "Wonder", "Worry",
+		"Zen"
+	]
+}
