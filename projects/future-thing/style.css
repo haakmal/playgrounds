@@ -30,7 +30,7 @@ h2 {
 	display: flex;
 	justify-content: center;
 	gap: 1.5rem; /* spacing between A T O M cards */
-	margin-top: 2rem;
+	margin: 2rem 0;
 }
 
 #card {
@@ -116,4 +116,24 @@ button.letter:active {
 	font-size: 1.2rem;
 	line-height: 25pt;
 	font-weight: 400;
+}
+
+.scenario-box {
+	display: block;
+	margin-top: 2rem;
+	padding: 1rem;
+	background-color: #f4f4f4;
+	border-radius: 8px;
+	font-style: italic;
+	font-size: 1.1rem;
+	max-width: 600px;
+	margin-inline: auto;
+	text-align: center;
+	white-space: normal;
+}
+
+.scenario-box p {
+	font-family: "Crimson Text", serif;
+	font-style: normal;
+	text-align: left;
 }
