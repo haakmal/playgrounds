@@ -54,9 +54,11 @@ document.getElementById("arc-btn").onclick = () => {
 	document.getElementById("arc-card").innerHTML = drawArcCard();
 };
 
-/*document.getElementById("gen-btn").addEventListener("click", async () => {
-	document.getElementById("gen-btn").textContent = drawGeneration();
-});*/
+document.addEventListener("click", (even) => {
+	if (event.target && event.target.id === "gen-btn") {
+		event.target.textContent = drawGeneration();
+}
+});
 
 document.getElementById("terrain-btn").onclick = () => {
 	document.getElementById("terrain-card").textContent = drawTerrainCard();
@@ -79,6 +81,23 @@ function drawAll() {
 };
 
 document.getElementById("shuffle-all").onclick = drawAll;
+
+document.getElementById("generate-scenario").onclick = () => {
+	const arcCard = []
+    arcCard[0] = document.querySelector("#arc-card").innerText.split("\n")[0];
+    arcCard[1] = document.querySelector(".generation").innerText;
+    const terrainCard = document.querySelector("#terrain-card").innerText;
+    const objectCard = document.querySelector("#object-card").innerText;
+    const moodCard = document.querySelector("#mood-card").innerText;
+
+    const arc = arcCard[0] || "";
+    const generation = arcCard[1] || "";
+
+    const prompt = `Write a brief speculative scenario about a future of ${arc} forecasted ${generation}, relating to ${terrainCard}, involving or related to a ${objectCard}. The emotional state of this speculative future is ${moodCard}.`;
+	
+	console.log(prompt)
+	console.log(arcCard[0], arcCard[1]);
+}
 
 /*
 document.getElementById("generate-scenario").onclick = addEventListener("click", async () => {
