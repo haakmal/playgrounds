@@ -82,7 +82,7 @@ function drawAll() {
 
 document.getElementById("shuffle-all").onclick = drawAll;
 
-
+// Simple scenario
 document.getElementById("generate-scenario").onclick = async () => {
   const arcLine = document.querySelector("#arc-card").innerText.split("\n")[0] || "";
   const generation = document.querySelector(".generation")?.innerText || "";
@@ -101,6 +101,46 @@ document.getElementById("generate-scenario").onclick = async () => {
   fetchScenario(prompt);
 };
 
+// Provoke scenario
+document.getElementById("provoke-scenario").onclick = async () => {
+	const provokeOutput = document.getElementById("provoke-output");
+	const scenarioText = document.getElementById("scenario-output").innerText.trim();
+	
+	if (!scenarioText) {
+		provokeOutput.innerText = "Please generate a scenario first.";
+		return;
+	}
+	
+	startProvokingAnimation(provokeOutput); // start animation
+	
+	const prompt = `Considering this scenario: "${scenarioText}", provide a brief provocation that presents possible controversies, rasies ethical issues, and potential social/cultural/economic pitfalls that may emerge.`;
+	
+    try {
+      const response = await fetch('https://gemini-worker.hakmal.workers.dev/', {
+        method: 'POST',
+  		headers: {
+  			'Content-Type': 'application/json',
+  		},
+  		body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }],
+  		}),
+      });
+	  
+	  const data = await response.json();
+	  const provoked = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+	  
+      if (!provoked) {
+        document.getElementById('provoke-output').innerText = 'No provocation received.';
+        return;
+      }
+	
+  	stopGeneratingAnimation(provokeOutput); // stop animation
+      document.getElementById('provoke-output').innerHTML = marked.parse(provoked);
+    } catch (error) {
+      console.error('Error fetching scenario:', error);
+  	  	stopGeneratingAnimation(provokeOutput); // stop animation
+      document.getElementById('provoke-output').innerText = 'Error fetching provocation.';
+    }
+}
 
 async function fetchScenario(prompt) {
   const output = document.getElementById("scenario-output");
@@ -123,16 +163,20 @@ async function fetchScenario(prompt) {
 
     if (!scenario) {
       document.getElementById('scenario-output').innerText = 'No scenario received.';
+    	document.getElementById("provoke-scenario").disabled = true;
       return;
     }
 	
 	stopGeneratingAnimation(output); // stop animation
     document.getElementById('scenario-output').innerHTML = marked.parse(scenario);
+    document.getElementById("provoke-scenario").disabled = false;
   } catch (error) {
     console.error('Error fetching scenario:', error);
 	stopGeneratingAnimation(output); // stop animation
     document.getElementById('scenario-output').innerText = 'Error fetching scenario.';
+    document.getElementById("provoke-scenario").disabled = true;
   }
+  
 }
 
 // Animate progress for scenario
@@ -147,10 +191,38 @@ function startGeneratingAnimation(element) {
 	}, 500);
 }
 
+function startProvokingAnimation(element) {
+	let dots = 0;
+	element.innerText = "Provoking Scenario";
+	animationInterval = setInterval(() => {
+		dots = (dots + 1) % 4; // cycles 0 -> 3
+		element.innerText = "Provoking Scenario" + ".".repeat(dots);
+	}, 500);
+}
+
 function stopGeneratingAnimation(element) {
 	clearInterval(animationInterval);
 	element.innerText = "";
 }
+
+// Help modal
+const helpModal = document.getElementById('help-modal');
+const helpBtn = document.getElementById('help-btn');
+const helpCloseBtn = document.getElementById('help-close-btn');
+
+helpBtn.addEventListener('click', () => {
+  helpModal.classList.remove('hidden');
+});
+
+helpCloseBtn.addEventListener('click', () => {
+  helpModal.classList.add('hidden');
+});
+
+helpModal.addEventListener('click', (e) => {
+  if (e.target.id === 'help-modal') {
+    helpModal.classList.add('hidden');
+  }
+});
 
 // Draw cards
 loadCards()
