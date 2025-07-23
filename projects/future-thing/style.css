@@ -54,16 +54,20 @@ h2 {
 	font-weight: 600;
 }
 
-.letter {
+.letter, button {
 	font-family: "Montserrat", sans-serif;
 	font-size: 1rem;
 	font-weight: 500;
 	background: #fff;
 	border: 1px solid #000;
-	border-radius: 100%;
 	cursor: pointer;
+}
+
+.letter {
+	padding: 0;
 	width: 40px;
 	height: 40px;
+	border-radius: 100%;	
 }
 
 .card {
@@ -87,10 +91,11 @@ h2 {
 button.letter:hover {
 	border-top: 2px solid #000;
 	border-left: 2px solid #000;
+	background: #fff;
 }
 
-button.letter:active {
-	background: #000;
+button:active {
+	background: #000 !important;
 	color: #fff;
 }
 /*
@@ -136,4 +141,24 @@ button.letter:active {
 	font-family: "Crimson Text", serif;
 	font-style: normal;
 	text-align: left;
+}
+
+.card a {
+	text-decoration: underline;
+	color: #000;
+}
+
+.card a:hover {
+	text-decoration: none;
+}
+
+button {
+	padding: 0.5rem;
+	border-radius: 4px;
+	border-right: 2px solid #000;
+	border-bottom: 2px solid #000;
+}
+
+button:hover {
+	background: #efefef;
 }
