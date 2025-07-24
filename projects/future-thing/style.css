@@ -4,6 +4,22 @@
 "Crimson Text", serif
 */
 
+/*---- General */
+
+@media (max-width: 900px) {
+	#atom {
+		grid-template-columns: repeat(2, 1fr) !important;
+	}
+
+	#simple-scenario, #provocation {
+		flex: 1 1 100%;
+	}
+	
+	.scenario-box {
+		max-width: 100%;
+	}
+}
+
 body {
   font-family: system-ui, sans-serif;
 	text-align: center;
@@ -12,7 +28,7 @@ body {
 	justify-content: center;
 	align-items: center;
 	min-height: 100ch;
-	margin: 2rem 2rem 3rem 2rem;
+	margin: 2rem 3rem;
 	padding: 0;
 }
 
@@ -35,18 +51,23 @@ h2 {
 	font-style: italic;
 }
 
+/*---- Cards */
+
 #atom {
-	display: flex;
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
 	justify-content: center;
 	gap: 1.5rem; /* spacing between A T O M cards */
-	margin: 2rem 0;
+	margin: 0 auto;
+	padding: 1rem;
+	max-width: 1rem;
 }
-
+/*
 #card {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-}
+}*/
 
 .card-container {
 	border: 1px solid #000;
@@ -54,11 +75,11 @@ h2 {
 	padding: 1rem;
 	border-bottom: 2px solid #000;
 	border-right: 2px solid #000;
-	display: flex;
+	min-height: 250px;
+/*	display: flex;
 	flex-direction: column;
 	align-items: center;
-	min-height: 250px;
-	gap: 0.5rem;
+	gap: 0.5rem;*/
 	font-family: "Crimson Text", sans-serif;
 	font-weight: 600;
 }
@@ -91,7 +112,7 @@ h2 {
 	height: 175px;
 	color: #000;
 	text-align: center;
-	font-size: clamp(1rem, 2.5vw, 1.5rem);
+	font-size: 1.5rem;
 	word-wrap: break-word;
 	overflow-wrap: break-word;
 	white-space: normal;
@@ -107,24 +128,6 @@ button:active {
 	background: #000 !important;
 	color: #fff;
 }
-/*
-.arc {
-	background-color: rgba(195, 244, 229, 0.2);
-}
-
-.terrain {
-	background-color: rgba(238, 244, 195, 0.2);
-}
-
-.object {
-	background-color: rgba(244, 223, 195, 0.2);
-}
-
-.mood {
-	background-color: rgba(227, 195, 244, 0.2);
-}
-
-*/
 
 #scenarios {
 	font-family: "Crimson Text", serif;
@@ -132,15 +135,19 @@ button:active {
 	justify-content: center;
 	align-items: flex-start;
 	gap: 2rem;
-	padding: 0;
+	padding: 1rem;
+	max-width: 1000px;
 	flex-wrap: wrap; /* ensure mobile friendliness */
-	margin-top: 2rem;
+	margin-top: 2rem auto 0 auto;
 }
 
 #simple-scenario, #provocation {
+	display: flex;
 	width: 42%;
 	flex-direction: column;
-	align-items: stretch;
+	align-items: center;
+	flex: 1 1 400px; /* grow and shrink to min 400 */
+	max-width: 100%;
 	border: 1px solid #ccc;
 	box-shadow: 2px 4px 0 rgba(0, 0, 0, 0.1);
 	padding: 1.5rem;
@@ -157,6 +164,8 @@ button:active {
 	font-size: 1.1rem;
 	white-space: normal;
 	text-align: left;
+	width: 100%;
+	max-width: 500px;
 }
 
 .scenario-box h2 {
@@ -196,8 +205,8 @@ button:disabled, button:disabled:hover {
 }
 
 .disclaimer {
-	width: 50%;
-	display: flex;
+	width: 100%;
+	font-size: 1.2rem;
 	justify-content: center;
 	font-style: italic;
 }
@@ -245,23 +254,9 @@ button:disabled, button:disabled:hover {
 
 #help-modal .modal-content {
   background: white;
-  padding: 2rem;
-  max-width: 70%;
+  max-width: 50%;
   width: 90%;
   position: relative;
-}
-
-#modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 9999;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .hidden {
