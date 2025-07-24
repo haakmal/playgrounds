@@ -53,7 +53,29 @@ fetch('data/methods.index.json')
     });
   });
 
-// Load full method details for modal view
+// Modal configs
+const modal = document.getElementById('modal')
+const closeBtn = document.getElementById('close-btn')
+
+  function openModal() {
+	  modal.classList.remove('hidden');
+	  modal.classList.add('active');
+  }
+  
+  function closeModal() {
+	  modal.classList.remove('active');
+	  modal.classList.add('hidden');
+  }
+  
+  // close modal
+  closeBtn.addEventListener('click', closeModal);
+
+  // close modal on click outside content
+  modal.addEventListener('click', e => {
+    if (e.target.id === 'modal') closeModal();
+  });
+
+// load methods card details for modal
 function loadMethodDetails(id) {
   fetch(`data/methods/${id}.json`)
     .then(res => res.json())
@@ -90,20 +112,8 @@ function showModal(method) {
   }
 
   document.getElementById('method-details').innerHTML = stepsHtml + resourcesHtml;
-  document.getElementById('modal').classList.remove('hidden');
+  openModal();
 }
-
-// Close modal
-document.getElementById('close-btn').addEventListener('click', () => {
-  document.getElementById('modal').classList.add('hidden');
-});
-
-// Optional: close modal on click outside content
-document.getElementById('modal').addEventListener('click', e => {
-  if (e.target.id === 'modal') {
-    document.getElementById('modal').classList.add('hidden');
-  }
-});
 
 // Get all phase checkboxes inside .filters
 const phaseCheckboxes = document.querySelectorAll('.filters input[type="checkbox"]');
@@ -159,9 +169,11 @@ const helpCloseBtn = document.getElementById('help-close-btn');
 
 helpBtn.addEventListener('click', () => {
   helpModal.classList.remove('hidden');
+  helpModal.classList.add('active');
 });
 
 helpCloseBtn.addEventListener('click', () => {
+  helpModal.classList.remove('active');
   helpModal.classList.add('hidden');
 });
 
