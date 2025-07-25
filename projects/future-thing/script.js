@@ -15,30 +15,38 @@ async function loadCards() {
 };
 
 //----- random draw function
-function drawRandom(deck) {
-	return deck[Math.floor(Math.random() * deck.length)];
+function drawRandom(type, cards) {
+	const options = cards[type];
+	const choice = options[Math.floor(Math.random() * options.length)];
+	
+	if (choice === "Wildcard") {
+		const wildcardList = wildcardOptions[type];
+		return wildcardList[Math.floor(Math.random() * wildcardList.length)];
+	}
+	
+	return choice
 };
 
 function drawArcCard() {
-	const card = drawRandom(cards.arc);
-	const gen = drawRandom(cards.generations);
+	const card = drawRandom("arc", cards);
+	const gen = drawRandom("generations", cards);
 	return `${card}<br><a href="javascript:;" id="gen-btn" class="generation">${gen}</a>`;
 };
 
 function drawGeneration() {
-	return drawRandom(cards.generations);
+	return drawRandom("generations", cards);
 }
 
 function drawTerrainCard() {
-	return drawRandom(cards.terrain);
+	return drawRandom("terrain", cards);
 };
 
 function drawObjectCard() {
-	return drawRandom(cards.object);
+	return drawRandom("object", cards);
 };
 
 function drawMoodCard() {
-	return drawRandom(cards.mood);
+	return drawRandom("mood", cards);
 };
 
 //----- connect output with DOM
@@ -223,6 +231,32 @@ helpModal.addEventListener('click', (e) => {
     helpModal.classList.add('hidden');
   }
 });
+
+// Wildcard functionality
+const wildcardOptions = {
+  terrain: [
+    "Biopolitics", "Digital Labor", "Speculative Finance", "Emotional Economies", "Post-Work Society",
+    "Surveillance Culture", "Machine Ethics", "Synthetic Ecology", "Collective Memory", "Embodied Computing",
+    "Algorithmic Bias", "Climate Futures", "Data Sovereignty", "Urban Mythologies", "Temporal Infrastructures",
+    "Invisible Labor", "Neurodivergence", "Platform Capitalism", "Distributed Governance", "Quantum Rituals",
+    "Decentralized Trust", "Hybrid Agency", "Mimetic Desire", "Gamified Citizenship", "Affective Networks",
+    "Commodified Identity", "Edge Urbanism", "Narrative Warfare", "Psychogeography", "Techno-Shamanism",
+    "Displacement Systems", "Cognitive Capital", "Emulated Empathy", "Radical Transparency", "Protocol Cultures",
+    "Synthetic Intuition", "Market Intelligences", "Negotiated Presence", "Signal Ecologies", "Temporal Loops",
+    "Performative Work", "Post-Truth Media", "Ambient Bureaucracy", "Neoliberal Desire", "Civic Drift",
+    "Interfaced Intimacy", "Post-Human Ritual", "Coded Narratives", "Cultural Firewalls", "Semiotic Collapse"
+  ],
+  object: [
+    "Telescope", "Hologram", "Smart Dust", "Neural Lace", "Digital Amulet", "Surveillance Drone", "Encrypted Coin",
+    "Reality Filter", "Synthetic Seed", "Data Crystal", "Adaptive Mask", "Quantum Key", "Biochip", "Echo Recorder",
+    "Memory Vial", "Emotion Synth", "Kinetic Sculpture", "Voice Capsule", "Anomaly Detector", "Privacy Cloak",
+    "Energy Sponge", "Cognitive Mirror", "Proxy Idol", "Protocol Totem", "Feedback Antenna", "Consent Token",
+    "Affordance Lens", "Logic Dice", "Symbol Printer", "Tension Meter", "Bias Compass", "Mood Lamp", "Trust Gauge",
+    "Future Fossil", "Reputation Beacon", "Story Fragment", "Uncanny Tool", "Trade Token", "Attention Capsule",
+    "Reality Anchor", "Legacy Artifact", "Phantom Object", "Context Filter", "Unstable Relic", "Cultural Lens",
+    "Time Capsule", "Speculation Box", "Signal Scrambler", "Fictional Interface", "Decision Crystal"
+  ]
+};
 
 // Draw cards
 loadCards()
