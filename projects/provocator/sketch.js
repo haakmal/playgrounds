@@ -1,0 +1,327 @@
+// Defaults and variables
+let stars = [];
+let sliders = {};
+let sliderValues = {};
+let canvas;
+let backgroundStars = [];
+// for slow-down and end
+let rotationSpeed = 0.2;
+let targetRotationSpeed = 0.2;
+let slowingDown = false;
+let drawingConstellation = false;
+let linesDrawn = 0;
+let glowPhase = false;
+let orbitOpacity = 255; // controls orbit opacity
+let isAnimatingConstellation = false;
+let constellationGlowProgress = 0; // 0 -> 1
+let constellationDrawn = false;
+
+// Set to 7 because we only want one star per slider
+const sliderIds = [
+  "temporal",
+  "disruption",
+  "optimism",
+  "human",
+  "tech",
+  "scale",
+  "obscurity"
+];
+const numStars = sliderIds.length;
+
+function setup() {
+	const canvasContainer = document.getElementById("canvas-container");
+  let canvas = createCanvas(canvasContainer.offsetWidth, canvasContainer.offsetHeight);
+  canvas.parent("canvas-container");
+  angleMode(DEGREES);
+  
+  // Create sparse background stars
+  for (let i = 0; i < 200; i++) {
+  	backgroundStars.push({
+  		x: random(width),
+		y: random(height),
+		opacity: random(50, 150),
+		size: random(0.5, 2),
+		twinkleSpeed: random(0.5, 1.5)
+  	});
+  }
+
+  setupSliders();
+  createStars();
+}
+
+
+// Create constellation stars
+function createStars() {
+	for (let i = 0; i < numStars; i++) {
+  stars.push(new Star(i));
+}
+}
+
+function draw() {
+  background(10, 10, 20);
+  updateSliderValues();
+  
+  // Draw starfield
+  for (let s of backgroundStars) {
+	  s.opacity += random(-s.twinkleSpeed, s.twinkleSpeed);
+	  s.opacity = constrain(s.opacity, 40, 180);
+	  noStroke();
+	  fill(255, s.opacity);
+	  circle(s.x, s.y, s.size);
+  }
+  
+  // Smooth deceleration
+  if (slowingDown && rotationSpeed > 0.0005) {
+	  rotationSpeed *= 0.98; // ease out
+  } else if (rotationSpeed <= 0.0005 && slowingDown) {
+	  rotationSpeed = 0;
+	  slowingDown = false;
+	  // draw constellation
+	  drawingConstellation = true;
+	  linesDrawn = 0;
+	  orbitOpacity = 255;
+  }
+  
+  translate(width / 2, height / 2); // center the origin
+  
+  if (drawingConstellation && linesDrawn < stars.length - 1) {
+	  orbitOpacity = max(orbitOpacity - 10, 0); // fade orbits
+  }
+  
+  if (glowPhase) {
+	  constellationGlowProgress = min(constellationGlowProgress + 0.02, 1);
+  }
+  
+  stars.forEach(star => star.update());
+  stars.forEach(star => star.display());
+
+/*  for (let star of stars) {
+    star.update();
+    star.display();
+  }
+  
+  if (drawingConstellation) {
+	  drawConstellationLines();
+  }*/
+  
+  if (drawingConstellation || constellationDrawn) {
+	  drawConstellationLines();
+  }
+}
+
+function setupSliders() {
+  sliderIds.forEach(id => {
+    sliders[id] = document.getElementById(id);
+  });
+}
+
+function updateSliderValues() {
+  for (let id in sliders) {
+    sliderValues[id] = parseFloat(sliders[id].value);
+  }
+}
+
+class Star {
+  constructor(index) {
+    this.index = index;
+    this.angle = random(360);
+    this.baseDistance = 40 + index * 40;
+    this.orbitTilt = random(0.2, 1.2);
+    this.brightness = random(150, 255);
+    this.hasGlow = random() > 0.5;
+    this.hasSatellite = random() > 0.5; // Pre-randomized, but shown only if tech > 50
+    this.scale = random(0.5, 1.5);
+    this.orbitEccentricity = random(0.8, 1.2);
+  }
+
+  update() {
+	  this.angle += rotationSpeed; // movement assigned to global rotation speed
+  }
+
+  display() {
+    let temporalDistance = sliderValues["temporal"] || 0;
+    let disruptionLevel = sliderValues["disruption"] || 0;
+    let optimism = sliderValues["optimism"] || 0;
+    let humanElement = sliderValues["human"] || 0;
+    let techInfluence = sliderValues["tech"] || 0;
+    let scaleSlider = sliderValues["scale"] || 0;
+    let obscurity = sliderValues["obscurity"] || 0;
+
+    // Orbit radius (controlled ONLY by temporal slider now)
+    let distance = this.baseDistance + temporalDistance * 2;
+    distance = constrain(distance, 50, min(width, height) / 2 - 50);
+
+    // Orbit tilt and rotation (controlled by disruption)
+    let tilt = this.orbitTilt + map(disruptionLevel, 0, 100, -0.5, 0.5);
+    let orbitRotation = map(disruptionLevel, 0, 100, 0, 180); // rotate orbit
+
+    // Orbit eccentricity (controlled by obscurity)
+    let eccentricity = map(obscurity, 0, 100, 1, this.orbitEccentricity);
+
+    // Orbit center offset using obscurity
+    let offsetAmount = map(obscurity, 0, 100, 0, 100);
+    let offsetAngle = this.index * (360 / numStars);
+    let cx = offsetAmount * cos(offsetAngle);
+    let cy = offsetAmount * sin(offsetAngle);
+
+    // Compute star position using orbitRotation and orbit shape
+    let rotatedAngle = this.angle + orbitRotation;
+    let x = distance * cos(rotatedAngle);
+    let y = distance * sin(rotatedAngle) * tilt * eccentricity;
+
+    // Apply orbit center offset
+    x += cx;
+    y += cy;
+
+    // Orbit outline (hide during constellation animation)
+	if (!isAnimatingConstellation) {
+	    push();
+	    translate(cx, cy);
+	    rotate(orbitRotation);
+	    noFill();
+	    stroke(100, orbitOpacity); // semi-transparent by default
+	    strokeWeight(0.5);
+	    ellipse(0, 0, distance * 2, distance * 2 * tilt * eccentricity);
+	    pop();
+	}
+
+    // Star style
+    noStroke();
+    let b = map(optimism, 0, 100, 100, 255);
+    fill(b);
+
+    let s = this.scale * map(scaleSlider, 0, 100, 0.5, 2);
+	let glowActive = false;
+	if (this.hasGlow && humanElement > 50) {
+		glowActive = true;
+	}
+	
+	if (constellationGlowProgress > 0.0) {
+		glowActive = true;
+		drawingContext.shadowBlur = 30 * constellationGlowProgress;
+		drawingContext.shadowColor = color(255, 25, 255, 200 * constellationGlowProgress);
+	} else if (glowActive) {
+		drawingContext.shadowBlur = 15;
+		drawingContext.shadowColor = color(255, 255, 255, 150);
+	} else {
+      drawingContext.shadowBlur = 0;
+    }
+
+    ellipse(x, y, 8 * s, 8 * s);
+
+    // Reset shadow
+    drawingContext.shadowBlur = 0;
+
+    // Satellite
+    if (this.hasSatellite && techInfluence > 50) {
+      let satAngle = this.angle * 2;
+      let sx = x + 15 * cos(satAngle);
+      let sy = y + 15 * sin(satAngle);
+      fill(180);
+      ellipse(sx, sy, 4, 4);
+    }
+  }
+  
+  getPosition() {
+	  let temporalDistance = sliderValues["temporal"] || 0;
+	  let disruptionLevel = sliderValues["disruption"] || 0;
+	  let obscurity = sliderValues["obscurity"] || 0;
+	  
+	  let distance = this.baseDistance + temporalDistance * 2;
+	  distance = constrain(distance, 50, min(width, height) / 2 - 50);
+	  
+	  let tilt = this.orbitTilt + map(disruptionLevel, 0, 100, -0.5, 0.5);
+	  let orbitRotation = map(disruptionLevel, 0, 100, 0, 180);
+	  let eccentricity = map(obscurity, 0, 100, 1, this.orbitEccentricity);
+	  
+	  let offsetAmount = map(obscurity, 0, 100, 0, 100);
+	  let offsetAngle = this.index * (360 / numStars);
+	  let cx = offsetAmount * cos(offsetAngle);
+	  let cy = offsetAmount * sin(offsetAngle);
+	  
+	  let rotatedAngle = this.angle + orbitRotation;
+	  let x = distance * cos(rotatedAngle);
+	  let y = distance * sin(rotatedAngle) * tilt * eccentricity;
+	  
+	  x += cx;
+	  y += cy;
+	  
+	  return createVector(x, y);
+  }
+  
+}
+
+function drawConstellationLines() {
+	stroke(255, 180);
+	strokeWeight(2);
+	noFill();
+	
+	let origin = stars[0].getPosition();
+	
+	for (let i = 1; i <= linesDrawn && i < stars.length; i++) {
+		let target = stars[i].getPosition();
+		line(origin.x, origin.y, target.x, target.y);
+	}
+	
+	if (frameCount % 10 === 0 && linesDrawn < stars.length - 1) {
+		linesDrawn++;
+	}
+	
+	if (linesDrawn >= stars.length - 1 && !constellationDrawn) {
+		drawingConstellation = false;
+		glowPhase = true;
+		constellationDrawn = true; // keep lines rendered
+		document.getElementById("generate").disabled = false;
+	}
+}
+
+function glowConstellation() {
+	let origin = stars[0].getPosition();
+	stroke(255, random(180, 255));
+	strokeWeight(3);
+	
+	for (let i = 1; i < stars.length; i++) {
+		let target = stars[i].getPosition();
+		line(origin.x, origin.y, target.x, target.y);
+	}
+	
+	// Brighten stars
+	for (let s of stars) {
+		let pos = s.getPosition();
+		fill(255, 255, 200, random(180, 255));
+		noStroke();
+		ellipse(pos.x, pos.y, 8);
+	}
+}
+
+
+document.getElementById("generate").addEventListener("click", () => {
+	if (isAnimatingConstellation) return;
+	
+	// Trigger slowdown
+	slowingDown = true;
+	document.getElementById("generate").disabled = true;
+});
+
+function windowResized() {
+	const canvasContainer = document.getElementById("canvas-container");
+  	resizeCanvas(canvasContainer.offsetWidth, canvasContainer.offsetHeight);
+}
+
+document.getElementById("reset").addEventListener("click", () => {
+	slowingDown = false;
+	drawingConstellation = false;
+	glowPhase = false;
+	constellationDrawn = false;
+	isAnimatingConstellation = false;
+	constellationGlowProgress = 0;
+	linesDrawn = 0;
+	orbitOpacity = 255;
+	rotationSpeed = targetRotationSpeed;
+	
+	// reset stars
+	stars = [];
+	createStars();
+	
+	document.getElementById("generate").disabled = false;
+});

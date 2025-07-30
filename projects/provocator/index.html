@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Speculative Scenario Constellation</title>
+	<link rel="stylesheet" href="style.css" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/2.0.3/p5.min.js" integrity="sha512-M5Ig6BOPDsLEz31Va1BcyodqmZYhfTzxasnkHqumnoAm84W8ZGx1hO9sWcJhj3qo+n3jGNy/w4r+X0gbAv5DEg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+	<main>
+		<section class="ui">
+			<h1>Scenario Constellation</h1>
+			<textarea id="scenario-input" placeholder="Enter you idea, concept, or question..."></textarea>
+			<div class="sliders vertical">
+				<div class="slider-group">
+					<span class="slider-head">Temporal Distance</span>
+					<span class="label high">Distant Future</span>
+					<input type="range" id="temporal" min="0" max="100" value="0">
+					<span class="label low">Near Future</span>
+				</div>
+				<div class="slider-group">
+					<span class="slider-head">Disruption Level Distance</span>
+					<span class="label high">Radical</span>
+					<input type="range" id="disruption" min="0" max="100" value="0">
+					<span class="label low">Mundane</span>
+				</div>
+				<div class="slider-group">
+					<span class="slider-head">Optimism vs Pessimism</span>
+					<span class="label high">Utopian</span>
+					<input type="range" id="optimism" min="0" max="100" value="0">
+					<span class="label low">Dystopian</span>
+				</div>
+				<div class="slider-group">
+					<span class="slider-head">Human Element</span>
+					<span class="label high">Human-led</span>
+					<input type="range" id="human" min="0" max="100" value="0">
+					<span class="label low">System-led</span>
+				</div>
+				<div class="slider-group">
+					<span class="slider-head">Technology Influence</span>
+					<span class="label high">High-Tech</span>
+					<input type="range" id="tech" min="0" max="100" value="0">
+					<span class="label low">Low-Tech</span>
+				</div>
+				<div class="slider-group">
+					<span class="slider-head">Scale</span>
+					<span class="label high">Planetary</span>
+					<input type="range" id="scale" min="0" max="100" value="0">
+					<span class="label low">Personal</span>
+				</div>
+				<div class="slider-group">
+					<span class="slider-head">Obscurity Factor</span>
+					<span class="label high">Absurd</span>
+					<input type="range" id="obscurity" min="0" max="100" value="0">
+					<span class="label low">Realistic</span>
+				</div>
+			</div>
+			<button id="generate">Generate Scenario</button>
+			<button id="reset">Reset</button>
+		</section>
+		
+		<section class="visual">
+			<div id="canvas-container"></div>
+		</section>
+	</main>
+	
+	<script src="sketch.js"></script>
+</body>
+</html>

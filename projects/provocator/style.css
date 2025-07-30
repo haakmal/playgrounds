@@ -1,0 +1,110 @@
+/* Base resets */
+body {
+	margin: 0;
+	font-family: system-ui, sans-serif;
+	background: #f4f4f4;
+	color: #222;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 1rem;
+}
+
+main {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	max-width: 1200px;
+}
+
+.ui {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-bottom: 2rem;
+}
+
+textarea {
+	width: 90%;
+	max-width: 800px;
+	height: 100px;
+	padding: 0.75rem;
+	margin-bottom: 1.5rem;
+	font-size: 1rem;
+	border: 1px solid #ccc;
+	border-radius: 0.5rem;
+	resize: vertical;
+}
+
+.sliders {
+	display: flex;
+	justify-content: center;
+	gap: 2rem;
+	flex-wrap: wrap;
+}
+
+.slider-group {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	min-width: 60px;
+}
+
+.slider-head {
+	font-weight: bold;
+	margin-bottom: 0.5rem;
+}
+
+.slider-group input[type="range"] {
+	writing-mode: bt-lr; /* vertical */
+	-webkit-appearance: slider-vertical;
+	height: 150px;
+	width: 20px;
+	margin: 0.5rem 0;
+}
+
+.label {
+	font-size: 0.8rem;
+	color: #555;
+}
+
+button#generate {
+	margin-top: 1.5rem;
+	padding: 0.75rem 1.5rem;
+	font-size: 1rem;
+	background-color: #222;
+	color: #fff;
+	border: none;
+	border-radius: 0.5rem;
+	cursor: pointer;
+	transition: background-color 0.2s;
+}
+
+button#generate:hover {
+	background-color: #444;
+}
+
+#canvas-container {
+	width: 100%;
+	height: 500px;
+	background: #111;
+	border-radius: 0.5rem;
+	overflow: hidden;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+	.sliders {
+		flex-wrap: wrap;
+		gap: 1rem;
+	}
+	
+	.slider-group input[type="range"] {
+		height: 120px;
+	}
+	
+	#canvas-container {
+		height: 400px;
+	}
+}
