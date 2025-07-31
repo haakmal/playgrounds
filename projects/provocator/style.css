@@ -88,10 +88,9 @@ button#generate:hover {
 #canvas-container {
 	width: 100%;
 	height: 500px;
-	background: #111;
+	background: transparent !important;
 	border-radius: 0.5rem;
 	overflow: hidden;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
 @media (max-width: 768px) {

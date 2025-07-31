@@ -15,6 +15,9 @@ let orbitOpacity = 255; // controls orbit opacity
 let isAnimatingConstellation = false;
 let constellationGlowProgress = 0; // 0 -> 1
 let constellationDrawn = false;
+// for visual change dna->constellation
+let visualMode = "constellation";
+const toggleButton = document.getElementById('toggle-visual');
 
 // Set to 7 because we only want one star per slider
 const sliderIds = [
@@ -49,6 +52,13 @@ function setup() {
   createStars();
 }
 
+// Toggle visual logic
+toggleButton.addEventListener('click', () => {
+	visualMode = visualMode === "constellation" ? "dna" : "constellation";
+	toggleButton.textContent = visualMode === "constellation"
+	? "Switch to DNA Mode"
+	: "Switch to Constellation Mode";
+});
 
 // Create constellation stars
 function createStars() {
@@ -58,8 +68,18 @@ function createStars() {
 }
 
 function draw() {
+	updateSliderValues();
+	clear();
+	if (visualMode === "constellation") {
+		drawConstellation();
+	} else if (visualMode === "dna") {
+		drawDNAFingerprint();
+	}
+}
+
+// Constellation setup
+function drawConstellation() {
   background(10, 10, 20);
-  updateSliderValues();
   
   // Draw starfield
   for (let s of backgroundStars) {
@@ -107,6 +127,61 @@ function draw() {
   if (drawingConstellation || constellationDrawn) {
 	  drawConstellationLines();
   }
+}
+
+// DNA setup
+function drawDNAFingerprint() {
+	clear();
+	//blendMode(MULTIPLY); // also SOFT_LIGHT, DARKEST
+	let ctx = drawingContext;
+	
+	// remap for cleaner view
+	let temporalValue = constrain(sliderValues["temporal"], 30, 100);
+	let obscurityValue = constrain(sliderValues["obscurity"], 30, 100);
+	let humanValue = constrain(sliderValues["human"], 30, 100);
+	// reverse some mappings and apply floors
+	let rowSpacing = map(temporalValue, 30, 100, 8, 24); // more space at lower slider
+	let columnSpacing = map(obscurityValue, 100, 30, 12, 36); // reverse logic
+	let noiseDensity = map(humanValue, 30, 100, 0.002, 0.015); // density up with slider
+	let bandWidth = map(sliderValues["scale"], 0, 100, 20, 40);
+	let bandHeight = 8;
+	let brightness = map(sliderValues["optimism"], 0, 100, 120, 255);
+	let skewAmount = map(sliderValues["disruption"], 0, 100, 0, 0.5);
+	let blurAmount = map((sliderValues["tech"] ?? 50), 0, 100, 0, 15);
+	let blurAlpha = map(sliderValues["tech"], 0, 100, 0, 15);
+	let time = millis() * 0.0005;
+	let maxBars = 500;
+	let barsDrawn = 0;
+	
+	background(255, 0); // white bg with alpha 0
+	
+	drawingContext.save();
+	drawingContext.filter = `blur(${blurAmount}px)`;
+	
+	let numRows = Math.floor(height / rowSpacing);
+	let numCols = Math.floor(width / columnSpacing);
+	
+	for (let i = 0; i < numRows; i ++) {
+		// Random-ish horizontal pos
+		let y = i * rowSpacing;
+		let noiseVal = noise(i * 0.3, time);
+		
+		for (let j = 0; j < width; j += columnSpacing) {
+			let x = j * columnSpacing;
+			let skew = sin(i * 0.05 + j * 0.01) * skewAmount * 10;
+			let intensity = noise(i * noiseDensity, j * noiseDensity);
+			
+			if (intensity < 0.5 && barsDrawn < maxBars) {
+				ctx.shadowBlur = blurAmount;
+				ctx.shadowColor = color(0, 100); // black glow with trans
+				fill(0, brightness); // black bar with mapped brightness
+				rect(j + skew, y, bandWidth, bandHeight, 4);
+				ctx.shadowBlur = 0; // reset
+				barsDrawn++; // count bars drawn
+		}
+	}
+}
+drawingContext.restore();
 }
 
 function setupSliders() {
