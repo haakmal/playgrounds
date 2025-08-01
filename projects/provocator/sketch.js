@@ -4,6 +4,8 @@ let sliders = {};
 let sliderValues = {};
 let canvas;
 let backgroundStars = [];
+let constellationOrder = [];
+let startingStarIndex = null;
 // for slow-down and end
 let rotationSpeed = 0.2;
 let targetRotationSpeed = 0.2;
@@ -58,6 +60,20 @@ toggleButton.addEventListener('click', () => {
 	toggleButton.textContent = visualMode === "constellation"
 	? "Switch to DNA Mode"
 	: "Switch to Constellation Mode";
+	
+	// ensure p5 draw loop restarts on mode switch
+	loop();
+	
+	// reinitialise rendering context
+	if (visualMode === "constellation") {
+		constellationDrawn = false;
+		drawingConstellation = false;
+		glowPhase = false;
+		linesDrawn = 0;
+		orbitOpacity = 255;
+		rotationSpeed = targetRotationSpeed;
+	}
+//	redraw();
 });
 
 // Create constellation stars
@@ -72,10 +88,11 @@ function draw() {
 	clear();
 	
 	if (visualMode === "constellation") {
-		drawConstellation(); // continuous animation
+		loop(); // ensure animaiton continues
+		drawConstellation();
 	} else if (visualMode === "dna") {
-		drawDNAFingerprint(); // static view
-		noLoop(); // stop redraw
+		drawDNAFingerprint();
+		noLoop(); // stop animation after drawing dna
 	}
 }
 
@@ -130,15 +147,6 @@ function drawConstellation() {
   
   stars.forEach(star => star.update());
   stars.forEach(star => star.display());
-
-/*  for (let star of stars) {
-    star.update();
-    star.display();
-  }
-  
-  if (drawingConstellation) {
-	  drawConstellationLines();
-  }*/
   
   if (drawingConstellation || constellationDrawn) {
 	  drawConstellationLines();
@@ -174,7 +182,7 @@ function drawDNAFingerprint() {
 	let saturationRange = map(humanValue, 30, 100, 5, 100);
 	
 	// curated hue pool
-	let huePool = [ 260, 280, 310, 10, 30, 100, 130]; // purples, blues, magentas, warms
+	let huePool = [0, 120, 270];
 
 	// create offscreen graphics buffer
 	let gfx = createGraphics(width, height);
@@ -182,7 +190,7 @@ function drawDNAFingerprint() {
 	gfx.clear();
 	gfx.noStroke();
 	gfx.rectMode(CORNER);
-	gfx.blendMode(MULTIPLY);
+	gfx.blendMode(HARD_LIGHT);
 	
 	// lightbox
 	let bg = createGraphics(width, height);
@@ -213,7 +221,7 @@ function drawDNAFingerprint() {
 				// Randomised HSB colour
 				let useColour = random() < colourPresence;
 				if (useColour) {
-					let hue = random(huePool) + random(-10, 10);
+					let hue = random(huePool) + random(-10, 80);
 					let sat = random(saturationRange, 100);
 					let bright = map(brightness, 120, 255, 50, 100);
 					gfx.fill(hue, sat, bright, alpha);
@@ -257,98 +265,12 @@ function drawDNAFingerprint() {
 		gfx.ellipse(blobX, blobY, blobSize);
 	}
 	
-	// gel lanes
-	let gelLaneSpacing = 80;
-	let gelLaneWidth = 12;
-	for (let x = 0; x < width; x += gelLaneSpacing) {
-		let laneAlpha = 20;
-		gfx.fill(0, 0, 30, laneAlpha);
-		gfx.rect(x, 0, gelLaneWidth, height);
-	}
-	
 	// Apply blur once to entire fingerprint
 	drawingContext.filter = `blur(${maxBlur}px)`;
 	image(gfx, 0, 0);
 	drawingContext.filter = "none"; // reset filter
 
 }
-/*	clear();
-	//blendMode(MULTIPLY); // also SOFT_LIGHT, DARKEST
-	let ctx = drawingContext;
-	
-	// remap for cleaner view
-	let temporalValue = constrain(sliderValues["temporal"], 30, 100);
-	let obscurityValue = constrain(sliderValues["obscurity"], 30, 100);
-	let humanValue = constrain(sliderValues["human"], 30, 100);
-	// reverse some mappings and apply floors
-	let rowSpacing = map(temporalValue, 30, 100, 8, 24); // more space at lower slider
-	let columnSpacing = map(obscurityValue, 100, 30, 12, 36); // reverse logic
-	let noiseDensity = map(humanValue, 30, 100, 0.002, 0.015); // density up with slider
-	let bandWidth = map(sliderValues["scale"], 0, 100, 20, 40);
-	let bandHeight = 8;
-	let brightness = map(sliderValues["optimism"], 0, 100, 120, 255);
-	let skewAmount = map(sliderValues["disruption"], 0, 100, 0, 0.5);
-	let blurAmount = map((sliderValues["tech"] ?? 50), 0, 100, 0, 15);
-	let blurAlpha = map(sliderValues["tech"], 0, 100, 0, 15);
-	let time = millis() * 0.0005;
-	let maxBars = 100;
-	let barsDrawn = 0;
-	
-	background(255, 0); // white bg with alpha 0
-	
-	drawingContext.save();
-	drawingContext.filter = `blur(${blurAmount}px)`;
-	
-	let numRows = Math.floor(height / rowSpacing);
-	let numCols = Math.floor(width / columnSpacing);
-	
-	for (let i = 0; i < numRows; i ++) {
-		// Random-ish horizontal pos
-		let y = i * rowSpacing;
-		let noiseVal = noise(i * 0.3, time);
-		
-		for (let y = 0; y < height; y += rowSpacing) {
-			// clump offset for bands
-			let clumpOffset = (noise(y * 0.05, frameCount * 0.005) - 0.5) * 10;
-			
-			for (let x = 0; x < width; x += columnSpacing) {
-				// Skip some ands randomly for gap
-				if (random() < 0.15) continue;
-				
-				// each bar has slightly diff blur
-				const bandBlur = blurAmount * random(0.5, 1.5);
-				const barAlpha = random(80, brightness); // random opacity
-				const barHeight = bandWidth * random(0.8, 1.2); // height variance
-				const verticalJitter = random(-2, 2); // sim smearing across y
-				
-				ctx.filter = `blur(${bandBlur}px)`;
-				ctx.fillStyle = `rgba(255, 255, 255, ${barAlpha / 255})`;
-				
-				ctx.fillRect(
-					x,
-					y + clumpOffset + verticalJitter,
-					bandWidth,
-					barHeight
-				);
-			}
-/*			let x = j * columnSpacing;
-			let skew = sin(i * 0.05 + j * 0.01) * skewAmount * 10;
-			let intensity = noise(i * noiseDensity, j * noiseDensity);
-			
-			if (intensity < 0.5 && barsDrawn < maxBars) {
-				ctx.shadowBlur = blurAmount;
-				ctx.shadowColor = color(0, 100); // black glow with trans
-				fill(0, brightness); // black bar with mapped brightness
-				rect(j + skew, y, bandWidth, bandHeight, 4);
-				ctx.shadowBlur = 0; // reset
-				barsDrawn++; // count bars drawn
-		}
-	}
-}
-drawingContext.restore();
-}
-*/
-
 
 function setupSliders() {
   sliderIds.forEach(id => {
@@ -497,18 +419,17 @@ function drawConstellationLines() {
 	strokeWeight(2);
 	noFill();
 	
-	let origin = stars[0].getPosition();
-	
-	for (let i = 1; i <= linesDrawn && i < stars.length; i++) {
-		let target = stars[i].getPosition();
-		line(origin.x, origin.y, target.x, target.y);
+	for (let i = 1; i < linesDrawn && i < constellationOrder.length - 1; i++) {
+		let fromStar = stars[constellationOrder[i]].getPosition();
+		let toStar = stars[constellationOrder[i + 1]].getPosition();
+		line(fromStar.x, fromStar.y, toStar.x, toStar.y);
 	}
 	
-	if (frameCount % 10 === 0 && linesDrawn < stars.length - 1) {
+	if (frameCount % 10 === 0 && linesDrawn < constellationOrder.length - 1) {
 		linesDrawn++;
 	}
 	
-	if (linesDrawn >= stars.length - 1 && !constellationDrawn) {
+	if (linesDrawn >= constellationOrder.length - 1 && !constellationDrawn) {
 		drawingConstellation = false;
 		glowPhase = true;
 		constellationDrawn = true; // keep lines rendered
@@ -542,7 +463,46 @@ document.getElementById("generate").addEventListener("click", () => {
 	// Trigger slowdown
 	slowingDown = true;
 	document.getElementById("generate").disabled = true;
+	
+	// pick a random starting star
+	startingStarIndex = floor(random(stars.length));
+	
+	// build a chain of stars from nearest
+	constellationOrder = buildNearestNeighbourChain(startingStarIndex);
 });
+
+function buildNearestNeighbourChain(startIndex) {
+	let visited = new Set();
+	let chain = [startIndex];
+	visited.add(startIndex);
+	
+	let current = startIndex;
+	
+	while (visited.size < stars.length) {
+		let currentPos = stars[current].getPosition();
+		let nearest = null;
+		let minDist = Infinity;
+		
+		for (let i = 0; i < stars.length; i++) {
+			if (visited.has(i)) continue;
+			let pos = stars[i].getPosition();
+			let d = dist(currentPos.x, currentPos.y, pos.x, pos.y);
+			if (d < minDist) {
+				minDist = d;
+				nearest = i;
+			}
+		}
+		
+		if (nearest !== null) {
+			chain.push(nearest);
+			visited.add(nearest);
+			current = nearest;
+		} else {
+			break;
+		}
+	}
+	return chain;
+}
 
 function windowResized() {
 	const canvasContainer = document.getElementById("canvas-container");
@@ -559,6 +519,8 @@ document.getElementById("reset").addEventListener("click", () => {
 	linesDrawn = 0;
 	orbitOpacity = 255;
 	rotationSpeed = targetRotationSpeed;
+	constellationOrder = [];
+	startingStarIndex = null;
 	
 	// reset stars
 	stars = [];
