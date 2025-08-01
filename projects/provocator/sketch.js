@@ -33,23 +33,23 @@ const numStars = sliderIds.length;
 
 function setup() {
 	const canvasContainer = document.getElementById("canvas-container");
-  let canvas = createCanvas(canvasContainer.offsetWidth, canvasContainer.offsetHeight);
-  canvas.parent("canvas-container");
-  angleMode(DEGREES);
+	let canvas = createCanvas(canvasContainer.offsetWidth, canvasContainer.offsetHeight);
+	canvas.parent("canvas-container");
+	angleMode(DEGREES);
   
-  // Create sparse background stars
-  for (let i = 0; i < 200; i++) {
-  	backgroundStars.push({
-  		x: random(width),
-		y: random(height),
-		opacity: random(50, 150),
-		size: random(0.5, 2),
-		twinkleSpeed: random(0.5, 1.5)
-  	});
-  }
+  	// Create sparse background stars
+  	for (let i = 0; i < 200; i++) {
+  		backgroundStars.push({
+  			x: random(width),
+			y: random(height),
+			opacity: random(50, 150),
+			size: random(0.5, 2),
+			twinkleSpeed: random(0.5, 1.5)
+  		});
+  	}
 
-  setupSliders();
-  createStars();
+  	setupSliders();
+  	createStars();
 }
 
 // Toggle visual logic
@@ -70,10 +70,26 @@ function createStars() {
 function draw() {
 	updateSliderValues();
 	clear();
+	
 	if (visualMode === "constellation") {
-		drawConstellation();
+		drawConstellation(); // continuous animation
 	} else if (visualMode === "dna") {
-		drawDNAFingerprint();
+		drawDNAFingerprint(); // static view
+		noLoop(); // stop redraw
+	}
+}
+
+function onSliderChange() {
+	sliderValues["tech"] = parseInt(document.getElementById("tech").value);
+	sliderValues["temporal"] = parseInt(document.getElementById("temporal").value);
+	sliderValues["obscurity"] = parseInt(document.getElementById("obscurity").value);
+	sliderValues["human"] = parseInt(document.getElementById("human").value);
+	sliderValues["optimism"] = parseInt(document.getElementById("optimism").value);
+	sliderValues["disruption"] = parseInt(document.getElementById("disruption").value);
+	sliderValues["scale"] = parseInt(document.getElementById("scale").value);
+	
+	if (visualMode === "dna") {
+		loop(); // only re-trigger draw if in DNA mode
 	}
 }
 
@@ -132,6 +148,60 @@ function drawConstellation() {
 // DNA setup
 function drawDNAFingerprint() {
 	clear();
+	
+	// read and map slider values, constraining and remapping where necessary
+	let temporalValue = constrain(sliderValues["temporal"], 30, 70);
+	let obscurityValue = constrain(sliderValues["obscurity"], 30, 50);
+	let humanValue = constrain(sliderValues["human"], 30, 100);
+	let scaleValue = constrain(sliderValues["scale"], 20, 70);
+	let optimismValue = sliderValues["optimism"];
+	let techValue = sliderValues["tech"];
+	let disruptionValue = sliderValues["disruption"];
+	
+	// map sliders to visual parameters
+	let rowSpacing = map(temporalValue, 30, 100, 8, 24); // more space at lower slider
+	let columnSpacing = map(obscurityValue, 100, 30, 12, 36); // reverse logic
+	let noiseDensity = map(humanValue, 30, 100, 0.002, 0.015); // density up with slider
+	let bandWidth = map(scaleValue, 0, 100, 20, 40);
+	let brightness = map(optimismValue, 0, 100, 120, 255);
+	let maxBlur = map(techValue, 0, 100, 0, 8);
+	let skipProbability = map(disruptionValue, 0, 100, 0.05, 0.4); // skip % of bars
+	
+	let ctx = drawingContext;
+	background(255, 0); // transparent
+	ctx.save();
+	
+	let barsDrawn = 0;	
+	for (let y = 0; y < height; y += rowSpacing) {
+		let clumpOffset = (noise(y * noiseDensity) - 0.5) * 10;
+		
+		for (let x = 0; x < width; x += columnSpacing) {
+			if (random() < skipProbability || barsDrawn++ > 500) continue;
+			
+			// Random blur per bar based on tech slider
+			let localBlur = random(0, maxBlur);
+			ctx.shadowBlur = localBlur;
+			ctx.shadowColor = 'rgba(0, 0, 0, 1)';
+			
+			// Random alpha for bar brightness
+			let alpha = random(80, brightness);
+			ctx.fillStyle = `rgba(0, 0, 0, ${alpha / 255})`;
+			
+			// Draw the rectangle (bar)
+			ctx.fillRect(
+				x,
+				y + clumpOffset + random(-2, 2),
+				bandWidth,
+				bandWidth * random(0.8, 1.2)
+			);
+			
+			// Reset blur for next bar
+			ctx.shadowBlur = 0;
+		}
+	}
+	ctx.restore();
+}
+/*	clear();
 	//blendMode(MULTIPLY); // also SOFT_LIGHT, DARKEST
 	let ctx = drawingContext;
 	
@@ -150,7 +220,7 @@ function drawDNAFingerprint() {
 	let blurAmount = map((sliderValues["tech"] ?? 50), 0, 100, 0, 15);
 	let blurAlpha = map(sliderValues["tech"], 0, 100, 0, 15);
 	let time = millis() * 0.0005;
-	let maxBars = 500;
+	let maxBars = 100;
 	let barsDrawn = 0;
 	
 	background(255, 0); // white bg with alpha 0
@@ -166,8 +236,31 @@ function drawDNAFingerprint() {
 		let y = i * rowSpacing;
 		let noiseVal = noise(i * 0.3, time);
 		
-		for (let j = 0; j < width; j += columnSpacing) {
-			let x = j * columnSpacing;
+		for (let y = 0; y < height; y += rowSpacing) {
+			// clump offset for bands
+			let clumpOffset = (noise(y * 0.05, frameCount * 0.005) - 0.5) * 10;
+			
+			for (let x = 0; x < width; x += columnSpacing) {
+				// Skip some ands randomly for gap
+				if (random() < 0.15) continue;
+				
+				// each bar has slightly diff blur
+				const bandBlur = blurAmount * random(0.5, 1.5);
+				const barAlpha = random(80, brightness); // random opacity
+				const barHeight = bandWidth * random(0.8, 1.2); // height variance
+				const verticalJitter = random(-2, 2); // sim smearing across y
+				
+				ctx.filter = `blur(${bandBlur}px)`;
+				ctx.fillStyle = `rgba(255, 255, 255, ${barAlpha / 255})`;
+				
+				ctx.fillRect(
+					x,
+					y + clumpOffset + verticalJitter,
+					bandWidth,
+					barHeight
+				);
+			}
+/*			let x = j * columnSpacing;
 			let skew = sin(i * 0.05 + j * 0.01) * skewAmount * 10;
 			let intensity = noise(i * noiseDensity, j * noiseDensity);
 			
@@ -183,6 +276,8 @@ function drawDNAFingerprint() {
 }
 drawingContext.restore();
 }
+*/
+
 
 function setupSliders() {
   sliderIds.forEach(id => {
