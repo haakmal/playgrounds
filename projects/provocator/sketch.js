@@ -153,7 +153,7 @@ function drawDNAFingerprint() {
 	let temporalValue = constrain(sliderValues["temporal"], 30, 70);
 	let obscurityValue = constrain(sliderValues["obscurity"], 30, 50);
 	let humanValue = constrain(sliderValues["human"], 30, 100);
-	let scaleValue = constrain(sliderValues["scale"], 20, 70);
+	let scaleValue = constrain(sliderValues["scale"], 20, 50);
 	let optimismValue = sliderValues["optimism"];
 	let techValue = sliderValues["tech"];
 	let disruptionValue = sliderValues["disruption"];
@@ -162,44 +162,115 @@ function drawDNAFingerprint() {
 	let rowSpacing = map(temporalValue, 30, 100, 8, 24); // more space at lower slider
 	let columnSpacing = map(obscurityValue, 100, 30, 12, 36); // reverse logic
 	let noiseDensity = map(humanValue, 30, 100, 0.002, 0.015); // density up with slider
-	let bandWidth = map(scaleValue, 0, 100, 20, 40);
 	let brightness = map(optimismValue, 0, 100, 120, 255);
-	let maxBlur = map(techValue, 0, 100, 0, 8);
+	let maxBlur = map(techValue, 20, 80, 6, 2);
 	let skipProbability = map(disruptionValue, 0, 100, 0.05, 0.4); // skip % of bars
+	let thicknessMin = map(humanValue, 30, 100, 1, 3);
+	let thicknessMax = map(humanValue, 30,100, 4, 12);
+	let smearPasses = 2;
 	
-	let ctx = drawingContext;
-	background(255, 0); // transparent
-	ctx.save();
+	// colour strategy
+	let colourPresence = map(humanValue, 30, 100, 0, 1); // 0 = grey
+	let saturationRange = map(humanValue, 30, 100, 5, 100);
 	
-	let barsDrawn = 0;	
-	for (let y = 0; y < height; y += rowSpacing) {
-		let clumpOffset = (noise(y * noiseDensity) - 0.5) * 10;
+	// curated hue pool
+	let huePool = [ 260, 280, 310, 10, 30, 100, 130]; // purples, blues, magentas, warms
+
+	// create offscreen graphics buffer
+	let gfx = createGraphics(width, height);
+	gfx.colorMode(HSB, 360, 100, 100, 255);
+	gfx.clear();
+	gfx.noStroke();
+	gfx.rectMode(CORNER);
+	gfx.blendMode(MULTIPLY);
+	
+	// lightbox
+	let bg = createGraphics(width, height);
+	for (let y = 0; y < height; y++) {
+		let gradientAlpha = map(y, 0, height, 50, 0);
+		bg.stroke(255, gradientAlpha);
+		bg.line(0, y, width, y);
+	}
+	image(bg, 0, 0);
+	
+	// main smear pass with bars
+	for (let pass = 0; pass < smearPasses; pass++) {
+		let opacityFactor = pass === 0 ? 1.0 : 0.35;
+		let xOffset = pass === 0 ? 0 : 2;
+		let yOffset = pass === 0 ? 0 : 2;
 		
-		for (let x = 0; x < width; x += columnSpacing) {
-			if (random() < skipProbability || barsDrawn++ > 500) continue;
+		for (let y = 0; y < height; y += rowSpacing) {
+			let clumpOffset = (noise(y * noiseDensity) - 0.5) * 10;
 			
-			// Random blur per bar based on tech slider
-			let localBlur = random(0, maxBlur);
-			ctx.shadowBlur = localBlur;
-			ctx.shadowColor = 'rgba(0, 0, 0, 1)';
-			
-			// Random alpha for bar brightness
-			let alpha = random(80, brightness);
-			ctx.fillStyle = `rgba(0, 0, 0, ${alpha / 255})`;
-			
-			// Draw the rectangle (bar)
-			ctx.fillRect(
-				x,
-				y + clumpOffset + random(-2, 2),
-				bandWidth,
-				bandWidth * random(0.8, 1.2)
-			);
-			
-			// Reset blur for next bar
-			ctx.shadowBlur = 0;
+			for (let x = 0; x < width; x += columnSpacing) {
+				if (random() < skipProbability) continue;
+				
+				// Random alpha for bar brightness
+				let alpha = random(80, brightness) * opacityFactor;
+				let barWidth = random(thicknessMin, thicknessMax);
+				let barHeight = map(scaleValue, 0, 100, 20, 40) * random(0.8, 1.2);
+				
+				// Randomised HSB colour
+				let useColour = random() < colourPresence;
+				if (useColour) {
+					let hue = random(huePool) + random(-10, 10);
+					let sat = random(saturationRange, 100);
+					let bright = map(brightness, 120, 255, 50, 100);
+					gfx.fill(hue, sat, bright, alpha);
+				} else {
+					let gray = random(60, 100);
+					gfx.fill(0, 0, gray, alpha);
+				}
+				
+				// clump and jitter
+				let jitter = random(-2, 2);
+				gfx.rect(
+					x + xOffset,
+					y + clumpOffset + jitter + yOffset,
+					barHeight,
+					barWidth,
+				);
+			}
+		
 		}
 	}
-	ctx.restore();
+	
+	// add faint ink artefacts
+	for (let i = 0; i < 50; i++) {
+		let blobX = random(width);
+		let blobY = random(height);
+		let blobSize = random(4, 12);
+		let blobAlpha = random(10, 30);
+		gfx.fill(0, blobAlpha);
+		gfx.ellipse(blobX, blobY, blobSize);
+		
+		if (random() < colourPresence) {
+			let hue = random(huePool) + random(-15, 15);
+			let sat = random(saturationRange, 100);
+			let bright = random(60, 100);
+			gfx.fill(hue, sat, bright, blobAlpha);
+		} else {
+			let gray = random(50, 80);
+			gfx.fill(0, 0, gray, blobAlpha);
+		}
+		
+		gfx.ellipse(blobX, blobY, blobSize);
+	}
+	
+	// gel lanes
+	let gelLaneSpacing = 80;
+	let gelLaneWidth = 12;
+	for (let x = 0; x < width; x += gelLaneSpacing) {
+		let laneAlpha = 20;
+		gfx.fill(0, 0, 30, laneAlpha);
+		gfx.rect(x, 0, gelLaneWidth, height);
+	}
+	
+	// Apply blur once to entire fingerprint
+	drawingContext.filter = `blur(${maxBlur}px)`;
+	image(gfx, 0, 0);
+	drawingContext.filter = "none"; // reset filter
+
 }
 /*	clear();
 	//blendMode(MULTIPLY); // also SOFT_LIGHT, DARKEST
