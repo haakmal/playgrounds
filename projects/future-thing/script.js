@@ -134,7 +134,8 @@ document.getElementById("provoke-scenario").onclick = async () => {
       });
 	  
 	  const data = await response.json();
-	  const provoked = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+	  console.log("Gemini Worker Response:", data); //debug
+	  const provoked = data?.scenario;
 	  
       if (!provoked) {
         document.getElementById('provoke-output').innerText = 'No provocation received.';
@@ -167,7 +168,9 @@ async function fetchScenario(prompt) {
     }
 
     const data = await response.json();
-    const scenario = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    //const scenario = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+	console.log("Gemini Worker Response:", data); //debug
+	const scenario = data?.scenario;
 
     if (!scenario) {
       document.getElementById('scenario-output').innerText = 'No scenario received.';
