@@ -61,15 +61,45 @@
 	<script>
 	const tableBody = document.querySelector("#log-table tbody");
 	const filter = document.getElementById("filter");
+	const WORKER_URL = "https://gemini-worker.hakmal.workers.dev";
+
+	// Ask for password on first load
+	let logsPassword = localStorage.getItem("logsPassword");
+	if (!logsPassword) {
+	  logsPassword = prompt("Enter logs password:");
+	  if (logsPassword) {
+	    localStorage.setItem("logsPassword", logsPassword);
+	  } else {
+	    alert("Password required to view logs.");
+	    throw new Error("No password provided");
+	  }
+	}
 
 	async function loadLogs(range = "week") {
-	  tableBody.innerHTML = "<tr><td colspan='3'>Loading...</td></tr>";
-	  const res = await fetch(`https://gemini-worker.hakmal.workers.dev/logs?range=${range}`);
+	  tableBody.innerHTML = "<tr><td colspan='4'>Loading...</td></tr>";
 
-	const data = await res.json();
+	  try {
+	    const res = await fetch(`${WORKER_URL}/logs?range=${range}`, {
+	      headers: {
+	        "x-logs-secret": logsPassword
+	      }
+	    });
 
-	    if (data.length === 0) {
-	      tableBody.innerHTML = "<tr><td colspan='3'>No entries found.</td></tr>";
+	    if (res.status === 403) {
+	      localStorage.removeItem("logsPassword");
+	      alert("Invalid password. Please refresh and try again.");
+	      return;
+	    }
+
+	    if (!res.ok) {
+	      tableBody.innerHTML = `<tr><td colspan='4'>Failed to load logs: ${res.status}</td></tr>`;
+	      return;
+	    }
+
+	    const data = await res.json();
+
+	    if (!data.length) {
+	      tableBody.innerHTML = "<tr><td colspan='4'>No entries found.</td></tr>";
 	      return;
 	    }
 
@@ -81,11 +111,12 @@
 	      // Timestamp
 	      const tsCell = document.createElement("td");
 	      tsCell.textContent = new Date(entry.timestamp).toLocaleString();
-		  
-		  // IP/location
-		  const ipCell = document.createElement("td");
-		  ipCell.textContent = `${entry.ip || "unknown"} (${entry.city || "N/A"}, ${entry.country || "N/A"})`;
-		  row.appendChild(ipCell);
+	      row.appendChild(tsCell);
+
+	      // IP/location
+	      const ipCell = document.createElement("td");
+	      ipCell.textContent = `${entry.ip || "unknown"} (${entry.city || "N/A"}, ${entry.country || "N/A"})`;
+	      row.appendChild(ipCell);
 
 	      // Prompt
 	      const promptCell = document.createElement("td");
@@ -94,13 +125,14 @@
 	      promptToggle.textContent = "Show full prompt ⏵";
 	      const promptContent = document.createElement("div");
 	      promptContent.classList.add("toggle-content");
-	      promptContent.innerHTML = marked.parse(entry.prompt);
+	      promptContent.innerHTML = marked.parse(entry.prompt || "");
 	      promptToggle.addEventListener("click", () => {
 	        const expanded = promptContent.classList.toggle("expanded");
 	        promptToggle.textContent = expanded ? "Hide prompt ⏷" : "Show full prompt ⏵";
 	      });
 	      promptCell.appendChild(promptToggle);
 	      promptCell.appendChild(promptContent);
+	      row.appendChild(promptCell);
 
 	      // Scenario
 	      const scenarioCell = document.createElement("td");
@@ -109,22 +141,23 @@
 	      scenarioToggle.textContent = "Show full response ⏵";
 	      const scenarioContent = document.createElement("div");
 	      scenarioContent.classList.add("toggle-content");
-	      scenarioContent.innerHTML = marked.parse(entry.scenario);
+	      scenarioContent.innerHTML = marked.parse(entry.scenario || "");
 	      scenarioToggle.addEventListener("click", () => {
 	        const expanded = scenarioContent.classList.toggle("expanded");
 	        scenarioToggle.textContent = expanded ? "Hide response ⏷" : "Show full response ⏵";
 	      });
 	      scenarioCell.appendChild(scenarioToggle);
 	      scenarioCell.appendChild(scenarioContent);
-
-	      row.appendChild(tsCell);
-	      row.appendChild(promptCell);
 	      row.appendChild(scenarioCell);
 
 	      tableBody.appendChild(row);
 	    });
 
+	  } catch (err) {
+	    tableBody.innerHTML = `<tr><td colspan='4'>Error loading logs</td></tr>`;
+	    console.error(err);
 	  }
+	}
 
 	// Filter change
 	filter.addEventListener("change", () => {
