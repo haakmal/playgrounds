@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Prompt Logs</title>
+	<style>
+		body { font-family: system-ui, sans-serif; padding: 2rem; max-width: 1000px; margin: auto; }
+		table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+		select { padding: 0.5rem; font-size: 1rem; }
+		#log-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+		#log-table th, #log-table td { border: 1px solid #ccc; padding: 8px; vertical-align: top; word-wrap: break-word; }
+		#log-table th:nth-child(1),
+		#log-table td:nth-child(1) { width: 15%; }
+		#log-table th:nth-child(2),
+		#log-table td:nth-child(2) { width: 35%; }
+		#log-table th:nth-child(3),
+		#log-table td:nth-child(3) { width: 50%; }
+		.prompt-header { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+		.scenario-wrapper { max-height: 100px; overflow: hidden; position: relative; cursor: pointer; }
+		.scenario-wrapper.expanded { max-height: none; }
+		.toggle-label { cursor: pointer; font-weight: bold; margin-bottom: 5px; color: #007bff; }
+		.toggle-content { display: none; margin-top: 5px; }
+		.toggle-content.expanded { display: block; }
+		.provocation-tag { background-color: #ffcc00; color: #000; padding: 2px 6px; font-size: 0.8rem; border-radius: 4px; }
+	</style>
+</head>
+
+<body>
+	<h1>Prompt Logs</h1>
+	<div class="filters">
+		<label for="filter">Filter by time:</label>
+			<select id="filter">
+				<option value="24h">Last 24 hours</option>
+				<option value="week" selected>This week</option>
+				<option value="month">This month</option>
+				<option value="year">This year</option>
+				<option value="all">All of time</option>
+			</select>
+		<button id="expand-all">Expand all</button>
+		<button id="collapse-all">Collapse all</button>
+	</div>
+		
+			
+	
+	
+	<table id="log-table">
+		<thead>
+			<tr>
+				<th>Timestamp</th>
+				<th>Prompt</th>
+				<th>Response</th>
+			</tr>
+		</thead>
+		<tbody></tbody>
+	</table>
+	
+	<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+	<script>
+	const tableBody = document.querySelector("#log-table tbody");
+	const filter = document.getElementById("filter");
+
+	async function loadLogs(range = "week") {
+	  tableBody.innerHTML = "<tr><td colspan='3'>Loading...</td></tr>";
+	  const res = await fetch(`https://gemini-worker.hakmal.workers.dev/logs?range=${range}`);
+
+	const data = await res.json();
+
+	    if (data.length === 0) {
+	      tableBody.innerHTML = "<tr><td colspan='3'>No entries found.</td></tr>";
+	      return;
+	    }
+
+	    // Sort newest first
+	    tableBody.innerHTML = "";
+	    data.sort((a, b) => b.timestamp - a.timestamp).forEach(entry => {
+	      const row = document.createElement("tr");
+
+	      // Timestamp
+	      const tsCell = document.createElement("td");
+	      tsCell.textContent = new Date(entry.timestamp).toLocaleString();
+
+	      // Prompt
+	      const promptCell = document.createElement("td");
+	      const promptToggle = document.createElement("div");
+	      promptToggle.classList.add("toggle-label");
+	      promptToggle.textContent = "Show full prompt ⏵";
+	      const promptContent = document.createElement("div");
+	      promptContent.classList.add("toggle-content");
+	      promptContent.innerHTML = marked.parse(entry.prompt);
+	      promptToggle.addEventListener("click", () => {
+	        const expanded = promptContent.classList.toggle("expanded");
+	        promptToggle.textContent = expanded ? "Hide prompt ⏷" : "Show full prompt ⏵";
+	      });
+	      promptCell.appendChild(promptToggle);
+	      promptCell.appendChild(promptContent);
+
+	      // Scenario
+	      const scenarioCell = document.createElement("td");
+	      const scenarioToggle = document.createElement("div");
+	      scenarioToggle.classList.add("toggle-label");
+	      scenarioToggle.textContent = "Show full response ⏵";
+	      const scenarioContent = document.createElement("div");
+	      scenarioContent.classList.add("toggle-content");
+	      scenarioContent.innerHTML = marked.parse(entry.scenario);
+	      scenarioToggle.addEventListener("click", () => {
+	        const expanded = scenarioContent.classList.toggle("expanded");
+	        scenarioToggle.textContent = expanded ? "Hide response ⏷" : "Show full response ⏵";
+	      });
+	      scenarioCell.appendChild(scenarioToggle);
+	      scenarioCell.appendChild(scenarioContent);
+
+	      row.appendChild(tsCell);
+	      row.appendChild(promptCell);
+	      row.appendChild(scenarioCell);
+
+	      tableBody.appendChild(row);
+	    });
+
+	  } catch (err) {
+	    console.error(err);
+	    tableBody.innerHTML = "<tr><td colspan='3'>Error loading logs</td></tr>";
+	  }
+
+	// Filter change
+	filter.addEventListener("change", () => {
+	  loadLogs(filter.value);
+	});
+
+	// Initial load
+	loadLogs();
+	</script>
+	
+</body>
+</html>
