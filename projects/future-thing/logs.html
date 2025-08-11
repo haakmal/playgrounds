@@ -85,6 +85,7 @@
 		  // IP/location
 		  const ipCell = document.createElement("td");
 		  ipCell.textContent = `${entry.ip || "unknown"} (${entry.city || "N/A"}, ${entry.country || "N/A"})`;
+		  row.appendChild(ipCell);
 
 	      // Prompt
 	      const promptCell = document.createElement("td");
