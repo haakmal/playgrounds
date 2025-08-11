@@ -47,6 +47,7 @@
 		<thead>
 			<tr>
 				<th>Timestamp</th>
+				<th>IP / Location</th>
 				<th>Prompt</th>
 				<th>Response</th>
 			</tr>
@@ -78,6 +79,10 @@
 	      // Timestamp
 	      const tsCell = document.createElement("td");
 	      tsCell.textContent = new Date(entry.timestamp).toLocaleString();
+		  
+		  // IP/location
+		  const ipCell = document.createElement("td");
+		  ipCell.textContent = `${entry.ip || "unknown"} (${entry.city || "N/A"}, ${entry.country || "N/A"})`;
 
 	      // Prompt
 	      const promptCell = document.createElement("td");
