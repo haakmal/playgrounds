@@ -61,67 +61,68 @@
 	<script>
 	const tableBody = document.querySelector("#log-table tbody");
 	const filter = document.getElementById("filter");
+	const PASSWORD_KEY = "logs_password";
+	const PASSWORD_TS_KEY = "logs_password_ts";
+	const PASSWORD_TTL = 30 * 60 * 1000; // 30 minutes in ms
 	const WORKER_URL = "https://gemini-worker.hakmal.workers.dev";
 
-	// Ask for password on first load
-	const PASSWORD_TTL = 15 * 60 * 1000; // 15 minutes
-
+	// Prompt user for password if missing or expired
 	function getPassword() {
-	  const storedPassword = localStorage.getItem("logsPassword");
-	  const storedTime = localStorage.getItem("logsPasswordTime");
+	  const storedPassword = localStorage.getItem(PASSWORD_KEY);
+	  const storedTs = parseInt(localStorage.getItem(PASSWORD_TS_KEY), 10);
+	  const now = Date.now();
 
-	  if (storedPassword && storedTime && (Date.now() - storedTime < PASSWORD_TTL)) {
-	    return storedPassword;
+	  if (!storedPassword || !storedTs || now - storedTs > PASSWORD_TTL) {
+	    const password = prompt("Enter logs password:");
+	    if (!password) {
+	      alert("Password is required to view logs.");
+	      throw new Error("No password entered");
+	    }
+	    localStorage.setItem(PASSWORD_KEY, password);
+	    localStorage.setItem(PASSWORD_TS_KEY, now.toString());
+	    return password;
 	  }
-
-	  const newPassword = prompt("Enter logs password:");
-	  if (newPassword) {
-	    localStorage.setItem("logsPassword", newPassword);
-	    localStorage.setItem("logsPasswordTime", Date.now());
-	    return newPassword;
-	  } else {
-	    alert("Password required to view logs.");
-	    throw new Error("No password provided");
-	  }
+	  return storedPassword;
 	}
 
 	async function loadLogs(range = "week") {
 	  tableBody.innerHTML = "<tr><td colspan='4'>Loading...</td></tr>";
 
 	  let password;
-	    try {
-	      password = getPassword();
-	    } catch (e) {
-	      tableBody.innerHTML = "<tr><td colspan='4'>Access denied.</td></tr>";
-	      return;
-	    }
+	  try {
+	    password = getPassword();
+	  } catch (err) {
+	    tableBody.innerHTML = "<tr><td colspan='4'>Access denied</td></tr>";
+	    return;
+	  }
 
-	    try {
-	      const res = await fetch(`https://gemini-worker.hakmal.workers.dev/logs?range=${range}`, {
-	        headers: { "x-logs-secret": password }
-	      });
-
-	    if (res.status === 403) {
-	      localStorage.removeItem("logsPassword");
-	      alert("Invalid password. Please refresh and try again.");
-	      return;
-	    }
+	  try {
+	    const res = await fetch(`${WORKER_URL}/logs?range=${range}`, {
+	      headers: { "x-logs-secret": password }
+	    });
 
 	    if (!res.ok) {
-	      tableBody.innerHTML = `<tr><td colspan='4'>Failed to load logs: ${res.status}</td></tr>`;
-	      return;
+	      if (res.status === 403) {
+	        // Password wrong, clear and retry
+	        localStorage.removeItem(PASSWORD_KEY);
+	        localStorage.removeItem(PASSWORD_TS_KEY);
+	        alert("Invalid password. Please try again.");
+	        return loadLogs(range);
+	      }
+	      throw new Error(`HTTP ${res.status}`);
 	    }
 
 	    const data = await res.json();
-
-	    if (!data.length) {
+	    if (!Array.isArray(data) || data.length === 0) {
 	      tableBody.innerHTML = "<tr><td colspan='4'>No entries found.</td></tr>";
 	      return;
 	    }
 
 	    // Sort newest first
+	    data.sort((a, b) => b.timestamp - a.timestamp);
 	    tableBody.innerHTML = "";
-	    data.sort((a, b) => b.timestamp - a.timestamp).forEach(entry => {
+
+	    data.forEach(entry => {
 	      const row = document.createElement("tr");
 
 	      // Timestamp
@@ -170,8 +171,8 @@
 	    });
 
 	  } catch (err) {
-	    tableBody.innerHTML = `<tr><td colspan='4'>Error loading logs</td></tr>`;
 	    console.error(err);
+	    tableBody.innerHTML = "<tr><td colspan='4'>Error loading logs</td></tr>";
 	  }
 	}
 
@@ -183,6 +184,7 @@
 	// Initial load
 	loadLogs();
 	</script>
+	
 	
 </body>
 </html>
