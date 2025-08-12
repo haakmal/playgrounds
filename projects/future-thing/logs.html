@@ -64,11 +64,21 @@
 	const WORKER_URL = "https://gemini-worker.hakmal.workers.dev";
 
 	// Ask for password on first load
-	let logsPassword = localStorage.getItem("logsPassword");
-	if (!logsPassword) {
-	  logsPassword = prompt("Enter logs password:");
-	  if (logsPassword) {
-	    localStorage.setItem("logsPassword", logsPassword);
+	const PASSWORD_TTL = 15 * 60 * 1000; // 15 minutes
+
+	function getPassword() {
+	  const storedPassword = localStorage.getItem("logsPassword");
+	  const storedTime = localStorage.getItem("logsPasswordTime");
+
+	  if (storedPassword && storedTime && (Date.now() - storedTime < PASSWORD_TTL)) {
+	    return storedPassword;
+	  }
+
+	  const newPassword = prompt("Enter logs password:");
+	  if (newPassword) {
+	    localStorage.setItem("logsPassword", newPassword);
+	    localStorage.setItem("logsPasswordTime", Date.now());
+	    return newPassword;
 	  } else {
 	    alert("Password required to view logs.");
 	    throw new Error("No password provided");
@@ -78,12 +88,18 @@
 	async function loadLogs(range = "week") {
 	  tableBody.innerHTML = "<tr><td colspan='4'>Loading...</td></tr>";
 
-	  try {
-	    const res = await fetch(`${WORKER_URL}/logs?range=${range}`, {
-	      headers: {
-	        "x-logs-secret": logsPassword
-	      }
-	    });
+	  let password;
+	    try {
+	      password = getPassword();
+	    } catch (e) {
+	      tableBody.innerHTML = "<tr><td colspan='4'>Access denied.</td></tr>";
+	      return;
+	    }
+
+	    try {
+	      const res = await fetch(`https://gemini-worker.hakmal.workers.dev/logs?range=${range}`, {
+	        headers: { "x-logs-secret": password }
+	      });
 
 	    if (res.status === 403) {
 	      localStorage.removeItem("logsPassword");
