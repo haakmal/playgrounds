@@ -57,6 +57,15 @@
 		<tbody></tbody>
 	</table>
 	
+
+	<div id="password-modal" style="display:non; position:fixed; inset:0; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center;">
+		<div style="background:white; padding:2rem; border-radius:8px; max-width:300px; width:100%; text-align:center;">
+			<h2>Enter Password</h2>
+			<input type="password" id="password-input" style="width:100%; padding:0.5rem; margin:1rem 0;" />
+			<button id="password-submit">Submit</button>
+		</div>
+	</div>
+	
 	<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 	<script>
 	const tableBody = document.querySelector("#log-table tbody");
@@ -73,16 +82,36 @@
 	  const now = Date.now();
 
 	  if (!storedPassword || !storedTs || now - storedTs > PASSWORD_TTL) {
-	    const password = prompt("Enter logs password:");
-	    if (!password) {
-	      alert("Password is required to view logs.");
-	      throw new Error("No password entered");
-	    }
-	    localStorage.setItem(PASSWORD_KEY, password);
-	    localStorage.setItem(PASSWORD_TS_KEY, now.toString());
-	    return password;
+		  return new Promise((resolve, reject) => {
+			  const modal = document.getElementById("password-modal");
+			  const input = document.getElementById("password-input");
+			  const submitBtn = document.getElementById("password-submit");
+			  
+			  modal.style.display = "flex";
+			  input.value = "";
+			  input.focus();
+			  
+			  function submit() {
+				  const password = input.value.trim();
+				  if (!password) {
+					  alert("Password is required to view logs.");
+					  reject(new Error("No password entered"));
+					  return;
+				  }
+				  localStorage.setItem(PASSWORD_KEY, password);
+				  localStorage.setItem(PASSWORD_TS_KEY, now.toString());
+				  modal.style.display = "none";
+				  resolve(password);
+			  }
+			  
+			  submitBtn.onclick = submit;
+			  input.onkeydown = (e) =< {
+				  if (e.key === "Enter") submit();
+			  };
+		  });
 	  }
-	  return storedPassword;
+	  
+	  return Promist.resolve(storedPassword);
 	}
 
 	async function loadLogs(range = "week") {
@@ -90,8 +119,8 @@
 
 	  let password;
 	  try {
-	    password = getPassword();
-	  } catch (err) {
+	    password = await getPassword();
+	  } catch (e) {
 	    tableBody.innerHTML = "<tr><td colspan='4'>Access denied</td></tr>";
 	    return;
 	  }
