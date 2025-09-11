@@ -111,7 +111,7 @@
 		  });
 	  }
 	  
-	  return Promist.resolve(storedPassword);
+	  return Promise.resolve(storedPassword);
 	}
 
 	async function loadLogs(range = "week") {
