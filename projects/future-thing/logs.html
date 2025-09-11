@@ -161,8 +161,40 @@
 
 	      // IP/location
 	      const ipCell = document.createElement("td");
-	      ipCell.textContent = `${entry.ip || "unknown"} (${entry.city || "N/A"}, ${entry.country || "N/A"})`;
-	      row.appendChild(ipCell);
+		  
+		  // Always visible city/country
+		  const locationSpan = document.createElement("span");
+		  locationSpan.textContent = ` (${entry.city || "N/A"}, ${entry.country || "N/A"}) `;
+
+			// Hide/reveal IP
+			const ipToggle = document.createElement("span");
+			ipToggle.style.cursor = "pointer";
+			ipToggle.style.color = "#007bff";
+			ipToggle.style.marginRight = "6px";
+
+			const ipValue = document.createElement("span");
+			ipValue.textContent = entry.ip || "unknown";
+			ipValue.style.display = "none"; // Hidden by default
+			ipValue.style.marginLeft = "4px";
+
+			let shown = false;
+			ipToggle.textContent = "🐵 Show IP";
+			ipToggle.addEventListener("click", () => {
+				shown = !shown;
+				if (shown) {
+					ipValue.style.display = "inline";
+					ipToggle.textContent = "🙈 Hide IP";
+				} else {
+					ipValue.style.display = "none";
+					ipToggle.textContent = "🐵 Show IP";
+				}
+			});
+
+			// Assemble
+			ipCell.appendChild(ipToggle);
+			ipCell.appendChild(ipValue);
+			ipCell.appendChild(locationSpan);
+			row.appendChild(ipCell);
 
 	      // Prompt
 	      const promptCell = document.createElement("td");
