@@ -99,7 +99,7 @@
 					  return;
 				  }
 				  localStorage.setItem(PASSWORD_KEY, password);
-				  localStorage.setItem(PASSWORD_TS_KEY, now.toString());
+				  localStorage.setItem(PASSWORD_TS_KEY, Date.now().toString());
 				  modal.style.display = "none";
 				  resolve(password);
 			  }
