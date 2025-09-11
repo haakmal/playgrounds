@@ -132,13 +132,16 @@
 
 	    if (!res.ok) {
 	      if (res.status === 403) {
-	        // Password wrong, clear and retry
+	        // Password wrong, clear and reprompt
 	        localStorage.removeItem(PASSWORD_KEY);
 	        localStorage.removeItem(PASSWORD_TS_KEY);
-	        alert("Invalid password. Please try again.");
-	        return loadLogs(range);
-	      }
-	      throw new Error(`HTTP ${res.status}`);
+	        alert("Invalid or expired password. Please enter again.");
+
+					// Defer retry so getPassword() is called fresh
+					setTimeout(() => loadLogs(range), 0);
+					return;
+				}
+				throw new Error(`HTTP ${res.status}`);
 	    }
 
 	    const data = await res.json();
