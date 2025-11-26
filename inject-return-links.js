@@ -17,7 +17,7 @@ const returnLinkHTML = `
 	
 	// Create the back link
 	const link = document.createElement("a");
-	link.href = "/playgrounds/";
+	link.href = "/";
 	link.innerHTML = '← Back to Playgrounds <i class="fab fa-github"><i>';
 	Object.assign(link.style, {
 	  position: "fixed",
