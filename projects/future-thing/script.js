@@ -62,7 +62,7 @@ document.getElementById("arc-btn").onclick = () => {
 	document.getElementById("arc-card").innerHTML = drawArcCard();
 };
 
-document.addEventListener("click", (even) => {
+document.addEventListener("click", (event) => {
 	if (event.target && event.target.id === "gen-btn") {
 		event.target.textContent = drawGeneration();
 }
