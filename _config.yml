@@ -11,7 +11,9 @@ collections:
     output: true
     permalink: /projects/:name/
 
-baseurl: "/playgrounds"
-url: "https://haakmal.github.io"
+#baseurl: "/playgrounds"
+baseurl: "/"
+#url: "https://haakmal.github.io"
+url: "https://play.hakmal.com/"
 github: https://github.com/haakmal/playgrounds
 blog: https://blog.hakmal.com/
