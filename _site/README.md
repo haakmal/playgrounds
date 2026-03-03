@@ -48,4 +48,6 @@ bundle install
 # The baseurl is setup this way to ensure links are all working
 # as they would in Github Pages with the repo name
 bundle exec jekyll serve --baseurl="/playgrounds"
+# use bottom if using DNS
+
 ```
