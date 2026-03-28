@@ -12,7 +12,7 @@ collections:
     permalink: /projects/:name/
 
 #baseurl: "/playgrounds"
-baseurl: "/"
+baseurl: ""
 #url: "https://haakmal.github.io"
 url: "https://play.hakmal.com/"
 github: https://github.com/haakmal/playgrounds

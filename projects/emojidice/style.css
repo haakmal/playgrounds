@@ -10,7 +10,8 @@ body {
   padding: 2em;
   background-color: #f9f9f9;
   margin: auto;
-  max-width: 250px;
+  /* max-width: 250px; */
+  max-width: 100%;
 }
 
 main {
@@ -31,11 +32,13 @@ main {
   justify-content: center;
   gap: 1em;
   margin: 1em auto;
-  max-width: 250px;
+  /* max-width: 250px; */
+  max-width: 100%;
 }
 
 .die {
-  font-size: 2rem;
+  /* font-size: 2rem; */
+  font-size: 10pc;
   width: 60px;
   height: 60px;
   display: flex;
