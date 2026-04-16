@@ -1,129 +1,230 @@
 :root {
-  --bg: #ffffff;
-  --ink: #111111;
-  --muted: #666666;
-  --line: #111111;
-  --soft-line: #d9d9d9;
-}
+      --bg: #ffffff;
+      --ink: #111111;
+      --muted: #666666;
+      --line: #111111;
+      --soft-line: #d9d9d9;
+    }
 
-* { box-sizing: border-box; }
+    * { box-sizing: border-box; }
 
-body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background: var(--bg);
-  color: var(--ink);
-}
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
 
-.app {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 32px 24px 48px;
-}
+    .app {
+      max-width: 1480px;
+      margin: 0 auto;
+      padding: 32px 24px 48px;
+    }
 
-.header {
-  border-bottom: 2px solid var(--line);
-  margin-bottom: 24px;
-  padding-bottom: 16px;
-}
+    .header {
+      border-bottom: 2px solid var(--line);
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+    }
 
-.header h1 { margin: 0 0 6px; }
-.header p { margin: 0; color: var(--muted); }
+    .header h1 { margin: 0 0 6px; }
+    .header p { margin: 0; color: var(--muted); }
 
-.deck-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
+    .deck-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
 
-.deck-column {
-  border: 1px solid var(--line);
-  padding: 14px;
-}
+    .deck-column {
+      border: 1px solid var(--line);
+      padding: 14px;
+      min-height: 240px;
+    }
 
-.deck-header {
-  border-bottom: 1px solid var(--line);
-  margin-bottom: 12px;
-  padding-bottom: 10px;
-}
+    .deck-header {
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+    }
 
-.deck-title {
-  font-weight: bold;
-  text-transform: uppercase;
-  font-size: 0.9rem;
-  margin-bottom: 6px;
-}
+    .deck-title {
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+      letter-spacing: 0.04em;
+    }
 
-button, select {
-  font: inherit;
-  border: 1px solid var(--line);
-  background: white;
-  padding: 8px 10px;
-  cursor: pointer;
-}
+    .deck-meta {
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-bottom: 8px;
+    }
 
-button:hover, select:hover { background: #f2f2f2; }
+    .deck-warning {
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.35;
+      margin-top: 8px;
+    }
 
-.draw-btn {
-  width: 100%;
-  font-weight: bold;
-  margin-top: 6px;
-}
+    button, select {
+      font: inherit;
+      border: 1px solid var(--line);
+      background: white;
+      padding: 8px 10px;
+      cursor: pointer;
+    }
 
-.cards-stack {
-  display: grid;
-  gap: 12px;
-}
+    button:hover, select:hover { background: #f2f2f2; }
 
-.card {
-  border: 1px solid var(--line);
-  padding: 12px;
-  display: grid;
-  gap: 10px;
-  cursor: pointer;
-}
+    button:disabled {
+      background: #f2f2f2;
+      color: var(--muted);
+      border-color: var(--soft-line);
+      cursor: not-allowed;
+    }
 
-.card:hover { background: #fafafa; }
+    button:disabled:hover {
+      background: #f2f2f2;
+    }
 
-.card-title { font-weight: bold; }
+    .draw-btn {
+      width: 100%;
+      font-weight: bold;
+      margin-top: 6px;
+    }
 
-.label {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  color: var(--muted);
-}
+    .cards-stack {
+      display: grid;
+      gap: 12px;
+    }
 
-.modifier-block {
-  border-top: 1px solid var(--soft-line);
-  padding-top: 10px;
-  display: grid;
-  gap: 8px;
-}
+    .empty-note {
+      font-size: 0.86rem;
+      color: var(--muted);
+      padding-top: 2px;
+    }
 
-.modifier-item {
-  border: 1px solid var(--soft-line);
-  padding: 8px;
+    .card {
+      border: 1px solid var(--line);
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+      cursor: pointer;
+    }
 
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-}
+    .card:hover { background: #fafafa; }
 
-.modifier-item button {
-  font-size: 0.75rem;
-  padding: 4px 6px;
-  background-color: #111111;
-  color: white;
-}
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
 
-.modifier-item button:hover { background-color: #666666; }
+    .card-title {
+      font-weight: bold;
+      line-height: 1.25;
+      flex: 1;
+      padding-right: 4px;
+    }
 
-.hint {
-  font-size: 0.8rem;
-  color: var(--muted);
-}
+    .card-controls {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+      align-items: center;
+    }
 
-@media (max-width: 900px) {
-  .deck-grid { grid-template-columns: 1fr; }
-}
+    .modifier-indicator {
+      width: 28px;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #444444;
+      background: #444444;
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 0.9rem;
+      line-height: 1;
+    }
+
+    .icon-btn {
+      width: 28px;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      font-weight: bold;
+      line-height: 1;
+    }
+
+    .icon-btn:hover {
+      background: #ededed;
+    }
+
+    .label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      margin-bottom: 2px;
+    }
+
+    .field {
+      line-height: 1.4;
+    }
+
+    .modifier-block {
+      border-top: 1px solid var(--soft-line);
+      padding-top: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .modifier-item {
+      border: 1px solid var(--soft-line);
+      padding: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .modifier-text {
+      flex: 1;
+      line-height: 1.3;
+    }
+
+    .modifier-item button {
+      margin-top: 0;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+    }
+
+    .hint {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .collapsed .modifier-block,
+    .collapsed .field-framing,
+    .collapsed .field-action {
+      display: none;
+    }
+
+    .collapsed .field-prompt {
+      display: block;
+    }
+
+    @media (max-width: 1000px) {
+      .deck-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 700px) {
+      .deck-grid { grid-template-columns: 1fr; }
+    }
