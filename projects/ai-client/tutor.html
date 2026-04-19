@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tutor Panel — Design Brief Client</title>
+  <meta name="description" content="Tutor interface for configuring the active design brief and client persona." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="tutor-view">
+
+  <div class="tutor-layout">
+
+    <!-- ── Header ─────────────────────────────────────── -->
+    <header class="tutor-header">
+      <div class="tutor-header-inner">
+        <span class="eyebrow">Tutor Panel</span>
+        <h1 class="tutor-heading">Brief Editor</h1>
+        <p class="tutor-subheading">
+          Set the active brief and client persona. Students cannot see or modify this view.
+        </p>
+      </div>
+      <div class="tutor-header-actions">
+        <a href="index.html" class="btn-ghost" target="_blank" rel="noopener">
+          Preview as Student ↗
+        </a>
+        <button id="save-btn" class="btn-primary">Save Brief</button>
+      </div>
+    </header>
+
+    <!-- ── Body ──────────────────────────────────────── -->
+    <div class="tutor-body">
+
+      <!-- Save confirmation toast -->
+      <div class="toast hidden" id="save-toast" role="status" aria-live="polite">
+        Brief saved — students will see changes on their next load.
+      </div>
+
+      <!-- Client Identity -->
+      <section class="tutor-section">
+        <h2 class="tutor-section-heading">Client Identity</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="field-label" for="input-client-name">Client Name</label>
+            <input
+              type="text"
+              id="input-client-name"
+              class="field-input"
+              placeholder="e.g. Alex Chen"
+              maxlength="60"
+            />
+          </div>
+          <div class="form-group">
+            <label class="field-label" for="input-client-title">Client Title</label>
+            <input
+              type="text"
+              id="input-client-title"
+              class="field-input"
+              placeholder="e.g. Creative Director, Spatial UX Lab"
+              maxlength="80"
+            />
+          </div>
+        </div>
+      </section>
+
+      <!-- Brief / Scenario -->
+      <section class="tutor-section">
+        <h2 class="tutor-section-heading">Brief &amp; Scenario</h2>
+        <div class="form-group">
+          <label class="field-label" for="input-scenario">Scenario / Context</label>
+          <textarea
+            id="input-scenario"
+            class="field-textarea"
+            rows="6"
+            placeholder="Describe the design scenario and context students are working within…"
+          ></textarea>
+        </div>
+      </section>
+
+      <!-- Requirements -->
+      <section class="tutor-section">
+        <h2 class="tutor-section-heading">Requirements</h2>
+        <p class="section-desc">What must the design achieve? The AI client will probe students against each of these.</p>
+        <div id="requirements-list" class="dynamic-list"></div>
+        <button class="btn-add" id="add-requirement" type="button">+ Add Requirement</button>
+      </section>
+
+      <!-- Constraints -->
+      <section class="tutor-section">
+        <h2 class="tutor-section-heading">Constraints</h2>
+        <p class="section-desc">Budget, timeline, technical or physical limits students must work within.</p>
+        <div id="constraints-list" class="dynamic-list"></div>
+        <button class="btn-add" id="add-constraint" type="button">+ Add Constraint</button>
+      </section>
+
+      <!-- Success Metrics -->
+      <section class="tutor-section">
+        <h2 class="tutor-section-heading">Success Metrics</h2>
+        <p class="section-desc">How will a successful outcome be measured?</p>
+        <div id="metrics-list" class="dynamic-list"></div>
+        <button class="btn-add" id="add-metric" type="button">+ Add Metric</button>
+      </section>
+
+      <!-- Intensity -->
+      <section class="tutor-section">
+        <h2 class="tutor-section-heading">Client Intensity</h2>
+        <p class="section-desc">
+          Controls how the AI critiques student work. Students see a plain-language description
+          of the client's style — not this slider.
+        </p>
+        <div class="intensity-control">
+          <div class="intensity-slider-row">
+            <span class="intensity-pole">Warm</span>
+            <input
+              type="range"
+              id="intensity-slider"
+              class="intensity-range"
+              min="1"
+              max="5"
+              value="3"
+              aria-label="Client intensity"
+            />
+            <span class="intensity-pole">Demanding</span>
+          </div>
+          <p class="intensity-preview" id="intensity-preview">Professional and balanced</p>
+        </div>
+      </section>
+
+      <!-- Reset -->
+      <section class="tutor-section">
+        <h2 class="tutor-section-heading">Session</h2>
+        <p class="section-desc">
+          Clear the current student session data (conversation history and pseudonym) stored in this browser.
+          This does not affect the brief.
+        </p>
+        <button id="clear-session-btn" class="btn-ghost" type="button">Clear Student Session</button>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="tutor.js"></script>
+</body>
+</html>

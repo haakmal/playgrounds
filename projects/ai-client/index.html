@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Design Brief — Client Review</title>
+  <meta name="description" content="AI-powered design client review. Present your design ideas and receive critique grounded in the active brief." />
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body class="student-view">
+
+  <!-- ── Onboarding modal ───────────────────────────────── -->
+  <dialog id="onboarding-dialog" aria-labelledby="dialog-heading">
+    <div class="dialog-inner">
+      <span class="eyebrow">Design Brief Client</span>
+      <h1 class="dialog-heading" id="dialog-heading">
+        Welcome to your<br/>design review.
+      </h1>
+      <p class="dialog-body">
+        Before we begin — what name should your client use for you?
+      </p>
+      <div class="dialog-field">
+        <label class="field-label" for="pseudonym-input">Your name or pseudonym</label>
+        <input
+          type="text"
+          id="pseudonym-input"
+          class="field-input"
+          placeholder="e.g. Jordan, Starling, Studio 7…"
+          maxlength="40"
+          autocomplete="off"
+        />
+      </div>
+      <button id="begin-btn" class="btn-primary">Begin Review →</button>
+    </div>
+  </dialog>
+
+  <!-- ── App grid ───────────────────────────────────────── -->
+  <div class="app-grid">
+
+    <!-- Left: Brief panel (read-only) -->
+    <aside class="brief-panel" aria-label="Design Brief">
+      <div class="brief-inner">
+        <span class="eyebrow">Active Brief</span>
+        <h2 class="brief-title" id="brief-title">—</h2>
+
+        <div class="brief-section">
+          <span class="section-label">Scenario</span>
+          <p class="section-body" id="brief-scenario">—</p>
+        </div>
+
+        <div class="brief-section" id="brief-requirements-section">
+          <span class="section-label">Requirements</span>
+          <ul class="brief-list" id="brief-requirements"></ul>
+        </div>
+
+        <div class="brief-section" id="brief-constraints-section">
+          <span class="section-label">Constraints</span>
+          <ul class="brief-list" id="brief-constraints"></ul>
+        </div>
+
+        <div class="brief-section" id="brief-metrics-section">
+          <span class="section-label">Success Metrics</span>
+          <ul class="brief-list" id="brief-metrics"></ul>
+        </div>
+
+        <!-- Client identity -->
+        <div class="client-identity">
+          <div class="client-avatar" id="client-avatar" aria-hidden="true">—</div>
+          <div class="client-info">
+            <span class="client-name" id="client-name">—</span>
+            <span class="client-title-text" id="client-title">—</span>
+            <span class="intensity-badge" id="intensity-badge">—</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Right: Chat panel -->
+    <main class="chat-panel" aria-label="Review Chat">
+      <header class="chat-header">
+        <span class="chat-header-label">Review Session</span>
+        <span class="chat-pseudonym" id="chat-pseudonym"></span>
+      </header>
+
+      <div class="chat-messages" id="chat-messages" role="log" aria-live="polite">
+        <div class="typing-indicator hidden" id="typing-indicator" aria-label="Client is typing">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+
+      <div class="chat-input-area">
+        <textarea
+          id="message-input"
+          class="message-input"
+          placeholder="Describe your design thinking…"
+          rows="3"
+          maxlength="2000"
+          disabled
+          aria-label="Your message"
+        ></textarea>
+        <button id="send-btn" class="send-btn" disabled aria-label="Send message">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+    </main>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
