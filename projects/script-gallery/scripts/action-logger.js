@@ -9,9 +9,7 @@ module.exports = async (params) => {
   const filename = `${week} Academic Log.md`;
   const filepath = `${folder}/${filename}`;
 
-  // -----------------------------
   // CATEGORY PICKER
-  // -----------------------------
   const categoryOptions = [
     "Teaching",
     "Research",
@@ -23,11 +21,7 @@ module.exports = async (params) => {
   const category = await quickAddApi.suggester(categoryOptions, categoryOptions);
   if (!category) return;
 
-  // -----------------------------
   // CATEGORY-SPECIFIC TYPE OPTIONS
-  // CHANGED: type list now depends on category
-  // CHANGED: subtype removed entirely
-  // -----------------------------
   const typeMap = {
     "Teaching": ["curriculum development", "course delivery", "student supervision", "assessment", "other"],
     "Research": ["publication", "review", "grant", "collaboration", "project related", "other"],
@@ -44,10 +38,7 @@ module.exports = async (params) => {
     if (!type) return;
   }
 
-  // -----------------------------
   // PROMPTS
-  // CHANGED: subtype prompt removed
-  // -----------------------------
   // Text entry option
   //const impact = await quickAddApi.inputPrompt("Impact (optional)");
   //if (impact === null) return;
@@ -64,9 +55,7 @@ module.exports = async (params) => {
   const evidence = await quickAddApi.inputPrompt("Share evidence if you can (optional)");
   if (evidence === null) return;
 
-  // -----------------------------
   // SECTION + CATEGORY VALUE MAPS
-  // -----------------------------
   const sectionMap = {
     "Teaching": "## 🎓 Teaching",
     "Research": "## 🔬 Research",
@@ -86,10 +75,7 @@ module.exports = async (params) => {
   const sectionHeader = sectionMap[category];
   const categoryValue = categoryValueMap[category];
 
-  // -----------------------------
   // FIND OR CREATE THIS WEEK'S LOG
-  // CHANGED: if missing, create scaffold automatically
-  // -----------------------------
   let file = app.vault.getAbstractFileByPath(filepath);
 
   if (!file) {
@@ -140,10 +126,7 @@ type:: academic-log
     }
 }
 
-  // -----------------------------
   // BUILD ENTRY
-  // CHANGED: no subtype
-  // -----------------------------
   let entry = `- ${description}\n`;
   entry += `  [category:: ${categoryValue}]`;
 
@@ -153,9 +136,7 @@ type:: academic-log
 
   //entry += `\n`;
 
-  // -----------------------------
   // READ FILE + FIND SECTION
-  // -----------------------------
   const content = await app.vault.read(file);
   const lines = content.split("\n");
 
@@ -164,12 +145,8 @@ type:: academic-log
     new Notice(`Section not found: ${sectionHeader}`);
     return;
   }
-
-  // -----------------------------
+  
   // INSERT AT TOP OF SECTION
-  // CHANGED: new entries go directly under heading, not at bottom
-  // CHANGED: ensures clean blank-line spacing
-  // -----------------------------
   let insertIndex = sectionIndex + 1;
 
   // Ensure exactly one blank line after header
@@ -182,9 +159,7 @@ type:: academic-log
 
   lines.splice(insertIndex, 0, entry);
 
-  // -----------------------------
   // SAVE
-  // -----------------------------
   await app.vault.modify(file, lines.join("\n"));
   new Notice(`Added entry to ${category}`);
 };
