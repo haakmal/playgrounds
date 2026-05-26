@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dice Generator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="brand">Dice Generator</div>
+      <select id="diceSelect" aria-label="Select dice"></select>
+      <input id="diceName" class="mini-field" type="text" aria-label="Dice name" />
+    </div>
+    <div class="topbar-right">
+      <button id="newDiceBtn" class="btn" type="button">New</button>
+      <button id="deleteDiceBtn" class="btn" type="button">Delete</button>
+      <button id="openDrawerBtn" class="btn" type="button" aria-expanded="false">History</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <section class="controls" aria-label="Dice controls">
+      <p id="sideHint" class="hint">A simple dice generator. Die are earsed after each session. Select a die from the top and enter values for each side below.</p>
+      <div class="field">
+        <label for="sideCount">Number of sides</label>
+        <input id="sideCount" type="number" min="2" step="1" value="6" />
+      </div>
+
+      <div class="field">
+        <label for="sideValues">Side values</label>
+        <textarea id="sideValues" spellcheck="false" aria-describedby="sideHint"></textarea>
+        <p id="sideHint" class="hint">One entry per line. Minimum 2 entries.</p>
+      </div>
+
+      <button id="rollBtn" class="btn" type="button">Roll</button>
+    </section>
+
+    <main class="main">
+      <div class="dice-shell" aria-label="Dice display">
+        <div id="diceFace" class="dice" aria-live="polite">—</div>
+      </div>
+    </main>
+  </div>
+
+  <div id="backdrop" class="backdrop"></div>
+
+  <aside id="drawer" class="drawer" aria-hidden="true">
+    <div class="drawer-header">
+      <div class="drawer-title">Session history</div>
+      <button id="closeDrawerBtn" class="btn" type="button">Close</button>
+    </div>
+    <div id="historyList" class="history">
+      <div class="history-empty">No rolls yet.</div>
+    </div>
+  </aside>
+
+  <script src="script.js"></script>
+
+<!-- BEGIN RETURN LINK -->
+<script>
+// inject-home-link.js
+(function () {
+	// Inject Font Awesome stylesheet
+	const fa = document.createElement("link");
+	fa.rel = "stylesheet";
+	fa.href = "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css";
+	fa.crossOrigin = "anonymous";
+	document.head.appendChild(fa);
+	
+	// Create the back link
+	const link = document.createElement("a");
+	link.href = "/";
+	link.innerHTML = '← Back to Playgrounds <i class="fab fa-github"><i>';
+	Object.assign(link.style, {
+	  position: "fixed",
+	  bottom: "20px",
+	  right: "20px",
+	  background: "#000",
+	  color: "#fff",
+	  padding: "8px 12px",
+	  zIndex: 1000,
+	  fontSize: "14px",
+	  opacity: 0.7,
+	  borderRadius: "6px",
+	  textDecoration: "none"
+	});
+	link.onmouseover = () => (link.style.opacity = "1");
+	link.onmouseout = () => (link.style.opacity = "0.7");
+	document.body.appendChild(link);
+})();
+</script>
+<!-- END RETURN LINK -->
+
+</body>
+</html>

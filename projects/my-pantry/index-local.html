@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pantry</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="kicker">Household pantry</p>
+        <h1>Inventory</h1>
+      </div>
+      <div class="status-pill" id="statusPill">Local mode</div>
+    </header>
+
+    <section class="panel entry-panel" aria-labelledby="entryTitle">
+      <h2 id="entryTitle">Add item</h2>
+      <form id="entryForm" class="entry-form">
+        <label>
+          <span>Item name</span>
+          <input id="itemName" name="itemName" type="text" placeholder="Pepper" autocomplete="off" required>
+        </label>
+
+        <label>
+          <span>Category</span>
+          <select id="itemCategory" name="itemCategory" required>
+            <option>Spice</option>
+            <option>Dry good</option>
+            <option>Oil / Vinegar</option>
+            <option>Can</option>
+            <option>Snack</option>
+            <option>Baking</option>
+            <option>Other</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Quantity note</span>
+          <input id="itemNote" name="itemNote" type="text" placeholder="Optional note">
+        </label>
+
+        <button type="submit">Add to pantry</button>
+      </form>
+    </section>
+
+    <section class="panel list-panel" aria-labelledby="listTitle">
+      <div class="panel-head">
+        <h2 id="listTitle">Current items</h2>
+        <button type="button" class="ghost" id="clearAllBtn">Clear all</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Category</th>
+              <th>Status</th>
+              <th>Note</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="itemRows"></tbody>
+        </table>
+      </div>
+      <p class="empty-state" id="emptyState">No items saved yet.</p>
+    </section>
+  </main>
+
+  <template id="rowTemplate">
+    <tr>
+      <td data-field="name"></td>
+      <td data-field="category"></td>
+      <td>
+        <button type="button" class="chip" data-action="toggle-low">Normal</button>
+      </td>
+      <td data-field="note"></td>
+      <td>
+        <button type="button" class="ghost small" data-action="remove">Remove</button>
+      </td>
+    </tr>
+  </template>
+
+  <script src="script.js"></script>
+</body>
+</html>
