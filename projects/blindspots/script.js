@@ -9,7 +9,10 @@ const decks = {
     { title: "Speak as the Enemy", prompt: "Who would resist this interaction, and why?", symbol: "●" },
     { title: "Speak as the User", prompt: "What is the user unable to say directly?", symbol: "●" },
     { title: "Confront Assumptions", prompt: "Which assumptions feel invisible because they are familiar?", symbol: "●" },
-    { title: "Contradict Ego", prompt: "Defy yourself, what if your preferred solution is the weakest one?", symbol: "◐" }
+    { title: "Contradict Ego", prompt: "Defy yourself, what if your preferred solution is the weakest one?", symbol: "◐" },
+    { title: "Explain to a Child", prompt: "What becomes confusing, unnecessary, or impossible to explain?", symbol: "●" },
+    { title: "Tradition as Bias", prompt: "Which traditions are shaping this design, and whose values do they carry?", symbol: "◐" },
+    { title: "Design the Taboo", prompt: "What part of this interaction might future societies reject entirely?", symbol: "✳" }
   ],
   Glitches: [
     { title: "Remove a Constraint", prompt: "What becomes possible when a rule disappears?", symbol: "◐" },
@@ -18,7 +21,8 @@ const decks = {
     { title: "Shift the User", prompt: "Who else could this interaction belong to?", symbol: "◐" },
     { title: "Shift the Context", prompt: "What breaks when the environment changes?", symbol: "◐" },
     { title: "Shift the Scale", prompt: "What changes when this becomes massive or tiny?", symbol: "●" },
-    { title: "Timetravel", prompt: "What assumptions tie this design to the present?", symbol: "◐" }
+    { title: "Timetravel", prompt: "What assumptions tie this design to the present?", symbol: "◐" },
+    { title: "When the System Learns", prompt: "What happens when the interaction changes itself over time?", symbol: "✳" }
   ],
   Pressures: [
     { title: "Add Friction", prompt: "What resisitance has been ignored? What disrupts the intended flow? What interferes with this interaction?", symbol: "●" },
@@ -29,7 +33,8 @@ const decks = {
     { title: "Pause & Reframe", prompt: "What problem are you actually designing for?", symbol: "◐" },
     { title: "Last minute...", prompt: "What collapses under pressure? What changes when time disappears?", symbol: "●" },
     { title: "Hear the Room", prompt: "Who has spoken the least during this process?", symbol: "◐" },
-    { title: "Argue Against", prompt: "Which part of this interaction is hardest to defend?", symbol: "◐" }
+    { title: "Argue Against", prompt: "Which part of this interaction is hardest to defend?", symbol: "◐" },
+    { title: "Who Controls the Future?", prompt: "What systems or institutions could eventually control this interaction?", symbol: "✳" }
   ],
   Making: [
     { title: "Make it Absurd", prompt: "What becomes visible when the idea is exaggerated?", symbol: "◐" },
@@ -37,8 +42,9 @@ const decks = {
     { title: "Map the Interaction", prompt: "What happens between the obvious moments?", symbol: "●" },
     { title: "Isolate, Combine, or Remove", prompt: "What changes when one element disappears?", symbol: "◐" },
     { title: "Simulate the Experience", prompt: "What can only be understood by acting it out?", symbol: "●" },
+    { title: "Learn from Traditional Making", prompt: "What could traditional, local, or indigenous ways of making teach this design process?", symbol: "●" },
     { title: "Evidence & Experiments", prompt: "<strong><em>Wildcard</em></strong> What needs to be tested rather than assumed? What claims still rely on intuition? What proof is missing from this design?", symbol: "●" },
-    { title: "Have you tried...", prompt: "<strong><em>Wildcard</em></strong> ...sketching it, performing it, prototyping it physically, or mapping it?", symbol: "◐" }
+    { title: "Have you tried...", prompt: "<strong><em>Wildcard</em></strong> ...sketching it, performing it, prototyping it physically, or mapping it?", symbol: "✳" }
   ]
 };
 
@@ -97,7 +103,15 @@ function drawRandomFromEachDeck() {
 }
 
 function deckCardHTML(deckName, card) {
-  const stageClass = card.symbol === "◐" ? "half" : "full";
+  let stageClass = "wildcard";
+
+  if (card.symbol === "◐") {
+    stageClass = "exploratory";
+  } else if (card.symbol === "●") {
+    stageClass = "reflective";
+  } else if (card.symbol === "✳") {
+    stageClass = "wildcard";
+  }
 
   return `
     <article class="card" data-deck="${deckName}" data-card-id="${card.id}">
@@ -113,7 +127,7 @@ function deckCardHTML(deckName, card) {
 
       <div class="meta">
         <span>${deckName}</span>
-        <span class="stage-icon ${stageClass}" aria-hidden="true"></span>
+        <span class="stage-mark ${stageClass}" aria-hidden="true"></span>
       </div>
     </article>
   `;

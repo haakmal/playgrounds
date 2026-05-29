@@ -213,26 +213,36 @@ button:disabled {
   align-items: center;
 }
 
-.stage-icon {
-  font-size: 16px;
-  line-height: 1;
-  color: var(--fg);
-}
-
-.stage-icon {
+.stage-mark {
   width: 16px;
   height: 16px;
-  border: 1px solid var(--fg);
-  border-radius: 50%;
   display: inline-block;
   flex: 0 0 16px;
+  box-sizing: border-box;
+  vertical-align: middle;
 }
 
-.stage-icon.full {
+.stage-mark.exploratory {
+  border: 1px solid var(--fg);
+  background: linear-gradient(
+    to right,
+    var(--fg) 0%,
+    var(--fg) 50%,
+    var(--bg) 50%,
+    var(--bg) 100%
+  );
+  border-radius: 50%;
+}
+
+.stage-mark.reflective {
+  border: 1px solid var(--fg);
   background: var(--fg);
+  border-radius: 50%;
 }
 
-.stage-icon.half {
+.stage-mark.wildcard {
+  border: 1px solid var(--fg);
+  border-radius: 50%;
   background: linear-gradient(
     to right,
     var(--fg) 0%,
