@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DDES1150 Interaction 1 - Interaction Context Mapping Toolkit">
+  <title>Interaction Context Map</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand-block">
+      <div class="eyebrow">DDES1150 Interaction 1</div>
+      <h1>Interaction Context Map</h1>
+    </div>
+    <div class="header-actions">
+      <span id="saveStatus" class="save-status" aria-live="polite">Ready</span>
+      <button class="button button-secondary" data-action="help">Help</button>
+      <button class="button button-secondary" data-action="sessions">My interactions</button>
+      <button class="button" data-action="new">New interaction</button>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <section class="session-bar" aria-label="Current interaction">
+      <div>
+        <span class="session-label">Current interaction</span>
+        <button id="sessionName" class="session-name" data-action="rename">
+          Untitled interaction
+        </button>
+      </div>
+      <div class="session-tools">
+        <button class="text-button" data-action="import">Import</button>
+        <button class="text-button" data-action="export">Export</button>
+      </div>
+    </section>
+
+    <div id="workspace" class="workspace"></div>
+
+    <footer class="site-footer">
+      <div><strong>Local session.</strong> Your work is saved to this browser on this device. It is not submitted or stored online.</div>
+      <div>Export a backup before clearing browser data or moving to another device.</div>
+    </footer>
+  </main>
+
+  <input id="fileInput" type="file" accept="application/json,.json" hidden>
+
+  <div id="modal" class="modal" hidden>
+    <div class="modal-backdrop" data-action="close-modal"></div>
+    <section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header">
+        <h2 id="modalTitle">Help</h2>
+        <button class="icon-button" aria-label="Close" data-action="close-modal">×</button>
+      </div>
+      <div id="modalBody" class="modal-body"></div>
+    </section>
+  </div>
+
+  <script src="scripts/storage.js"></script>
+  <script src="scripts/maps.js"></script>
+  <script src="scripts/export.js"></script>
+  <script src="scripts/app.js"></script>
+</body>
+</html>

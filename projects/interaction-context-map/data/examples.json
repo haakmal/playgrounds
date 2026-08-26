@@ -1,0 +1,12 @@
+{
+  "tasks": [
+    "Use the printer",
+    "Search for something online",
+    "Navigate to a location in the library",
+    "Submit something through Moodle",
+    "Use a ticketing, payment, or vending machine",
+    "Find information on a university website",
+    "Complete another everyday technology-based task"
+  ],
+  "notes": "Examples are surfaced through the Help / Examples controls rather than displayed in the main workspace."
+}
