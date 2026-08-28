@@ -316,7 +316,17 @@ function bindEditor(f) {
   }));
   $('#edit-id').addEventListener('input',()=>{f.id=$('#edit-id').value; markEdited(f);});
   ['edit-location','edit-category','edit-description','edit-why','edit-recommendation','edit-evidence'].forEach(id=>{
-    const el=$('#'+id); el.addEventListener(el.tagName==='SELECT'?'change':'input',()=>markEdited(f));
+    const el=$('#'+id);
+    const sync = () => {
+      if (id==='edit-location') f.location = el.value;
+      else if (id==='edit-category') f.category = el.value;
+      else if (id==='edit-description') f.description = el.value;
+      else if (id==='edit-why') f.why = el.value;
+      else if (id==='edit-recommendation') f.recommendation = el.value;
+      else if (id==='edit-evidence') f.evidence = el.value;
+      markEdited(f);
+    };
+    el.addEventListener(el.tagName==='SELECT'?'change':'input', sync);
   });
   $('#findingEditor').querySelector('[data-editor-action="save"]').addEventListener('click',saveFinding);
   $('#findingEditor').querySelector('[data-editor-action="cancel"]').addEventListener('click',closeFindingEditor);
