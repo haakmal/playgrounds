@@ -37,6 +37,9 @@ h2 { font-size:20px; line-height:1.15; }
 label span,.field-label { display:block; margin-bottom:6px; font-size:10px; text-transform:uppercase; letter-spacing:.07em; font-weight:700; }
 input,select,textarea { width:100%; border:1px solid #aaa; border-radius:2px; background:#fff; color:#111; padding:9px 10px; outline:none; }
 input:focus,select:focus,textarea:focus { border-color:#111; }
+input.field-invalid,select.field-invalid,textarea.field-invalid { border-color:var(--severity-serious); background:var(--severity-serious-bg); }
+input.field-invalid:focus,select.field-invalid:focus,textarea.field-invalid:focus { border-color:var(--severity-serious); }
+.field-error { display:block; min-height:15px; margin-top:4px; color:var(--severity-serious); font-size:11px; line-height:1.25; font-weight:700; }
 textarea { resize:vertical; min-height:60px; }
 .full { grid-column:1/-1; }
 .filters { padding:11px 16px; border-bottom:1px solid var(--line); background:#fafafa; display:grid; grid-template-columns:minmax(220px,2fr) repeat(4,minmax(120px,1fr)); gap:7px; }
@@ -51,6 +54,7 @@ textarea { resize:vertical; min-height:60px; }
 .severity-button { flex:1; border:1px solid #aaa; background:#fff; padding:8px 6px; font-size:11px; font-weight:700; }
 .severity-button.active { background:#111; color:#fff; border-color:#111; }
 .selected-heuristic-box { border:1px solid #aaa; padding:9px 10px; min-height:76px; display:flex; align-items:center; justify-content:space-between; gap:10px; background:#fff; }
+.selected-heuristic-box.field-invalid { border-color:var(--severity-serious); background:var(--severity-serious-bg); }
 .selected-heuristic-name { font-weight:700; }
 .selected-heuristic-meta { font-size:11px; color:var(--mid); margin-top:3px; }
 .heuristic-actions { flex:0 0 auto; }

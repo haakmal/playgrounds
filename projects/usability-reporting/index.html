@@ -31,11 +31,11 @@
         <span id="saveState" class="save-state">Saved</span>
       </div>
       <div class="context-grid">
-        <label><span>Report title</span><input id="reportTitle" type="text" placeholder="Untitled usability report"></label>
-        <label><span>Evaluator</span><input id="evaluator" type="text" placeholder="Your name"></label>
-        <label><span>Interface / project</span><input id="interfaceName" type="text" placeholder="Interface, prototype or service"></label>
-        <label><span>Evaluation method</span><select id="method"><option>Heuristic evaluation</option><option>Usability testing</option><option>Contextual review</option><option>Remote usability test</option><option>Other</option></select></label>
-        <label class="full"><span>Evaluation goal / task</span><textarea id="goal" rows="2" placeholder="What were you evaluating or asking participants to do?"></textarea></label>
+        <label><span>Report title</span><input id="reportTitle" type="text" placeholder="Untitled usability report"><span class="field-error" id="error-reportTitle" role="alert"></span></label>
+        <label><span>Evaluator</span><input id="evaluator" type="text" placeholder="Your name"><span class="field-error" id="error-evaluator" role="alert"></span></label>
+        <label><span>Interface / project</span><input id="interfaceName" type="text" placeholder="Interface, prototype or service"><span class="field-error" id="error-interfaceName" role="alert"></span></label>
+        <label><span>Evaluation method</span><select id="method"><option>Heuristic evaluation</option><option>Usability testing</option><option>Contextual review</option><option>Remote usability test</option><option>Other</option></select><span class="field-error" id="error-method" role="alert"></span></label>
+        <label class="full"><span>Evaluation goal / task</span><textarea id="goal" rows="2" placeholder="What were you evaluating or asking participants to do?"></textarea><span class="field-error" id="error-goal" role="alert"></span></label>
       </div>
     </section>
 
@@ -151,41 +151,5 @@
   <div id="toast" class="toast" aria-live="polite"></div>
   <script src="heuristics.js"></script>
   <script src="app.js"></script>
-
-<!-- BEGIN RETURN LINK -->
-<script>
-// inject-home-link.js
-(function () {
-	// Inject Font Awesome stylesheet
-	const fa = document.createElement("link");
-	fa.rel = "stylesheet";
-	fa.href = "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css";
-	fa.crossOrigin = "anonymous";
-	document.head.appendChild(fa);
-	
-	// Create the back link
-	const link = document.createElement("a");
-	link.href = "/";
-	link.innerHTML = '← Back to Playgrounds <i class="fab fa-github"><i>';
-	Object.assign(link.style, {
-	  position: "fixed",
-	  bottom: "20px",
-	  right: "20px",
-	  background: "#000",
-	  color: "#fff",
-	  padding: "8px 12px",
-	  zIndex: 1000,
-	  fontSize: "14px",
-	  opacity: 0.7,
-	  borderRadius: "6px",
-	  textDecoration: "none"
-	});
-	link.onmouseover = () => (link.style.opacity = "1");
-	link.onmouseout = () => (link.style.opacity = "0.7");
-	document.body.appendChild(link);
-})();
-</script>
-<!-- END RETURN LINK -->
-
 </body>
 </html>

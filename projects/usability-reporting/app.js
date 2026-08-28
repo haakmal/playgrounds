@@ -4,6 +4,7 @@ const state = {
   reports: {},
   activeId: null,
   editingFindingId: null,
+  editingFindingDraft: null,
   currentFindingForLibrary: null,
   librarySelectedId: null,
   librarySource: 'all',
@@ -157,6 +158,44 @@ function updateMetadata() {
   touch();
 }
 
+
+function validateContext() {
+  const required = [
+    ['reportTitle', 'Report title'],
+    ['evaluator', 'Evaluator'],
+    ['interfaceName', 'Interface / project'],
+    ['method', 'Evaluation method'],
+    ['goal', 'Evaluation goal / task']
+  ];
+  let firstInvalid = null;
+  let valid = true;
+
+  required.forEach(([id, label]) => {
+    const el = $('#'+id);
+    const value = el?.value.trim() || '';
+    const empty = !el || !value || (id === 'reportTitle' && value === 'Untitled usability report');
+    el?.classList.toggle('field-invalid', empty);
+    const err = $('#error-'+id);
+    if (err) err.textContent = empty ? `${label} is required.` : '';
+    if (empty && !firstInvalid) firstInvalid = el;
+    valid = valid && !empty;
+  });
+
+  if (firstInvalid) {
+    firstInvalid.scrollIntoView({behavior:'smooth', block:'center'});
+    if (firstInvalid.focus) setTimeout(()=>firstInvalid.focus(),120);
+  }
+  return valid;
+}
+
+function clearContextError(id) {
+  const el = $('#'+id);
+  if (!el) return;
+  el.classList.remove('field-invalid');
+  const err = $('#error-'+id);
+  if (err) err.textContent = '';
+}
+
 function newFinding() {
   const next = currentReport().findings.length + 1;
   const ts = nowISO();
@@ -164,16 +203,19 @@ function newFinding() {
 }
 
 function addFinding() {
+  if (state.editingFindingId || state.editingFindingDraft) {
+    $('#edit-location')?.focus();
+    return;
+  }
   const f = newFinding();
-  currentReport().findings.push(f);
-  currentReport().modified = nowISO();
-  persist();
-  state.editingFindingId = f.id;
-  renderFindings();
-  openFindingEditor(f.id, true);
+  state.editingFindingDraft = f;
+  openFindingEditor(f, true);
 }
 
 function findFinding(id) { return currentReport().findings.find(f=>f.id===id); }
+function currentEditingFinding() {
+  return state.editingFindingDraft || (state.editingFindingId ? findFinding(state.editingFindingId) : null);
+}
 
 function getFilteredFindings() {
   let arr = [...currentReport().findings];
@@ -212,10 +254,17 @@ function renderFindings() {
   if (!state.editingFindingId) $('#findingEditor').classList.add('hidden');
 }
 
-function openFindingEditor(id, focusLocation=false) {
-  const f = findFinding(id);
+function openFindingEditor(target, focusLocation=false) {
+  const isDraft = typeof target !== 'string';
+  const f = isDraft ? target : findFinding(target);
   if (!f) return;
-  state.editingFindingId = id;
+  if (isDraft) {
+    state.editingFindingDraft = f;
+    state.editingFindingId = null;
+  } else {
+    state.editingFindingDraft = null;
+    state.editingFindingId = target;
+  }
   renderFindings();
   const panel = $('#findingEditor');
   const h = HEURISTICS.find(x=>x.id===f.heuristicId);
@@ -227,21 +276,22 @@ function openFindingEditor(id, focusLocation=false) {
       <div class="editor-actions"><button class="button danger-outline" data-editor-action="delete">Delete</button><button class="button secondary" data-editor-action="cancel">Close</button><button class="button primary" data-editor-action="save">Save finding</button></div>
     </div>
     <div class="editor-grid">
-      <label><span>ID</span><input id="edit-id" maxlength="12" value="${escapeHTML(f.id)}"></label>
-      <label><span>Location</span><input id="edit-location" placeholder="e.g. Checkout > Payment" value="${escapeHTML(f.location)}"></label>
-      <label><span>Issue category</span><select id="edit-category"><option value="">Select category</option>${categories.map(c=>`<option value="${escapeHTML(c)}" ${f.category===c?'selected':''}>${escapeHTML(c)}</option>`).join('')}</select></label>
+      <label><span>ID</span><input id="edit-id" maxlength="12" value="${escapeHTML(f.id)}"><span class="field-error" id="error-edit-id" role="alert"></span></label>
+      <label><span>Location</span><input id="edit-location" placeholder="e.g. Checkout > Payment" value="${escapeHTML(f.location)}"><span class="field-error" id="error-edit-location" role="alert"></span></label>
+      <label><span>Issue category</span><select id="edit-category"><option value="">Select category</option>${categories.map(c=>`<option value="${escapeHTML(c)}" ${f.category===c?'selected':''}>${escapeHTML(c)}</option>`).join('')}</select><span class="field-error" id="error-edit-category" role="alert"></span></label>
       <div><span class="field-label">Severity</span><div class="severity-buttons">${['Serious','Moderate','Minor'].map(s=>`<button type="button" class="severity-button ${f.severity===s?'active':''}" data-severity="${s}">${s}</button>`).join('')}</div></div>
-      <label class="full"><span>Description</span><textarea id="edit-description" rows="3" placeholder="What happened? Describe the issue and the evidence you observed.">${escapeHTML(f.description)}</textarea></label>
+      <label class="full"><span>Description</span><textarea id="edit-description" rows="3" placeholder="What happened? Describe the issue and the evidence you observed.">${escapeHTML(f.description)}</textarea><span class="field-error" id="error-edit-description" role="alert"></span></label>
       <div class="full">
         <span class="field-label">Primary heuristic</span>
-        <div class="selected-heuristic-box">
+        <div id="heuristicField" class="selected-heuristic-box ${h?'':'field-invalid'}">
           <div>${h ? `<div class="selected-heuristic-name">${escapeHTML(h.name)}</div><div class="selected-heuristic-meta">${escapeHTML(h.sourceShort)} · ${escapeHTML(h.category)}</div>` : '<div class="selected-heuristic-meta">No heuristic selected</div>'}</div>
           <div class="heuristic-actions"><button type="button" class="button secondary" data-editor-action="library">${h?'Change':'Choose heuristic'}</button></div>
         </div>
+        <span class="field-error" id="error-heuristic" role="alert"></span>
       </div>
       ${related.length ? `<div class="full"><span class="field-label">Related principles</span><div class="related-detail">${related.map(x=>`<span>${escapeHTML(x.name)} · ${escapeHTML(x.sourceShort)}</span>`).join('')}</div></div>` : ''}
       <label class="full"><span>Why does this heuristic apply? <em class="optional-note">optional</em></span><textarea id="edit-why" rows="2" placeholder="Explain the relationship between the observed issue and the heuristic.">${escapeHTML(f.why)}</textarea></label>
-      <label class="full"><span>Recommendation</span><textarea id="edit-recommendation" rows="2" placeholder="What could be changed or tested next?">${escapeHTML(f.recommendation)}</textarea></label>
+      <label class="full"><span>Recommendation</span><textarea id="edit-recommendation" rows="2" placeholder="What could be changed or tested next?">${escapeHTML(f.recommendation)}</textarea><span class="field-error" id="error-edit-recommendation" role="alert"></span></label>
       <label class="full"><span>Evidence / notes <em class="optional-note">optional</em></span><textarea id="edit-evidence" rows="2" placeholder="Participant comment, frequency, screenshot reference, observation, etc.">${escapeHTML(f.evidence)}</textarea></label>
     </div>`;
   panel.classList.remove('hidden');
@@ -262,10 +312,13 @@ function readEditorIntoFinding(f) {
 }
 
 function requestDeleteFinding() {
-  const id = state.editingFindingId;
-  if (!id) return;
-  const f = findFinding(id);
+  const f = currentEditingFinding();
   if (!f) return;
+  if (state.editingFindingDraft) {
+    closeFindingEditor();
+    return;
+  }
+  const id = state.editingFindingId;
   state.findingToDelete = id;
   $('#findingDeleteHeading').textContent = `Delete ${f.id}?`;
   openModal('findingDeleteModal');
@@ -288,12 +341,67 @@ function deleteFindingConfirmed() {
   toast('Finding deleted');
 }
 
+function validateFinding(f) {
+  const required = [
+    ['edit-id', 'ID'],
+    ['edit-location', 'Location'],
+    ['edit-category', 'Issue category'],
+    ['edit-description', 'Description'],
+    ['edit-recommendation', 'Recommendation']
+  ];
+  let firstInvalid = null;
+  let valid = true;
+
+  required.forEach(([id, label]) => {
+    const el = $('#'+id);
+    const empty = !el || !el.value.trim();
+    el?.classList.toggle('field-invalid', empty);
+    const err = $('#error-'+id);
+    if (err) err.textContent = empty ? `${label} is required.` : '';
+    if (empty && !firstInvalid) firstInvalid = el;
+    valid = valid && !empty;
+  });
+
+  const heuristicBox = $('#heuristicField');
+  const heuristicError = $('#error-heuristic');
+  const missingHeuristic = !f.heuristicId;
+  heuristicBox?.classList.toggle('field-invalid', missingHeuristic);
+  if (heuristicError) heuristicError.textContent = missingHeuristic ? 'Select a heuristic.' : '';
+  if (missingHeuristic) {
+    valid = false;
+    if (!firstInvalid) firstInvalid = heuristicBox;
+  }
+
+  if (firstInvalid) {
+    firstInvalid.scrollIntoView({behavior:'smooth', block:'center'});
+    if (firstInvalid.focus) setTimeout(()=>firstInvalid.focus(),120);
+  }
+  return valid;
+}
+
+function clearFieldError(id) {
+  const el = $('#'+id);
+  if (!el) return;
+  el.classList.remove('field-invalid');
+  const err = $('#error-'+id);
+  if (err) err.textContent = '';
+}
+
 function saveFinding() {
+  const isDraft = !!state.editingFindingDraft;
   const oldId = state.editingFindingId;
-  const f = findFinding(oldId);
+  const f = isDraft ? state.editingFindingDraft : findFinding(oldId);
   if (!f) return;
   readEditorIntoFinding(f);
+  if (!validateFinding(f)) {
+    $('#saveState').textContent = 'Needs required fields';
+    return;
+  }
   currentReport().modified = nowISO();
+  if (isDraft) {
+    currentReport().findings.push(f);
+  }
+  state.editingFindingDraft = null;
   state.editingFindingId = null;
   persist();
   $('#saveState').textContent = 'Saved';
@@ -303,6 +411,7 @@ function saveFinding() {
 }
 
 function closeFindingEditor() {
+  state.editingFindingDraft = null;
   state.editingFindingId = null;
   $('#findingEditor').classList.add('hidden');
   renderFindings();
@@ -314,7 +423,7 @@ function bindEditor(f) {
     $$('.severity-button').forEach(x=>x.classList.toggle('active',x===btn));
     markEdited(f);
   }));
-  $('#edit-id').addEventListener('input',()=>{f.id=$('#edit-id').value; markEdited(f);});
+  $('#edit-id').addEventListener('input',()=>{f.id=$('#edit-id').value; clearFieldError('edit-id'); markEdited(f);});
   ['edit-location','edit-category','edit-description','edit-why','edit-recommendation','edit-evidence'].forEach(id=>{
     const el=$('#'+id);
     const sync = () => {
@@ -324,6 +433,7 @@ function bindEditor(f) {
       else if (id==='edit-why') f.why = el.value;
       else if (id==='edit-recommendation') f.recommendation = el.value;
       else if (id==='edit-evidence') f.evidence = el.value;
+      if (['edit-location','edit-category','edit-description','edit-recommendation'].includes(id)) clearFieldError(id);
       markEdited(f);
     };
     el.addEventListener(el.tagName==='SELECT'?'change':'input', sync);
@@ -363,17 +473,16 @@ function getFilteredHeuristics() {
   return HEURISTICS.filter(h=>{
     const hay = [h.name,h.source,h.category,h.summary,h.example,...h.lookFor].join(' ').toLowerCase();
     return (!q||hay.includes(q)) && (state.librarySource==='all'||h.source===state.librarySource) && (state.libraryCategory==='all'||h.category===state.libraryCategory);
-  }).sort((a,b)=>a.priority-b.priority || a.name.localeCompare(b.name));
+  }).sort((a,b)=>a.name.localeCompare(b.name));
 }
 
 function renderLibraryList() {
   const list = $('#heuristicList');
   const arr = getFilteredHeuristics();
-  list.innerHTML = arr.length ? arr.map(h=>`<div class="heuristic-list-item ${state.librarySelectedId===h.id?'active':''}" data-library-id="${escapeHTML(h.id)}"><div class="source">${escapeHTML(h.source)}</div><div class="name">${escapeHTML(h.name)}</div><div class="category">${escapeHTML(h.category)}</div></div>`).join('') : '<div class="detail-empty">No matching heuristics.</div>';
-  $$('#heuristic-list-item',list);
-  $$('.heuristic-list-item',list).forEach(x=>x.addEventListener('click',()=>{state.librarySelectedId=x.dataset.libraryId; renderLibraryList(); renderLibraryDetail();}));
+  if (state.librarySelectedId && !arr.some(h=>h.id===state.librarySelectedId)) state.librarySelectedId = null;
   if (!state.librarySelectedId && arr[0]) state.librarySelectedId = arr[0].id;
-  if (state.librarySelectedId && !arr.some(h=>h.id===state.librarySelectedId) && arr[0]) state.librarySelectedId=arr[0].id;
+  list.innerHTML = arr.length ? arr.map(h=>`<div class="heuristic-list-item ${state.librarySelectedId===h.id?'active':''}" data-library-id="${escapeHTML(h.id)}"><div class="source">${escapeHTML(h.source)}</div><div class="name">${escapeHTML(h.name)}</div><div class="category">${escapeHTML(h.category)}</div></div>`).join('') : '<div class="detail-empty">No matching heuristics.</div>';
+  $$('.heuristic-list-item',list).forEach(x=>x.addEventListener('click',()=>{state.librarySelectedId=x.dataset.libraryId; renderLibraryList(); renderLibraryDetail();}));
   renderLibraryDetail();
 }
 
@@ -393,17 +502,38 @@ function renderLibraryDetail() {
 
 function applyLibrarySelection() {
   const h = HEURISTICS.find(x=>x.id===state.librarySelectedId);
-  const f = state.currentFindingForLibrary;
-  if (!h || !f) return;
+  if (!h) return;
+
+  let f = state.currentFindingForLibrary;
+  const openedFromLibrary = !f;
+
+  // When the library was opened from the top-level reference button,
+  // create a temporary finding draft rather than saving a blank finding.
+  if (!f) {
+    if (state.editingFindingId || state.editingFindingDraft) return;
+    f = newFinding();
+  }
+
   f.heuristicId = h.id;
   f.relatedIds = (h.related||[]).slice();
   if (!f.category) f.category = h.category;
   f.modified = nowISO();
+
+  if (openedFromLibrary) {
+    state.editingFindingDraft = f;
+    state.editingFindingId = null;
+    state.currentFindingForLibrary = null;
+    closeModal('libraryModal');
+    $('#saveState').textContent='Editing';
+    openFindingEditor(f, true);
+    return;
+  }
+
   currentReport().modified = nowISO();
   persist();
   closeModal('libraryModal');
-  $('#saveState').textContent='Saved';
-  openFindingEditor(f.id);
+  $('#saveState').textContent='Editing';
+  openFindingEditor(f);
 }
 
 function openModal(id) { const el=$('#'+id); el.classList.remove('hidden'); el.setAttribute('aria-hidden','false'); }
@@ -458,6 +588,11 @@ async function handleImport(e) {
 }
 function downloadBlob(blob,name){ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),1000); }
 function printReport() {
+  if (!validateContext()) {
+    $('#saveState').textContent = 'Context needs required fields';
+    toast('Complete the report context before printing');
+    return;
+  }
   renderPrintContext();
   $('#printTimestamp').textContent = `Generated: ${formatDate(nowISO())}`;
   state.editingFindingId=null;
@@ -479,8 +614,8 @@ function bindStaticEvents() {
   $('#confirmDeleteBtn').addEventListener('click',deleteConfirmed);
   $('#confirmDeleteFindingBtn').addEventListener('click',deleteFindingConfirmed);
   $('#selectHeuristicBtn').addEventListener('click',applyLibrarySelection);
-  ['reportTitle','evaluator','interfaceName','goal'].forEach(id=>$('#'+id).addEventListener('input',updateMetadata));
-  $('#method').addEventListener('change',updateMetadata);
+  ['reportTitle','evaluator','interfaceName','goal'].forEach(id=>$('#'+id).addEventListener('input',()=>{updateMetadata(); clearContextError(id);}));
+  $('#method').addEventListener('change',()=>{updateMetadata(); clearContextError('method');});
   ['findingSearch','severityFilter','categoryFilter','heuristicFilter','sortFindings'].forEach(id=>{
     const el=$('#'+id); el.addEventListener('input',renderFindings); el.addEventListener('change',renderFindings);
   });
