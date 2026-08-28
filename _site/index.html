@@ -3,159 +3,739 @@
 
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dr Daft's Playground</title>
-  <link rel="stylesheet" href="/playgrounds/assets/style.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css" crossorigin="anonymous" />
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css" crossorigin="anonymous" />
 </head>
 
 <body>
+  <div class="container">
   <header>
-  <h1>Dr Daft's Playground</h1>
-  <p>Playgrounds are everywhere, if you are willing to look for them.</p>
-</header>
+    <h1>Dr Daft's Playground</h1>
+    <p>Playgrounds are everywhere, if you are willing to look for them.</p>
+  </header>
 
   <main>
     <div class="intro">
       <p>Welcome! This is a personal space where I explore and learn by building small, self-contained projects. Each project below is organized into its own folder and is accessible via Github Pages. For information on how I did this, you can read <a href="https://blog.hakmal.com/post/jekyll-playground/">this blog post</a>.</p>
 
     </div>
-    
-    <h2>📁 Projects</h2>
-    <ul>
-      
+
+    <section class="projects-section" aria-labelledby="projects-heading">
+      <div class="projects-header">
+        <h2 id="projects-heading">Projects</h2>
+
+        <div class="project-controls">
+          <div class="control-group" role="group" aria-label="Filter projects by category">
+            <span class="control-label">Category</span>
+            <button type="button" class="filter-button is-active" data-category="all" aria-pressed="true">All</button>
+            <button type="button" class="filter-button" data-category="tools" aria-pressed="false">Tools</button>
+            <button type="button" class="filter-button" data-category="play" aria-pressed="false">Play</button>
+            <button type="button" class="filter-button" data-category="teaching" aria-pressed="false">Teaching</button>
+          </div>
+
+          <div class="control-group" role="group" aria-label="Sort projects by date">
+            <span class="control-label">Sort</span>
+            <button type="button" class="sort-button is-active" data-sort="newest" aria-pressed="true">Newest</button>
+            <button type="button" class="sort-button" data-sort="oldest" aria-pressed="false">Oldest</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-grid" id="project-grid">
         
-        <li>
           
-          <h3><a href="/playgrounds/projects/constraints/">Interaction Constraints</a></h3>
           
-          <p>A handy constraint card deck for interaction design.</p>
-          <small><span>👥</span> Haider Akmal</small>
-        </li>
-      
+          
+
+          <article
+            class="project-card"
+            data-title="Accessibility Audit"
+            data-date="2026-08-27"
+            data-categories="tools teaching"
+          >
+            
+              <h3>
+                <a href="/projects/accessibility-audit/">Accessibility Audit</a>
+              </h3>
+            
+
+            <p>An accessibility audit tool for evaluating interactions.</p>
+
+            <div class="project-meta">
+              
+                <time datetime="2026-08-27">2026</time>
+              
+
+              
+                <small>Haider Akmal</small>
+              
+            </div>
+
+            
+              <div class="project-categories" aria-label="Categories">
+                
+                  <span>tools</span> · 
+                
+                  <span>teaching</span>
+                
+              </div>
+            
+          </article>
         
-        <li>
           
-          <h3><a href="/playgrounds/projects/design-methods/">Design Research Methods</a></h3>
           
-          <p>[Work in progress] A visual guide for understanding when to use design research methods along the Design Double Diamond.</p>
-          <small><span>👥</span> Haider Akmal</small>
-        </li>
-      
+          
+
+          <article
+            class="project-card"
+            data-title="Blindspots"
+            data-date="2026-08-01"
+            data-categories="research tools teaching"
+          >
+            
+              <h3>
+                <a href="https://hakmal.com/" target="_blank" rel="noopener noreferrer">Blindspots</a>
+                <span aria-hidden="true">↗</span>
+              </h3>
+            
+
+            <p>A play-based card system for finding hidden biases in the design process</p>
+
+            <div class="project-meta">
+              
+                <time datetime="2026-08-01">2026</time>
+              
+
+              
+                <small>Haider Akmal
+Eduardo Sandoval
+</small>
+              
+            </div>
+
+            
+              <div class="project-categories" aria-label="Categories">
+                
+                  <span>research</span> · 
+                
+                  <span>tools</span> · 
+                
+                  <span>teaching</span>
+                
+              </div>
+            
+          </article>
         
-        <li>
           
-          <h3><a href="/playgrounds/projects/dice-generator/">Dice Generator</a></h3>
           
-          <p>A simple tool to generate custom dice.</p>
-          <small><span>👥</span> Haider Akmal</small>
-        </li>
-      
+          
+
+          <article
+            class="project-card"
+            data-title="Interaction Constraints"
+            data-date="2026-02-10"
+            data-categories="tools teaching"
+          >
+            
+              <h3>
+                <a href="/projects/constraints/">Interaction Constraints</a>
+              </h3>
+            
+
+            <p>A handy constraint card deck for interaction design.</p>
+
+            <div class="project-meta">
+              
+                <time datetime="2026-02-10">2026</time>
+              
+
+              
+                <small>Haider Akmal</small>
+              
+            </div>
+
+            
+              <div class="project-categories" aria-label="Categories">
+                
+                  <span>tools</span> · 
+                
+                  <span>teaching</span>
+                
+              </div>
+            
+          </article>
         
-        <li>
           
-          <h3><a href="/playgrounds/projects/emojidice/">EmojiDice</a></h3>
           
-          <p>A storydice variant using emojis, good for brainstorming.</p>
-          <small><span>👥</span> Haider Akmal</small>
-        </li>
-      
+          
+
+          <article
+            class="project-card"
+            data-title="Design Research Methods"
+            data-date="2023-01-01"
+            data-categories="tools teaching"
+          >
+            
+              <h3>
+                <a href="/projects/design-methods/">Design Research Methods</a>
+              </h3>
+            
+
+            <p>[Work in progress] A visual guide for understanding when to use design research methods along the Design Double Diamond.</p>
+
+            <div class="project-meta">
+              
+                <time datetime="2023-01-01">2023</time>
+              
+
+              
+                <small>Haider Akmal</small>
+              
+            </div>
+
+            
+              <div class="project-categories" aria-label="Categories">
+                
+                  <span>tools</span> · 
+                
+                  <span>teaching</span>
+                
+              </div>
+            
+          </article>
         
-        <li>
           
-          <h3><a href="/playgrounds/projects/future-thing/">The (Provoked) Thing From The Future</a></h3>
           
-          <p>A handy generator for The Thing From The Future for ideation and critique aimed at AI-guided future provocations.</p>
-          <small><span>👥</span> Haider Akmal (this implementation) but original Stuart Candy & Jeff Watson</small>
-        </li>
-      
+          
+
+          <article
+            class="project-card"
+            data-title="Dice Generator"
+            data-date="2026-05-20"
+            data-categories="tools teaching"
+          >
+            
+              <h3>
+                <a href="/projects/dice-generator/">Dice Generator</a>
+              </h3>
+            
+
+            <p>A simple tool to generate custom dice.</p>
+
+            <div class="project-meta">
+              
+                <time datetime="2026-05-20">2026</time>
+              
+
+              
+                <small>Haider Akmal</small>
+              
+            </div>
+
+            
+              <div class="project-categories" aria-label="Categories">
+                
+                  <span>tools</span> · 
+                
+                  <span>teaching</span>
+                
+              </div>
+            
+          </article>
         
-        <li>
           
-          <h3><a href="/playgrounds/projects/interaction-context-map/">Interaction Context Map</a></h3>
           
-          <p>A digital version of the Interaction Context Mapping tool provided to my students, good for understanding how people, technology, and contexts relate to each other to form an interaction.</p>
-          <small><span>👥</span> Haider Akmal</small>
-        </li>
-      
+          
+
+          <article
+            class="project-card"
+            data-title="EmojiDice"
+            data-date="2023-05-01"
+            data-categories="tools teaching"
+          >
+            
+              <h3>
+                <a href="/projects/emojidice/">EmojiDice</a>
+              </h3>
+            
+
+            <p>A storydice variant using emojis, good for brainstorming.</p>
+
+            <div class="project-meta">
+              
+                <time datetime="2023-05-01">2023</time>
+              
+
+              
+                <small>Haider Akmal</small>
+              
+            </div>
+
+            
+              <div class="project-categories" aria-label="Categories">
+                
+                  <span>tools</span> · 
+                
+                  <span>teaching</span>
+                
+              </div>
+            
+          </article>
         
-        <li>
           
-          <h3><a href="https://haakmal.github.io/mtg-calculator/" target="_blank">MTG Calculator</a> <span>↗</span></h3>
           
-          <p>A Magic the Gathering attack calculator</p>
-          <small><span>👥</span> Haider Akmal</small>
-        </li>
-      
+          
+
+          <article
+            class="project-card"
+            data-title="The (Provoked) Thing From The Future"
+            data-date="2024-10-02"
+            data-categories="tools teaching"
+          >
+            
+              <h3>
+                <a href="/projects/future-thing/">The (Provoked) Thing From The Future</a>
+              </h3>
+            
+
+            <p>A handy generator for The Thing From The Future for ideation and critique aimed at AI-guided future provocations.</p>
+
+            <div class="project-meta">
+              
+                <time datetime="2024-10-02">2024</time>
+              
+
+              
+                <small>Haider Akmal,
+originally by Stuart Candy and Jeff Watson
+</small>
+              
+            </div>
+
+            
+              <div class="project-categories" aria-label="Categories">
+                
+                  <span>tools</span> · 
+                
+                  <span>teaching</span>
+                
+              </div>
+            
+          </article>
         
-        <li>
           
-          <h3><a href="/playgrounds/projects/my-pantry/">My Pantry</a></h3>
           
-          <p>[Work in progress] A simple pantry management app using client-side JS and Supabase.</p>
-          <small><span>👥</span> Haider Akmal</small>
-        </li>
-      
+          
+
+          <article
+            class="project-card"
+            data-title="Interaction Context Map"
+            data-date="2026-08-26"
+            data-categories="tools teaching"
+          >
+            
+              <h3>
+                <a href="/projects/interaction-context-map/">Interaction Context Map</a>
+              </h3>
+            
+
+            <p>A digital version of the Interaction Context Mapping tool provided to my students, good for understanding how people, technology, and contexts relate to each other to form an interaction.</p>
+
+            <div class="project-meta">
+              
+                <time datetime="2026-08-26">2026</time>
+              
+
+              
+                <small>Haider Akmal</small>
+              
+            </div>
+
+            
+              <div class="project-categories" aria-label="Categories">
+                
+                  <span>tools</span> · 
+                
+                  <span>teaching</span>
+                
+              </div>
+            
+          </article>
         
-        <li>
           
-          <h3><a href="/playgrounds/projects/provocator/">Provocator 9000</a></h3>
           
-          <p>[Work in progress] An interactive AI scenario provocation generator, that can yield positive and negative outputs for a given scenario/idea/concept.</p>
-          <small><span>👥</span> Haider Akmal</small>
-        </li>
-      
+          
+
+          <article
+            class="project-card"
+            data-title="MTG Calculator"
+            data-date="2024-01-01"
+            data-categories="play"
+          >
+            
+              <h3>
+                <a href="https://haakmal.github.io/mtg-calculator/" target="_blank" rel="noopener noreferrer">MTG Calculator</a>
+                <span aria-hidden="true">↗</span>
+              </h3>
+            
+
+            <p>A Magic the Gathering attack calculator</p>
+
+            <div class="project-meta">
+              
+                <time datetime="2024-01-01">2024</time>
+              
+
+              
+                <small>Haider Akmal</small>
+              
+            </div>
+
+            
+              <div class="project-categories" aria-label="Categories">
+                
+                  <span>play</span>
+                
+              </div>
+            
+          </article>
         
-        <li>
           
-          <h3><a href="/playgrounds/projects/rail/">RAIL</a></h3>
           
-          <p>An exploration into responsible AI licensing futures made using Twine.</p>
-          <small><span>👥</span> Haider Akmal, Joseph Lindley</small>
-        </li>
-      
+          
+
+          <article
+            class="project-card"
+            data-title="My Pantry"
+            data-date="2026-02-01"
+            data-categories="play tools"
+          >
+            
+              <h3>
+                <a href="/projects/my-pantry/">My Pantry</a>
+              </h3>
+            
+
+            <p>[Work in progress] A simple pantry management app using client-side JS and Supabase.</p>
+
+            <div class="project-meta">
+              
+                <time datetime="2026-02-01">2026</time>
+              
+
+              
+                <small>Haider Akmal</small>
+              
+            </div>
+
+            
+              <div class="project-categories" aria-label="Categories">
+                
+                  <span>play</span> · 
+                
+                  <span>tools</span>
+                
+              </div>
+            
+          </article>
         
-        <li>
           
-          <h3><a href="/playgrounds/projects/script-gallery/">Script Gallery</a></h3>
           
-          <p>A collection of scripts that I couldn't find a place for but wanted to share.</p>
-          <small><span>👥</span> Haider Akmal</small>
-        </li>
-      
+          
+
+          <article
+            class="project-card"
+            data-title="Provocator 9000"
+            data-date="2025-01-01"
+            data-categories="play research"
+          >
+            
+              <h3>
+                <a href="/projects/provocator/">Provocator 9000</a>
+              </h3>
+            
+
+            <p>[Work in progress] An interactive AI scenario provocation generator, that can yield positive and negative outputs for a given scenario/idea/concept.</p>
+
+            <div class="project-meta">
+              
+                <time datetime="2025-01-01">2025</time>
+              
+
+              
+                <small>Haider Akmal</small>
+              
+            </div>
+
+            
+              <div class="project-categories" aria-label="Categories">
+                
+                  <span>play</span> · 
+                
+                  <span>research</span>
+                
+              </div>
+            
+          </article>
         
-        <li>
           
-          <h3><a href="https://thesis.hakmal.com/" target="_blank">Design by Play</a> <span>↗</span></h3>
           
-          <p>A thesis on using Object-Oriented Ontology to playfully design for the Internet of Things</p>
-          <small><span>👥</span> Haider Akmal</small>
-        </li>
-      
+          
+
+          <article
+            class="project-card"
+            data-title="RAIL"
+            data-date="2019-01-01"
+            data-categories="tools research teaching"
+          >
+            
+              <h3>
+                <a href="/projects/rail/">RAIL</a>
+              </h3>
+            
+
+            <p>An exploration into responsible AI licensing futures made using Twine.</p>
+
+            <div class="project-meta">
+              
+                <time datetime="2019-01-01">2019</time>
+              
+
+              
+                <small>Haider Akmal,
+Joseph Lindley
+</small>
+              
+            </div>
+
+            
+              <div class="project-categories" aria-label="Categories">
+                
+                  <span>tools</span> · 
+                
+                  <span>research</span> · 
+                
+                  <span>teaching</span>
+                
+              </div>
+            
+          </article>
         
-        <li>
           
-          <h3><a href="/playgrounds/projects/usability-reporting/">Usability Reporting</a></h3>
           
-          <p>A toolkit for usability reporting shared with my students.</p>
-          <small><span>👥</span> Haider Akmal</small>
-        </li>
-      
-    </ul>
+          
+
+          <article
+            class="project-card"
+            data-title="Script Gallery"
+            data-date="2026-01-01"
+            data-categories="tools"
+          >
+            
+              <h3>
+                <a href="/projects/script-gallery/">Script Gallery</a>
+              </h3>
+            
+
+            <p>A collection of scripts that I couldn't find a place for but wanted to share.</p>
+
+            <div class="project-meta">
+              
+                <time datetime="2026-01-01">2026</time>
+              
+
+              
+                <small>Haider Akmal</small>
+              
+            </div>
+
+            
+              <div class="project-categories" aria-label="Categories">
+                
+                  <span>tools</span>
+                
+              </div>
+            
+          </article>
+        
+          
+          
+          
+
+          <article
+            class="project-card"
+            data-title="Design by Play"
+            data-date="2020-08-01"
+            data-categories="research"
+          >
+            
+              <h3>
+                <a href="https://thesis.hakmal.com/" target="_blank" rel="noopener noreferrer">Design by Play</a>
+                <span aria-hidden="true">↗</span>
+              </h3>
+            
+
+            <p>A thesis on using Object-Oriented Ontology to playfully design for the Internet of Things</p>
+
+            <div class="project-meta">
+              
+                <time datetime="2020-08-01">2020</time>
+              
+
+              
+                <small>Haider Akmal</small>
+              
+            </div>
+
+            
+              <div class="project-categories" aria-label="Categories">
+                
+                  <span>research</span>
+                
+              </div>
+            
+          </article>
+        
+          
+          
+          
+
+          <article
+            class="project-card"
+            data-title="Usability Reporting"
+            data-date="2026-08-28"
+            data-categories="tools teaching"
+          >
+            
+              <h3>
+                <a href="/projects/usability-reporting/">Usability Reporting</a>
+              </h3>
+            
+
+            <p>A toolkit for usability reporting shared with my students.</p>
+
+            <div class="project-meta">
+              
+                <time datetime="2026-08-28">2026</time>
+              
+
+              
+                <small>Haider Akmal</small>
+              
+            </div>
+
+            
+              <div class="project-categories" aria-label="Categories">
+                
+                  <span>tools</span> · 
+                
+                  <span>teaching</span>
+                
+              </div>
+            
+          </article>
+        
+      </div>
+
+      <p class="no-results" id="no-results" hidden>No projects match this category.</p>
+    </section>
   </main>
 
   <footer>
-	  <div class="footer-left">
-    <p><a href="/playgrounds/LICENSE" target="_blank">Attribution-NonCommercial-ShareAlike 4.0 International</a><br />&copy;  2026 Dr Haider Ali Akmal</p>
-	  </div>
-	  <div class="footer-right">
-		  <a href="https://github.com/haakmal/playgrounds" target="_blank" aria-label="GitHub">
-			  <i class="fab fa-github"></i>
-		  </a>
-		  <a href="https://blog.hakmal.com/" target="_blank" aria-label="Blog">
-			  <i class="fa-solid fa-square-rss"></i>
-		  </a>
-	  </div>
-  </footer>
-</body>
+    <div class="footer-left">
+      <p><a href="/LICENSE" target="_blank">Attribution-NonCommercial-ShareAlike 4.0 International</a><br />&copy; 2026 Dr Haider Ali Akmal</p>
+    </div>
 
+    <div class="footer-right">
+      <a href="https://github.com/haakmal/playgrounds" target="_blank" aria-label="GitHub">
+        <i class="fab fa-github"></i>
+      </a>
+      <a href="https://blog.hakmal.com/" target="_blank" aria-label="Blog">
+        <i class="fa-solid fa-square-rss"></i>
+      </a>
+    </div>
+  </footer>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const grid = document.getElementById('project-grid');
+      const cards = Array.from(grid.querySelectorAll('.project-card'));
+      const categoryButtons = Array.from(document.querySelectorAll('.filter-button'));
+      const sortButtons = Array.from(document.querySelectorAll('.sort-button'));
+      const noResults = document.getElementById('no-results');
+
+      let activeCategory = 'all';
+      let activeSort = 'newest';
+
+      function getTimestamp(card) {
+        const date = card.dataset.date;
+        if (!date) return null;
+
+        const timestamp = Date.parse(date);
+        return Number.isNaN(timestamp) ? null : timestamp;
+      }
+
+      function updateButtons(buttons, activeValue, dataAttribute) {
+        buttons.forEach(function (button) {
+          const isActive = button.dataset[dataAttribute] === activeValue;
+          button.classList.toggle('is-active', isActive);
+          button.setAttribute('aria-pressed', String(isActive));
+        });
+      }
+
+      function renderProjects() {
+        const visibleCards = cards.filter(function (card) {
+          if (activeCategory === 'all') return true;
+          return card.dataset.categories.split(/\s+/).includes(activeCategory);
+        });
+
+        const sortedCards = visibleCards.slice().sort(function (a, b) {
+          const dateA = getTimestamp(a);
+          const dateB = getTimestamp(b);
+
+          if (dateA === null && dateB !== null) return 1;
+          if (dateA !== null && dateB === null) return -1;
+
+          if (dateA !== dateB) {
+            return activeSort === 'newest' ? dateB - dateA : dateA - dateB;
+          }
+
+          return a.dataset.title.localeCompare(b.dataset.title);
+        });
+
+        cards.forEach(function (card) {
+          card.hidden = true;
+        });
+
+        sortedCards.forEach(function (card) {
+          card.hidden = false;
+          grid.appendChild(card);
+        });
+
+        noResults.hidden = sortedCards.length > 0;
+      }
+
+      categoryButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+          activeCategory = button.dataset.category;
+          updateButtons(categoryButtons, activeCategory, 'category');
+          renderProjects();
+        });
+      });
+
+      sortButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+          activeSort = button.dataset.sort;
+          updateButtons(sortButtons, activeSort, 'sort');
+          renderProjects();
+        });
+      });
+
+      renderProjects();
+    });
+  </script>
+</body>
 </html>

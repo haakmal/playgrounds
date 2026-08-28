@@ -2,3 +2,7 @@ title: "My Pantry"
 description: "[Work in progress] A simple pantry management app using client-side JS and Supabase."
 credits: "Haider Akmal"
 url: "/projects/my-pantry/"
+date: 2026-02-01
+categories:
+  - play
+  - tools

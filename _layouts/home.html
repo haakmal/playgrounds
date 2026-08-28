@@ -3,52 +3,188 @@
 
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ site.title }}</title>
   <link rel="stylesheet" href="{{ site.baseurl }}/assets/style.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css" crossorigin="anonymous" />
 </head>
 
 <body>
+  <div class="container">
   <header>
-  <h1>{{ site.title }}</h1>
-  <p>{{ site.description }}</p>
-</header>
+    <h1>{{ site.title }}</h1>
+    <p>{{ site.description }}</p>
+  </header>
 
   <main>
     <div class="intro">
       {{ content }}
     </div>
-    
-    <h2>📁 Projects</h2>
-    <ul>
-      {% for project in site.data.projects %}
-        {% assign info = project[1] %}
-        <li>
-          {% if info.external %}
-          <h3><a href="{{ info.url }}" target="_blank">{{ info.title }}</a> <span>↗</span></h3>
-          {% else %}
-          <h3><a href="{{ site.baseurl }}{{ info.url }}">{{ info.title }}</a></h3>
-          {% endif %}
-          <p>{{ info.description }}</p>
-          <small><span>👥</span> {{ info.credits }}</small>
-        </li>
-      {% endfor %}
-    </ul>
+
+    <section class="projects-section" aria-labelledby="projects-heading">
+      <div class="projects-header">
+        <h2 id="projects-heading">Projects</h2>
+
+        <div class="project-controls">
+          <div class="control-group" role="group" aria-label="Filter projects by category">
+            <span class="control-label">Category</span>
+            <button type="button" class="filter-button is-active" data-category="all" aria-pressed="true">All</button>
+            <button type="button" class="filter-button" data-category="tools" aria-pressed="false">Tools</button>
+            <button type="button" class="filter-button" data-category="play" aria-pressed="false">Play</button>
+            <button type="button" class="filter-button" data-category="teaching" aria-pressed="false">Teaching</button>
+          </div>
+
+          <div class="control-group" role="group" aria-label="Sort projects by date">
+            <span class="control-label">Sort</span>
+            <button type="button" class="sort-button is-active" data-sort="newest" aria-pressed="true">Newest</button>
+            <button type="button" class="sort-button" data-sort="oldest" aria-pressed="false">Oldest</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-grid" id="project-grid">
+        {% for project in site.data.projects %}
+          {% assign info = project[1] %}
+          {% assign categories = info.categories | default: empty %}
+          {% assign categories_string = categories | join: ' ' %}
+
+          <article
+            class="project-card"
+            data-title="{{ info.title | escape }}"
+            data-date="{{ info.date | default: '' }}"
+            data-categories="{{ categories_string | downcase | escape }}"
+          >
+            {% if info.external %}
+              <h3>
+                <a href="{{ info.url }}" target="_blank" rel="noopener noreferrer">{{ info.title }}</a>
+                <span aria-hidden="true">↗</span>
+              </h3>
+            {% else %}
+              <h3>
+                <a href="{{ site.baseurl }}{{ info.url }}">{{ info.title }}</a>
+              </h3>
+            {% endif %}
+
+            <p>{{ info.description }}</p>
+
+            <div class="project-meta">
+              {% if info.date %}
+                <time datetime="{{ info.date }}">{{ info.date | date: "%Y" }}</time>
+              {% endif %}
+
+              {% if info.credits %}
+                <small>{{ info.credits }}</small>
+              {% endif %}
+            </div>
+
+            {% if categories != empty %}
+              <div class="project-categories" aria-label="Categories">
+                {% for category in categories %}
+                  <span>{{ category }}</span>{% unless forloop.last %} · {% endunless %}
+                {% endfor %}
+              </div>
+            {% endif %}
+          </article>
+        {% endfor %}
+      </div>
+
+      <p class="no-results" id="no-results" hidden>No projects match this category.</p>
+    </section>
   </main>
 
   <footer>
-	  <div class="footer-left">
-    <p><a href="{{ site.baseurl }}/LICENSE" target="_blank">Attribution-NonCommercial-ShareAlike 4.0 International</a><br />&copy;  {{ site.time | date: "%Y" }} {{ site.author }}</p>
-	  </div>
-	  <div class="footer-right">
-		  <a href="{{ site.github }}" target="_blank" aria-label="GitHub">
-			  <i class="fab fa-github"></i>
-		  </a>
-		  <a href="{{ site.blog}}" target="_blank" aria-label="Blog">
-			  <i class="fa-solid fa-square-rss"></i>
-		  </a>
-	  </div>
-  </footer>
-</body>
+    <div class="footer-left">
+      <p><a href="{{ site.baseurl }}/LICENSE" target="_blank">Attribution-NonCommercial-ShareAlike 4.0 International</a><br />&copy; {{ site.time | date: "%Y" }} {{ site.author }}</p>
+    </div>
 
+    <div class="footer-right">
+      <a href="{{ site.github }}" target="_blank" aria-label="GitHub">
+        <i class="fab fa-github"></i>
+      </a>
+      <a href="{{ site.blog}}" target="_blank" aria-label="Blog">
+        <i class="fa-solid fa-square-rss"></i>
+      </a>
+    </div>
+  </footer>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const grid = document.getElementById('project-grid');
+      const cards = Array.from(grid.querySelectorAll('.project-card'));
+      const categoryButtons = Array.from(document.querySelectorAll('.filter-button'));
+      const sortButtons = Array.from(document.querySelectorAll('.sort-button'));
+      const noResults = document.getElementById('no-results');
+
+      let activeCategory = 'all';
+      let activeSort = 'newest';
+
+      function getTimestamp(card) {
+        const date = card.dataset.date;
+        if (!date) return null;
+
+        const timestamp = Date.parse(date);
+        return Number.isNaN(timestamp) ? null : timestamp;
+      }
+
+      function updateButtons(buttons, activeValue, dataAttribute) {
+        buttons.forEach(function (button) {
+          const isActive = button.dataset[dataAttribute] === activeValue;
+          button.classList.toggle('is-active', isActive);
+          button.setAttribute('aria-pressed', String(isActive));
+        });
+      }
+
+      function renderProjects() {
+        const visibleCards = cards.filter(function (card) {
+          if (activeCategory === 'all') return true;
+          return card.dataset.categories.split(/\s+/).includes(activeCategory);
+        });
+
+        const sortedCards = visibleCards.slice().sort(function (a, b) {
+          const dateA = getTimestamp(a);
+          const dateB = getTimestamp(b);
+
+          if (dateA === null && dateB !== null) return 1;
+          if (dateA !== null && dateB === null) return -1;
+
+          if (dateA !== dateB) {
+            return activeSort === 'newest' ? dateB - dateA : dateA - dateB;
+          }
+
+          return a.dataset.title.localeCompare(b.dataset.title);
+        });
+
+        cards.forEach(function (card) {
+          card.hidden = true;
+        });
+
+        sortedCards.forEach(function (card) {
+          card.hidden = false;
+          grid.appendChild(card);
+        });
+
+        noResults.hidden = sortedCards.length > 0;
+      }
+
+      categoryButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+          activeCategory = button.dataset.category;
+          updateButtons(categoryButtons, activeCategory, 'category');
+          renderProjects();
+        });
+      });
+
+      sortButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+          activeSort = button.dataset.sort;
+          updateButtons(sortButtons, activeSort, 'sort');
+          renderProjects();
+        });
+      });
+
+      renderProjects();
+    });
+  </script>
+</body>
 </html>

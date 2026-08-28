@@ -1,4 +1,11 @@
 title: "RAIL"
 description: "An exploration into responsible AI licensing futures made using Twine."
-credits: "Haider Akmal, Joseph Lindley"
+credits: |
+  Haider Akmal,
+  Joseph Lindley
 url: "/projects/rail/"
+date: 2019-01-01
+categories:
+  - tools
+  - research
+  - teaching

@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Accessibility Audit Tool</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-copy">
+      <div class="eyebrow">Interaction Stream · Toolkit</div>
+      <h1 id="appTitle">Accessibility Audit</h1>
+      <p class="header-subtitle">Examine an interaction in context through five accessibility lenses.</p>
+      <div class="print-meta" id="printTimestamp">Generated: —</div>
+    </div>
+    <nav class="header-actions no-print" aria-label="Audit tools">
+      <button class="button secondary" id="auditsBtn">My audits</button>
+      <button class="button secondary" id="newBtn">New</button>
+      <button class="button secondary" id="renameBtn">Rename</button>
+      <button class="button secondary" id="duplicateBtn">Duplicate</button>
+      <button class="button secondary" id="importBtn">Import</button>
+      <button class="button secondary" id="exportBtn">Export</button>
+      <button class="button primary" id="printBtn">Print / Save PDF</button>
+      <input id="importInput" type="file" accept="application/json" hidden>
+    </nav>
+  </header>
+
+  <main class="app-shell">
+    <section class="context-panel panel no-print">
+      <div class="panel-heading compact-heading">
+        <div>
+          <div class="eyebrow">01 · CONTEXT</div>
+          <h2>Audit context</h2>
+        </div>
+        <span id="saveState" class="save-state">Saved</span>
+      </div>
+      <div class="context-grid">
+        <label><span>Audit name</span><input id="auditName" type="text" placeholder="Untitled accessibility audit"></label>
+        <label><span>Auditor</span><input id="auditor" type="text" placeholder="Your name"></label>
+        <label><span>Interaction / scenario</span><input id="interaction" type="text" placeholder="Interaction, system, service or situation"></label>
+        <label><span>Location / context</span><input id="location" type="text" placeholder="Where the interaction is being observed"></label>
+      </div>
+    </section>
+
+    <section id="printContext" class="print-context print-only" aria-label="Audit context for print"></section>
+
+    <section class="audit-panel panel">
+      <div class="panel-heading findings-heading">
+        <div>
+          <div class="eyebrow">02 · AUDIT</div>
+          <h2>Accessibility lenses</h2>
+          <p>Use each lens to examine the interaction in context. Record observations while in the situation being audited.</p>
+        </div>
+      </div>
+
+      <div id="framework" class="framework-grid"></div>
+    </section>
+
+    <section class="notes-panel panel">
+      <div class="panel-heading compact-heading">
+        <div>
+          <div class="eyebrow">03 · NOTES</div>
+          <h2>Further notes</h2>
+        </div>
+        <button class="button secondary no-print edit-content-btn" data-editor-key="notes" data-editor-title="Further notes" type="button">Edit</button>
+      </div>
+      <div id="furtherNotes" class="editable-content notes-content" data-editor-key="notes" data-editor-title="Further notes" tabindex="0" role="button" aria-label="Edit Further notes"></div>
+    </section>
+
+    <section class="audit-meta no-print" aria-label="Audit information">
+      <div>Created <strong id="createdAt">—</strong></div>
+      <div>Last saved <strong id="updatedAt">—</strong></div>
+      <div id="saveStatus">Saved locally</div>
+    </section>
+
+    <footer class="page-footer print-only">
+      <span id="printFooterName"></span>
+      <span id="printFooterTime"></span>
+      <span>Interaction Design Stream Framework — Accessibility Auditing</span>
+    </footer>
+  </main>
+
+  <div id="auditsModal" class="modal-backdrop hidden no-print" aria-hidden="true">
+    <div class="modal modal-medium" role="dialog" aria-modal="true" aria-labelledby="auditsHeading">
+      <div class="modal-header">
+        <div><div class="eyebrow">WORKSPACE</div><h2 id="auditsHeading">My audits</h2></div>
+        <button class="icon-button" data-close="auditsModal">Close</button>
+      </div>
+      <div id="auditsList" class="audits-list"></div>
+      <div class="modal-footer">
+        <button class="button secondary" id="newAuditModalBtn">New audit</button>
+        <div class="footer-actions"><button class="button secondary" id="importModalBtn">Import JSON</button><button class="button primary" id="exportModalBtn">Export JSON</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="editorModal" class="modal-backdrop hidden no-print" aria-hidden="true">
+    <div class="modal modal-medium editor-modal" role="dialog" aria-modal="true" aria-labelledby="editorHeading">
+      <div class="modal-header">
+        <div><div class="eyebrow">EDIT RESPONSE</div><h2 id="editorHeading">Edit response</h2></div>
+        <button class="icon-button" data-close="editorModal">Close</button>
+      </div>
+      <div class="editor-body">
+        <p id="editorInstruction" class="editor-instruction">Record your observations in context.</p>
+        <textarea id="editorInput" rows="12" spellcheck="true"></textarea>
+      </div>
+      <div class="modal-footer">
+        <span id="editorCount" class="modal-context">0 characters</span>
+        <button class="button primary" id="saveEditorBtn">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+
+<!-- BEGIN RETURN LINK -->
+<script>
+// inject-home-link.js
+(function () {
+	// Inject Font Awesome stylesheet
+	const fa = document.createElement("link");
+	fa.rel = "stylesheet";
+	fa.href = "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css";
+	fa.crossOrigin = "anonymous";
+	document.head.appendChild(fa);
+	
+	// Create the back link
+	const link = document.createElement("a");
+	link.href = "/";
+	link.innerHTML = '← Back to Playgrounds <i class="fab fa-github"><i>';
+	Object.assign(link.style, {
+	  position: "fixed",
+	  bottom: "20px",
+	  right: "20px",
+	  background: "#000",
+	  color: "#fff",
+	  padding: "8px 12px",
+	  zIndex: 1000,
+	  fontSize: "14px",
+	  opacity: 0.7,
+	  borderRadius: "6px",
+	  textDecoration: "none"
+	});
+	link.onmouseover = () => (link.style.opacity = "1");
+	link.onmouseout = () => (link.style.opacity = "0.7");
+	document.body.appendChild(link);
+})();
+</script>
+<!-- END RETURN LINK -->
+
+</body>
+</html>

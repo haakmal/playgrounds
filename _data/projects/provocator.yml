@@ -2,3 +2,7 @@ title: "Provocator 9000"
 description: "[Work in progress] An interactive AI scenario provocation generator, that can yield positive and negative outputs for a given scenario/idea/concept."
 credits: "Haider Akmal"
 url: "/projects/provocator/"
+date: 2025-01-01
+categories:
+  - play
+  - research

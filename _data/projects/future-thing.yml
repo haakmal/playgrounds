@@ -1,4 +1,10 @@
 title: "The (Provoked) Thing From The Future"
 description: "A handy generator for The Thing From The Future for ideation and critique aimed at AI-guided future provocations."
-credits: "Haider Akmal (this implementation) but original Stuart Candy & Jeff Watson"
+credits: |
+  Haider Akmal,
+  originally by Stuart Candy and Jeff Watson
 url: "/projects/future-thing/"
+date: 2024-10-02
+categories:
+  - tools
+  - teaching
