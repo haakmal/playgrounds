@@ -1,44 +1,19 @@
-# DDES1150 Usability Report Tool — V3 test prototype
+# Usability Reporting Tool
 
-A dependency-free client-side prototype for building a structured usability report.
+A dependency-free client-side tool for building a structured usability report.
 
-## V3 interface model
+This tool emerged out of an observation I had in my classrooms, students often found the process of making a usability report confusing with understanding and applying heuristics. Students add one finding at a time in a single editor in hopes of recreating the experience in similar industry standard heuristic capturing tools.
 
-The report is now primarily a table. Students add one finding at a time in a single editor. Saving the finding returns it to the table, and clicking any table row reopens that finding for editing. This avoids a growing stack of open forms and keeps the main workspace readable.
+The heuristic library is possibly the biggest benefit of this tool as it is a large reference point with search, source filters, category filters, definitions, look-for guidance, examples and related principles.
 
-The heuristic library remains a large reference modal with search, source filters, category filters, definitions, look-for guidance, examples and related principles.
+## Privacy and Storage
 
-## Files
-
-- `index.html` — app structure
-- `styles.css` — interface and print styles
-- `app.js` — report management, LocalStorage, table/editor behaviour, filtering, import/export and printing
-- `heuristics.js` — curated combined heuristic library
-
-## Run locally
-
-Open `index.html` in a modern browser. No build step or server is required.
-
-For GitHub Pages, place all four files in the same repository/folder and enable Pages.
-
-## Data
-
-Reports are stored in browser LocalStorage. JSON export/import is used for moving a report between browsers or devices.
+Reports are stored in browser `LocalStorage`. JSON export/import is used for moving a report between browsers or devices so students can share with their tutors.
 
 ## PDF
 
-Choose **Print / Save PDF**. The print stylesheet hides the working interface and prints only the condensed findings table with a report title and generated timestamp. The browser supplies the final Save as PDF operation.
+For submission time, students may generate a print ready PDF by choosing **Print / Save PDF**. The print stylesheet hides the working interface and prints only the condensed findings table with a report title and generated timestamp.
 
 ## Heuristic library
 
-The combined library prioritises Nielsen first, then Andy Budd, then Bruce Tognazzini. Shared concepts are consolidated rather than presented as duplicate entries. Source attribution is retained and related principles are shown in the reference modal.
-
-## V3 design intent
-
-The interface is deliberately less intimidating for first-year interaction design students: one active finding editor, a compact report table, simple filters, and detailed theory kept behind the heuristic library when needed.
-
-
-## V3 changes
-- Added delete finding action with confirmation.
-- Added report context to print/PDF output.
-- Added traffic-light severity colours: green for Minor, yellow for Moderate, red for Serious.
+The combined library prioritises Nielsen first, then Andy Budd, then Bruce Tognazzini. Shared concepts are consolidated rather than presented as duplicate entries. Source attribution is retained and related principles are shown in the reference modal. For my students I would recommend exploring related principles before commiting to a heuristic.
