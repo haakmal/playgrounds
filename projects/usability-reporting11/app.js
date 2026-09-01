@@ -453,14 +453,7 @@ function markEdited(f) {
 }
 
 function handleFindingTableKeys(e) {
-  if (e.key!=='Escape') return;
-  closeFindingEditor();
-  closeModal('reportToolsModal');
-  closeModal('interfaceHelpDialog');
-  closeModal('libraryModal');
-  closeModal('reportsModal');
-  closeModal('confirmModal');
-  closeModal('findingDeleteModal');
+  if (e.key==='Escape') closeFindingEditor();
 }
 
 function openLibrary(f) {
@@ -550,7 +543,7 @@ function renderReports() {
   const list = $('#reportsList');
   const arr = Object.values(state.reports).sort((a,b)=>b.modified.localeCompare(a.modified));
   list.innerHTML = arr.map(r=>`<div class="report-row"><div><div class="report-name">${escapeHTML(r.title)}${r.id===state.activeId?' · open':''}</div><div class="report-meta-line">${r.findings.length} ${r.findings.length===1?'finding':'findings'} · edited ${formatDate(r.modified)}</div></div><div class="report-actions"><button class="button secondary" data-report-open="${escapeHTML(r.id)}">Open</button><button class="button secondary" data-report-rename="${escapeHTML(r.id)}">Rename</button><button class="button secondary" data-report-duplicate="${escapeHTML(r.id)}">Duplicate</button><button class="button secondary" data-report-delete="${escapeHTML(r.id)}">Delete</button></div></div>`).join('');
-  $$('[data-report-open]',list).forEach(b=>b.onclick=()=>{state.activeId=b.dataset.reportOpen; state.editingFindingDraft=null; state.editingFindingId=null; state.currentFindingForLibrary=null; persist(); populateContext(); renderFindings(); renderReports(); closeModal('reportsModal');});
+  $$('[data-report-open]',list).forEach(b=>b.onclick=()=>{state.activeId=b.dataset.reportOpen; state.editingFindingId=null; persist(); populateContext(); renderFindings(); renderReports(); closeModal('reportsModal');});
   $$('[data-report-rename]',list).forEach(b=>b.onclick=()=>renameReport(b.dataset.reportRename));
   $$('[data-report-duplicate]',list).forEach(b=>b.onclick=()=>duplicateReport(b.dataset.reportDuplicate));
   $$('[data-report-delete]',list).forEach(b=>b.onclick=()=>{state.reportToDelete=b.dataset.reportDelete;openModal('confirmModal');});
@@ -560,7 +553,7 @@ function createReport() {
   const name = prompt('Name this report','Untitled usability report');
   if (name===null) return;
   const r = defaultReport(name.trim() || 'Untitled usability report');
-  state.reports[r.id]=r; state.activeId=r.id; state.editingFindingDraft=null; state.editingFindingId=null; state.currentFindingForLibrary=null; persist(); populateContext(); renderFindings(); renderReports(); closeModal('reportsModal');
+  state.reports[r.id]=r; state.activeId=r.id; state.editingFindingId=null; persist(); populateContext(); renderFindings(); renderReports(); closeModal('reportsModal');
 }
 function renameReport(id) {
   const r=state.reports[id]; const name=prompt('Rename report',r.title); if(name===null)return;
@@ -569,7 +562,7 @@ function renameReport(id) {
 function duplicateReport(id) {
   const src=state.reports[id]; const name=prompt('Name the duplicate',`${src.title} copy`); if(name===null)return;
   const copy=JSON.parse(JSON.stringify(src)); copy.id=uid('report'); copy.title=name.trim()||`${src.title} copy`; copy.created=nowISO(); copy.modified=copy.created;
-  state.reports[copy.id]=copy; state.activeId=copy.id; state.editingFindingDraft=null; state.editingFindingId=null; state.currentFindingForLibrary=null; persist(); populateContext(); renderFindings(); renderReports(); closeModal('reportsModal');
+  state.reports[copy.id]=copy; state.activeId=copy.id; state.editingFindingId=null; persist(); populateContext(); renderFindings(); renderReports(); closeModal('reportsModal');
 }
 function deleteConfirmed() {
   const id=state.reportToDelete; if(!state.reports[id])return;
@@ -589,7 +582,7 @@ async function handleImport(e) {
     const data=JSON.parse(await file.text()); const src=normaliseReport(data.report||data);
     if(!src.findings||!src.metadata) throw new Error('Not a supported report');
     const copy=JSON.parse(JSON.stringify(src)); copy.id=uid('report'); copy.title=copy.title||'Imported usability report'; copy.modified=nowISO();
-    state.reports[copy.id]=copy; state.activeId=copy.id; state.editingFindingDraft=null; state.editingFindingId=null; state.currentFindingForLibrary=null; persist(); populateContext(); renderFindings(); renderReports(); closeModal('reportsModal'); toast('Report imported');
+    state.reports[copy.id]=copy; state.activeId=copy.id; state.editingFindingId=null; persist(); populateContext(); renderFindings(); renderReports(); closeModal('reportsModal'); toast('Report imported');
   } catch(err) { alert('Could not import this file. Please use JSON exported by this tool.'); }
   finally { e.target.value=''; }
 }
@@ -609,14 +602,9 @@ function printReport() {
 function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toast.timer); toast.timer=setTimeout(()=>t.classList.remove('show'),1700); }
 
 function bindStaticEvents() {
+  $('#reportsBtn').addEventListener('click',()=>{renderReports();openModal('reportsModal');});
   $('#libraryBtn').addEventListener('click',()=>openLibrary(null));
-  $('#interfaceHelpBtn').addEventListener('click',()=>openModal('interfaceHelpDialog'));
-  $('#reportToolsBtn').addEventListener('click',()=>openModal('reportToolsModal'));
-  $('#openReportsToolBtn').addEventListener('click',()=>{closeModal('reportToolsModal');renderReports();openModal('reportsModal');});
-  $('#newReportToolBtn').addEventListener('click',()=>{closeModal('reportToolsModal');createReport();});
-  $('#importToolBtn').addEventListener('click',()=>{closeModal('reportToolsModal');$('#importFile').click();});
-  $('#exportToolBtn').addEventListener('click',()=>{closeModal('reportToolsModal');exportJSON();});
-  $('#printToolBtn').addEventListener('click',()=>{closeModal('reportToolsModal');printReport();});
+  $('#printBtn').addEventListener('click',printReport);
   $('#addFindingBtn').addEventListener('click',addFinding);
   $('#emptyAddBtn').addEventListener('click',addFinding);
   $('#newReportBtn').addEventListener('click',createReport);
