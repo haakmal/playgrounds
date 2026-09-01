@@ -148,18 +148,14 @@ h3 {
   color:var(--dark);
 }
 .icon-button {
-  border:1px solid var(--black);
+  border:1px solid transparent;
   background:var(--white);
   padding:7px 9px;
   font-weight:700;
 }
-button.button:hover, .icon-button:hover {
+.icon-button:hover {
   border-color:#aaa;
   background:var(--light);
-}
-button.button.primary:hover {
-  border-color:#333;
-  background:var(--dark);
 }
 /* Process navigation */
 .app-shell {
@@ -876,11 +872,11 @@ textarea {
 }
 
 .help-block-blue {
-  background: var(--blue);
+  background: var(--blue-light);
 }
 
 .help-block-red {
-  background: var(--red);
+  background: var(--red-light);
 }
 
 .help-block-complexity {
