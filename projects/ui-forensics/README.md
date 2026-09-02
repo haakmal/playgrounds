@@ -74,3 +74,11 @@ The authored issue library is a comparison point rather than an exhaustive state
 Specimens S41-S50 are polished interfaces with deliberately persuasive or manipulative design choices rather than visibly broken controls. Their issue records use a hidden `classification` of `dark-pattern` and a `pattern` label such as preselection, obstruction, nagging, fake urgency, drip pricing or confirmshaming. These labels are revealed only through the hidden tutor mechanism.
 
 The randomiser also treats specimen class as a diversity constraint, alongside device, category and interaction territory, so a student examination should not become a homogeneous dark-pattern set.
+
+## AI Collaboration
+
+This project was designed and developed by Dr Haider Ali Akmal in collaboration with an AI-supported design and development partner. Naming a specific model would be insufficient and inaccurate as multiple iterations may have been analysed and collaborated on with different models.
+
+AI was used at key points in this project as a collaborative tool for activities including code development and debugging, interface iteration, content refinement, and critical discussion of design decisions. The concept, pedagogical direction, design requirements, evaluation, and final decision-making remain the work and responsibility of the project author.
+
+This acknowledgement reflects a commitment to transparency around AI-assisted creative and technical practice, and an interest in exploring human–AI collaboration as an evolving mode of design practice.

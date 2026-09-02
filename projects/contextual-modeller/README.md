@@ -1,6 +1,21 @@
-# Interaction Constraints
+# Contextual Modelling Companion
 
-A dependency-free client-side tool for exploring constraints in an interaction design project. Aimed at contextual inquiry phases.
+A lightweight sequential reference tool for interaction design students moving from affinity analysis to contextual modelling.
+
+## V1 focus
+- Sequential reference interaction with simple navigation
+- Checkbox-based evidence diagnosis
+- Explicit unsure pathway and tutor referral
+- Follow-up evidence questions
+- Reflection before recommendation
+- Ranked model suggestions with direct links into each model guide
+- Five model guides: Flow, Sequence, Cultural, Physical, Artefact
+- Step-by-step construction guidance
+- Responsive CSS-only schematic diagrams
+- Embedded self-analysis checks
+- No persistence, accounts, export, or model-building canvas
+
+Open `index.html` in a browser.
 
 ## AI Collaboration
 
