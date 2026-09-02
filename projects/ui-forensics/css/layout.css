@@ -1,0 +1,163 @@
+
+.app-header {
+    min-height: 76px;
+    border-bottom: 1px solid var(--black);
+    background: var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 16px 24px;
+}
+.brand-kicker {
+    font-family: var(--mono);
+    font-size: var(--type-small);
+    letter-spacing: .12em;
+    margin-bottom: 4px;
+}
+.header-meta {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    font-family: var(--mono);
+    font-size: var(--type-small);
+    letter-spacing: .04em;
+    text-align: right;
+}
+
+#app { min-height: calc(100vh - 76px); }
+.start-screen,
+.complete-screen {
+    min-height: calc(100vh - 76px);
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(300px, .8fr);
+    gap: 0;
+}
+.start-copy,
+.complete-copy {
+    padding: clamp(32px, 6vw, 84px);
+    border-right: 1px solid var(--black);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.start-copy .lead,
+.complete-copy p { max-width: 720px; font-size: var(--type-body); }
+.protocol-panel,
+.complete-panel {
+    padding: clamp(28px, 5vw, 64px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: var(--black);
+}
+.protocol-panel ol,
+.completed-list { margin: 0 0 28px; padding: 0; list-style: none; }
+.protocol-panel li {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--soft-line);
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    gap: 8px;
+}
+.protocol-panel li span { font-family: var(--mono); }
+.start-note { font-size: var(--type-small); line-height: 1.4; padding: 12px; border: 1px solid var(--line); margin-bottom: 20px; }
+
+.examination-screen {
+    display: grid;
+    grid-template-columns: minmax(190px, 240px) minmax(0, 1fr) minmax(190px, 240px);
+    height: calc(100vh - 76px);
+    min-height: 0;
+}
+.case-panel,
+.task-panel {
+    background: var(--black);
+}
+.case-panel { border-right: 1px solid var(--black); }
+.task-panel { border-left: 1px solid var(--black); }
+.panel-section { padding: 20px; border-bottom: 1px solid var(--soft-line); }
+.case-data { margin: 0; }
+.case-data div { padding: 9px 0; border-bottom: 1px solid var(--soft-line); }
+.case-data div:last-child { border-bottom: 0; }
+.case-data dt { font-family: var(--mono); font-size: var(--type-small); text-transform: uppercase; color: var(--ink); }
+.case-data dd { margin: 3px 0 0; font-size: var(--type-body); word-break: break-word; }
+.issue-panel { text-align: left; }
+.issue-count { font-family: var(--mono); font-size: 3.4rem; line-height: 1; margin: 12px 0 10px; }
+.small-copy { color: var(--mid); font-size: var(--type-small); }
+.guidance-panel { font-size: var(--type-small); color: var(--mid); }
+
+.specimen-column {
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.specimen-header {
+    min-height: 78px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--black);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    background: var(--paper);
+}
+.specimen-header h2 { margin: 2px 0 0; font-size: var(--type-heading); }
+.specimen-status { font-size: var(--type-small); color: var(--ink); white-space: nowrap; }
+.specimen-frame {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 18px;
+    display: flex;
+    background: #111;
+    overflow: hidden;
+}
+.specimen-viewport {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    border: 1px solid #777;
+    background: var(--white);
+}
+.specimen-footer {
+    flex: 0 0 auto;
+    min-height: 68px;
+    padding: 12px 18px;
+    border-top: 1px solid var(--black);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    background: var(--black);
+    font-size: var(--type-small);
+}
+
+.complete-panel .eyebrow { margin-bottom: 12px; }
+.completed-list li { display: grid; grid-template-columns: 42px 1fr; border-bottom: 1px solid var(--soft-line); padding: 10px 0; }
+.completed-list span { font-family: var(--mono); }
+
+/* Forensic frame: deliberate section separation on dark ground. */
+.start-copy,
+.complete-copy { border-right-color: var(--line); }
+.protocol-panel,
+.complete-panel { border-left: 1px solid var(--line); }
+.case-panel { border-right: 1px solid var(--line); }
+.task-panel { border-left: 1px solid var(--line); }
+.specimen-header { border-bottom-color: var(--line); }
+.specimen-footer { border-top-color: var(--line); }
+.specimen-column { background: var(--black); }
+
+
+/* Forensic surface tones: distinguish adjacent sections while retaining the dark field. */
+.app-header { background: #050505; border-bottom-color: #707070; }
+.start-copy, .complete-copy { background: #070707; }
+.protocol-panel, .complete-panel { background: #0d0d0d; border-left: 1px solid var(--line); }
+.case-panel { background: #090909; border-right-color: var(--line); }
+.task-panel { background: #0d0d0d; border-left-color: var(--line); }
+.specimen-header { background: #0b0b0b; border-bottom-color: var(--line); }
+.specimen-footer { background: #090909; border-top-color: var(--line); }
+.panel-section { border-bottom-color: #505050; }
+.case-data div { border-bottom-color: #404040; }
+.guidance-panel, .small-copy { color: #c8c8c8; }

@@ -1,0 +1,4 @@
+export function render(root) {
+root.innerHTML = `<div class="specimen-shell s12"><div class="specimen-desktop"><div class="specimen-topbar"><strong>Document upload</strong><span>Submission portal</span></div><div class="upload-shell"><h2>Upload supporting document</h2><p class="specimen-muted">Select the file you want to submit.</p><div class="dropzone" id="s12-drop"><div><strong>Drop file here</strong><p>or choose a file from your device</p><button id="s12-choose">Choose file</button></div></div><div id="s12-progress" hidden><div class="upload-bar"><div class="upload-fill"></div></div><p class="specimen-muted">Uploading… 90%</p></div><div id="s12-done" class="specimen-message" hidden>Upload complete.</div></div></div></div>`;
+root.querySelector('#s12-choose').addEventListener('click',()=>{root.querySelector('#s12-progress').hidden=false; setTimeout(()=>root.querySelector('#s12-done').hidden=false,1100);});
+}

@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>UI Forensics — Debug Library</title>
+    <meta name="ui-forensics-version" content="4" />
+    <meta name="description" content="Debug view for reviewing every UI Forensics specimen in sequence.">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/specimen.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/debug.css">
+</head>
+<body data-mode="debug" class="debug-page">
+    <header class="app-header">
+        <div class="brand-block">
+            <div class="brand-kicker">UI FORENSICS UNIT</div>
+            <h1>Heuristic Examination</h1>
+        </div>
+        <div class="header-meta" aria-label="Application status">
+            <span>FIELD TOOL / INTERFACE ANALYSIS</span>
+            <span id="header-case">DEBUG / FULL LIBRARY</span>
+        </div>
+    </header>
+
+    <section class="debug-toolbar" aria-label="Debug controls">
+        <div>
+            <span class="debug-label mono">DEBUG MODE</span>
+            <span class="debug-description">Sequential review of all specimen implementations. No randomisation.</span>
+        </div>
+        <div class="debug-controls">
+            <button id="debug-previous" class="secondary-button" type="button">← Previous</button>
+            <span id="debug-position" class="debug-position mono">01 / 50</span>
+            <button id="debug-next" class="secondary-button" type="button">Next →</button>
+            <label class="debug-jump mono" for="debug-select">JUMP
+                <select id="debug-select"></select>
+            </label>
+        </div>
+    </section>
+
+    <main id="app">
+        <section id="start-screen" class="start-screen">
+            <div class="start-copy">
+                <p class="eyebrow mono">CASE BRIEF</p>
+                <h2>Investigate the interface.</h2>
+                <p class="lead">Five digital interface specimens will be assigned to you. Each contains a known number of deliberately designed usability problems.</p>
+                <p>Complete the supplied task. Interact with the specimen. Observe what happens. Record your observations in the Usability Reporting Tool.</p>
+            </div>
+            <div class="protocol-panel">
+                <p class="eyebrow mono">EXAMINATION PROTOCOL</p>
+                <ol>
+                    <li><span>01</span> Read the assigned task.</li>
+                    <li><span>02</span> Interact with the specimen.</li>
+                    <li><span>03</span> Observe system behaviour.</li>
+                    <li><span>04</span> Document potential issues.</li>
+                    <li><span>05</span> Move to the next specimen.</li>
+                </ol>
+                <div class="start-note mono">DOCUMENTED ISSUES ARE DISCLOSED. THEIR LOCATION AND TYPE ARE NOT.</div>
+                <button id="start-button" class="primary-button">Begin examination</button>
+            </div>
+        </section>
+
+        <section id="examination-screen" class="examination-screen" hidden>
+            <aside class="case-panel">
+                <div class="panel-section">
+                    <p class="eyebrow mono">CASE DATA</p>
+                    <dl class="case-data">
+                        <div><dt>Case</dt><dd id="case-id">—</dd></div>
+                        <div><dt>Specimen</dt><dd id="specimen-id">—</dd></div>
+                        <div><dt>Type</dt><dd id="specimen-type">—</dd></div>
+                        <div><dt>Device</dt><dd id="specimen-device">—</dd></div>
+                        <div><dt>Status</dt><dd id="specimen-status">UNEXAMINED</dd></div>
+                    </dl>
+                </div>
+                <div class="panel-section issue-panel">
+                    <p class="eyebrow mono">DOCUMENTED ISSUES</p>
+                    <div class="issue-count" id="issue-count">00</div>
+                    <p class="small-copy">Known usability issues deliberately present in this specimen.</p>
+                </div>
+            </aside>
+
+            <section class="specimen-column">
+                <div class="specimen-header">
+                    <div>
+                        <p class="eyebrow mono">SPECIMEN <span id="specimen-number">01</span> / <span id="specimen-total">05</span></p>
+                        <h2 id="specimen-name">—</h2>
+                    </div>
+                    <div class="specimen-status mono" id="specimen-kind">LIVE DOCUMENT</div>
+                </div>
+                <div id="specimen-frame" class="specimen-frame" aria-label="Interactive interface specimen">
+                    <div id="specimen-viewport" class="specimen-viewport"></div>
+                </div>
+                <div class="specimen-footer mono">
+                    <span id="specimen-note">INTERACTIVE EVIDENCE / EXAMINE THROUGH USE</span>
+                    <button id="next-button" class="secondary-button">Next specimen →</button>
+                </div>
+            </section>
+
+            <aside class="task-panel">
+                <div class="panel-section">
+                    <p class="eyebrow mono">EXAMINATION TASK</p>
+                    <div id="specimen-task" class="task-copy">—</div>
+                </div>
+                <div class="panel-section guidance-panel">
+                    <p class="eyebrow mono">FIELD NOTE</p>
+                    <p>Do not hunt for named heuristics. First notice what the interface makes you hesitate, repeat, misread or recover from.</p>
+                </div>
+            </aside>
+        </section>
+
+        <section id="complete-screen" class="complete-screen" hidden>
+            <div class="complete-copy">
+                <p class="eyebrow mono">EXAMINATION COMPLETE</p>
+                <h2>Specimen set exhausted.</h2>
+                <p>You have examined five interfaces. Review your observations in the Usability Reporting Tool before comparing them with the documented issues.</p>
+            </div>
+            <div class="complete-panel">
+                <p class="eyebrow mono">SPECIMENS EXAMINED</p>
+                <ol id="completed-list" class="completed-list"></ol>
+                <button id="new-examination-button" class="primary-button">Begin another examination</button>
+            </div>
+        </section>
+    </main>
+
+    <div id="tutor-reveal" class="tutor-reveal" hidden aria-live="polite"></div>
+    <div id="issue-dialog" class="issue-dialog" hidden>
+        <div class="issue-dialog-backdrop" data-close-issue></div>
+        <section class="issue-dialog-panel" role="dialog" aria-modal="true" aria-labelledby="issue-dialog-title">
+            <button class="dialog-close" data-close-issue aria-label="Close issue detail">×</button>
+            <p class="eyebrow mono" id="issue-dialog-heuristic">HEURISTIC</p>
+            <h2 id="issue-dialog-title">Issue</h2>
+            <p id="issue-dialog-description"></p>
+            <div class="issue-dialog-meta mono" id="issue-dialog-meta"></div>
+        </section>
+    </div>
+
+
+    <!-- Curious examiners may inspect the source. There is a hidden tutor reveal: Shift+R.
+         It is intentionally not advertised in the student interface; curiosity is rewarded. -->
+    <script type="module" src="js/app.js?v=4"></script>
+</body>
+</html>

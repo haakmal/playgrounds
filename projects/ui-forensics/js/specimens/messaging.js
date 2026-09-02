@@ -1,0 +1,4 @@
+export function render(root) {
+root.innerHTML = `<div class="specimen-shell s17"><div class="specimen-mobile"><div class="message-shell"><div class="message-header"><strong>Sam</strong><div class="status-note">active 2m ago</div></div><div class="message-list"><div class="bubble">Can you send me the revised board?</div><div class="bubble right">Yes — sending it now.</div><div class="bubble">Thanks.</div></div><div class="message-compose"><input id="s17-message" class="specimen-input" value="Revised board attached."><button id="s17-send">Send</button></div></div></div></div>`;
+root.querySelector('#s17-send').addEventListener('click',()=>{const input=root.querySelector('#s17-message'); const list=root.querySelector('.message-list'); const bubble=document.createElement('div'); bubble.className='bubble right pending'; bubble.textContent=input.value; list.appendChild(bubble); input.value='';});
+}

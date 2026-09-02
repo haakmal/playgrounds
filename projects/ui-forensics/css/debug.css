@@ -1,0 +1,71 @@
+body.debug-page .debug-toolbar {
+    min-height: 54px;
+    border-bottom: 1px solid var(--black);
+    background: var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 8px 20px;
+}
+body.debug-page .debug-label {
+    display: inline-block;
+    margin-right: 12px;
+    font-size: var(--type-small);
+    font-weight: 700;
+    color: var(--white);
+}
+body.debug-page .debug-description {
+    font-size: var(--type-small);
+    color: var(--mid);
+}
+body.debug-page .debug-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+body.debug-page .debug-controls .secondary-button {
+    min-width: 110px;
+    font-family: var(--mono);
+    font-size: var(--type-small);
+    font-weight: 700;
+}
+body.debug-page .debug-position {
+    min-width: 60px;
+    text-align: center;
+    font-size: var(--type-small);
+    color: var(--white);
+}
+body.debug-page .debug-jump {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 6px;
+    color: var(--white);
+    font-size: var(--type-small);
+}
+body.debug-page .debug-jump select {
+    border: 1px solid var(--line);
+    background: var(--black);
+    color: var(--white);
+    padding: 8px 28px 8px 8px;
+    font: inherit;
+    min-width: 190px;
+}
+body.debug-page .debug-controls button:disabled {
+    opacity: .35;
+    cursor: not-allowed;
+}
+@media (max-width: 900px) {
+    body.debug-page .debug-toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+    body.debug-page .debug-controls {
+        justify-content: flex-start;
+    }
+}
+
+body.debug-page .debug-toolbar { background: #0d0d0d; border-bottom-color: #707070; }

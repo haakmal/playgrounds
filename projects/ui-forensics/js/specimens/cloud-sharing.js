@@ -1,0 +1,4 @@
+export function render(root) {
+    root.innerHTML = `<div class="specimen-shell s26"><div class="specimen-desktop"><div class="specimen-topbar"><strong>Northline Drive</strong><span>Share</span></div><div class="share-shell"><div class="share-grid"><section class="share-card"><h2>Project brief.pdf</h2><p class="specimen-muted">Share with</p><input class="specimen-input" value="Sam Patel"><div class="permission-option active">Contributor</div><div class="permission-option">Participant</div><div class="permission-option">Collaborator</div><button id="s26-change">Change permission</button></section><aside class="share-card"><strong>Current access</strong><div id="s26-current" class="permission-row">Sam · Editor</div><p class="specimen-muted">Changes apply immediately.</p></aside></div></div></div></div>`;
+    root.querySelector('#s26-change').addEventListener('click', () => root.querySelector('#s26-current').textContent = 'Sam · Commenter');
+}

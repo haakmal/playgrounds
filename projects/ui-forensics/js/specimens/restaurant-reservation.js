@@ -1,0 +1,4 @@
+export function render(root) {
+    root.innerHTML = `<div class="specimen-shell s37"><div class="specimen-mobile"><div class="specimen-topbar"><strong>Northline Dining</strong><span>Reservation</span></div><div class="reservation-shell"><div class="reservation-card"><h2>Friday 18:00</h2><p class="specimen-muted">Table for 2 · Main room</p><div class="time-option"><span>18:00</span><button>Available</button></div><div class="time-option"><span>19:00</span><button id="s37-seven">Select</button></div><div id="s37-state" class="reservation-state" hidden>Reservation confirmed</div></div></div></div></div>`;
+    root.querySelector('#s37-seven').addEventListener('click', () => { root.querySelectorAll('.time-option').forEach((row,index)=>{ if(index===0) row.hidden=true; }); root.querySelector('#s37-state').hidden=false; });
+}

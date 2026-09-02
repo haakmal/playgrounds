@@ -1,0 +1,5 @@
+export function render(root) {
+root.innerHTML = `<div class="specimen-shell s02"><div class="specimen-mobile"><div class="specimen-topbar"><strong>Northline</strong><span>Sign in</span></div><div class="recovery-wrap"><div class="recovery-body"><h2>Reset password</h2><p>Enter your account email to request a recovery link.</p><div class="recovery-grid"><input id="s02-email" class="specimen-input" value="alex@example.edu" aria-label="Email"><button id="s02-send">Send recovery link</button><a href="#" class="tiny-link" id="s02-account-link">Use a different account</a><div id="s02-feedback" class="rate-limit specimen-message" hidden></div></div></div></div></div></div>`;
+let count=0; root.querySelector('#s02-send').addEventListener('click',()=>{count++; const f=root.querySelector('#s02-feedback'); if(count<3){f.textContent=''; f.hidden=true;} else {f.textContent='You have requested too many recovery emails. Please try again later.'; f.hidden=false;}});
+root.querySelector('#s02-account-link').addEventListener('click',e=>e.preventDefault());
+}

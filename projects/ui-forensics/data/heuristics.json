@@ -1,0 +1,52 @@
+[
+  {
+    "id": "H1",
+    "name": "Visibility of system status",
+    "description": "The system should keep users informed about what is going on through appropriate, timely feedback."
+  },
+  {
+    "id": "H2",
+    "name": "Match between system and the real world",
+    "description": "Information, language and conventions should match users' expectations and the world they understand."
+  },
+  {
+    "id": "H3",
+    "name": "User control and freedom",
+    "description": "Users need clear ways to undo, cancel, go back and recover from actions."
+  },
+  {
+    "id": "H4",
+    "name": "Consistency and standards",
+    "description": "Words, controls and behaviours should follow internal consistency and familiar platform conventions."
+  },
+  {
+    "id": "H5",
+    "name": "Error prevention",
+    "description": "The design should prevent likely mistakes before they happen where practical."
+  },
+  {
+    "id": "H6",
+    "name": "Recognition rather than recall",
+    "description": "Users should not have to remember information or hidden rules from one part of an interaction to another."
+  },
+  {
+    "id": "H7",
+    "name": "Flexibility and efficiency of use",
+    "description": "Interfaces should support efficient paths for experienced users while remaining usable for novices."
+  },
+  {
+    "id": "H8",
+    "name": "Aesthetic and minimalist design",
+    "description": "Interfaces should avoid irrelevant information and competition that obscures what matters."
+  },
+  {
+    "id": "H9",
+    "name": "Help users recognise, diagnose and recover from errors",
+    "description": "Error messages should explain the problem in useful language and suggest a path to recovery."
+  },
+  {
+    "id": "H10",
+    "name": "Help and documentation",
+    "description": "When help is needed it should be easy to find, concise and useful to the task."
+  }
+]

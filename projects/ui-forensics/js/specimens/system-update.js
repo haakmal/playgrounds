@@ -1,0 +1,5 @@
+export function render(root) {
+    root.innerHTML = `<div class="specimen-shell s40"><div class="specimen-desktop"><div class="specimen-topbar"><strong>System Update</strong><span>Version 14.2</span></div><div class="update-shell"><div class="update-grid"><section class="update-card"><h2>Ready to install</h2><p class="specimen-muted">New security and performance improvements.</p><button id="s40-now" class="install-now">INSTALL NOW</button><a href="#" id="s40-schedule" class="schedule-link">Schedule for later</a><div id="s40-warning" class="update-warning" hidden>Computer will be unavailable for approximately 45 minutes.</div></section><aside class="update-card"><strong>System status</strong><p class="specimen-muted">Update scheduled</p></aside></div></div></div></div>`;
+    root.querySelector('#s40-now').addEventListener('click',()=>root.querySelector('#s40-warning').hidden=false);
+    root.querySelector('#s40-schedule').addEventListener('click',e=>{e.preventDefault(); root.querySelector('#s40-warning').textContent='Update scheduled'; root.querySelector('#s40-warning').hidden=false;});
+}

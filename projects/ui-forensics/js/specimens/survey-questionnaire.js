@@ -1,0 +1,6 @@
+export function render(root) {
+    root.innerHTML = `<div class="specimen-shell s34"><div class="specimen-mobile"><div class="specimen-topbar"><strong>Course survey</strong><span>Response</span></div><div class="survey-shell"><div id="s34-progress" class="survey-progress">0% complete</div><div class="survey-card"><div class="question"><strong>How clear was the course?</strong><label><input type="radio" name="q1" value="clear"> Very clear</label><label><input type="radio" name="q1" value="unclear"> Unclear</label></div><div class="question" id="s34-followup" hidden><strong>Tell us why</strong><textarea class="specimen-input" rows="4"></textarea></div><div style="display:flex;gap:8px"><button id="s34-back">Back</button><button id="s34-submit">Submit</button></div></div></div></div></div>`;
+    root.querySelectorAll('[name="q1"]').forEach(input => input.addEventListener('change', () => { root.querySelector('#s34-followup').hidden=false; root.querySelector('#s34-progress').textContent='75% complete'; }));
+    root.querySelector('#s34-back').addEventListener('click', () => root.querySelectorAll('[name="q1"]').forEach(input=>input.checked=false));
+    root.querySelector('#s34-submit').addEventListener('click', () => root.querySelector('#s34-progress').textContent='100% complete');
+}

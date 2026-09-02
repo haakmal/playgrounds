@@ -1,0 +1,512 @@
+[
+  {
+    "id": "S01",
+    "name": "Account Registration",
+    "category": "form",
+    "device": "desktop",
+    "task": "Create an account using the supplied details. Try to complete the registration normally.",
+    "implementation": "registration",
+    "issueCount": 3,
+    "territory": "forms"
+  },
+  {
+    "id": "S02",
+    "name": "Login / Password Recovery",
+    "category": "account",
+    "device": "mobile",
+    "task": "Recover access to the account using the supplied email address.",
+    "implementation": "password-recovery",
+    "issueCount": 3,
+    "territory": "account"
+  },
+  {
+    "id": "S03",
+    "name": "Student Profile",
+    "category": "profile",
+    "device": "desktop",
+    "task": "Update the supplied profile details and save the changes.",
+    "implementation": "profile",
+    "issueCount": 3,
+    "territory": "profile"
+  },
+  {
+    "id": "S04",
+    "name": "Notification Settings",
+    "category": "settings",
+    "device": "mobile",
+    "task": "Configure notifications so only the requested alerts are enabled.",
+    "implementation": "notifications",
+    "issueCount": 2,
+    "territory": "settings"
+  },
+  {
+    "id": "S05",
+    "name": "Appointment Booking",
+    "category": "booking",
+    "device": "desktop",
+    "task": "Book the supplied appointment date and time.",
+    "implementation": "booking",
+    "issueCount": 3,
+    "territory": "booking"
+  },
+  {
+    "id": "S06",
+    "name": "Event Registration",
+    "category": "registration",
+    "device": "mobile",
+    "task": "Register for the event and select the supplied attendance requirements.",
+    "implementation": "event-registration",
+    "issueCount": 2,
+    "territory": "registration"
+  },
+  {
+    "id": "S07",
+    "name": "Search Results",
+    "category": "search",
+    "device": "desktop",
+    "task": "Find the requested item using the available search and sorting controls.",
+    "implementation": "search",
+    "issueCount": 3,
+    "territory": "search"
+  },
+  {
+    "id": "S08",
+    "name": "Product Filters",
+    "category": "search",
+    "device": "mobile",
+    "task": "Find an item matching all of the supplied product criteria.",
+    "implementation": "product-filters",
+    "issueCount": 3,
+    "territory": "filters"
+  },
+  {
+    "id": "S09",
+    "name": "Shopping Cart",
+    "category": "commerce",
+    "device": "desktop",
+    "task": "Adjust the order as requested and proceed toward checkout.",
+    "implementation": "shopping-cart",
+    "issueCount": 3,
+    "territory": "commerce"
+  },
+  {
+    "id": "S10",
+    "name": "Checkout",
+    "category": "commerce",
+    "device": "mobile",
+    "task": "Complete checkout using the supplied customer and payment details.",
+    "implementation": "checkout",
+    "issueCount": 3,
+    "territory": "transaction"
+  },
+  {
+    "id": "S11",
+    "name": "File Manager",
+    "category": "system",
+    "device": "desktop",
+    "task": "Locate the requested file, rename it and move it into the supplied folder.",
+    "implementation": "file-manager",
+    "issueCount": 3,
+    "territory": "file-management"
+  },
+  {
+    "id": "S12",
+    "name": "File Upload",
+    "category": "system",
+    "device": "desktop",
+    "task": "Upload the supplied document and complete the upload.",
+    "implementation": "file-upload",
+    "issueCount": 2,
+    "territory": "upload"
+  },
+  {
+    "id": "S13",
+    "name": "Dashboard",
+    "category": "information",
+    "device": "desktop",
+    "task": "Find the requested metric and explain what the value represents.",
+    "implementation": "dashboard",
+    "issueCount": 2,
+    "territory": "information"
+  },
+  {
+    "id": "S14",
+    "name": "Data Table",
+    "category": "information",
+    "device": "desktop",
+    "task": "Locate the requested record, sort the data and perform the specified row action.",
+    "implementation": "data-table",
+    "issueCount": 3,
+    "territory": "data-table"
+  },
+  {
+    "id": "S15",
+    "name": "Map / Location Finder",
+    "category": "location",
+    "device": "mobile",
+    "task": "Find the supplied place and select it on the map.",
+    "implementation": "map",
+    "issueCount": 2,
+    "territory": "map"
+  },
+  {
+    "id": "S16",
+    "name": "Media Player",
+    "category": "media",
+    "device": "tablet",
+    "task": "Play the supplied media and change the requested playback setting.",
+    "implementation": "media-player",
+    "issueCount": 2,
+    "territory": "media"
+  },
+  {
+    "id": "S17",
+    "name": "Messaging Interface",
+    "category": "communication",
+    "device": "mobile",
+    "task": "Open the specified conversation and send the supplied message.",
+    "implementation": "messaging",
+    "issueCount": 2,
+    "territory": "messaging"
+  },
+  {
+    "id": "S18",
+    "name": "Privacy / Permissions",
+    "category": "settings",
+    "device": "mobile",
+    "task": "Configure permissions to match the supplied task requirements.",
+    "implementation": "permissions",
+    "issueCount": 2,
+    "territory": "permissions"
+  },
+  {
+    "id": "S19",
+    "name": "Help Centre",
+    "category": "help",
+    "device": "desktop",
+    "task": "Find the best instruction for the supplied support problem.",
+    "implementation": "help-centre",
+    "issueCount": 2,
+    "territory": "help"
+  },
+  {
+    "id": "S20",
+    "name": "Confirmation / Cancellation",
+    "category": "booking",
+    "device": "desktop",
+    "task": "Modify or cancel the supplied booking as requested.",
+    "implementation": "cancellation",
+    "issueCount": 2,
+    "territory": "booking"
+  },
+  {
+    "id": "S21",
+    "name": "Course Enrolment",
+    "category": "education",
+    "device": "desktop",
+    "territory": "enrolment",
+    "task": "Enrol in DESN3102, Tuesday at 14:00. Resolve any issues that prevent enrolment.",
+    "implementation": "course-enrolment",
+    "issueCount": 3
+  },
+  {
+    "id": "S22",
+    "name": "Travel Booking",
+    "category": "travel",
+    "device": "desktop",
+    "territory": "comparison",
+    "task": "Find the cheapest direct flight arriving before 18:00.",
+    "implementation": "travel-booking",
+    "issueCount": 3
+  },
+  {
+    "id": "S23",
+    "name": "Food Ordering",
+    "category": "food",
+    "device": "mobile",
+    "territory": "configuration",
+    "task": "Order the vegetarian burger without cheese and review the order.",
+    "implementation": "food-ordering",
+    "issueCount": 3
+  },
+  {
+    "id": "S24",
+    "name": "Alarm / Timer",
+    "category": "utility",
+    "device": "mobile",
+    "territory": "time",
+    "task": "Set an alarm for 07:30 tomorrow morning and save it.",
+    "implementation": "alarm-timer",
+    "issueCount": 2
+  },
+  {
+    "id": "S25",
+    "name": "Document Editor",
+    "category": "productivity",
+    "device": "desktop",
+    "territory": "editing",
+    "task": "Edit the supplied document, apply the requested formatting and save it.",
+    "implementation": "document-editor",
+    "issueCount": 3
+  },
+  {
+    "id": "S26",
+    "name": "Cloud Sharing",
+    "category": "productivity",
+    "device": "desktop",
+    "territory": "permissions",
+    "task": "Give Sam comment-only access to the project document.",
+    "implementation": "cloud-sharing",
+    "issueCount": 3
+  },
+  {
+    "id": "S27",
+    "name": "Weather App",
+    "category": "information",
+    "device": "mobile",
+    "territory": "information",
+    "task": "Determine whether conditions are suitable for an outdoor event at 15:00.",
+    "implementation": "weather-app",
+    "issueCount": 2
+  },
+  {
+    "id": "S28",
+    "name": "Public Transport",
+    "category": "transport",
+    "device": "mobile",
+    "territory": "routing",
+    "task": "Find a route that arrives before 09:00.",
+    "implementation": "public-transport",
+    "issueCount": 3
+  },
+  {
+    "id": "S29",
+    "name": "Banking Transfer",
+    "category": "finance",
+    "device": "mobile",
+    "territory": "transaction",
+    "task": "Transfer $240 to the supplied recipient and review the result.",
+    "implementation": "banking-transfer",
+    "issueCount": 3
+  },
+  {
+    "id": "S30",
+    "name": "Subscription Management",
+    "category": "commerce",
+    "device": "desktop",
+    "territory": "account",
+    "task": "Change the Premium subscription to Basic.",
+    "implementation": "subscription-management",
+    "issueCount": 3
+  },
+  {
+    "id": "S31",
+    "name": "Photo Library",
+    "category": "media",
+    "device": "tablet",
+    "territory": "selection",
+    "task": "Select three photographs and move them into the Fieldwork album.",
+    "implementation": "photo-library",
+    "issueCount": 2
+  },
+  {
+    "id": "S32",
+    "name": "Kanban / Task Board",
+    "category": "productivity",
+    "device": "desktop",
+    "territory": "drag-drop",
+    "task": "Move the task “Prepare critique” to Done and set its priority to High.",
+    "implementation": "kanban-board",
+    "issueCount": 3
+  },
+  {
+    "id": "S33",
+    "name": "Smart Home Controls",
+    "category": "home",
+    "device": "tablet",
+    "territory": "device-control",
+    "task": "Turn off the bedroom light and set the thermostat to 21°C.",
+    "implementation": "smart-home",
+    "issueCount": 2
+  },
+  {
+    "id": "S34",
+    "name": "Survey / Questionnaire",
+    "category": "forms",
+    "device": "mobile",
+    "territory": "questionnaire",
+    "task": "Complete the questionnaire and submit your responses.",
+    "implementation": "survey-questionnaire",
+    "issueCount": 3
+  },
+  {
+    "id": "S35",
+    "name": "Video Meeting",
+    "category": "communication",
+    "device": "desktop",
+    "territory": "meeting",
+    "task": "Join the meeting with microphone off and camera on.",
+    "implementation": "video-meeting",
+    "issueCount": 2
+  },
+  {
+    "id": "S36",
+    "name": "Online Learning Module",
+    "category": "education",
+    "device": "desktop",
+    "territory": "learning",
+    "task": "Complete the lesson requirements and continue to the next module.",
+    "implementation": "learning-module",
+    "issueCount": 2
+  },
+  {
+    "id": "S37",
+    "name": "Restaurant Reservation",
+    "category": "booking",
+    "device": "mobile",
+    "territory": "reservation",
+    "task": "Change the existing reservation from 18:00 to 19:00.",
+    "implementation": "restaurant-reservation",
+    "issueCount": 2
+  },
+  {
+    "id": "S38",
+    "name": "E-commerce Returns",
+    "category": "commerce",
+    "device": "desktop",
+    "territory": "returns",
+    "task": "Return the black notebook from the order and provide a reason.",
+    "implementation": "ecommerce-returns",
+    "issueCount": 3
+  },
+  {
+    "id": "S39",
+    "name": "Accessibility Settings",
+    "category": "settings",
+    "device": "tablet",
+    "territory": "configuration",
+    "task": "Increase text size and reduce interface motion.",
+    "implementation": "accessibility-settings",
+    "issueCount": 2
+  },
+  {
+    "id": "S40",
+    "name": "System Update",
+    "category": "system",
+    "device": "desktop",
+    "territory": "scheduling",
+    "task": "Schedule the update for tonight rather than installing it immediately.",
+    "implementation": "system-update",
+    "issueCount": 3
+  },
+  {
+    "id": "S41",
+    "name": "Streaming Trial",
+    "category": "commerce",
+    "device": "desktop",
+    "territory": "subscription",
+    "task": "Start the 30-day free trial using the recommended plan, then review the trial terms.",
+    "implementation": "streaming-trial",
+    "issueCount": 3,
+    "classification": "dark-pattern"
+  },
+  {
+    "id": "S42",
+    "name": "Travel Add-ons",
+    "category": "travel",
+    "device": "mobile",
+    "territory": "add-ons",
+    "task": "Book the supplied flight without purchasing any additional services.",
+    "implementation": "travel-addons",
+    "issueCount": 3,
+    "classification": "dark-pattern"
+  },
+  {
+    "id": "S43",
+    "name": "Privacy Consent",
+    "category": "privacy",
+    "device": "desktop",
+    "territory": "consent",
+    "task": "Continue using the service while sharing only the information that is necessary.",
+    "implementation": "privacy-consent",
+    "issueCount": 3,
+    "classification": "dark-pattern"
+  },
+  {
+    "id": "S44",
+    "name": "Fashion Sale",
+    "category": "commerce",
+    "device": "mobile",
+    "territory": "urgency",
+    "task": "Purchase the specified jacket after reviewing the offer details.",
+    "implementation": "fashion-sale",
+    "issueCount": 2,
+    "classification": "dark-pattern"
+  },
+  {
+    "id": "S45",
+    "name": "Subscription Cancellation",
+    "category": "commerce",
+    "device": "desktop",
+    "territory": "account-control",
+    "task": "Cancel the current subscription.",
+    "implementation": "subscription-cancellation",
+    "issueCount": 3,
+    "classification": "dark-pattern"
+  },
+  {
+    "id": "S46",
+    "name": "Productivity App",
+    "category": "productivity",
+    "device": "mobile",
+    "territory": "nagging",
+    "task": "Dismiss the prompts and create a new task.",
+    "implementation": "productivity-app",
+    "issueCount": 2,
+    "classification": "dark-pattern"
+  },
+  {
+    "id": "S47",
+    "name": "Checkout",
+    "category": "commerce",
+    "device": "desktop",
+    "territory": "pricing",
+    "task": "Purchase the displayed product at the advertised price.",
+    "implementation": "dark-checkout",
+    "issueCount": 3,
+    "classification": "dark-pattern"
+  },
+  {
+    "id": "S48",
+    "name": "News / Media Site",
+    "category": "media",
+    "device": "desktop",
+    "territory": "persuasion",
+    "task": "Dismiss the newsletter invitation and continue reading.",
+    "implementation": "news-media",
+    "issueCount": 2,
+    "classification": "dark-pattern"
+  },
+  {
+    "id": "S49",
+    "name": "Marketplace",
+    "category": "commerce",
+    "device": "mobile",
+    "territory": "social-proof",
+    "task": "Review the product and decide whether to purchase it.",
+    "implementation": "marketplace",
+    "issueCount": 2,
+    "classification": "dark-pattern"
+  },
+  {
+    "id": "S50",
+    "name": "Software Download",
+    "category": "software",
+    "device": "desktop",
+    "territory": "download",
+    "task": "Download the free version of the software.",
+    "implementation": "software-download",
+    "issueCount": 3,
+    "classification": "dark-pattern"
+  }
+]

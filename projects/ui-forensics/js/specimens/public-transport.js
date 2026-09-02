@@ -1,0 +1,5 @@
+export function render(root) {
+    root.innerHTML = `<div class="specimen-shell s28"><div class="specimen-mobile"><div class="specimen-topbar"><strong>Northline Transit</strong><span>Route planner</span></div><div class="transit-shell"><div class="route-card"><strong>Route 14</strong><div class="route-detail"><span>Depart 08:20</span><span>Arrive 08:52</span></div><span id="s28-delay" class="delay-badge">+14 min delayed</span><button id="s28-select">Select route</button></div><div class="route-card"><strong>Route 6</strong><div class="route-detail"><span>Depart 08:35</span><span>Arrive 09:04</span></div><button id="s28-compare">Compare</button></div><div id="s28-message" class="route-delay" hidden>Comparison loaded. Your original route selection was cleared.</div></div></div></div>`;
+    root.querySelector('#s28-select').addEventListener('click', () => root.querySelector('.route-card').classList.add('active'));
+    root.querySelector('#s28-compare').addEventListener('click', () => { root.querySelectorAll('.route-card')[0].classList.remove('active'); root.querySelector('#s28-message').hidden=false; });
+}

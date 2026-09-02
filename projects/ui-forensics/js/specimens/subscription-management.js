@@ -1,0 +1,5 @@
+export function render(root) {
+    root.innerHTML = `<div class="specimen-shell s30"><div class="specimen-desktop"><div class="specimen-topbar"><strong>Northline Plus</strong><span>Subscription</span></div><div class="subscription-shell"><div class="plan-grid"><div class="plan-card featured"><span class="specimen-chip">POPULAR</span><h2>Premium</h2><p class="specimen-muted">$18 / month</p><button>Keep Premium</button></div><div class="plan-card"><h2>Basic</h2><p class="specimen-muted">$8 / month</p><a id="s30-downgrade" class="downgrade-link" href="#">Continue without Premium benefits</a></div></div><div id="s30-steps" class="plan-card" style="margin-top:14px">Change plan → Confirm changes → Confirm again<button id="s30-confirm">Continue</button></div></div></div></div>`;
+    root.querySelector('#s30-downgrade').addEventListener('click', e => { e.preventDefault(); root.querySelector('#s30-steps').hidden = false; });
+    root.querySelector('#s30-confirm').addEventListener('click', () => root.querySelector('#s30-steps').innerHTML += '<p class="specimen-muted">Please confirm again to continue.</p>');
+}

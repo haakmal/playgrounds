@@ -1,0 +1,3 @@
+export function render(root) {
+    root.innerHTML = `<div class="specimen-shell s39"><div class="specimen-tablet"><div class="specimen-topbar"><strong>Display settings</strong><span>Accessibility</span></div><div class="access-shell"><div class="settings-card"><div class="setting-row"><label>Text size</label><select id="s39-size"><option>100%</option><option>125%</option><option>150%</option></select></div><div class="setting-row"><label>Disable reduced motion: OFF</label><input id="s39-motion" type="checkbox"></div><div class="preview-window"><p>Preview text remains unchanged until saved.</p><button>Save settings</button></div></div></div></div></div>`;
+}

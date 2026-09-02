@@ -1,0 +1,4 @@
+export function render(root) {
+root.innerHTML = `<div class="specimen-shell s20"><div class="specimen-desktop"><div class="specimen-topbar"><strong>Clinic appointments</strong><span>Manage booking</span></div><div class="cancel-shell"><h2>Appointment</h2><div class="booking-summary"><strong>Tuesday 16 June · 2:00 PM</strong><p class="specimen-muted">Design consultation · Room 4</p><p>Changing this appointment may affect your eligibility for the current booking slot.</p></div><div class="cancel-actions"><button id="s20-back">Keep booking</button><button id="s20-cancel" class="danger">Cancel without keeping</button></div><div id="s20-message" class="specimen-message" hidden>Cancellation could not be completed.</div></div></div></div>`;
+root.querySelector('#s20-back').addEventListener('click',()=>{}); root.querySelector('#s20-cancel').addEventListener('click',()=>{root.querySelector('#s20-message').hidden=false;});
+}
