@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Interaction Map</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-copy">
+      <p class="eyebrow">Interaction Stream · Toolkit</p>
+      <h1>Interaction Mapper</h1>
+      <p class="header-subtitle">Map what a person does, knows, and feels alongside how a system responds.</p>
+      <div class="project-line" aria-live="polite">
+        <span>Map</span>
+        <strong id="activeMapName">Untitled interaction</strong>
+        <span>·</span>
+        <span class="saved-label" id="saveStatus">Saved locally</span>
+      </div>
+    </div>
+    <nav class="toolbar" aria-label="Interaction map tools">
+      <button class="tool-button" id="mapToolsButton" type="button">Map tools</button>
+      <button class="tool-button" id="helpButton" type="button" aria-label="How to use this interface">?</button>
+    </nav>
+  </header>
+
+  <main class="app-shell">
+    <section class="notice-panel" aria-labelledby="noticeTitle">
+      <div>
+        <p class="eyebrow">Working locally</p>
+        <h2 id="noticeTitle">Your maps live in this browser.</h2>
+        <p>Browser data can be cleared or lost. Save and export often, especially when moving between devices.</p>
+      </div>
+      <button class="button button-primary" id="topPrintButton" type="button">Print / Save PDF</button>
+    </section>
+
+    <section class="setup-section" aria-labelledby="setupTitle">
+      <div class="section-heading">
+        <div class="section-index">01</div>
+        <div>
+          <h2 id="setupTitle">Set up the interaction</h2>
+          <p>Keep the focus on an activity, not a product or technology alone.</p>
+        </div>
+      </div>
+      <div class="form-grid">
+        <label class="field field-wide">
+          <span>Interaction title</span>
+          <input id="interactionTitle" type="text" placeholder="e.g. Entering a busy train station">
+        </label>
+        <label class="field">
+          <span>Scenario or context</span>
+          <textarea id="context" rows="3" placeholder="Where, when, and under what circumstances does this happen?"></textarea>
+        </label>
+        <label class="field">
+          <span>What is the person trying to do?</span>
+          <textarea id="task" rows="3" placeholder="Describe the activity in one or two sentences."></textarea>
+        </label>
+      </div>
+    </section>
+
+    <section class="map-section" aria-labelledby="mapTitle">
+      <div class="section-heading section-heading-map">
+        <div class="section-index">02</div>
+        <div class="map-heading-copy">
+          <h2 id="mapTitle">Map the interaction</h2>
+          <p>Add one row for each important moment. Begin with what you can observe; add interpretation only where it helps you understand the interaction.</p>
+          <p>Remember, not all moments will have both human and system behaviour present. Always observe first, then interpret.</p>
+        </div>
+      </div>
+
+      <div class="map-tabs" id="mapTabs" role="tablist" aria-label="Saved interaction maps"></div>
+      <div class="map-tab-actions">
+        <button class="button button-secondary" id="addMapButton" type="button">+ New map</button>
+        <button class="button button-secondary" id="duplicateButton" type="button">Duplicate current map</button>
+      </div>
+
+      <div class="map-scroll" tabindex="0" aria-label="Scrollable interaction map">
+        <table class="interaction-table">
+          <thead>
+            <tr>
+              <th class="moment-column">Moment</th>
+              <th class="human-column" colspan="3"><span class="column-group human-group">Human behaviour</span></th>
+              <th class="system-column" colspan="3"><span class="column-group system-group">System behaviour</span></th>
+            </tr>
+            <tr class="subhead-row">
+              <th></th>
+              <th>Doing</th>
+              <th>Knowing</th>
+              <th>Feeling</th>
+              <th>Input</th>
+              <th>Process</th>
+              <th>Output</th>
+            </tr>
+          </thead>
+          <tbody id="mapRows"></tbody>
+        </table>
+      </div>
+      <button class="add-row-button" id="addRowButton" type="button">+ Add interaction moment</button>
+    </section>
+
+    <section class="notes-section" aria-labelledby="notesTitle">
+      <div class="section-heading">
+        <div class="section-index">03</div>
+        <div>
+          <h2 id="notesTitle">Working notes</h2>
+          <p>Use this space for loose observations, questions, or ideas to return to later.</p>
+        </div>
+      </div>
+      <textarea id="notes" class="notes-area" rows="6" placeholder="Your notes..."></textarea>
+    </section>
+
+    <section class="end-panel" aria-label="Map actions">
+      <p><strong>Save and export often.</strong> The current working session is stored only in this browser.</p>
+      <button class="button button-primary" id="bottomPrintButton" type="button">Print / Save PDF</button>
+    </section>
+  </main>
+
+  <section class="print-only" id="printMaps" aria-label="Printable interaction maps"></section>
+
+  <dialog id="mapToolsDialog" class="tool-dialog">
+    <div class="dialog-header">
+      <div>
+        <p class="eyebrow">MAP TOOLS</p>
+        <h2>Manage your maps</h2>
+      </div>
+      <button class="icon-button" data-close-dialog="mapToolsDialog" type="button" aria-label="Close map tools">×</button>
+    </div>
+    <div class="dialog-content">
+      <p class="dialog-intro">Open, save, duplicate, or export the maps in this browser session.</p>
+      <button class="tool-card" id="myMapsButton" type="button"><strong>My maps</strong><span>Open saved maps, rename, duplicate, or delete them.</span></button>
+      <button class="tool-card" id="newMapToolButton" type="button"><strong>New map</strong><span>Start a separate map with an empty interaction table.</span></button>
+      <button class="tool-card" id="exportJsonButton" type="button"><strong>Export JSON</strong><span>Save a portable copy of this working session.</span></button>
+      <button class="tool-card" id="importJsonButton" type="button"><strong>Import JSON</strong><span>Restore a working session exported from this tool.</span></button>
+      <button class="tool-card" id="printToolButton" type="button"><strong>Print / Save PDF</strong><span>Export every saved map one after another using the print layout.</span></button>
+      <p class="dialog-warning"><strong>Stored locally.</strong> Export JSON regularly when moving between devices.</p>
+    </div>
+  </dialog>
+
+  <dialog id="myMapsDialog" class="tool-dialog">
+    <div class="dialog-header">
+      <div>
+        <p class="eyebrow">WORKSPACE</p>
+        <h2>My maps</h2>
+      </div>
+      <button class="icon-button" data-close-dialog="myMapsDialog" type="button" aria-label="Close my maps">×</button>
+    </div>
+    <div class="dialog-content">
+      <div id="savedMapsList" class="saved-maps-list"></div>
+      <div class="dialog-actions">
+        <button class="button button-secondary" id="dialogNewMapButton" type="button">New map</button>
+        <button class="button button-secondary" id="dialogExportJsonButton" type="button">Export JSON</button>
+        <button class="button button-secondary" id="dialogImportJsonButton" type="button">Import JSON</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="helpDialog" class="help-dialog">
+    <div class="dialog-header">
+      <div>
+        <p class="eyebrow">HOW TO USE THIS INTERFACE</p>
+        <h2>Using the Interaction Map</h2>
+      </div>
+      <button class="icon-button" data-close-dialog="helpDialog" type="button" aria-label="Close help">×</button>
+    </div>
+    <div class="dialog-content">
+      <p>This is a digital aid for making a simple interaction map. You may sketch or map manually first, then use this tool to keep a clear working version.</p>
+      <dl class="help-list">
+        <div><dt>Doing</dt><dd>What does the person do, choose, pause, repeat, or change?</dd></div>
+        <div><dt>Knowing</dt><dd>What does the person need to know, notice, remember, or understand?</dd></div>
+        <div><dt>Feeling</dt><dd>What qualities appear in the experience? Base this on observation or what the person tells you.</dd></div>
+        <div><dt>Input</dt><dd>What does the system receive or detect?</dd></div>
+        <div><dt>Process</dt><dd>What happens in response to the person’s input?</dd></div>
+        <div><dt>Output</dt><dd>What does the system communicate, change, or make available?</dd></div>
+      </dl>
+      <p class="help-note">Keep one interaction in focus. If your topic is broad, describe the specific activity you want to observe.</p>
+    </div>
+  </dialog>
+
+  <input id="importFileInput" type="file" accept="application/json,.json" hidden>
+
+  <script src="app.js"></script>
+</body>
+</html>
