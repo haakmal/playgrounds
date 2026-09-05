@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Interaction Research Mapper for profiles, empathy maps and interaction journeys.">
+  <title>Interaction Research Mapper</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="mobile-gate" aria-hidden="true">
+    <div class="mobile-gate-card">
+      <div class="overline">Interaction Stream · Research Mapper</div>
+      <h1>Desktop / tablet only</h1>
+      <p>This tool is designed for a larger screen. Open it on a desktop, laptop or tablet to work with the maps.</p>
+    </div>
+  </div>
+
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand-block">
+        <div class="brand-kicker">Interaction Stream · Toolkit</div>
+        <div class="brand-row">
+          <h1>Research Mapper</h1>
+          <span id="docTitleDisplay">Untitled research</span>
+        </div>
+        <div class="brand-status"><span id="saveStatus">Saved locally</span></div>
+      </div>
+      <div class="top-actions">
+        <button class="tool-btn" id="documentsBtn">My documents</button>
+        <button class="tool-btn" id="mapToolsBtn">Map tools</button>
+        <button class="tool-btn square" id="helpBtn" aria-label="Help">?</button>
+      </div>
+    </header>
+
+    <div class="local-strip">
+      <div class="local-strip-label">Working locally</div>
+      <div class="local-strip-copy">Your research maps are stored in this browser. Export JSON regularly when moving between devices.</div>
+      <button class="solid-btn" id="printBtn">Print / save PDF</button>
+    </div>
+
+    <nav class="section-bar" aria-label="Research sections">
+      <button class="section-tab active" data-tab="profiles"><span>01</span> Profiles</button>
+      <button class="section-tab" data-tab="empathy"><span>02</span> Empathy maps</button>
+      <button class="section-tab" data-tab="journeys"><span>03</span> Journeys</button>
+      <button class="section-tab" data-tab="analyse"><span>04</span> Analyse</button>
+    </nav>
+
+    <div class="context-bar">
+      <label class="context-field">
+        <span>Interaction / task</span>
+        <input id="interactionInput" placeholder="e.g. confirming a payment at self-checkout">
+      </label>
+      <div class="context-tools" id="viewTools"></div>
+    </div>
+
+    <div class="workspace-shell" id="workspaceShell">
+      <main class="canvas" id="canvas"></main>
+      <button class="drawer-rail" data-action="drawer-toggle" aria-label="Toggle evidence index" aria-expanded="false">
+        <span data-rail-label>Evidence index</span><b>‹</b>
+      </button>
+      <aside class="evidence-drawer" id="evidenceDrawer" aria-label="Evidence index" aria-hidden="true">
+        <div class="drawer-head">
+          <div>
+            <div class="overline">Evidence index</div>
+            <h2>Browse evidence</h2>
+          </div>
+        </div>
+        <div class="drawer-tools">
+          <input id="evidenceSearch" type="search" placeholder="Search key, content or location">
+          <div class="drawer-filters">
+            <button data-action="evidence-filter" data-filter="all" class="active">All</button>
+            <button data-action="evidence-filter" data-filter="profile">Profile</button>
+            <button data-action="evidence-filter" data-filter="empathy">Empathy</button>
+            <button data-action="evidence-filter" data-filter="journey">Journey</button>
+          </div>
+        </div>
+        <div id="evidenceDrawerList" class="drawer-list"></div>
+      </aside>
+    </div>
+  </div>
+
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head">
+        <div><div class="overline" id="modalKicker">MAP TOOLS</div><h2 id="modalTitle">Manage research</h2></div>
+        <button class="close-btn" id="modalClose" data-action="modal-close" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <input type="file" id="importInput" accept="application/json,.json" hidden>
+  <script src="app.js" defer></script>
+</body>
+</html>
