@@ -22,7 +22,8 @@ a {
   text-underline-offset: 0.15em;
 }
 
-a:hover, .project-card:hover h3 a {
+a:hover,
+.project-card:hover h3 a {
   color: #111;
   text-decoration: none;
   background-color: none;
@@ -109,12 +110,13 @@ h3 {
       135deg,
       #333 0,
       #333 6px,
-      #eac702 6px,
-      #eac702 12px
+      #f5d547 6px,
+      #f5d547 12px
     ) border-box;
 }
 
 .project-card.is-wip:hover {
+  border-color: transparent;
   animation: wip-stripes 1.5s linear infinite; 
 }
 
@@ -124,13 +126,10 @@ h3 {
   }
   
   to {
-    background-position: 0 0, 24px 24px;
+    background-position: 0 0, 12px 12px;
   }
 }
 
-.project-card.is-wip:hover {
-  border-color: #000;
-}
 
 .wip-label {
   display: block;
@@ -208,7 +207,7 @@ h3 {
   background: #fff;
 }
 
-.project-card:hover {
+.project-card:not(.is-wip):hover {
   border-color: #999;
 }
 
