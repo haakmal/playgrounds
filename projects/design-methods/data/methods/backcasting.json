@@ -3,7 +3,7 @@
   "stages": [
     "Discovery",
     "Define",
-    "Develop"
+	"Develop"
   ],
   "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
   "steps": [

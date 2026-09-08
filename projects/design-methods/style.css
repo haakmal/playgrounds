@@ -9,7 +9,6 @@
   .grid-container,
   .method-grid {
     grid-template-columns: 1fr 1fr;
-    /* or 1fr */
   }
 
   label.filters {
@@ -19,14 +18,22 @@
   label.filters input {
     visibility: visible !important;
   }
-  
+
   .modal-content {
-	  width: 80vw !important;
+    width: min(88vw, 680px);
+    padding: 2rem 1.25rem 3rem;
   }
-  
+
   .close-button {
-	  left: 0;
-	  font-size: 1rem;
+    right: auto;
+    left: 0;
+    width: 12vw;
+    min-width: 52px;
+    font-size: 3rem;
+  }
+
+  .modal-content {
+    right: 0;
   }
 }
 
@@ -231,47 +238,227 @@ header {
 
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0;
   z-index: 9999;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
   width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: flex-end;
+  align-items: stretch;
+  background: rgba(0, 0, 0, 0.42);
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, visibility 0s linear 0.25s;
 }
 
+/* Keep the overlay in the layout while it fades out; JS applies .hidden
+   after the close transition completes. */
 .modal-overlay.active {
-	display: block;
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 0.25s ease, visibility 0s linear 0s;
+}
+
+.modal-overlay.hidden {
+  display: flex !important;
 }
 
 .modal-content {
-	position: absolute;
-	top: 0;
-	right: 0;
-	width: 50vw;
-	height: 100vh;
-	background-color: white;
-	overflow-y: auto;
-	padding: 2rem;
-	z-index: 10001;
-	transform: translateX(100%);
-	transition: transofrm 0.5s ease;
+  position: relative;
+  top: auto;
+  right: auto;
+  width: min(52vw, 900px);
+  min-width: 480px;
+  height: 100vh;
+  max-height: 100vh;
+  box-sizing: border-box;
+  background: #fff;
+  border-left: 1px solid #bbb;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  padding: 3rem 3.5rem 4rem;
+  z-index: 10001;
+  transform: translateX(0);
 }
 
-.modal-overlay.active .modal-content {
-	transform: translateX(0);
+/* Method title and introduction */
+.modal-content h3,
+.modal-content h2 {
+  margin: 0 0 1rem;
+  padding: 0 0 0.85rem;
+  border-bottom: 2px solid #111;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  line-height: 1.05;
+  font-weight: 600;
 }
+
+#method-description {
+  margin: 0 0 2.5rem;
+  padding: 1rem 1.1rem;
+  background: #f1f1f1;
+  border-left: 4px solid #111;
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+#method-details {
+  display: block;
+}
+
+#method-details h4,
+.modal-content > ul + h4 {
+  margin: 2rem 0 0.85rem;
+  padding: 0.65rem 0 0.5rem;
+  border-top: 2px solid #111;
+  font-size: 0.78rem;
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+#method-details ol,
+#method-details ul {
+  margin: 0;
+  padding: 0;
+  list-style-position: outside;
+}
+
+#method-details ol {
+  counter-reset: method-step;
+  list-style: none;
+}
+
+#method-details ol li {
+  position: relative;
+  margin: 0;
+  padding: 1rem 0 1rem 3.25rem;
+  border-bottom: 1px solid #d2d2d2;
+  line-height: 1.5;
+  counter-increment: method-step;
+}
+
+#method-details ol li::before {
+  content: counter(method-step, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 1rem;
+  width: 2.2rem;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #666;
+}
+
+#method-details ul {
+  list-style: none;
+}
+
+#method-details ul li {
+  margin: 0;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid #d2d2d2;
+}
+
+#method-details a {
+  color: #111;
+  font-weight: 600;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+}
+
+#method-details a:hover {
+  background: rgba(255, 254, 0, 1);
+}
+
+#help-modal .modal-content ul {
+  margin: 1.5rem 0 0;
+  padding-left: 1.25rem;
+  line-height: 1.6;
+}
+
+#help-modal .modal-content li + li {
+  margin-top: 0.8rem;
+}
+
+
 .close-button {
-	position: absolute;
-	top: 1rem;
-	right: 60vw;
-	font-size: 6rem;
-	color: rgba(0,0,0,0.5);
-	border-radius: 50%;
-	padding: 0.3rem 0.6rem;
-	cursor: pointer;
-	z-index: 1002;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: auto;
+  width: 48vw;
+  height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+
+  color: rgba(255, 255, 255, 0.72);
+
+  cursor: pointer;
+  z-index: 10002;
+
+  transition: color 0.18s ease;
+}
+
+.close-button::before {
+  content: "";
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  width: clamp(90px, 12vw, 170px);
+  height: clamp(90px, 12vw, 170px);
+
+  border-radius: 50%;
+  background: rgba(255, 254, 0, 1);
+
+  opacity: 0;
+
+  transform: translate(-50%, -50%) scale(0.72);
+  transform-origin: center;
+
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+
+  z-index: -1;
+}
+
+.close-button:hover,
+.close-button:focus-visible {
+  color: #111;
+  outline: none;
+}
+
+.close-button:hover::before,
+.close-button:focus-visible::before {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.close-button svg {
+  position: relative;
+  width: clamp(38px, 4vw, 58px);
+  height: clamp(38px, 4vw, 58px);
+  z-index: 1;
+  overflow: visible;
+}
+
+.close-button svg line {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: square;
+  vector-effect: non-scaling-stroke;
 }

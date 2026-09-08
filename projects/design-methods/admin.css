@@ -209,9 +209,8 @@ select:focus {
 textarea { resize: vertical; }
 
 .method-list {
-  max-height: calc(70vh - 245px);
+  max-height: calc(100vh - 245px);
   overflow: auto;
-  border-bottom: 1px solid var(--line);
 }
 
 .method-list-empty {
@@ -238,7 +237,7 @@ textarea { resize: vertical; }
 
 .method-form { min-width: 0; }
 
-.editor-toolbar h2 { font-size: 1rem; }
+.editor-toolbar h2 { font-size: 1.15rem; }
 .toolbar-actions { flex-wrap: wrap; justify-content: flex-end; }
 
 .editor-grid {

@@ -33,10 +33,15 @@
     </div>
     <div class="method-grid" id="method-grid"></div>
   </div>
-
+  
   <!-- Modal Popup -->
   <div id="modal" class="modal-overlay hidden">
-    <span id="close-btn" class="close-button">&times;</span>
+    <button class="close-button" aria-label="Close">
+      <svg viewBox="0 0 32 32" aria-hidden="true">
+        <line x1="6" y1="6" x2="26" y2="26" />
+        <line x1="26" y1="6" x2="6" y2="26" />
+      </svg>
+    </button>
     <div class="modal-content">
       <h3 id="method-title"></h3>
       <p id="method-description"></p>
@@ -44,60 +49,66 @@
       <div id="method-details"></div>
     </div>
   </div>
-
+  
   <!-- Help screen -->
   <div id="help-modal" class="modal-overlay hidden">
-      <span id="help-close-btn" class="close-button">&times;</span>
+    <button class="close-button" aria-label="Close">
+      <svg viewBox="0 0 32 32" aria-hidden="true">
+        <line x1="6" y1="6" x2="26" y2="26" />
+        <line x1="26" y1="6" x2="6" y2="26" />
+      </svg>
+    </button>
     <div class="modal-content">
       <h2>How to use this interface</h2>
       <ul>
         <li><strong>Search:</strong> Use the search bar to find a method by name.</li>
         <li><strong>Filter:</strong> Use the checkboxes in the phase headers to focus on relevant stages of the design
           process.</li>
-        <li><strong>Click: </strong> Click on any method to view detailed info, steps, and resources.</li>
-        <li><strong>Responsive:</strong> The interface adapts to smaller screens and shows sticky headers when
-          scrolling.</li>
-      </ul>
-    </div>
-  </div>
-  <script src="script.js"></script>
-
-
-<!-- BEGIN RETURN LINK -->
-<script>
-// inject-home-link.js
-(function () {
-	// Inject Font Awesome stylesheet
-	const fa = document.createElement("link");
-	fa.rel = "stylesheet";
-	fa.href = "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css";
-	fa.crossOrigin = "anonymous";
-	document.head.appendChild(fa);
-	
-	// Create the back link
-	const link = document.createElement("a");
-	link.href = "/";
-	link.innerHTML = '← Back to Playgrounds <i class="fab fa-github"><i>';
-	Object.assign(link.style, {
-	  position: "fixed",
-	  bottom: "20px",
-	  right: "20px",
-	  background: "#000",
-	  color: "#fff",
-	  padding: "8px 12px",
-	  zIndex: 1000,
-	  fontSize: "14px",
-	  opacity: 0.7,
-	  borderRadius: "6px",
-	  textDecoration: "none"
-	});
-	link.onmouseover = () => (link.style.opacity = "1");
-	link.onmouseout = () => (link.style.opacity = "0.7");
-	document.body.appendChild(link);
-})();
-</script>
-<!-- END RETURN LINK -->
-
-</body>
-
-</html>
+          <li><strong>Click: </strong> Click on any method to view detailed info, steps, and resources.</li>
+          <li><strong>Responsive:</strong> The interface adapts to smaller screens and shows sticky headers when
+            scrolling.</li>
+          </ul>
+        </div>
+      </div>
+      <script src="script.js"></script>
+      
+      
+      <!-- BEGIN RETURN LINK -->
+      <script>
+        // inject-home-link.js
+        (function () {
+          // Inject Font Awesome stylesheet
+          const fa = document.createElement("link");
+          fa.rel = "stylesheet";
+          fa.href = "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css";
+          fa.crossOrigin = "anonymous";
+          document.head.appendChild(fa);
+          
+          // Create the back link
+          const link = document.createElement("a");
+          link.href = "/";
+          link.innerHTML = '← Back to Playgrounds <i class="fab fa-github"><i>';
+            Object.assign(link.style, {
+              position: "fixed",
+              bottom: "20px",
+              right: "20px",
+              background: "#000",
+              color: "#fff",
+              padding: "8px 12px",
+              zIndex: 1000,
+              fontSize: "14px",
+              opacity: 0.7,
+              borderRadius: "6px",
+              textDecoration: "none"
+            });
+            link.onmouseover = () => (link.style.opacity = "1");
+            link.onmouseout = () => (link.style.opacity = "0.7");
+            document.body.appendChild(link);
+          })();
+        </script>
+        <!-- END RETURN LINK -->
+        
+      </body>
+      
+      </html>
+      
