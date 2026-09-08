@@ -4,5 +4,6 @@ credits: "Haider Akmal"
 url: "https://haakmal.github.io/mtg-calculator/"
 external: true
 date: 2024-01-01
+wip: true
 categories:
   - play

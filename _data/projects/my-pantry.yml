@@ -3,6 +3,7 @@ description: "[Work in progress] A simple pantry management app using client-sid
 credits: "Haider Akmal"
 url: "/projects/my-pantry/"
 date: 2026-02-01
+wip: true
 categories:
   - play
   - tools

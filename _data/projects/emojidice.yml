@@ -3,6 +3,7 @@ description: "A storydice variant using emojis, good for brainstorming."
 credits: "Haider Akmal"
 url: "/projects/emojidice/"
 date: 2023-05-01
+wip: false
 categories:
   - tools
   - teaching

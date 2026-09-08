@@ -22,10 +22,42 @@ a {
   text-underline-offset: 0.15em;
 }
 
-a:hover {
-  background: #111;
-  color: #fff;
+a:hover, .project-card:hover h3 a {
+  color: #111;
   text-decoration: none;
+  background-color: none;
+
+  background-image: linear-gradient(
+    90deg,
+    #ff7896,
+    #ffbe6e,
+    #f5e164,
+    #8cdca0,
+    #78bef0,
+    #af91eb,
+    #ff96cd,
+    #ff7896
+  );
+
+  background-size: 200% 2px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+
+  animation: rainbow-underline 2.5s linear infinite;
+}
+
+@keyframes rainbow-underline {
+  from {
+    background-position: 0% 100%;
+  }
+
+  to {
+    background-position: 100% 100%;
+  }
+}
+
+footer-right a:hover {
+  color: rgb(93, 93, 93);
 }
 
 h1 {
@@ -66,6 +98,55 @@ h3 {
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 0.75rem 1.5rem;
+}
+
+.project-card.is-wip {
+  border: 4px solid transparent;
+
+  background:
+    linear-gradient(#fff, #fff) padding-box,
+    repeating-linear-gradient(
+      135deg,
+      #333 0,
+      #333 6px,
+      #eac702 6px,
+      #eac702 12px
+    ) border-box;
+}
+
+.project-card.is-wip:hover {
+  animation: wip-stripes 1.5s linear infinite; 
+}
+
+@keyframes wip-stripes {
+  from {
+    background-position: 0 0;
+  }
+  
+  to {
+    background-position: 0 0, 24px 24px;
+  }
+}
+
+.project-card.is-wip:hover {
+  border-color: #000;
+}
+
+.wip-label {
+  display: block;
+  width: fit-content;
+  margin-top: 0.5rem;
+  text-transform: uppercase;
+  padding: 0.1rem 0.35rem;
+
+  background: #111;
+  color: #fff;
+  
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 1.4;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 .control-group {
@@ -147,6 +228,8 @@ h3 {
 .project-card p {
   padding: 0;
   margin: 0.65rem 0 1rem;
+  font-size: 0.95rem;
+  line-height: 1.4;
 }
 
 .project-meta {
@@ -158,6 +241,7 @@ h3 {
   border-top: 1px solid #eee;
   font-size: 0.85rem;
   color: #666;
+  line-height: 1.4;
 }
 
 .project-meta small {
@@ -238,16 +322,29 @@ body::before {
 
   background: linear-gradient(
     90deg,
-    rgba(255, 120, 150, 0.35),
-    rgba(255, 190, 110, 0.35),
-    rgba(245, 225, 100, 0.35),
-    rgba(140, 220, 160, 0.35),
-    rgba(120, 190, 240, 0.35),
-    rgba(175, 145, 235, 0.35),
-    rgba(255, 150, 205, 0.35)
+
+    /* First rainbow */
+    rgba(255, 120, 150, 0.35) 0%,
+    rgba(255, 190, 110, 0.35) 7%,
+    rgba(245, 225, 100, 0.35) 14%,
+    rgba(140, 220, 160, 0.35) 21%,
+    rgba(120, 190, 240, 0.35) 28%,
+    rgba(175, 145, 235, 0.35) 35%,
+    rgba(255, 150, 205, 0.35) 42%,
+    rgba(255, 120, 150, 0.35) 50%,
+
+    /* Second identical rainbow */
+    rgba(255, 120, 150, 0.35) 50%,
+    rgba(255, 190, 110, 0.35) 57%,
+    rgba(245, 225, 100, 0.35) 64%,
+    rgba(140, 220, 160, 0.35) 71%,
+    rgba(120, 190, 240, 0.35) 78%,
+    rgba(175, 145, 235, 0.35) 85%,
+    rgba(255, 150, 205, 0.35) 92%,
+    rgba(255, 120, 150, 0.35) 100%
   );
 
-  background-size: 120% 100%;
+  background-size: 200% 100%;
 
   -webkit-mask-image: linear-gradient(
     to bottom,
@@ -264,7 +361,6 @@ body::before {
   );
 
   animation: playground-rainbow 30s linear infinite;
-  filter: blur(36px);
 }
 
 @keyframes playground-rainbow {
@@ -273,7 +369,7 @@ body::before {
   }
 
   to {
-    background-position: 200% 50%;
+    background-position: 100% 50%;
   }
 }
 

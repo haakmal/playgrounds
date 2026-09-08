@@ -3,6 +3,7 @@ description: "A digital version of the Interaction Context Mapping tool provided
 credits: "Haider Akmal"
 url: "/projects/interaction-context-map/"
 date: 2026-08-26
+wip: true
 categories:
   - tools
   - teaching

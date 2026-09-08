@@ -3,6 +3,7 @@ description: "A UI forensics tool for learning heuristic evaluation."
 credits: "Haider Akmal"
 url: "/projects/ui-forensics/"
 date: 2026-09-02
+wip: false
 categories:
   - tools
   - teaching

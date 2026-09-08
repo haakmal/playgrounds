@@ -3,6 +3,7 @@ description: "A tool for creating and testing interactive prototypes aimed as co
 credits: "Haider Akmal"
 url: "/projects/prototyping-companion/"
 date: 2026-09-01
+wip: false
 categories:
   - tools
   - teaching

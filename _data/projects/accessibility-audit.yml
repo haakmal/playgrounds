@@ -3,6 +3,7 @@ description: "An accessibility audit tool for evaluating interactions."
 credits: "Haider Akmal"
 url: "/projects/accessibility-audit/"
 date: 2026-08-27
+wip: false
 categories:
   - tools
   - teaching

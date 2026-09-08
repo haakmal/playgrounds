@@ -18,20 +18,25 @@
 
   <div class="app-shell">
     <header class="topbar">
-      <div class="brand-block">
-        <div class="brand-kicker">Interaction Stream · Toolkit</div>
-        <div class="brand-row">
-          <h1>Research Mapper</h1>
-          <span id="docTitleDisplay">Untitled research</span>
-        </div>
-        <div class="brand-status"><span id="saveStatus">Saved locally</span></div>
-      </div>
-      <div class="top-actions">
-        <button class="tool-btn" id="documentsBtn">My documents</button>
-        <button class="tool-btn" id="mapToolsBtn">Map tools</button>
-        <button class="tool-btn square" id="helpBtn" aria-label="Help">?</button>
-      </div>
-    </header>
+  <div class="brand-block">
+    <div class="brand-kicker">Interaction Stream · Toolkit</div>
+
+    <h1>Research Mapper</h1>
+
+    <div class="project-line" aria-live="polite">
+      <span>Research</span>
+      <strong id="docTitleDisplay">Untitled research</strong>
+      <span>·</span>
+      <span class="saved-label" id="saveStatus">Saved locally</span>
+    </div>
+  </div>
+
+  <div class="top-actions">
+    <button class="tool-btn" id="documentsBtn">My documents</button>
+    <button class="tool-btn" id="mapToolsBtn">Map tools</button>
+    <button class="tool-btn square" id="helpBtn" aria-label="Help">?</button>
+  </div>
+</header>
 
     <div class="local-strip">
       <div class="local-strip-label">Working locally</div>

@@ -3,6 +3,7 @@ description: "A handy constraint card deck for interaction design."
 credits: "Haider Akmal"
 url: "/projects/constraints/"
 date: 2026-02-10
+wip: false
 categories:
   - tools
   - teaching
