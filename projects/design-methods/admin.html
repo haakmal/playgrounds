@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <title>Design Methods / Authoring</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <header class="admin-header">
+    <div>
+      <p class="eyebrow">Design Methods</p>
+      <h1>Authoring Dashboard</h1>
+    </div>
+    <div class="header-actions">
+      <a href="index.html" class="button button-secondary">View library</a>
+      <button id="connect-project" class="button button-primary" type="button">Connect local project</button>
+    </div>
+  </header>
+
+  <main class="admin-shell">
+    <section id="environment-banner" class="notice notice-warning" hidden></section>
+
+    <section id="project-panel" class="project-panel">
+      <div>
+        <p class="eyebrow">Local project</p>
+        <h2 id="project-name">No project connected</h2>
+        <p id="project-status" class="muted">Connect the <code>design-methods</code> project folder to edit its JSON files.</p>
+      </div>
+      <div id="project-stats" class="stats" hidden>
+        <span><strong id="method-count">0</strong> methods</span>
+        <span><strong id="error-count">0</strong> issues</span>
+      </div>
+    </section>
+
+    <section id="workspace" class="workspace" hidden>
+      <aside class="library-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Library</p>
+            <h2>Methods</h2>
+          </div>
+          <button id="new-method" class="button button-primary" type="button">+ New</button>
+        </div>
+        <label class="search-field">
+          <span>Search methods</span>
+          <input id="method-search" type="search" placeholder="Filter by name or ID">
+        </label>
+        <div id="method-list" class="method-list"></div>
+      </aside>
+
+      <section class="editor-panel">
+        <div class="editor-toolbar">
+          <div>
+            <p id="editor-mode" class="eyebrow">Editor</p>
+            <h2 id="editor-title">Select a method</h2>
+          </div>
+          <div class="toolbar-actions">
+            <button id="duplicate-method" class="button button-secondary" type="button" hidden>Duplicate</button>
+            <button id="delete-method" class="button button-danger" type="button" hidden>Delete</button>
+            <button id="save-method" class="button button-primary" type="submit" form="method-form" hidden>Save</button>
+          </div>
+        </div>
+
+        <form id="method-form" class="method-form" hidden>
+          <div class="editor-grid">
+            <div class="form-section full">
+              <label for="method-name">Name</label>
+              <input id="method-name" name="name" type="text" required>
+            </div>
+
+            <div class="form-section">
+              <label for="method-id">ID / filename</label>
+              <input id="method-id" name="id" type="text" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" required>
+              <p class="field-note">Lowercase words separated by hyphens. The ID becomes the JSON filename.</p>
+            </div>
+
+            <div class="form-section">
+              <label>Design phases</label>
+              <div id="stage-options" class="check-grid"></div>
+            </div>
+
+            <div class="form-section full">
+              <label for="method-description">Description</label>
+              <textarea id="method-description" name="description" rows="5"></textarea>
+            </div>
+
+            <div class="form-section full">
+              <div class="section-title-row">
+                <label>Step-by-step guide</label>
+                <button id="add-step" class="button button-small" type="button">+ Add step</button>
+              </div>
+              <div id="steps-list" class="repeat-list"></div>
+            </div>
+
+            <div class="form-section full">
+              <div class="section-title-row">
+                <label>Resources</label>
+                <button id="add-resource" class="button button-small" type="button">+ Add resource</button>
+              </div>
+              <div id="resources-list" class="repeat-list"></div>
+            </div>
+
+            <div class="form-section full preview-section">
+              <div class="section-title-row">
+                <div>
+                  <label>Live preview</label>
+                  <p class="field-note">This is a simplified preview of how the method record will appear in the library.</p>
+                </div>
+              </div>
+              <div id="method-preview" class="method-preview"></div>
+            </div>
+          </div>
+        </form>
+      </section>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="admin.js"></script>
+</body>
+</html>
