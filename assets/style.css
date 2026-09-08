@@ -65,6 +65,13 @@ a:hover,
   }
 }
 
+.project-card h3 a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
 /* Headings */
 
 h1 {
@@ -168,6 +175,7 @@ h3 {
 }
 
 .project-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -175,6 +183,7 @@ h3 {
   border: 1px solid #ddd;
   padding: 1rem;
   background: #fff;
+  cursor: pointer;
 }
 
 .project-card:not(.is-wip):hover {

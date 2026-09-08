@@ -4,24 +4,31 @@
     "Discovery",
     "Define"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
+  "description": "Affinity diagramming is a collaborative synthesis method for organising a large collection of observations, ideas, or pieces of research data into meaningful groups. Individual items are arranged according to relationships that emerge from the material rather than being forced immediately into predetermined categories.\n\nAs clusters develop, designers examine what connects the items and give each group a descriptive label. The resulting structure can help transform fragmented observations into themes, questions, and areas for further investigation.",
+  "whenToUse": "Use affinity diagramming when a project has accumulated more observations or ideas than can easily be considered individually. it is particularly useful after interviews, observations, workshops, or brainstorming sessions when a team needs to identify patterns across many pieces of information.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Break the material into individual observations, statements, or ideas.",
+    "Place each item on a separate note or card.",
+    "Review the items without deciding categories in advance.",
+    "Move related items together based on similarities or relationships.",
+    "Discuss ambiguous items and revise clusters as patterns emerge.",
+    "Give each cluster a label that describes the underlying relationship rather than merely its topic.",
+    "Examine relationships between clusters and identify broader themes.",
+    "Record the resulting structure and the evidence contributing to each theme."
+  ],
+  "lookOutFor": [
+    "Affinity diagrams involve interpretation. A cluster is not automatically a research finding simply because several notes have been placed together.",
+    "Avoid vague headings such as *'technology'* or *'problems'* when a more analytical statement can explain what connects the observations.",
+    "Keep connections to the original research material so that themes can be checked against evidence."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Beyer, H. & Holtzblatt, K. (1998). *Contextual Design: Defining Customer-Centered Systems*. Morgan Kaufmann."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Martin, B. & Hanington, B. (2012). *Universal Methods of Design*. Rockport."
     }
   ]
 }

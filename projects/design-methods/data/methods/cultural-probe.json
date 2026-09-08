@@ -6,6 +6,8 @@
 	"Deliver"
   ],
   "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
+  "whenToUse": "",
+  "lookOutFor": [],
   "steps": [
     "Define your research objectives",
     "Draft a flexible interview guide",

@@ -58,3 +58,9 @@ The index provides the lightweight fields used by the public timeline. Individua
 ## Notes
 
 The project currently retains the original `methods.json` and `script.js.bak` files for reference. The active public interface uses `data/methods.index.json` and `data/methods/*.json`.
+
+## Method content format
+
+Each method JSON record can contain `description`, `whenToUse`, `steps`, `lookOutFor`, and `resources`. Text supports lightweight formatting: `**bold**`, `*italic*`, and `[u]underline[/u]`. Resources can be `link`, `download`, or `reference`; links/downloads accept either web URLs or project-relative paths such as `assets/templates/example.pdf`. References store a citation as plain text.
+
+The local authoring dashboard is available at `/projects/design-methods/admin.html` while running the site on localhost with Jekyll.

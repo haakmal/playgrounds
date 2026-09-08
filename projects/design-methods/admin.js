@@ -10,7 +10,10 @@ const state = {
   selectedId: null,
   isNew: false,
   originalId: null,
-  dirty: false
+  dirty: false,
+  activeTab: 'process',
+  lastFocusedField: null,
+  formatTarget: null
 };
 
 const elements = {
@@ -31,6 +34,9 @@ const elements = {
   name: document.getElementById('method-name'),
   id: document.getElementById('method-id'),
   description: document.getElementById('method-description'),
+  whenToUse: document.getElementById('method-when-to-use'),
+  lookout: document.getElementById('lookout-list'),
+  addLookout: document.getElementById('add-lookout'),
   stageOptions: document.getElementById('stage-options'),
   steps: document.getElementById('steps-list'),
   resources: document.getElementById('resources-list'),
@@ -58,6 +64,15 @@ function escapeHtml(value = '') {
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#039;');
+}
+
+function formatInline(value = '') {
+  let text = escapeHtml(value);
+  text = text.replace(/\r?\n/g, '<br>');
+  text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  text = text.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  text = text.replace(/\[u\](.+?)\[\/u\]/g, '<u>$1</u>');
+  return text;
 }
 
 function slugify(value) {
@@ -100,16 +115,29 @@ function getCurrentMethod() {
     name: elements.name.value.trim(),
     stages: getStageChecks().filter(input => input.checked).map(input => input.value),
     description: elements.description.value.trim(),
-    steps: [...elements.steps.querySelectorAll('textarea')]
+    whenToUse: elements.whenToUse.value.trim(),
+    steps: [...elements.steps.querySelectorAll('textarea[data-field="step"]')]
+      .map(input => input.value.trim())
+      .filter(Boolean),
+    lookOutFor: [...elements.lookout.querySelectorAll('textarea[data-field="lookout"]')]
       .map(input => input.value.trim())
       .filter(Boolean),
     resources: [...elements.resources.querySelectorAll('.resource-row')]
-      .map(row => ({
-        type: row.querySelector('[data-field="type"]').value,
-        title: row.querySelector('[data-field="title"]').value.trim(),
-        url: row.querySelector('[data-field="url"]').value.trim()
-      }))
-      .filter(item => item.title || item.url)
+      .map(row => {
+        const type = row.querySelector('[data-field="type"]').value;
+        if (type === 'reference') {
+          return {
+            type,
+            citation: row.querySelector('[data-field="citation"]')?.value.trim() || ''
+          };
+        }
+        return {
+          type,
+          title: row.querySelector('[data-field="title"]').value.trim(),
+          url: row.querySelector('[data-field="url"]').value.trim()
+        };
+      })
+      .filter(item => item.type === 'reference' ? item.citation : (item.title || item.url))
   };
 }
 
@@ -122,22 +150,176 @@ function renderStageOptions(selected = []) {
   `).join('');
 }
 
+function setFormattingTarget(field) {
+  if (!field || !['TEXTAREA', 'INPUT'].includes(field.tagName)) return;
+  if (field.dataset.field === 'title' || field.id === 'method-id' || field.id === 'method-name') return;
+
+  state.formatTarget = field;
+  state.lastFocusedField = field;
+
+  const toolbar = document.getElementById('shared-format-toolbar');
+  const targetLabel = document.getElementById('format-target');
+  if (!toolbar || !targetLabel) return;
+
+  toolbar.querySelectorAll('.format-button').forEach(button => {
+    button.disabled = false;
+  });
+
+  const labels = {
+    'method-description': 'Description',
+    'method-when-to-use': 'When to use'
+  };
+
+  let label = labels[field.id];
+  if (!label && field.dataset.field === 'step') label = 'Process step';
+  if (!label && field.dataset.field === 'lookout') label = 'Look out for';
+  if (!label && field.dataset.field === 'citation') label = 'Reference';
+
+  targetLabel.textContent = label || 'Active text field';
+}
+
+function clearFormattingTarget() {
+  const toolbar = document.getElementById('shared-format-toolbar');
+  const targetLabel = document.getElementById('format-target');
+  if (!toolbar || !targetLabel) return;
+
+  toolbar.querySelectorAll('.format-button').forEach(button => {
+    button.disabled = !state.formatTarget;
+  });
+
+  if (!state.formatTarget) targetLabel.textContent = 'Select a text field to format';
+}
+
+function applyFormatting(field, format) {
+  const textarea = typeof field === 'string' ? document.querySelector(field) : field;
+  if (!textarea) return;
+
+  const start = textarea.selectionStart ?? textarea.value.length;
+  const end = textarea.selectionEnd ?? textarea.value.length;
+  const selected = textarea.value.slice(start, end);
+  const markers = {
+    bold: ['**', '**'],
+    italic: ['*', '*'],
+    underline: ['[u]', '[/u]']
+  };
+  const [open, close] = markers[format] || markers.bold;
+  const replacement = `${open}${selected || 'text'}${close}`;
+
+  textarea.setRangeText(replacement, start, end, 'select');
+  textarea.focus();
+  handleEditorInput();
+}
+
+function bindSharedFormattingToolbar() {
+  const toolbar = document.getElementById('shared-format-toolbar');
+  if (!toolbar) return;
+
+  document.addEventListener('focusin', event => {
+    if (event.target.matches('#method-description, #method-when-to-use, textarea[data-field="step"], textarea[data-field="lookout"], textarea[data-field="citation"]')) {
+      setFormattingTarget(event.target);
+    }
+  });
+
+  toolbar.addEventListener('mousedown', event => {
+    if (event.target.closest('.format-button')) event.preventDefault();
+  });
+
+  toolbar.querySelectorAll('.format-button').forEach(button => {
+    button.addEventListener('click', () => {
+      if (state.formatTarget) applyFormatting(state.formatTarget, button.dataset.format);
+    });
+  });
+}
+
 function addStep(value = '') {
   const row = document.createElement('div');
   row.className = 'repeat-row';
-  row.innerHTML = `
-    <textarea rows="2" placeholder="Describe this step"></textarea>
-    <button class="icon-button" type="button" aria-label="Remove step">×</button>
-  `;
-  const textarea = row.querySelector('textarea');
+
+  const content = document.createElement('div');
+  content.className = 'repeat-row-content';
+
+  const textarea = document.createElement('textarea');
+  textarea.rows = 2;
+  textarea.placeholder = 'Describe this step';
+  textarea.dataset.field = 'step';
   textarea.value = value;
   textarea.addEventListener('input', handleEditorInput);
-  row.querySelector('button').addEventListener('click', () => {
+
+
+  const remove = document.createElement('button');
+  remove.className = 'icon-button';
+  remove.type = 'button';
+  remove.setAttribute('aria-label', 'Remove step');
+  remove.textContent = '×';
+  remove.addEventListener('click', () => {
     row.remove();
     setDirty(true);
     updatePreview();
   });
+
+  content.append(textarea);
+  row.append(content, remove);
   elements.steps.appendChild(row);
+}
+
+function addLookout(value = '') {
+  const row = document.createElement('div');
+  row.className = 'repeat-row lookout-row';
+
+  const content = document.createElement('div');
+  content.className = 'repeat-row-content';
+
+  const textarea = document.createElement('textarea');
+  textarea.rows = 2;
+  textarea.placeholder = 'Describe something to look out for';
+  textarea.dataset.field = 'lookout';
+  textarea.value = value;
+  textarea.addEventListener('input', handleEditorInput);
+
+
+  const remove = document.createElement('button');
+  remove.className = 'icon-button';
+  remove.type = 'button';
+  remove.setAttribute('aria-label', 'Remove consideration');
+  remove.textContent = '×';
+  remove.addEventListener('click', () => {
+    row.remove();
+    setDirty(true);
+    updatePreview();
+  });
+
+  content.append(textarea);
+  row.append(content, remove);
+  elements.lookout.appendChild(row);
+}
+
+function renderResourceFields(row, resource = {}) {
+  const type = row.querySelector('[data-field="type"]').value;
+  const target = row.querySelector('.resource-target');
+  const titleInput = row.querySelector('[data-field="title"]');
+
+  row.classList.toggle('resource-reference', type === 'reference');
+
+  if (type === 'reference') {
+    titleInput.hidden = true;
+    titleInput.value = '';
+    target.innerHTML = `
+      <textarea data-field="citation" rows="3" placeholder="Full citation"></textarea>
+      <p class="field-note">Add the bibliographic citation. It will appear as text in Further Material.</p>
+    `;
+    target.querySelector('[data-field="citation"]').value = resource.citation || '';
+  } else {
+    titleInput.hidden = false;
+    target.innerHTML = `
+      <input data-field="url" type="text" inputmode="url" autocomplete="off" placeholder="https://... or assets/...">
+      <p class="field-note">Use a web URL or a path inside this project.</p>
+    `;
+    target.querySelector('[data-field="url"]').value = resource.url || '';
+  }
+
+  target.querySelectorAll('input, textarea').forEach(input => {
+    input.addEventListener('input', handleEditorInput);
+  });
 }
 
 function addResource(resource = {}) {
@@ -147,24 +329,29 @@ function addResource(resource = {}) {
     <select data-field="type" aria-label="Resource type">
       <option value="link">Link</option>
       <option value="download">Download</option>
+      <option value="reference">Reference</option>
     </select>
     <input data-field="title" type="text" placeholder="Resource title">
-    <div class="resource-target">
-      <input data-field="url" type="text" inputmode="url" autocomplete="off" placeholder="https://... or assets/...">
-      <p class="field-note">Use a web URL or a path inside this project.</p>
-    </div>
+    <div class="resource-target"></div>
     <button class="icon-button" type="button" aria-label="Remove resource">×</button>
   `;
-  row.querySelector('[data-field="type"]').value = resource.type || 'link';
+
+  const select = row.querySelector('[data-field="type"]');
+  select.value = resource.type || 'link';
   row.querySelector('[data-field="title"]').value = resource.title || '';
-  row.querySelector('[data-field="url"]').value = resource.url || '';
-  row.querySelectorAll('input, select').forEach(input => input.addEventListener('input', handleEditorInput));
-  row.querySelector('select').addEventListener('change', handleEditorInput);
+  row.querySelector('[data-field="title"]').addEventListener('input', handleEditorInput);
+  select.addEventListener('change', () => {
+    renderResourceFields(row, resource);
+    handleEditorInput();
+  });
+
   row.querySelector('button').addEventListener('click', () => {
     row.remove();
     setDirty(true);
     updatePreview();
   });
+
+  renderResourceFields(row, resource);
   elements.resources.appendChild(row);
 }
 
@@ -172,10 +359,15 @@ function clearEditor() {
   elements.name.value = '';
   elements.id.value = '';
   elements.description.value = '';
+  elements.whenToUse.value = '';
   renderStageOptions([]);
   elements.steps.innerHTML = '';
+  elements.lookout.innerHTML = '';
   elements.resources.innerHTML = '';
+  state.formatTarget = null;
+  clearFormattingTarget();
   addStep();
+  setActiveTab('process');
   updatePreview();
 }
 
@@ -205,12 +397,17 @@ function populateEditor(method, { isNew = false } = {}) {
   elements.name.value = method?.name || '';
   elements.id.value = method?.id || '';
   elements.description.value = method?.description || '';
+  elements.whenToUse.value = method?.whenToUse || '';
   renderStageOptions(method?.stages || []);
   elements.steps.innerHTML = '';
   (method?.steps || []).forEach(addStep);
   if (!elements.steps.children.length) addStep();
+  elements.lookout.innerHTML = '';
+  (method?.lookOutFor || []).forEach(addLookout);
   elements.resources.innerHTML = '';
   (method?.resources || []).forEach(addResource);
+  state.formatTarget = null;
+  clearFormattingTarget();
   updatePreview();
   setDirty(false);
   renderMethodList();
@@ -221,21 +418,54 @@ function updatePreview() {
   const stages = method.stages.length
     ? method.stages.map(stage => `<span class="preview-stage">${escapeHtml(stage)}</span>`).join('')
     : '<span class="muted">No phases selected</span>';
+
   const steps = method.steps.length
-    ? `<ol class="preview-list">${method.steps.map(step => `<li>${escapeHtml(step)}</li>`).join('')}</ol>`
+    ? `<ol class="preview-list">${method.steps.map(step => `<li>${formatInline(step)}</li>`).join('')}</ol>`
     : '<p class="muted">No steps added.</p>';
-  const resources = method.resources.length
-    ? `<div class="preview-resources"><strong>Resources</strong><ul class="preview-list">${method.resources.map(resource => `<li>${escapeHtml(resource.type)} — ${escapeHtml(resource.title || resource.url || 'Untitled')}</li>`).join('')}</ul></div>`
+
+  const whenToUse = method.whenToUse
+    ? `<div class="preview-when"><strong>When to use</strong><p>${formatInline(method.whenToUse)}</p></div>`
     : '';
+
+  const lookout = method.lookOutFor.length
+    ? `<div class="preview-lookout"><strong>Look out for</strong><ul class="preview-lookout-list">${method.lookOutFor.map(item => `<li>${formatInline(item)}</li>`).join('')}</ul></div>`
+    : '';
+
+  const resources = method.resources.length
+    ? `<div class="preview-resources"><strong>Further material</strong><ul class="preview-list">${method.resources.map(resource => {
+        if (resource.type === 'reference') {
+          return `<li class="preview-reference">${formatInline(resource.citation)}</li>`;
+        }
+        return `<li>${escapeHtml(resource.type)} — ${formatInline(resource.title || resource.url || 'Untitled')}</li>`;
+      }).join('')}</ul></div>`
+    : '';
+
   elements.preview.innerHTML = `
     <p class="eyebrow">${escapeHtml(state.isNew ? 'New record' : 'Method record')}</p>
     <h3>${escapeHtml(method.name || 'Untitled method')}</h3>
     <div class="preview-stage-row">${stages}</div>
-    <p class="preview-description">${escapeHtml(method.description || 'No description added yet.')}</p>
+    <p class="preview-description">${formatInline(method.description || 'No description added yet.')}</p>
+    ${whenToUse}
     <h4>Steps</h4>
     ${steps}
+    ${lookout}
     ${resources}
   `;
+}
+
+function setActiveTab(tabName) {
+  state.activeTab = tabName;
+  state.formatTarget = null;
+  clearFormattingTarget();
+  document.querySelectorAll('.editor-tab').forEach(tab => {
+    const active = tab.dataset.tab === tabName;
+    tab.classList.toggle('active', active);
+    tab.setAttribute('aria-selected', active ? 'true' : 'false');
+  });
+  document.querySelectorAll('.editor-tab-panel').forEach(panel => {
+    panel.hidden = panel.id !== `tab-${tabName}`;
+    panel.classList.toggle('active', !panel.hidden);
+  });
 }
 
 function handleEditorInput() {
@@ -269,13 +499,26 @@ function validateMethod(method, id, existingId = null) {
   if (!id || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id)) issues.push('ID must use lowercase letters, numbers and hyphens.');
   if (method.stages.length === 0) issues.push('Select at least one design phase.');
   if (existingId !== id && state.files.has(id)) issues.push(`A method with ID "${id}" already exists.`);
+
   for (const resource of method.resources) {
-    if (!resource.title || !resource.url) issues.push('Each resource needs both a title and a URL or project-relative path.');
+    if (resource.type === 'reference') {
+      if (!resource.citation) issues.push('Each reference needs a citation.');
+      continue;
+    }
+
+    if (!resource.title || !resource.url) {
+      issues.push('Each link or download needs a title and a URL or project-relative path.');
+    }
+
     if (resource.url && !isValidResourceTarget(resource.url)) {
       issues.push(`Resource target "${resource.url}" must be a web URL or a project-relative path such as assets/templates/file.pdf.`);
     }
-    if (!['link', 'download'].includes(resource.type)) issues.push('Resource type must be link or download.');
+
+    if (!['link', 'download'].includes(resource.type)) {
+      issues.push('Resource type must be link, download, or reference.');
+    }
   }
+
   return issues;
 }
 
@@ -413,7 +656,7 @@ function selectMethod(id) {
 
 function startNewMethod() {
   if (!confirmDiscard()) return;
-  populateEditor({ id: '', name: '', stages: [], description: '', steps: [], resources: [] }, { isNew: true });
+  populateEditor({ id: '', name: '', stages: [], description: '', whenToUse: '', steps: [], lookOutFor: [], resources: [] }, { isNew: true });
 }
 
 function duplicateMethod() {
@@ -504,12 +747,23 @@ elements.addResource.addEventListener('click', () => {
 });
 elements.name.addEventListener('input', handleEditorInput);
 elements.description.addEventListener('input', handleEditorInput);
+elements.whenToUse.addEventListener('input', handleEditorInput);
+elements.addLookout.addEventListener('click', () => {
+  addLookout();
+  setDirty(true);
+  updatePreview();
+});
+document.querySelectorAll('.editor-tab').forEach(tab => {
+  tab.addEventListener('click', () => setActiveTab(tab.dataset.tab));
+});
+bindSharedFormattingToolbar();
 elements.id.addEventListener('input', handleEditorInput);
 elements.stageOptions.addEventListener('change', handleEditorInput);
 elements.duplicate.addEventListener('click', duplicateMethod);
 elements.delete.addEventListener('click', deleteSelectedMethod);
 
 setEditorHeader('Project', 'Connect a project');
+setActiveTab('process');
 
 window.addEventListener('beforeunload', event => {
   if (!state.dirty) return;

@@ -83,15 +83,54 @@
 
             <div class="form-section full">
               <label for="method-description">Description</label>
-              <textarea id="method-description" name="description" rows="5"></textarea>
+              <div class="format-field">
+                <textarea id="method-description" name="description" rows="5" placeholder="Describe the method."></textarea>
+                <p class="field-note">Formatting: <strong>bold</strong>, <em>italic</em>, <u>underline</u>.</p>
+              </div>
             </div>
 
             <div class="form-section full">
-              <div class="section-title-row">
-                <label>Step-by-step guide</label>
-                <button id="add-step" class="button button-small" type="button">+ Add step</button>
+              <div class="shared-formatting" aria-label="Text formatting">
+                <span class="shared-formatting-label">Formatting</span>
+                <div id="shared-format-toolbar" class="format-toolbar" role="toolbar" aria-label="Text formatting">
+                  <button type="button" class="format-button" data-format="bold" disabled><strong>B</strong></button>
+                  <button type="button" class="format-button" data-format="italic" disabled><em>I</em></button>
+                  <button type="button" class="format-button" data-format="underline" disabled><u>U</u></button>
+                </div>
+                <span id="format-target" class="shared-formatting-target">Select a text field to format</span>
               </div>
-              <div id="steps-list" class="repeat-list"></div>
+
+              <div class="section-title-row">
+                <label>Method guidance</label>
+              </div>
+              <div class="editor-tabs" role="tablist" aria-label="Method guidance sections">
+                <button type="button" class="editor-tab active" role="tab" aria-selected="true" aria-controls="tab-process" data-tab="process">Process</button>
+                <button type="button" class="editor-tab" role="tab" aria-selected="false" aria-controls="tab-when" data-tab="when">When to use</button>
+                <button type="button" class="editor-tab" role="tab" aria-selected="false" aria-controls="tab-lookout" data-tab="lookout">Look out for</button>
+              </div>
+
+              <div id="tab-process" class="editor-tab-panel active" role="tabpanel">
+                <div class="section-title-row">
+                  <label>Step-by-step guide</label>
+                  <button id="add-step" class="button button-small" type="button">+ Add step</button>
+                </div>
+                <div id="steps-list" class="repeat-list"></div>
+              </div>
+
+              <div id="tab-when" class="editor-tab-panel" role="tabpanel" hidden>
+                <label for="method-when-to-use">When to use</label>
+                <div class="format-field">
+                  <textarea id="method-when-to-use" rows="6" placeholder="Explain when this method is most useful."></textarea>
+                </div>
+              </div>
+
+              <div id="tab-lookout" class="editor-tab-panel" role="tabpanel" hidden>
+                <div class="section-title-row">
+                  <label>Look out for</label>
+                  <button id="add-lookout" class="button button-small" type="button">+ Add consideration</button>
+                </div>
+                <div id="lookout-list" class="repeat-list"></div>
+              </div>
             </div>
 
             <div class="form-section full">

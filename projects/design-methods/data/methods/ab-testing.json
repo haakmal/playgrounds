@@ -1,28 +1,35 @@
 {
-  "name": "A/B Testing or Split Testing",
+  "name": "A/B Testing",
   "stages": [
     "Define",
-	"Develop",
-	"Deliver"
+    "Develop",
+    "Deliver"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
+  "description": "A/B testing compares two versions of a design to investigate whether a specific change affects user behaviour or another predefined measure. Participants encounter one of the alternatives and their responses are compared across the two conditions. The method is particularly useful when a design question can be expressed as a clear hypothesis and evaluated using observable measures.\n\nA/B testing can help designers choose between alternatives, but it explains **which version performed differently**, not *why*. Qualitative research may therefore be useful alongside an A/B test.",
+  "whenToUse": "Use A/B testing when you have two clearly defined alternatives and enough participants or interactions to make a meaningful comparison. It is particularly useful for evaluating focused changes to an existing interface, service, or communication rahter than exploring an undefined design problem.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Identify the design decision you want to investigate.",
+    "Form a hypothesis describing the expected effect of the change.",
+    "Define a measurable outcome before running the test.",
+    "Create two versions that differ primarily in the feature being investigated.",
+    "Assign comparable participants or users to each version.",
+    "Collect the same measures for both versions.",
+    "Compare the results and consider whether the observed difference is meaningful.",
+    "Use the findings to inform the next design iteration or further investigation."
+  ],
+  "lookOutFor": [
+    "Avoid changing many things simultaneously, as this makes it difficult to determine what caused a difference.",
+    "Do not interpret a small numerical difference as evidence without considering sample size, variability, and uncertainty.",
+    "Optimising a measurable behaviour does not necessarily mean that the design has become better overall. Consider accessibility, user experience, ethics, and longer-term consequences alongside the selected metric."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Kohavi, R., Tang, D. & Xu, Y. (2020). *Trustworthy Online Controlled Experiments: A Practical Guide to A/B Testing*. Cambridge University Press."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Nielsen Norman Group. *A/B Testing, Usability Testing, and Quantitative Studies*"
     }
   ]
 }

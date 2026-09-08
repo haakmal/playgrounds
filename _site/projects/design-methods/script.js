@@ -32,6 +32,20 @@ function escapeHtml(value = '') {
     .replaceAll("'", '&#039;');
 }
 
+function formatInline(value = '') {
+  let text = escapeHtml(value);
+
+  // Protect simple line breaks before applying inline formatting.
+  text = text.replace(/\r?\n/g, '<br>');
+
+  // Bold, italic, and underline are deliberately limited to this small syntax.
+  text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  text = text.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  text = text.replace(/\[u\](.+?)\[\/u\]/g, '<u>$1</u>');
+
+  return text;
+}
+
 function openModal(target) {
   if (!target) return;
 
@@ -175,60 +189,82 @@ function showModal(method) {
   document.getElementById('method-title').textContent =
     method.name || '';
 
-  document.getElementById('method-description').textContent =
-    method.description || '';
+  document.getElementById('method-description').innerHTML =
+    formatInline(method.description || '');
+
+  let whenToUseHtml = '';
+  if (method.whenToUse) {
+    whenToUseHtml = `
+      <section class="method-intro-section">
+        <h4>When to Use</h4>
+        <div class="when-to-use">${formatInline(method.whenToUse)}</div>
+      </section>
+    `;
+  }
 
   let stepsHtml = '';
-
   if (Array.isArray(method.steps) && method.steps.length) {
     stepsHtml = `
-      <h4>Step-by-Step Guide</h4>
-      <ol>
-        ${method.steps
-          .map(
-            step =>
-              `<li>${escapeHtml(step)}</li>`
-          )
-          .join('')}
-      </ol>
+      <section class="method-process-section">
+        <h4>Step-by-Step Guide</h4>
+        <ol>
+          ${method.steps
+            .map(step => `<li>${formatInline(step)}</li>`)
+            .join('')}
+        </ol>
+      </section>
+    `;
+  }
+
+  let lookOutHtml = '';
+  if (Array.isArray(method.lookOutFor) && method.lookOutFor.length) {
+    lookOutHtml = `
+      <section class="method-lookout-section">
+        <h4>Look Out For</h4>
+        <ul class="look-out-list">
+          ${method.lookOutFor
+            .map(item => `<li>${formatInline(item)}</li>`)
+            .join('')}
+        </ul>
+      </section>
     `;
   }
 
   let resourcesHtml = '';
-
   if (Array.isArray(method.resources) && method.resources.length) {
     resourcesHtml = `
-      <h4>Resources</h4>
-      <ul>
-        ${method.resources
-          .map(resource => {
-            const icon =
-              resource.type === 'download'
-                ? '📥'
-                : '🔗';
+      <section class="method-resources-section">
+        <h4>Further Material</h4>
+        <ul>
+          ${method.resources
+            .map(resource => {
+              if (resource.type === 'reference') {
+                return `<li class="resource-reference">${formatInline(resource.citation || '')}</li>`;
+              }
 
-            return `
-              <li>
-                ${icon}
-                <a
-                  href="${escapeHtml(resource.url)}"
-                  target="_blank"
-                  rel="noopener"
-                >
-                  ${escapeHtml(
-                    resource.title || resource.url
-                  )}
-                </a>
-              </li>
-            `;
-          })
-          .join('')}
-      </ul>
+              const icon = resource.type === 'download' ? '↓' : '↗';
+              const target = resource.url || '';
+              const title = resource.title || target;
+
+              return `
+                <li>
+                  ${icon} 
+                  <a
+                    href="${escapeHtml(target)}"
+                    target="_blank"
+                    rel="noopener"
+                  >${formatInline(title)}</a>
+                </li>
+              `;
+            })
+            .join('')}
+        </ul>
+      </section>
     `;
   }
 
   document.getElementById('method-details').innerHTML =
-    stepsHtml + resourcesHtml;
+    whenToUseHtml + stepsHtml + lookOutHtml + resourcesHtml;
 
   openModal(modal);
 }

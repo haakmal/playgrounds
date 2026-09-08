@@ -158,8 +158,8 @@
     "name": "Cultural Probes",
     "stages": [
       "Discovery",
-	  "Define",
-	  "Deliver"
+      "Define",
+      "Deliver"
     ],
     "summary": " "
   },
@@ -348,7 +348,7 @@
     "name": "The Thing From The Future",
     "stages": [
       "Define",
-	  "Develop"
+      "Develop"
     ],
     "summary": " "
   },
@@ -582,7 +582,7 @@
     "name": "User Flow Diagram",
     "stages": [
       "Discovery",
-	  "Define",
+      "Define",
       "Develop",
       "Deliver"
     ],
