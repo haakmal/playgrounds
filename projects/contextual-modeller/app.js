@@ -493,7 +493,7 @@ function openInfo(t, b) {
     document.querySelector("#modalTitle").textContent = t;
     document.querySelector("#modalBody").innerHTML = b;
     document.querySelector("#modalFooter").innerHTML =
-        '<button class="btn primary" onclick="document.querySelector(\'#modal\').close()">Close</button>';
+        'When in doubt, ask questions.';
     modal.showModal();
 }
 document.querySelector("#closeModal").onclick = () => modal.close();

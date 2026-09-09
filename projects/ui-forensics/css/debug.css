@@ -69,3 +69,11 @@ body.debug-page .debug-controls button:disabled {
 }
 
 body.debug-page .debug-toolbar { background: #0d0d0d; border-bottom-color: #707070; }
+
+body.debug-page #previous-button,
+body.debug-page #next-button {
+    display: none;
+}
+body.debug-page .specimen-footer-actions {
+    margin-left: auto;
+}

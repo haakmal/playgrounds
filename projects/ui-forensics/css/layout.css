@@ -161,3 +161,12 @@
 .panel-section { border-bottom-color: #505050; }
 .case-data div { border-bottom-color: #404040; }
 .guidance-panel, .small-copy { color: #c8c8c8; }
+
+
+.specimen-footer > #specimen-note {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+.specimen-footer-actions {
+    flex: 0 0 auto;
+}

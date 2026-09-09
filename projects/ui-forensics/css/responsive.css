@@ -47,3 +47,24 @@ body.debug-page .examination-screen {
         height: calc(100vh - 184px);
     }
 }
+
+
+@media (max-width: 980px) {
+    .specimen-footer {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+    .specimen-footer-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
+
+@media (max-width: 760px) {
+    .specimen-footer-actions {
+        justify-content: stretch;
+    }
+    .specimen-footer-actions button {
+        flex: 1 1 auto;
+    }
+}

@@ -1,5 +1,5 @@
 
-import { renderSpecimen } from './specimens.js?v=4';
+import { renderSpecimen } from './specimens.js?v=5';
 
 export function createInterface({ state, issues, elements, callbacks }) {
     const { startScreen, examinationScreen, completeScreen, viewport } = elements;
@@ -26,6 +26,9 @@ export function createInterface({ state, issues, elements, callbacks }) {
         elements.specimenName.textContent = specimen.name;
         elements.specimenKind.textContent = `${specimen.device.toUpperCase()} SPECIMEN`;
         elements.specimenTask.textContent = specimen.task;
+        if (elements.previousButton) {
+            elements.previousButton.disabled = state.currentIndex <= 0;
+        }
         viewport.innerHTML = '<div class="specimen-canvas"></div>';
         const canvas = viewport.querySelector('.specimen-canvas');
         renderSpecimen(canvas, specimen);

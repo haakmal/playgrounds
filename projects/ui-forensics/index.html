@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>UI Forensics — Heuristic Examination</title>
-    <meta name="ui-forensics-version" content="4" />
+    <meta name="ui-forensics-version" content="5" />
     <meta name="description" content="A deliberately problematic interface library for learning heuristic evaluation.">
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/layout.css">
@@ -39,7 +39,7 @@
                     <li><span>02</span> Interact with the specimen.</li>
                     <li><span>03</span> Observe system behaviour.</li>
                     <li><span>04</span> Document potential issues.</li>
-                    <li><span>05</span> Move to the next specimen.</li>
+                    <li><span>05</span> Move through the specimen deck.</li>
                 </ol>
                 <div class="start-note mono">DOCUMENTED ISSUES ARE DISCLOSED. THEIR LOCATION AND TYPE ARE NOT.</div>
                 <button id="start-button" class="primary-button">Begin examination</button>
@@ -78,7 +78,11 @@
                 </div>
                 <div class="specimen-footer mono">
                     <span id="specimen-note">INTERACTIVE EVIDENCE / EXAMINE THROUGH USE</span>
-                    <button id="next-button" class="secondary-button">Next specimen →</button>
+                    <div class="specimen-footer-actions">
+                        <button id="previous-button" class="primary-button" type="button">← Previous</button>
+                        <button id="reset-button" class="primary-button" type="button">Reset specimen</button>
+                        <button id="next-button" class="primary-button" type="button">Next specimen →</button>
+                    </div>
                 </div>
             </section>
 
@@ -103,7 +107,7 @@
             <div class="complete-panel">
                 <p class="eyebrow mono">SPECIMENS EXAMINED</p>
                 <ol id="completed-list" class="completed-list"></ol>
-                <button id="new-examination-button" class="primary-button">Begin another examination</button>
+                <div class="complete-actions"><button id="redo-same-button" class="primary-button" type="button">Redo these specimens</button><button id="new-examination-button" class="secondary-button" type="button">Begin another examination</button></div>
             </div>
         </section>
     </main>
@@ -123,42 +127,6 @@
 
     <!-- Curious examiners may inspect the source. There is a hidden tutor reveal: Shift+R.
          It is intentionally not advertised in the student interface; curiosity is rewarded. -->
-    <script type="module" src="js/app.js?v=4"></script>
-
-<!-- BEGIN RETURN LINK -->
-<script>
-// inject-home-link.js
-(function () {
-	// Inject Font Awesome stylesheet
-	const fa = document.createElement("link");
-	fa.rel = "stylesheet";
-	fa.href = "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css";
-	fa.crossOrigin = "anonymous";
-	document.head.appendChild(fa);
-	
-	// Create the back link
-	const link = document.createElement("a");
-	link.href = "/";
-	link.innerHTML = '← Back to Playgrounds <i class="fab fa-github"><i>';
-	Object.assign(link.style, {
-	  position: "fixed",
-	  bottom: "20px",
-	  right: "20px",
-	  background: "#000",
-	  color: "#fff",
-	  padding: "8px 12px",
-	  zIndex: 1000,
-	  fontSize: "14px",
-	  opacity: 0.7,
-	  borderRadius: "6px",
-	  textDecoration: "none"
-	});
-	link.onmouseover = () => (link.style.opacity = "1");
-	link.onmouseout = () => (link.style.opacity = "0.7");
-	document.body.appendChild(link);
-})();
-</script>
-<!-- END RETURN LINK -->
-
+    <script type="module" src="js/app.js?v=5"></script>
 </body>
 </html>

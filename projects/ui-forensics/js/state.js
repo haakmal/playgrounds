@@ -20,7 +20,14 @@ export function beginState(state, caseId, specimens) {
 }
 
 export function advanceState(state) {
-    state.currentIndex += 1;
+    state.currentIndex = Math.min(state.currentIndex + 1, state.specimens.length - 1);
+    state.currentSpecimen = state.specimens[state.currentIndex] || null;
+    state.tutorReveal = false;
+    return state;
+}
+
+export function retreatState(state) {
+    state.currentIndex = Math.max(state.currentIndex - 1, 0);
     state.currentSpecimen = state.specimens[state.currentIndex] || null;
     state.tutorReveal = false;
     return state;

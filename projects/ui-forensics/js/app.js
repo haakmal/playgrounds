@@ -1,9 +1,9 @@
-import { loadIssues, loadSpecimens } from './specimens.js?v=4';
-import { chooseSpecimens, createCaseId } from './randomizer.js?v=4';
-import { createState, beginState, advanceState } from './state.js?v=4';
-import { createInterface } from './interface.js?v=4';
-import { createTutor } from './tutor.js?v=4';
-import { createDebugController } from './debug.js?v=4';
+import { loadIssues, loadSpecimens } from './specimens.js?v=5';
+import { chooseSpecimens, createCaseId } from './randomizer.js?v=5';
+import { createState, beginState, advanceState, retreatState } from './state.js?v=5';
+import { createInterface } from './interface.js?v=5';
+import { createTutor } from './tutor.js?v=5';
+import { createDebugController } from './debug.js?v=5';
 
 const state = createState();
 console.info('%cUI FORENSICS NOTE%c Curious enough to inspect the tool? The hidden tutor reveal is Shift+R.', 'font-weight:700', 'font-weight:400');
@@ -15,6 +15,9 @@ const elements = {
     completeScreen: document.querySelector('#complete-screen'),
     startButton: document.querySelector('#start-button'),
     newExaminationButton: document.querySelector('#new-examination-button'),
+    redoSameButton: document.querySelector('#redo-same-button'),
+    previousButton: document.querySelector('#previous-button'),
+    resetButton: document.querySelector('#reset-button'),
     nextButton: document.querySelector('#next-button'),
     headerCase: document.querySelector('#header-case'),
     caseId: document.querySelector('#case-id'),
@@ -60,6 +63,24 @@ function startDebugMode() {
     debug?.renderControls();
 }
 
+function previousSpecimen() {
+    tutor.clear();
+
+    if (debugMode) {
+        debug?.previous();
+        return;
+    }
+
+    if (state.currentIndex <= 0) return;
+    retreatState(state);
+    ui.renderCurrent();
+}
+
+function resetSpecimen() {
+    tutor.clear();
+    ui.renderCurrent();
+}
+
 function nextSpecimen() {
     tutor.clear();
 
@@ -75,6 +96,13 @@ function nextSpecimen() {
 
     advanceState(state);
     ui.renderCurrent();
+}
+
+function redoSameDeck() {
+    tutor.clear();
+    const sameDeck = [...state.specimens];
+    beginState(state, createCaseId(), sameDeck);
+    ui.showExamination();
 }
 
 async function initialise() {
@@ -116,7 +144,10 @@ async function initialise() {
 }
 
 if (elements.startButton) elements.startButton.addEventListener('click', startExamination);
+if (elements.previousButton) elements.previousButton.addEventListener('click', previousSpecimen);
+if (elements.resetButton) elements.resetButton.addEventListener('click', resetSpecimen);
 if (elements.nextButton) elements.nextButton.addEventListener('click', nextSpecimen);
 if (elements.newExaminationButton) elements.newExaminationButton.addEventListener('click', startExamination);
+if (elements.redoSameButton) elements.redoSameButton.addEventListener('click', redoSameDeck);
 
 initialise();

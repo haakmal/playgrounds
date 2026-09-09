@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>UI Forensics — Debug Library</title>
-    <meta name="ui-forensics-version" content="4" />
+    <meta name="ui-forensics-version" content="5" />
     <meta name="description" content="Debug view for reviewing every UI Forensics specimen in sequence.">
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/layout.css">
@@ -55,7 +55,7 @@
                     <li><span>02</span> Interact with the specimen.</li>
                     <li><span>03</span> Observe system behaviour.</li>
                     <li><span>04</span> Document potential issues.</li>
-                    <li><span>05</span> Move to the next specimen.</li>
+                    <li><span>05</span> Move through the specimen deck.</li>
                 </ol>
                 <div class="start-note mono">DOCUMENTED ISSUES ARE DISCLOSED. THEIR LOCATION AND TYPE ARE NOT.</div>
                 <button id="start-button" class="primary-button">Begin examination</button>
@@ -94,7 +94,11 @@
                 </div>
                 <div class="specimen-footer mono">
                     <span id="specimen-note">INTERACTIVE EVIDENCE / EXAMINE THROUGH USE</span>
-                    <button id="next-button" class="secondary-button">Next specimen →</button>
+                    <div class="specimen-footer-actions">
+                        <button id="previous-button" class="secondary-button" type="button">← Previous</button>
+                        <button id="reset-button" class="secondary-button" type="button">Reset specimen</button>
+                        <button id="next-button" class="primary-button" type="button">Next specimen →</button>
+                    </div>
                 </div>
             </section>
 
@@ -119,7 +123,7 @@
             <div class="complete-panel">
                 <p class="eyebrow mono">SPECIMENS EXAMINED</p>
                 <ol id="completed-list" class="completed-list"></ol>
-                <button id="new-examination-button" class="primary-button">Begin another examination</button>
+                <div class="complete-actions"><button id="redo-same-button" class="primary-button" type="button">Redo these specimens</button><button id="new-examination-button" class="secondary-button" type="button">Begin another examination</button></div>
             </div>
         </section>
     </main>
@@ -139,6 +143,6 @@
 
     <!-- Curious examiners may inspect the source. There is a hidden tutor reveal: Shift+R.
          It is intentionally not advertised in the student interface; curiosity is rewarded. -->
-    <script type="module" src="js/app.js?v=4"></script>
+    <script type="module" src="js/app.js?v=5"></script>
 </body>
 </html>
