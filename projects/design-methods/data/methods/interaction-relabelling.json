@@ -2,28 +2,33 @@
   "name": "Interaction Relabelling",
   "stages": [
     "Define",
-	"Develop"
+    "Develop"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Interaction relabelling is an ideation method in which the interactions afforded by an existing object are reinterpreted as interactions with a different product or system. Designers explore how actions such as turning, sliding, squeezing, balancing or unfolding might suggest alternative ways of interacting with the thing being designed.\n\nThe method deliberately shifts attention away from familiar interface conventions toward the expressive and physical qualities of interaction.",
+  "whenToUse": "Use interaction relabelling when developing interactive products and when existing conventions are constraining the range of ideas being considered.\n\nIt is particularly useful for exploring tangible and embodied interaction.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Select the product or interaction problem.",
+    "Choose an unrelated physical object with interesting interactions.",
+    "Explore how the object is held, moved and manipulated.",
+    "List the actions and feedback the object affords.",
+    "Temporarily reinterpret these actions as functions of the product being designed.",
+    "Generate interaction concepts from these mappings.",
+    "Repeat with contrasting objects.",
+    "Develop promising interactions beyond the original analogy."
+  ],
+  "lookOutFor": [
+    "The exercise is intentionally generative rather than evidence about what users need.",
+    "Avoid choosing only objects whose interactions already resemble the target product.",
+    "Novel interaction is not automatically better interaction; promising concepts still require evaluation for usability, accessibility and appropriateness."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Djajadiningrat, J. P., Gaver, W. W. & Frens, J. W. (2000). “Interaction Relabelling and Extreme Characters: Methods for Exploring Aesthetic Interactions.” *Proceedings of DIS 2000*, 66–71. DOI: 10.1145/347642.347664."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Tomitsch, M. et al. (2021). *Design. Think. Make. Break. Repeat*. BIS Publishers."
     }
   ]
 }

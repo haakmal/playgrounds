@@ -2,28 +2,33 @@
   "name": "Crazy 8's",
   "stages": [
     "Define",
-	"Develop"
+    "Develop"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Crazy 8s is a rapid sketching exercise in which participants generate multiple responses to the same design problem within a short period. A page is commonly divided into eight spaces and participants produce one idea in each.\n\nThe time and quantity constraints encourage designers to move beyond their first solution and explore variations without investing heavily in any single concept.",
+  "whenToUse": "Use Crazy 8s when a team understands the design problem but has converged too quickly on one solution or needs to generate alternative forms for a concept.\n\nIt works well as a short individual activity before group discussion.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Frame a focused design question.",
+    "Give each participant a page divided into eight spaces.",
+    "Set a short time limit.",
+    "Ask participants to sketch a different response in each space.",
+    "Encourage rough representations rather than polished drawings.",
+    "Review all eight ideas after the sketching period.",
+    "Ask participants to identify promising elements rather than simply selecting a winner.",
+    "Combine or develop those elements through subsequent sketches or prototypes."
+  ],
+  "lookOutFor": [
+    "Speed should encourage exploration, not anxiety. Adjust timing where necessary.",
+    "Drawing confidence should not determine whose ideas receive attention.",
+    "Eight superficial variations of the same idea do not necessarily represent meaningful divergence; encourage changes in underlying approach as well as appearance."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Google Ventures. *Design Sprint: Crazy 8s*."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Knapp, J., Zeratsky, J. & Kowitz, B. (2016). *Sprint*. Simon & Schuster."
     }
   ]
 }

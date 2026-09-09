@@ -4,26 +4,32 @@
     "Discovery",
     "Define"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Autobiographical and diary approaches investigate experiences as they unfold over time. In diary studies, participants document selected activities, experiences, decisions or feelings over a period rather than attempting to reconstruct them later in an interview. In autobiographical design research, designers may systematically examine their own experiences as material for reflection and inquiry.\n\nThese approaches can reveal routines, changes and contextual details that are difficult to observe directly, particularly when experiences are private, intermittent or distributed across long periods.",
+  "whenToUse": "Use diary approaches when the phenomenon you are studying occurs over days or weeks, cannot easily be observed by a researcher, or is strongly influenced by context.\n\nAutobiographical approaches can be useful for exploratory and reflective design work, particularly when the designer has direct experience of the situation being investigated.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define what experiences or behaviours you want to understand.",
+    "Decide an appropriate period for documentation.",
+    "Create prompts that encourage useful observations without making participation unnecessarily burdensome.",
+    "Ask participants to record experiences close to when they occur.",
+    "Allow appropriate forms of documentation, such as writing, photographs, sketches, audio or screenshots.",
+    "Review entries during or after the study.",
+    "Conduct follow-up conversations hwere clarification is useful.",
+    "Analyse patterns, changes, exceptions, and contextual influences across the material."
+  ],
+  "lookOutFor": [
+    "Diary studies require sustained participant effort and incomplete entries are common.",
+    "Frequent prompts can influence the behaviour being studied.",
+    "Personal records may contain sensitive or unexpected information, so consent, privacy and data handling require particular attention.",
+    "Autobiographical experience can produce valuable situated knowledge but should not automatically be treated as representative of other people's experiences."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Bolger, N., Davis, A. & Rafaeli, E. (2003). “Diary Methods: Capturing Life as It Is Lived.” *Annual Review of Psychology*, 54, 579–616."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Neustaedter, C. & Sengers, P. (2012). “Autobiographical Design in HCI Research.” *Proceedings of DIS 2012*."
     }
   ]
 }

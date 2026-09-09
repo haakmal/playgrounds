@@ -3,26 +3,32 @@
   "stages": [
     "Develop"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Wireframing represents the structure and organisation of a digital interface without requiring finished visual styling. Wireframes typically show content hierarchy, controls, navigation and relationships between interface elements.\n\nTheir reduced visual detail allows designers to examine structure and interaction before typography, imagery and visual identity dominate discussion.",
+  "whenToUse": "Use wireframes when moving from flows and requirements toward interface layouts and when the main questions concern hierarchy, navigation and interaction rather than final appearance.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define the user goal and relevant content.",
+    "Review the task or user flow.",
+    "Identify the elements required on each screen or state.",
+    "Arrange those elements according to hierarchy and task priority.",
+    "Connect screens to represent important interactions.",
+    "Create alternative layouts for uncertain areas.",
+    "Review the wireframes against scenarios and accessibility requirements.",
+    "Prototype and test important interactions.",
+    "Increase visual fidelity only when structural questions have been addressed."
+  ],
+  "lookOutFor": [
+    "Wireframes can prematurely lock teams into familiar screen layouts.",
+    "Placeholder content can hide genuine content-design problems; use realistic content where possible.",
+    "Low visual fidelity does not remove the need to consider accessibility, responsive behaviour and information hierarchy."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Garrett, J. J. (2011). *The Elements of User Experience*, 2nd ed. New Riders."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Buxton, B. (2007). *Sketching User Experiences*. Morgan Kaufmann."
     }
   ]
 }

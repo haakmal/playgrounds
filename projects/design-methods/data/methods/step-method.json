@@ -4,26 +4,31 @@
     "Discovery",
     "Define"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "STEP is used as a structured prompt for examining the broader context surrounding a design problem rather than considering the immediate product or user alone. It directs attention toward larger social, technological, economic and political conditions that may influence the project.\n\nThe framework can help designers recognise external forces, constraints and emerging changes that would otherwise remain outside a narrowly framed brief.",
+  "whenToUse": "Use STEP during early contextual research, strategic design or futures work when wider environmental conditions may substantially affect a project.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define the issue or design context.",
+    "Investigate relevant social conditions and changes.",
+    "Investigate technological developments and dependencies.",
+    "Investigate economic conditions, incentives and constraints.",
+    "Investigate political, regulatory and institutional conditions.",
+    "Record evidence and uncertainties within each area.",
+    "Identify relationships between developments across categories.",
+    "Translate significant findings into implications or questions for the project."
+  ],
+  "lookOutFor": [
+    "Categories are prompts rather than independent systems; significant issues often cross several areas.",
+    "Avoid filling categories with generic trends that have no demonstrated relevance to the project.",
+    "Different versions of environmental scanning frameworks use different category labels, so define the version being used."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Aguilar, F. J. (1967). *Scanning the Business Environment*. Macmillan."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Tomitsch, M. et al. (2021). *Design. Think. Make. Break. Repeat*. BIS Publishers."
     }
   ]
 }

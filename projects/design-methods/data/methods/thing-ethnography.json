@@ -3,28 +3,29 @@
   "stages": [
     "Discovery",
     "Define",
-	"Develop"
+    "Develop"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Thing ethnography investigates everyday practices from the perspective of objects and other non-human participants. Rather than treating things as passive props around human activity, the method asks how objects participate in relationships, routines and infrastructures.\n\nApproaches can include attaching sensors or cameras to objects, tracing their movement and interactions, or deliberately adopting a \"thing perspective\" to expose relationships that conventional human-centred observation might overlook.",
+  "whenToUse": "Use thing ethnography when relationships between people, objects and infrastructures are important and when a conventional user-centred perspective appears too narrow.\n\nIt is particularly relevant to connected products, Internet of Things research and more-than-human design.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Identify a thing whose relationships are relevant to the design question.",
+    "Map the people, objects and infrastructures it encounters.",
+    "Determine how traces of those interactions might be documented.",
+    "Collect material from or about the thing's situated perspective.",
+    "Examine patterns of movement, use and connection.",
+    "Compare the thing perspective with human accounts.",
+    "Identify relationships that conventional observation may have overlooked.",
+    "Use these insights to reconsider the boundaries of the design problem."
+  ],
+  "lookOutFor": [
+    "Objects do not literally provide human-style accounts of experience; the \"thing perspective\" remains a methodological construction.",
+    "Sensor-based observation can create significant privacy concerns.",
+    "Avoid using more-than-human language merely as metaphor when the analysis remains entirely human-centred."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
-    },
-    {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Giaccardi, E., Cila, N., Speed, C. & Caldwell, M. (2016). “Thing Ethnography: Doing Design Research with Non-Humans.” *Proceedings of DIS 2016*, 377–387. DOI: 10.1145/2901790.2901905."
     }
   ]
 }

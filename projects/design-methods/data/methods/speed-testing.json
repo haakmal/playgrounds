@@ -2,28 +2,34 @@
   "name": "Speed Testing",
   "stages": [
     "Develop",
-	"Deliver"
+    "Deliver"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Speed testing uses short, focused rounds of evaluation to expose obvious problems and compare design alternatives before investing in more extensive testing. The emphasis is on rapid learning and iteration rather than comprehensive validation.\n\nA small number of targeted sessions can reveal significant usability or comprehension issues early enough for designers to change direction cheaply.",
+  "whenToUse": "Use speed testing when a design is changing rapidly and the team needs quick evidence to inform the next iteration.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Identify the most important uncertainty.",
+    "Create a prototype capable of investigating it.",
+    "Define one or two realistic tasks or prompts.",
+    "Recruit relevant participants where possible.",
+    "Run short sessions focused on observable behaviour.",
+    "Record significant difficulties and misunderstandings.",
+    "Revise the design immediately where appropriate.",
+    "Test again with subsequent participants.",
+    "Reserve broader claims for more systematic evaluation."
+  ],
+  "lookOutFor": [
+    "Speed should not remove informed consent or responsible participant treatment.",
+    "Very small samples are useful for discovering problems, not estimating how common those problems are.",
+    "Avoid changing the design after every isolated comment without considering the underlying evidence."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Krug, S. (2010). *Rocket Surgery Made Easy*. New Riders."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Nielsen, J. (1993). *Usability Engineering*. Academic Press."
     }
   ]
 }

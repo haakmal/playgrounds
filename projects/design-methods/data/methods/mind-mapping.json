@@ -3,28 +3,29 @@
   "stages": [
     "Discovery",
     "Define",
-	"Develop"
+    "Develop"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Mind mapping is a visual technique for expanding and organising ideas around a central topic. Related concepts branch outward from a central node, allowing associations, subtopics and relationships to become visible on a single surface.\n\nIt can support individual thinking or collaborative exploration and is particularly useful before the structure of a problem is fully understood.",
+  "whenToUse": "Use mind mapping when exploring the scope of a topic, organising early research questions or generating associations around a design challenge.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Write the central topic or question in the middle.",
+    "Add major related ideas as branches.",
+    "Extend each branch with more specific concepts.",
+    "Add connections between branches where relationships emerge.",
+    "Continue until significant areas and gaps become visible.",
+    "Review the map for clusters, contradictions and missing perspectives.",
+    "Reorganise it if a clearer structure emerges.",
+    "Use the map to identify research questions or areas for further development."
+  ],
+  "lookOutFor": [
+    "A mind map records associations, not necessarily evidence.",
+    "The structure can reflect the assumptions of the person who created it.",
+    "Avoid treating the first hierarchy that emerges as the definitive structure of the problem."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
-    },
-    {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Buzan, T. & Buzan, B. (1993). *The Mind Map Book*. BBC Books."
     }
   ]
 }

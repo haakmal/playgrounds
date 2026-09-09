@@ -2,29 +2,34 @@
   "name": "Personas",
   "stages": [
     "Define",
-	"Develop",
-	"Deliver"
+    "Develop",
+    "Deliver"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Personas are research-informed representations of patterns found among people relevant to a design project. They typically bring together goals, behaviours, contexts and needs into a memorable character that teams can use when discussing design decisions.\n\nA persona is a synthesis artefact rather than a research method in itself. Its usefulness depends on the quality of the evidence and analysis from which it was constructed.",
+  "whenToUse": "Use personas when substantial research has revealed meaningful patterns in goals or behaviours and a team needs a shared representation of those patterns during design.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Gather relevant user research.",
+    "Identify recurring behavioural and goal-related patterns.",
+    "Distinguish meaningful differences from superficial demographics.",
+    "Group related patterns into coherent behavioural archetypes.",
+    "Construct a concise persona for each important pattern.",
+    "Include evidence-relevant goals, behaviours and contexts.",
+    "Communicate where the persona came from and what it does not represent.",
+    "Revisit personas as new research becomes available."
+  ],
+  "lookOutFor": [
+    "Personas created from imagination can easily reproduce stereotypes.",
+    "Decorative details can make a persona memorable while adding little design value.",
+    "Do not imply that one persona represents every person within a demographic group."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Cooper, A. (1999). *The Inmates Are Running the Asylum*. Sams."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Pruitt, J. & Adlin, T. (2006). *The Persona Lifecycle*. Morgan Kaufmann."
     }
   ]
 }

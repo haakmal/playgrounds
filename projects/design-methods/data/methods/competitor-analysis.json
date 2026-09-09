@@ -3,28 +3,33 @@
   "stages": [
     "Discovery",
     "Define",
-	"Deliver"
+    "Deliver"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Competitor analysis systematically compares existing products, services or organisations operating in a related area. Designers examine how alternatives address similar needs, communicate value, structure interactions or differentiate themselves.\n\nThe method can reveal established conventions, gaps and opportunities, but its purpose is not simply to imitate successful competitors.",
+  "whenToUse": "Use competitor analysis when entering an established product or service space, reviewing an existing offering or investigating how similar problems are currently addressed.\n\nIt can also be used more broadly to examine analogous experiences outside the immediate market.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define what you want to learn from the comparison.",
+    "Select direct competitors and, where useful, analogous examples.",
+    "Establish consistent dimensions for comparison.",
+    "Gather evidence by experiencing or examining each example.",
+    "Record similarities, differences, strengths and limitations.",
+    "Identify recurring conventions and unusual approaches.",
+    "Consider what needs appear underserved.",
+    "Translate observations into questions or opportunities rather than copied features."
+  ],
+  "lookOutFor": [
+    "Competitors' design decisions are not evidence of user needs.",
+    "Focusing only on current competitors can encourage incremental rather than original thinking.",
+    "Publicly visible features reveal little about the organisational constraints, research or failures behind a product."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Porter, M. E. (1980). *Competitive Strategy*. Free Press."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Martin, B. & Hanington, B. (2012). *Universal Methods of Design*. Rockport."
     }
   ]
 }

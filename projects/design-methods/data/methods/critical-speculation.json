@@ -1,30 +1,35 @@
 {
-  "name": "Critical Speculation",
+  "name": "Critical Speculations",
   "stages": [
     "Define",
-	"Develop",
-	"Deliver"
+    "Develop",
+    "Deliver"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Critical speculation uses designed propositions to question assumptions about technologies, systems, values and possible futures. Rather than proposing an immediately implementable solution, designers construct scenarios, artefacts or experiences that make an issue available for examination and debate.\n\nThe value of the work often lies in the questions and tensions it exposes rather than in whether the proposition should literally be produced.",
+  "whenToUse": "Use critical speculation when a project needs to examine assumptions, values or consequences that conventional solution-focused methods leave unchallenged.\n\nIt is particularly useful for emerging technologies, social change, contested futures and situations where asking *\"should this exist?\"* is as important as asking *\"how should we design it?\"*",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Identify the issue, assumption or emerging condition to investigate.",
+    "Research the social and technological context surrounding it.",
+    "Identify a tension, contradiction or value that could be amplified.",
+    "Construct a plausible speculative premise.",
+    "Develop an artefact, scenario or experience that embodies that premise.",
+    "Consider how audiences will encounter and interpret the proposition.",
+    "Use the work to prompt discussion, reflection or research.",
+    "Analyse the responses and questions that emerge rather than treating the artefact itself as the final answer."
+  ],
+  "lookOutFor": [
+    "Provocation without a clear critical question can become novelty.",
+    "Speculative work often reflects the designer's own cultural assumptions about what counts as desirable, disturbing or plausible.",
+    "Distinguish clearly between speculation, prediction and recommendation."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Dunne, A. & Raby, F. (2013). *Speculative Everything: Design, Fiction, and Social Dreaming*. MIT Press."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Auger, J. (2013). “Speculative Design: Crafting the Speculation.” *Digital Creativity*, 24(1), 11–35."
     }
   ]
 }

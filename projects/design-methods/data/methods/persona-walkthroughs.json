@@ -1,30 +1,35 @@
 {
-  "name": "Persona Walkthroughs",
+  "name": "Persona-based Walkthroughs",
   "stages": [
     "Discovery",
     "Define",
-	"Develop"
+    "Develop"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "A persona walkthrough examines a proposed design by stepping through an activity from the perspective represented by a persona. At each stage, designers consider the persona's goals, circumstances, capabilities and likely questions.\n\nThe method can help teams expose mismatches between a concept and previously identified user needs, provided that the persona itself is grounded in credible research.",
+  "whenToUse": "Use persona walkthroughs when evaluating early flows, scenarios or concepts and when research-based personas already exist.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Select an appropriate research-based persona.",
+    "Define the task or scenario to examine.",
+    "Establish the persona's relevant goals and context.",
+    "Move through the design one step at a time.",
+    "At each point, ask what the persona knows, expects and needs.",
+    "Record barriers, uncertainties and unsupported assumptions.",
+    "Repeat with personas representing meaningfully different circumstances.",
+    "Use the findings to revise the design or identify questions for user research."
+  ],
+  "lookOutFor": [
+    "A walkthrough does not turn a fictional representation into an actual participant.",
+    "Weak or stereotypical personas will produce weak walkthroughs.",
+    "Do not use persona walkthroughs as a substitute for accessibility evaluation or research with relevant users."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Cooper, A. (1999). *The Inmates Are Running the Asylum*. Sams."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Pruitt, J. & Adlin, T. (2006). *The Persona Lifecycle*. Morgan Kaufmann."
     }
   ]
 }

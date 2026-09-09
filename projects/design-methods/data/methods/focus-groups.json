@@ -4,26 +4,28 @@
     "Discovery",
     "Define"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "A focus group is a moderated group discussion used to explore participants' perceptions, experiences, language and responses to a topic. Interaction between participants is part of the method: people can agree, disagree, elaborate on one another's comments and expose different perspectives.\n\nFocus groups are useful for understanding discussion around a topic, but they do not provide the same depth of individual experience as one-to-one interviews.",
+  "whenToUse": "Use focus groups when interaction between participants is valuable, when you want to explore a range of perspectives efficiently, or when social norms and shared understandings are relevant to the research question.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define the research questions.",
+    "Recruit participants whose experiences are relevant.",
+    "Develop open-ended discussion prompts.",
+    "Establish expectations and confidentiality limitations.",
+    "Facilitate discussion without allowing one participant to dominate.",
+    "Probe differences and ask for examples.",
+    "Observe interaction as well as individual statements.",
+    "Record and analyse recurring themes, disagreements and minority perspectives."
+  ],
+  "lookOutFor": [
+    "Group pressure can suppress unpopular or sensitive opinions.",
+    "A confident participant can disproportionately shape discussion.",
+    "Focus groups are generally unsuitable for estimating how common an opinion is in a population.",
+    "Confidentiality cannot be guaranteed in the same way as an individual interview because other participants hear what is said."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
-    },
-    {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Krueger, R. A. & Casey, M. A. (2015). *Focus Groups: A Practical Guide for Applied Research*, 5th ed. Sage."
     }
   ]
 }

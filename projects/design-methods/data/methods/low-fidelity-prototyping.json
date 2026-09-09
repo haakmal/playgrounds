@@ -2,28 +2,33 @@
   "name": "Low-Fidelity Prototyping",
   "stages": [
     "Develop",
-	"Deliver"
+    "Deliver"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Low-fidelity prototyping creates deliberately simple representations of a design so that ideas can be explored before substantial resources are committed to implementation. Prototypes may use paper, cardboard, rough digital screens, simple models or improvised materials.\n\nTheir value comes from making ideas tangible enough to examine, change and test while signalling that the design remains unfinished.",
+  "whenToUse": "Use low-fidelity prototypes early and repeatedly when the important questions concern structure, sequence, interaction or overall concept rather than visual polish or technical performance.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Identify the question the prototype needs to investigate.",
+    "Decide which aspects of the experience must be represented.",
+    "Select the simplest materials capable of representing those aspects.",
+    "Build only enough detail to support the investigation.",
+    "Walk through or test the prototype.",
+    "Observe where assumptions fail or new questions emerge.",
+    "Modify the prototype rapidly.",
+    "Repeat until the important uncertainties require a different level of fidelity."
+  ],
+  "lookOutFor": [
+    "Fidelity should match the question being investigated.",
+    "A rough prototype cannot reliably answer questions about qualities it does not represent, such as precise timing, visual appeal or physical durability.",
+    "Avoid spending time polishing a prototype whose purpose is rapid learning."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Houde, S. & Hill, C. (1997). “What Do Prototypes Prototype?” In Helander, M., Landauer, T. & Prabhu, P. (eds.), *Handbook of Human-Computer Interaction*. Elsevier."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Buxton, B. (2007). *Sketching User Experiences*. Morgan Kaufmann."
     }
   ]
 }

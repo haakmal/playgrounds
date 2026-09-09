@@ -1,29 +1,30 @@
 {
-  "name": "Storyboarding",
+  "name": "Storboarding",
   "stages": [
     "Develop",
-	"Deliver"
+    "Deliver"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Storyboarding represents an experience as a sequence of illustrated frames. Borrowed from filmmaking, the technique helps designers show how a situation unfolds over time, including context, actions, interactions and transitions.\n\nStoryboards are particularly useful for communicating experiences that extend beyond a single screen or object.",
+  "whenToUse": "Use storyboarding when the timing and sequence of an experience matter, when communicating a scenario to others, or when exploring how a concept fits into everyday activity.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define the scenario and central actor.",
+    "Identify the beginning and intended outcome.",
+    "Break the experience into significant moments.",
+    "Sketch each moment as a separate frame.",
+    "Show relevant context, people and artefacts.",
+    "Add brief annotations or dialogue where needed.",
+    "Review the sequence for missing transitions or assumptions.",
+    "Create alternative sequences where useful."
+  ],
+  "lookOutFor": [
+    "A smooth storyboard can conceal friction and uncertainty.",
+    "Include moments before and after the direct interaction with the design.",
+    "Drawing quality is less important than whether the sequence communicates clearly."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
-    },
-    {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Truong, K. N., Hayes, G. R. & Abowd, G. D. (2006). “Storyboarding: An Empirical Determination of Best Practices and Effective Guidelines.” *DIS 2006*."
     }
   ]
 }

@@ -2,28 +2,34 @@
   "name": "Reframing",
   "stages": [
     "Define",
-	"Develop"
+    "Develop"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Reframing deliberately changes how a design problem is understood. Instead of accepting the initial problem statement as fixed, designers examine assumptions, boundaries and perspectives and construct alternative ways of describing the situation.\n\nA productive reframe can reveal different questions and therefore different spaces for design intervention.",
+  "whenToUse": "Use reframing when a project appears stuck, when solutions repeatedly address symptoms rather than underlying issues, or when the initial brief contains assumptions that have not been examined.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Write the current problem framing explicitly.",
+    "Identify assumptions embedded in its language.",
+    "Ask who defines the problem and who experiences it differently.",
+    "Examine what has been included and excluded.",
+    "Rewrite the problem from alternative perspectives.",
+    "Change scale, timescale or unit of analysis.",
+    "Generate design questions from several frames.",
+    "Compare what each frame makes visible and invisible.",
+    "Select or combine frames that open productive avenues for investigation."
+  ],
+  "lookOutFor": [
+    "Reframing should not be used to redefine away inconvenient evidence or stakeholder concerns.",
+    "Different frames carry different values and consequences.",
+    "A compelling reframe still requires investigation rather than becoming a new unquestioned assumption."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Schön, D. A. (1983). *The Reflective Practitioner*. Basic Books."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Dorst, K. (2015). *Frame Innovation*. MIT Press."
     }
   ]
 }

@@ -2,28 +2,33 @@
   "name": "Card Sorting",
   "stages": [
     "Define",
-	"Develop"
+    "Develop"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Card sorting investigates how people understand and group information. Participants organise cards representing topics, functions or content into categories that make sense to them. In an open card sort they create their own categories; in a closed card sort they place items into categories supplied by the researcher.\n\nPatterns across participants can help designers understand mental models and inform information architecture, navigation and terminology.",
+  "whenToUse": "Use card sorting when you need to understand how people expect information or functions to be organised.\n\nIt is particularly useful when developing or revising the structure of websites, applications, services, documentation or other information-rich systems.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define the information-organisation question.",
+    "Select representative items and write each on a separate card.",
+    "Decide whether an open, closed or hybrid card sort best fits the question.",
+    "Ask participants to group the cards according to what makes sense to them.",
+    "Ask participants to name groups when using an open sort.",
+    "Invite participants to explain difficult or ambiguous decisions.",
+    "Compare patterns across participants.",
+    "Use the findings alongside other research to develop or evaluate an information structure."
+  ],
+  "lookOutFor": [
+    "Card sorting investigates perceived relationships between labels; it does not reproduce the full experience of navigating an interface.",
+    "Results can be strongly affected by ambiguous card wording.",
+    "Do not assume that the most common grouping is automatically the best architecture. Important differences between participant groups may be hidden by aggregation."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Spencer, D. (2009). *Card Sorting: Designing Usable Categories*. Rosenfeld Media."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Rosenfeld, L., Morville, P. & Arango, J. (2015). *Information Architecture for the Web and Beyond*. O'Reilly."
     }
   ]
 }

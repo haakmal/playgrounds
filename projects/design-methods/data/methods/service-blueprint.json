@@ -2,29 +2,35 @@
   "name": "Service Blueprint",
   "stages": [
     "Define",
-	"Develop",
-	"Deliver"
+    "Develop",
+    "Deliver"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "A service blueprint visualises how a service is produced across customer-facing interactions and the activities occurring behind them. It commonly aligns user actions, touchpoints, frontstage staff activity, backstage processes and supporting systems along a timeline.\n\nThe blueprint helps teams see dependencies between the experience people encounter and the organisational work required to deliver it.",
+  "whenToUse": "Use service blueprints when designing or improving services involving multiple touchpoints, staff roles, systems or organisational processes.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define the service and scenario being mapped.",
+    "Identify the user's major actions over time.",
+    "Add visible touchpoints and frontstage interactions.",
+    "Map backstage activities supporting those interactions.",
+    "Add relevant systems, processes and supporting actors.",
+    "Draw dependencies between layers.",
+    "Identify failures, bottlenecks and handoffs.",
+    "Examine how proposed changes affect both experience and delivery.",
+    "Revise the blueprint as the service develops."
+  ],
+  "lookOutFor": [
+    "Do not confuse a service blueprint with a user journey: the blueprint includes organisational delivery as well as user experience.",
+    "Complex blueprints can become unreadable; define a clear scope.",
+    "Validate backstage processes with the people who actually perform them."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Shostack, G. L. (1984). “Designing Services That Deliver.” *Harvard Business Review*, 62(1), 133–139."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Bitner, M. J., Ostrom, A. L. & Morgan, F. N. (2008). “Service Blueprinting.” *California Management Review*, 50(3), 66–94."
     }
   ]
 }

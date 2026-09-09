@@ -1,29 +1,34 @@
 {
-  "name": "Design MetaphorsAffinity Diagrams",
+  "name": "Design Metaphors",
   "stages": [
     "Define",
-	"Develop"
+    "Develop"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Design metaphors use the characteristics of one domain to help imagine or explain another. A designer might ask how a service could behave like a library, ecosystem, conversation or marketplace and use relationships from that source domain to generate new possibilities.\n\nMetaphors can support ideation and communication by making unfamiliar concepts easier to think about through familiar structures.",
+  "whenToUse": "Use design metaphors when a team is struggling to move beyond existing conventions, when an abstract system needs to become easier to understand, or when alternative interaction models are being explored.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define the design problem or experience.",
+    "Identify its important qualities or relationships.",
+    "Generate several unrelated metaphorical domains.",
+    "Select a metaphor and examine its components, behaviours and relationships.",
+    "Map potentially useful relationships onto the design problem.",
+    "Generate concepts from those mappings.",
+    "Repeat with contrasting metaphors.",
+    "Evaluate which resulting ideas are useful without forcing the final design to follow the metaphor literally."
+  ],
+  "lookOutFor": [
+    "Metaphors highlight some relationships while hiding others.",
+    "A familiar metaphor may carry assumptions that do not fit the design situation.",
+    "Do not let the metaphor become a constraint once it stops being productive."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Lakoff, G. & Johnson, M. (1980). *Metaphors We Live By*. University of Chicago Press."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Erickson, T. D. (1990). “Working with Interface Metaphors.” In Laurel, B. (ed.), *The Art of Human-Computer Interface Design*. Addison-Wesley."
     }
   ]
 }

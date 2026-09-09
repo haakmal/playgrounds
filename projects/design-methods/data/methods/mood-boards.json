@@ -2,28 +2,29 @@
   "name": "Mood Boards",
   "stages": [
     "Develop",
-	"Deliver"
+    "Deliver"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "A mood board is a curated collection of images, colours, materials, typography, textures and other references assembled to explore the intended experiential or aesthetic direction of a design.\n\nMood boards can help teams discuss qualities that are difficult to communicate verbally and compare different interpretations before committing to a detailed visual language.",
+  "whenToUse": "Use mood boards when exploring visual, material or experiential direction and when collaborators need a shared vocabulary for qualities such as atmosphere, character or tone.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define the experience or qualities being explored.",
+    "Gather a broad range of visual and material references.",
+    "Avoid limiting references to products identical to the one being designed.",
+    "Group references that express related qualities.",
+    "Curate the collection to create a coherent direction.",
+    "Annotate important qualities where necessary.",
+    "Compare alternative boards or directions.",
+    "Translate selected qualities into design decisions rather than copying individual references."
+  ],
+  "lookOutFor": [
+    "A mood board should communicate more than a fashionable aesthetic.",
+    "Avoid uncritical use of copyrighted imagery in published work.",
+    "Ensure that visual references do not introduce cultural stereotypes or associations that have not been considered."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
-    },
-    {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Lucero, A. (2012). “Framing, Aligning, Paradoxing, Abstracting, and Directing: How Design Mood Boards Work.” *Proceedings of DIS 2012*."
     }
   ]
 }

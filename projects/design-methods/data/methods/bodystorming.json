@@ -3,28 +3,33 @@
   "stages": [
     "Discovery",
     "Define",
-	"Develop"
+    "Develop"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Bodystorming explores design ideas by physically acting within a situation rather than discussing it only in the abstract. Participants enact activities, interactions or scenarios using their bodies, spaces and simple props. Through performance, designers can notice spatial relationships, movement, timing, coordination and social interactions that may be difficult to anticipate through sketches alone.\n\nThe aim is not polished acting. It is to think through making and doing.",
+  "whenToUse": "Use bodystorming when physical movement, spatial arrangement, interpersonal interaction or sequences of activity are important to a design.\n\nIt is useful during early concept development because situations can be enacted and changed rapidly without producing detailed prototypes.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Select a situation, interaction or design question to explore.",
+    "Establish a simple physical setting using available spaces and props.",
+    "Assign roles to participants where necessary.",
+    "Act through the situation rather than describing what would happen.",
+    "Observe moments of confusion, effort, opportunity or unexpected behaviour.",
+    "Change one aspect of the interaction and enact it again.",
+    "Repeat several variations.",
+    "Record observations and translate useful discoveries into design ideas or questions."
+  ],
+  "lookOutFor": [
+    "Participants may perform what they think *should* happen rather than what would occur in real use.",
+    "Bodystorming is an exploratory design activity rather than a substitute for research with relevant participants.",
+    "Ensure that physical participation is optional and provide alternative ways of contributing for people who cannot or do not wish to perform particular actions."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Oulasvirta, A., Kurvinen, E. & Kankainen, T. (2003). “Understanding Contexts by Being There: Case Studies in Bodystorming.” *Personal and Ubiquitous Computing*, 7, 125–134."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Schleicher, D., Jones, P. & Kachur, O. (2010). “Bodystorming as Embodied Designing.” *Interactions*, 17(6), 47–51."
     }
   ]
 }

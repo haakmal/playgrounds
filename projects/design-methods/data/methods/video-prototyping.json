@@ -2,28 +2,34 @@
   "name": "Video Prototyping",
   "stages": [
     "Develop",
-	"Deliver"
+    "Deliver"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Video prototyping uses recorded or edited video to represent how a proposed product, service or interaction might work in context. People, props, interfaces and environments can be combined to simulate functionality that does not yet exist.\n\nVideo is particularly effective for representing interactions involving movement, time, multiple devices or changing environments.",
+  "whenToUse": "Use video prototyping when an experience is difficult to communicate through static sketches and when implementing the underlying technology would be unnecessary or expensive at the current stage.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define the interaction or question to represent.",
+    "Develop a short scenario.",
+    "Storyboard the significant moments.",
+    "Decide what can be performed, mocked up or simulated.",
+    "Prepare simple props and interfaces.",
+    "Record the scenario.",
+    "Edit only enough to communicate the interaction clearly.",
+    "Review the video with collaborators or participants.",
+    "Use feedback to revise the concept before implementation."
+  ],
+  "lookOutFor": [
+    "Video can make an unbuilt concept appear more complete and feasible than it really is.",
+    "Clearly distinguish simulated behaviour from functioning technology.",
+    "Avoid investing heavily in production quality when the concept itself remains uncertain."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Mackay, W. E. (1988). “Video Prototyping: A Technique for Developing Hypermedia Systems.” *CHI '88*."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Tomitsch, M. et al. (2021). *Design. Think. Make. Break. Repeat*. BIS Publishers."
     }
   ]
 }

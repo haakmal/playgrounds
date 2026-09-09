@@ -3,26 +3,32 @@
   "stages": [
     "Discovery"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Contextual inquiry combines observation and interviewing while a participant carries out an activity in its normal context. Instead of asking someone to recall a process away from the situation, the researcher observes the activity and asks questions as relevant events occur.\n\nThis can reveal tacit knowledge, workarounds, environmental constraints and relationships between people, tools and information that may be difficult to articulate in a conventional interview.",
+  "whenToUse": "Use contextual inquiry when understanding **how an activity is actually performed** is important to the design problem.\n\nIt is particularly useful for complex work practices, services, professional environments and activities involving multiple tools or interruptions.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define the activities and contexts you need to understand.",
+    "Recruit participants with relevant experience.",
+    "Explain the researcher's observational role and establish consent.",
+    "Ask the participant to conduct the activity as naturally as practical.",
+    "Observe actions, tools, interruptions and environmental conditions.",
+    "Ask brief questions when clarification is needed.",
+    "Invite participants to explain decisions or unexpected actions.",
+    "Document observations and interpretations separately.",
+    "Synthesise patterns across sessions."
+  ],
+  "lookOutFor": [
+    "The presence of a researcher can alter behaviour.",
+    "Avoid interrupting so frequently that the activity becomes an interview rather than contextual observation.",
+    "Workplaces and homes may expose information belonging to people who have not consented to participate."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Beyer, H. & Holtzblatt, K. (1998). *Contextual Design: Defining Customer-Centered Systems*. Morgan Kaufmann."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Holtzblatt, K., Wendell, J. B. & Wood, S. (2004). *Rapid Contextual Design*. Morgan Kaufmann."
     }
   ]
 }

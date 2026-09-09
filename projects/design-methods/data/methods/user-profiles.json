@@ -2,29 +2,30 @@
   "name": "User Profiles",
   "stages": [
     "Define",
-	"Develop",
-	"Deliver"
+    "Develop",
+    "Deliver"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "User profiles summarise relevant characteristics of people or groups who interact with a product or service. Profiles may describe experience, behaviours, contexts, capabilities, constraints and goals without constructing the fictional character typically associated with a persona.\n\nThey can provide a concise way to communicate meaningful differences within a user population.",
+  "whenToUse": "Use user profiles when research reveals important user characteristics that should inform design but a full persona format would add unnecessary narrative detail.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Gather research about relevant users.",
+    "Identify characteristics that materially influence the design.",
+    "Group related patterns carefully.",
+    "Describe each profile using evidence-based characteristics.",
+    "Include relevant capabilities, contexts and constraints.",
+    "Avoid unnecessary demographic information.",
+    "Compare design requirements across profiles.",
+    "Revise profiles as research develops."
+  ],
+  "lookOutFor": [
+    "Profiles can become stereotypes if based primarily on demographics or assumptions.",
+    "Do not treat categories as mutually exclusive unless evidence supports doing so.",
+    "Focus on differences that have consequences for design."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
-    },
-    {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Hackos, J. T. & Redish, J. C. (1998). *User and Task Analysis for Interface Design*. Wiley."
     }
   ]
 }

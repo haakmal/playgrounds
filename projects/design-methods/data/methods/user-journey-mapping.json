@@ -3,29 +3,35 @@
   "stages": [
     "Discovery",
     "Define",
-	"Develop",
-	"Deliver"
+    "Develop",
+    "Deliver"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "A user journey map represents an experience across a sequence of stages or touchpoints from the perspective of a person pursuing a goal. It can combine actions, interactions, thoughts, difficulties and contextual information to show how an experience develops over time.\n\nJourney maps help teams see connections between moments that organisational structures may otherwise treat separately.",
+  "whenToUse": "Use journey mapping when an experience crosses multiple touchpoints, channels or periods of time and when the team needs a shared view of the end-to-end experience.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define the user, goal and scope of the journey.",
+    "Gather relevant research.",
+    "Identify major stages.",
+    "Map actions and touchpoints across those stages.",
+    "Add evidence about needs, questions and difficulties.",
+    "Identify transitions and moments where responsibility changes.",
+    "Mark significant opportunities or breakdowns.",
+    "Validate the map with further evidence.",
+    "Use it to prioritise design questions or service improvements."
+  ],
+  "lookOutFor": [
+    "Journey maps created in workshops without user research often represent organisational assumptions rather than user journeys.",
+    "Emotional curves can create false precision if feelings have not actually been investigated.",
+    "Avoid forcing diverse experiences into one supposedly universal journey."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Kalbach, J. (2016). *Mapping Experiences*. O'Reilly."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Stickdorn, M. et al. (2018). *This Is Service Design Doing*. O'Reilly."
     }
   ]
 }

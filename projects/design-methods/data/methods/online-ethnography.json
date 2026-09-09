@@ -3,26 +3,31 @@
   "stages": [
     "Discovery"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Online ethnography adapts ethnographic approaches to digitally mediated communities, platforms and practices. Researchers examine interactions, norms, language, artefacts and behaviours within online contexts while considering how those spaces connect with participants' wider lives.\n\nDepending on the research question, this may involve observation, participation, interviews or analysis of digital materials.",
+  "whenToUse": "Use online ethnography when the activity or community being investigated substantially exists through digital platforms or when online interactions are an important part of a broader social practice.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define the community, practice or digital context.",
+    "Understand the norms and expectations of the space.",
+    "Determine appropriate ethical and consent procedures.",
+    "Observe interactions and recurring practices over time.",
+    "Record contextual information rather than collecting isolated posts.",
+    "Participate or interview where appropriate to the research design.",
+    "Examine relationships between platform features and social behaviour.",
+    "Analyse patterns while preserving relevant context."
+  ],
+  "lookOutFor": [
+    "Public accessibility does not automatically make online content ethically unrestricted research data.",
+    "Quoting searchable text can identify participants even after usernames are removed.",
+    "Platform populations and behaviours should not automatically be generalised to wider populations."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Kozinets, R. V. (2015). *Netnography: Redefined*, 2nd ed. Sage."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Hine, C. (2015). *Ethnography for the Internet*. Bloomsbury."
     }
   ]
 }

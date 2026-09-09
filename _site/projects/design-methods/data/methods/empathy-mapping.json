@@ -1,28 +1,34 @@
 {
   "name": "Empathy Mapping",
   "stages": [
-    "Discovery"
+    "Discovery",
+    "Define"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "An empathy map is a synthesis tool used to organise what is known or hypothesised about a person's experience. Common versions consider what a person says, does, thinks and feels, although the exact structure varies.\n\nUsed carefully, the map can help a team bring scattered research observations together and notice contradictions or gaps in its understanding.",
+  "whenToUse": "Use empathy mapping after collecting research about people's experiences and when a team needs a shared representation to support discussion or identify unanswered questions.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define the person, group or situation represented.",
+    "Gather relevant research evidence.",
+    "Add observations and quotations to appropriate areas of the map.",
+    "Distinguish directly observed evidence from interpretation.",
+    "Discuss contradictions between what people say, do and appear to experience.",
+    "Identify important needs, difficulties or goals supported by the evidence.",
+    "Mark areas where evidence is missing.",
+    "Use these gaps to inform further research."
+  ],
+  "lookOutFor": [
+    "Designers cannot directly know what another person thinks or feels.",
+    "Do not populate empathy maps primarily from imagination and then present them as user research.",
+    "Avoid stereotypes and unsupported psychological claims."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Gray, D., Brown, S. & Macanufo, J. (2010). *Gamestorming*. O'Reilly."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Nielsen Norman Group. *Empathy Mapping: The First Step in Design Thinking*."
     }
   ]
 }

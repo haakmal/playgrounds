@@ -3,28 +3,33 @@
   "stages": [
     "Discovery",
     "Define",
-	"Develop"
+    "Develop"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Backcasting begins with a desirable or challenging future and works backwards to investigate how that future might be reached. Rather than extending current trends forward, participants first describe a future condition and then identify the changes, decisions, capabilities and intermediate states that would need to occur between that future and the present.\n\nThe method is useful for shifting attention from predicting what is likely to happen toward considering what would have to change for a preferred future to become possible.",
+  "whenToUse": "Use backcasting when a project involves long-term transformation, sustainability, policy, strategy or systemic change and incremental improvement of the present may be insufficient.\n\nIt works particularly well when a team has already developed a future scenario or vision but needs to connect that proposition to actions in the present.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Establish the issue and the time horizon being considered.",
+    "Describe a specific future condition or desired outcome.",
+    "Identify the important characteristics that distinguish this future from the present.",
+    "Work backwards to identify conditions that would need to exist immediately before that future.",
+    "Continue backwards through intermediate milestones until reaching the present.",
+    "Identify decisions, interventions and dependencies connecting the milestones.",
+    "Examine barriers, uncertainties and actors who could enable or prevent change.",
+    "Translate near-term findings into possible actions or experiments."
+  ],
+  "lookOutFor": [
+    "A desirable future for one group may be undesirable for another. Make assumptions and values explicit.",
+    "Backcasting does not demonstrate that a future will occur. It explores pathways under particular assumptions.",
+    "Avoid constructing a single inevitable pathway. Alternative routes and unexpected events should remain possible."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Robinson, J. B. (1990). “Futures Under Glass: A Recipe for People Who Hate to Predict.” *Futures*, 22(8), 820–842."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Dreborg, K. H. (1996). “Essence of Backcasting.” *Futures*, 28(9), 813–828."
     }
   ]
 }

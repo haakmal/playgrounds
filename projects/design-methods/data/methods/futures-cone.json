@@ -2,28 +2,33 @@
   "name": "Futures Cone",
   "stages": [
     "Define",
-	"Develop"
+    "Develop"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "The Futures Cone is a framework for distinguishing different kinds of future possibility. Futures are commonly considered in terms such as possible, plausible, probable and preferable, widening outward from the present.\n\nThe framework helps designers avoid treating a single imagined future as inevitable and encourages exploration of a broader space of alternatives.",
+  "whenToUse": "Use the Futures Cone when beginning futures-oriented design work, comparing scenarios or helping participants distinguish prediction from possibility and preference.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define the issue and time horizon.",
+    "Identify assumptions about what is likely to continue.",
+    "Generate developments that appear probable.",
+    "Expand outward to plausible futures that could reasonably occur.",
+    "Explore possible futures requiring more substantial change.",
+    "Discuss preferable futures and ask preferable for whom.",
+    "Develop contrasting scenarios across the cone.",
+    "Examine implications for decisions in the present."
+  ],
+  "lookOutFor": [
+    "The boundaries between probable, plausible and possible are judgements rather than objective facts.",
+    "A preferable future is always value-laden.",
+    "Do not use the cone to imply increasing probability simply because a future is visually closer to the centre."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Voros, J. (2003). “A Generic Foresight Process Framework.” *Foresight*, 5(3), 10–21."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Hancock, T. & Bezold, C. (1994). “Possible Futures, Preferable Futures.” *Healthcare Forum Journal*, 37(2), 23–29."
     }
   ]
 }

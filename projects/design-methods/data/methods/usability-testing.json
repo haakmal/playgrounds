@@ -2,28 +2,36 @@
   "name": "Usability Testing",
   "stages": [
     "Develop",
-	"Deliver"
+    "Deliver"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Usability testing involves observing representative participants attempting realistic tasks with a product, service or prototype. Researchers look for difficulties, misunderstandings and successful interactions and use these observations to improve the design.\n\nThe emphasis is on what happens during use rather than asking participants only whether they like the design.",
+  "whenToUse": "Use usability testing whenever a design is sufficiently developed for people to attempt meaningful tasks. Testing can begin with paper prototypes and continue through implementation.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define the usability questions.",
+    "Identify representative participants.",
+    "Create realistic tasks without revealing how to complete them.",
+    "Prepare the prototype and test environment.",
+    "Establish consent and explain the session.",
+    "Observe participants attempting each task.",
+    "Avoid helping unless the study design requires intervention.",
+    "Ask follow-up questions after relevant interactions.",
+    "Analyse recurring problems and their severity.",
+    "Revise and test again."
+  ],
+  "lookOutFor": [
+    "Usability testing is not simply asking participants for opinions.",
+    "Participants should not feel that their ability is being tested.",
+    "A small qualitative study can identify problems but does not provide precise population-level performance estimates.",
+    "Include participants with relevant accessibility needs rather than treating accessibility as a separate final check."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Rubin, J. & Chisnell, D. (2008). *Handbook of Usability Testing*, 2nd ed. Wiley."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Nielsen, J. (1993). *Usability Engineering*. Academic Press."
     }
   ]
 }

@@ -4,26 +4,31 @@
     "Discovery",
     "Define"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Body mapping uses an outline or representation of the body as a surface for recording physical sensations, emotions, experiences or relationships to an activity. Participants annotate, draw or otherwise mark locations on the body map in response to prompts.\n\nThe method can make embodied aspects of experience easier to discuss, particularly when those experiences are difficult to communicate through conventional verbal descriptions alone.",
+  "whenToUse": "Use body mapping when bodily sensation, movement, emotion, comfort, discomfort or physical interaction is important to the design question.\n\nIt can support research into experiences involving products, environments, healthcare, wearables, movement and embodied interaction.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Establish the aspect of experience you want participants to explore.",
+    "Provide an appropriate body outline or invite participants to create one.",
+    "Explain what different forms of annotation might represent without over-prescribing responses.",
+    "Ask participants to mark sensations, experiences, interactions or emotions on the map.",
+    "Invite participants to add words, symbols, colours or connections where useful.",
+    "Ask participants to explain their annotations in their own terms.",
+    "Document the completed maps and accompanying explanations.",
+    "Analyse both individual experiences and recurring patterns without losing their context."
+  ],
+  "lookOutFor": [
+    "Bodies and bodily experiences can be sensitive subjects. Participation should not require disclosure that makes participants uncomfortable.",
+    "Standardised body outlines may exclude or misrepresent different bodies and abilities.",
+    "Do not interpret colours, symbols or locations without asking participants what those markings mean to them."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Gastaldo, D., Magalhães, L., Carrasco, C. & Davy, C. (2012). *Body-Map Storytelling as Research*. University of Toronto."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Martin, B. & Hanington, B. (2012). *Universal Methods of Design*. Rockport."
     }
   ]
 }

@@ -2,28 +2,33 @@
   "name": "Sketching",
   "stages": [
     "Develop",
-	"Deliver"
+    "Deliver"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Sketching uses rapid visual representations to explore, externalise and communicate ideas. In design, sketches are not simply illustrations of decisions already made; they are tools for thinking through form, relationships, interactions and alternatives.\n\nTheir provisional quality makes ideas easier to change and supports exploration before detailed commitment.",
+  "whenToUse": "Use sketching throughout design whenever visualising an idea can help you think about it, compare alternatives or communicate it to others.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define the question you are exploring.",
+    "Produce a rough representation quickly.",
+    "Focus on relationships and ideas rather than visual polish.",
+    "Create several alternatives.",
+    "Annotate important behaviours or assumptions.",
+    "Compare sketches and identify promising elements.",
+    "Combine or transform those elements.",
+    "Increase detail only as the questions become more specific."
+  ],
+  "lookOutFor": [
+    "Drawing skill should not determine the perceived quality of an idea.",
+    "A polished sketch can discourage change too early.",
+    "Use annotations where a drawing could otherwise imply functionality or certainty that has not been resolved."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Buxton, B. (2007). *Sketching User Experiences*. Morgan Kaufmann."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Goldschmidt, G. (1991). “The Dialectics of Sketching.” *Creativity Research Journal*, 4(2), 123–143."
     }
   ]
 }

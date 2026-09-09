@@ -2,29 +2,31 @@
   "name": "Value Proposition Canvas",
   "stages": [
     "Define",
-	"Develop",
-	"Deliver"
+    "Develop",
+    "Deliver"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "A value proposition articulates why a particular group might find a product, service or intervention valuable. It connects the circumstances, needs or goals of that group with the benefits a proposed offering intends to create.\n\nDeveloping a value proposition can help teams make assumptions explicit and examine whether a concept addresses something people actually value.",
+  "whenToUse": "Use value proposition work when developing or refining a concept and when the relationship between the proposed offering and the needs it addresses remains unclear.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define the group or situation being addressed.",
+    "Identify relevant goals, needs and difficulties from research.",
+    "Describe the proposed product or service.",
+    "Explain what benefit it intends to create.",
+    "Identify existing alternatives.",
+    "State why the proposition might be meaningfully different.",
+    "Mark assumptions requiring validation.",
+    "Test the proposition through research and prototypes.",
+    "Revise the statement as evidence develops."
+  ],
+  "lookOutFor": [
+    "A value proposition is a hypothesis until supported by evidence.",
+    "Avoid inventing customer needs simply to justify an existing solution.",
+    "Value may be social, public, environmental or experiential as well as commercial."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
-    },
-    {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Osterwalder, A. et al. (2014). *Value Proposition Design*. Wiley."
     }
   ]
 }

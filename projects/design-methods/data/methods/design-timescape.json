@@ -1,30 +1,35 @@
 {
-  "name": "Design Timescape",
+  "name": "Design Timescapes",
   "stages": [
     "Discovery",
     "Define",
-	"Develop"
+    "Develop"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "A design timescape is a visual futures-thinking method for examining relationships between design propositions and broader changes over time. It places developments, events, trends and possible interventions along a temporal landscape so designers can consider how a proposal might interact with changing social, technological, environmental or political conditions.\n\nRather than treating a design as an isolated future object, the method encourages designers to consider the changing context around it.",
+  "whenToUse": "Use a design timescape when investigating a design proposition whose relevance or consequences may change over a longer time horizon.\n\nIt is particularly useful in design-futures work and when introducing students to relationships between design decisions and societal change.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define the issue and time horizon.",
+    "Establish the present conditions relevant to the issue.",
+    "Identify significant historical developments that shaped those conditions.",
+    "Research trends, signals and anticipated changes.",
+    "Place these developments across a shared timeline.",
+    "Add possible design interventions or propositions.",
+    "Examine relationships, tensions and dependencies across the timescape.",
+    "Use the resulting landscape to construct arguments about when, why or under what conditions particular design responses might matter."
+  ],
+  "lookOutFor": [
+    "A timescape should not imply that the future is a single predictable timeline.",
+    "Separate known events, current trends, assumptions and speculative possibilities.",
+    "Consider social and political change alongside technological developments."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Cooper, C. (2025). “Futuring Visual Communication Pedagogy: Two Visual Thinking Tools for Applied Design Futuring.” *Journal of Futures Studies*, 30(2)."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Tomitsch, M. et al. (2021). _*Design. Think. Make. Break. Repeat: A Handbook of Methods*, 2nd ed. BIS Publishers."
     }
   ]
 }

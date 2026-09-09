@@ -1,24 +1,31 @@
 {
-  "name": "Design Matrix",
+  "name": "Design Matrices",
   "stages": [
     "Discovery",
     "Define"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "A design matrix compares multiple concepts against a consistent set of criteria. Concepts are placed on one axis and criteria on another so that alternatives can be examined systematically.\n\nThe matrix helps make decision-making assumptions visible and can prevent teams from selecting concepts solely on intuition or enthusiasm. Its purpose is to structure judgement rather than produce an automatically correct answer.",
+  "whenToUse": "Use a design matrix when several concepts have been generated and the team needs a transparent way to compare their relative strengths, limitations and trade-offs.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Identify the concepts to compare.",
+    "Define criteria relevant to the project's goals and constraints.",
+    "Clarify what each criterion means.",
+    "Decide whether criteria require weighting.",
+    "Examine each concept against each criterion.",
+    "Record scores or qualitative judgements together with supporting reasoning.",
+    "Compare patterns across the matrix.",
+    "Investigate surprising results and trade-offs.",
+    "Use the matrix to inform discussion rather than allowing totals alone to make the decision."
+  ],
+  "lookOutFor": [
+    "Numbers can give subjective judgements an appearance of objectivity.",
+    "Criteria and weighting can predetermine which concepts appear successful.",
+    "Important qualities may be difficult to reduce to scores. Record reasoning alongside numerical ratings."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Pugh, S. (1991). *Total Design: Integrated Methods for Successful Product Engineering*. Addison-Wesley."
     },
     {
       "type": "download",

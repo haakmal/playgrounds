@@ -1,29 +1,30 @@
 {
-  "name": "Five Why's",
+  "name": "Five Whys",
   "stages": [
     "Discovery",
     "Define"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Five Whys is a questioning technique for moving beyond an immediately visible problem by repeatedly asking why a condition occurs. Each response becomes the basis for another question, helping participants trace possible contributing causes.\n\nThe number five is a prompt rather than a rule. The purpose is to investigate causal assumptions rather than stop at the first explanation.",
+  "whenToUse": "Use Five Whys when a team is reacting to a symptom and needs to investigate what conditions might be producing it.\n\nIt works best for relatively focused problems and as an entry point to deeper investigation.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "State the observed problem as specifically as possible.",
+    "Ask why it occurs.",
+    "Record the proposed explanation.",
+    "Ask why that condition occurs.",
+    "Continue following the causal chain.",
+    "Check each explanation against available evidence.",
+    "Branch the analysis where several causes are plausible.",
+    "Identify causes that can be investigated or addressed."
+  ],
+  "lookOutFor": [
+    "Complex problems rarely have a single linear root cause.",
+    "Teams may produce explanations based on assumption rather than evidence.",
+    "The method can inadvertently focus blame on individuals when organisational or systemic conditions are more important."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
-    },
-    {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Ohno, T. (1988). *Toyota Production System: Beyond Large-Scale Production*. Productivity Press."
     }
   ]
 }

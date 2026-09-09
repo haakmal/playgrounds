@@ -1,29 +1,38 @@
 {
-  "name": "Design Fiction",
+  "name": "Design Fictions",
   "stages": [
     "Develop",
-	"Deliver"
+    "Deliver"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Design fiction explores possible worlds through fictional but tangible representations of products, services, systems or media. These artefacts are often presented as though they belong to another present or a possible future.\n\nBy making an imagined condition concrete enough to encounter and discuss, design fiction can help people examine how technologies might intersect with everyday life, institutions, behaviours and values.",
+  "whenToUse": "Use design fiction when abstract discussion of future possibilities is insufficient and a project would benefit from making assumptions or consequences tangible.\n\nIt is useful for emerging technologies, strategic exploration, futures work and critical discussion.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Identify the change or question to explore.",
+    "Research relevant technological and social conditions.",
+    "Develop a coherent fictional world or premise.",
+    "Decide what everyday artefact could provide a glimpse into that world.",
+    "Create the artefact with enough detail to suggest its surrounding context.",
+    "Consider secondary consequences: who uses it, who provides it and what institutions support it?",
+    "Present the fiction to an audience.",
+    "Use reactions and discussion to examine assumptions, consequences and alternative possibilities."
+  ],
+  "lookOutFor": [
+    "A futuristic-looking object is not automatically design fiction; the surrounding world matters.",
+    "Avoid presenting speculative propositions as forecasts.",
+    "Consider whose future is represented and whose experience is absent."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Bleecker, J. (2009). *Design Fiction: A Short Essay on Design, Science, Fact and Fiction*."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Sterling, B. (2009). “Design Fiction.” *Interactions*, 16(3), 20–24."
+    },
+    {
+      "type": "reference",
+      "citation": "Dunne, A. & Raby, F. (2013). *Speculative Everything*. MIT Press."
     }
   ]
 }

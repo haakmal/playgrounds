@@ -4,26 +4,27 @@
     "Discovery",
     "Define"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Laddering is an interviewing technique that moves between concrete attributes and deeper reasons, consequences or values by repeatedly asking participants why something matters. The researcher begins with a specific preference, feature or behaviour and progressively explores its significance.\n\nThe resulting chains can help designers understand connections between product characteristics, experiences and personal values.",
+  "whenToUse": "Use laddering when you need to understand why particular features, choices or experiences matter to people rather than simply knowing which option they prefer.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Begin with a concrete choice, attribute or experience.",
+    "Ask the participant why it is important.",
+    "Ask what consequence follows from that answer.",
+    "Continue asking why that consequence matters.",
+    "Record the chain from concrete attribute toward broader value.",
+    "Explore alternative branches where appropriate.",
+    "Repeat across several relevant attributes.",
+    "Compare patterns across participants."
+  ],
+  "lookOutFor": [
+    "Repeatedly asking *'why?'* can become uncomfortable or interrogative. Vary the phrasing and respect participants' boundaries.",
+    "Do not assume every preference has a single deep underlying value.",
+    "The interviewer's expectations can influence where a ladder appears to end."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
-    },
-    {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Reynolds, T. J. & Gutman, J. (1988). “Laddering Theory, Method, Analysis, and Interpretation.” *Journal of Advertising Research*, 28(1), 11–31."
     }
   ]
 }

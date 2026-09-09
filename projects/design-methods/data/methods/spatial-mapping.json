@@ -3,26 +3,27 @@
   "stages": [
     "Discovery"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Spatial mapping records how activities, people, objects or experiences are distributed and connected within a physical environment. Designers may map movement, occupation, interaction, visibility, obstacles, resources or moments of activity.\n\nThe resulting representation helps make relationships between behaviour and space visible.",
+  "whenToUse": "Use spatial mapping when physical arrangement, movement or environmental conditions influence an experience.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define the environment and question.",
+    "Obtain or create a simple plan of the space.",
+    "Decide what activities or features will be recorded.",
+    "Observe the space over an appropriate period.",
+    "Mark locations, movements and events on the map.",
+    "Use layers or notation to distinguish different observations.",
+    "Compare patterns across times or participants.",
+    "Identify spatial constraints and opportunities for further investigation."
+  ],
+  "lookOutFor": [
+    "Short observation periods may capture unusual rather than typical patterns.",
+    "Mapping people's locations can create privacy concerns.",
+    "Avoid assuming that visible movement explains why people behave as they do; combine mapping with other research where necessary."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
-    },
-    {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Zeisel, J. (2006). *Inquiry by Design*, rev. ed. W. W. Norton."
     }
   ]
 }

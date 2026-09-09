@@ -2,29 +2,35 @@
   "name": "Cultural Probes",
   "stages": [
     "Discovery",
-	"Define",
-	"Deliver"
+    "Define",
+    "Deliver"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Cultural probes are collections of open-ended activities given to participants to document aspects of their lives, experiences and environments. A probe might include prompts, postcards, maps, cameras, diaries or playful tasks.\n\nOriginally developed as an intentionally evocative design-research approach, probes are intended to generate rich and sometimes surprising material that can inspire design thinking rather than function as a conventional instrument for collecting standardised data.",
+  "whenToUse": "Use cultural probes when designers want exploratory access to experiences that are personal, dispersed over time or difficult to observe directly.\n\nThey are useful when ambiguity and participant interpretation are productive rather than when standardised answers are required.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Identify the broad area of experience you want to explore.",
+    "Develop a small set of engaging, open-ended activities.",
+    "Make the purpose and participation requirements understandable.",
+    "Invite participants to complete the activities in their own contexts.",
+    "Allow space for unexpected or idiosyncratic responses.",
+    "Collect the returned materials.",
+    "Review them individually and collectively.",
+    "Use the material to inspire questions, interpretations and design directions.",
+    "Follow up with participants where their interpretation is important."
+  ],
+  "lookOutFor": [
+    "Cultural probes were not originally intended as straightforward data-collection instruments. Avoid treating evocative responses as objective measurements.",
+    "Probe activities can demand considerable participant time.",
+    "Personal artefacts may reveal sensitive information, requiring careful consent and handling."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Gaver, B., Dunne, T. & Pacenti, E. (1999). “Design: Cultural Probes.” *Interactions*, 6(1), 21–29."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Boehner, K., Vertesi, J., Sengers, P. & Dourish, P. (2007). “How HCI Interprets the Probes.” *CHI 2007*."
     }
   ]
 }

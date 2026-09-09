@@ -2,23 +2,29 @@
   "name": "Science Fiction Prototyping",
   "stages": [
     "Develop",
-	"Deliver"
+    "Deliver"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Science fiction prototyping uses fictional narratives to explore how a technology or design proposition might operate within a future social context. Rather than describing a technology in isolation, the story considers people using, adapting to or resisting it.\n\nThe narrative becomes a prototype of relationships and consequences rather than a prediction of what will happen.",
+  "whenToUse": "Use science fiction prototyping when emerging technologies need to be considered beyond technical capability and when social adoption, everyday use or longer-term consequences are important.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Identify the technology or change to investigate.",
+    "Establish a plausible future context.",
+    "Introduce a character or community affected by the development.",
+    "Describe an everyday situation in which the technology matters.",
+    "Introduce a conflict, limitation or unexpected consequence.",
+    "Explore how people and institutions respond.",
+    "Reflect on what the story reveals about the original proposition.",
+    "Use those insights to revise assumptions or generate alternative futures."
+  ],
+  "lookOutFor": [
+    "Avoid technological determinism: technologies do not independently produce social outcomes.",
+    "A compelling story is not evidence that a future is probable.",
+    "Consider perspectives beyond the intended adopter or heroic innovator."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Johnson, B. D. (2011). *Science Fiction Prototyping: Designing the Future with Science Fiction*. Morgan & Claypool."
     },
     {
       "type": "download",

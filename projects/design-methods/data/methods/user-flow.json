@@ -1,31 +1,33 @@
 {
-  "name": "User Flow",
+  "name": "User Flow Diagram",
   "stages": [
     "Discovery",
-	"Define",
+    "Define",
     "Develop",
-	"Deliver"
+    "Deliver"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "A user flow visualises the routes a person may take through a product or service to reach one or more goals. Unlike a simple task flow, it may include multiple entry points, decisions and alternative paths through the system.\n\nUser flows help designers examine how individual screens, states or touchpoints connect into a coherent experience.",
+  "whenToUse": "Use user flows when designing navigation and interaction across multiple states or screens and when several routes through an experience need to be considered.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define the relevant user goal.",
+    "Identify possible entry points.",
+    "Map major actions and system responses.",
+    "Add decisions and alternative paths.",
+    "Include completion, exit and error states.",
+    "Review the flow for unnecessary complexity.",
+    "Compare it against research and scenarios.",
+    "Translate the flow into wireframes or prototypes.",
+    "Test whether actual users can navigate the intended paths."
+  ],
+  "lookOutFor": [
+    "User flows can imply orderly behaviour that does not reflect real use.",
+    "Include returning users, interruptions and recovery where relevant.",
+    "Do not optimise every user toward the same route when people have legitimately different goals."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
-    },
-    {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Garrett, J. J. (2011). *The Elements of User Experience*, 2nd ed. New Riders."
     }
   ]
 }

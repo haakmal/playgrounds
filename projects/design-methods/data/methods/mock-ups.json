@@ -2,28 +2,29 @@
   "name": "Mock Up's",
   "stages": [
     "Develop",
-	"Deliver"
+    "Deliver"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "A mock-up is a representation used to explore or communicate the appearance, arrangement or physical form of a proposed design. Mock-ups range from rough representations to highly realistic models, but unlike fully functional prototypes they often reproduce only selected aspects of the intended design.\n\nThey allow designers and stakeholders to encounter a proposal more concretely than they can through verbal description alone.",
+  "whenToUse": "Use mock-ups when questions concern visual hierarchy, scale, spatial arrangement, physical form or presentation and full functionality is unnecessary.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Identify what the mock-up needs to communicate or test.",
+    "Determine an appropriate scale and level of detail.",
+    "Select materials or software suited to those questions.",
+    "Construct the relevant visual or physical features.",
+    "Place the mock-up in an appropriate context where possible.",
+    "Review it from relevant viewpoints.",
+    "Gather feedback against the intended design goals.",
+    "Revise or increase fidelity only when required."
+  ],
+  "lookOutFor": [
+    "High visual fidelity can cause people to assume that underlying decisions are final.",
+    "A mock-up may look convincing while leaving important interaction or technical questions unresolved.",
+    "Make clear which aspects are represented accurately and which are placeholders."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
-    },
-    {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Hallgrimsson, B. (2012). *Prototyping and Modelmaking for Product Design*. Laurence King."
     }
   ]
 }

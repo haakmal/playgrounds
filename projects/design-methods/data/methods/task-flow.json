@@ -1,31 +1,32 @@
 {
-  "name": "Task Flow",
+  "name": "Task Flow Diagram",
   "stages": [
     "Discovery",
-    "Define",
-	"Develop",
-	"Deliver"
+    "Develop",
+    "Deliver"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "A task flow represents the sequence of actions required to complete a particular goal. It focuses on the path through a defined task and can include user actions, system responses and decision points.\n\nTask flows help designers examine whether necessary steps are understandable, appropriately ordered and unnecessarily complex.",
+  "whenToUse": "Use task flows when designing or reviewing a specific interaction such as registration, booking, purchasing, submitting information or completing a workflow.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define the user goal.",
+    "Establish the starting and completion conditions.",
+    "List the actions currently or potentially required.",
+    "Arrange them in sequence.",
+    "Add decisions, alternative paths and system responses.",
+    "Identify unnecessary steps and dependencies.",
+    "Compare the flow against research and technical constraints.",
+    "Revise the sequence.",
+    "Prototype and test important flows with users."
+  ],
+  "lookOutFor": [
+    "Do not design only the ideal path.",
+    "Include errors, interruptions, reversals and recovery where relevant.",
+    "A logically efficient flow may still be confusing when represented through an interface, so flow diagrams do not replace usability testing."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
-    },
-    {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Hackos, J. T. & Redish, J. C. (1998). *User and Task Analysis for Interface Design*. Wiley."
     }
   ]
 }

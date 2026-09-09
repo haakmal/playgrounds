@@ -1,28 +1,33 @@
 {
-  "name": "Speculative Storytelling",
+  "name": "Specluative Storytelling",
   "stages": [
     "Develop"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Speculative storytelling uses narrative to explore possible situations, futures and consequences through characters and events. Stories allow designers to examine how broad changes might be experienced in everyday life and to connect technological or systemic propositions with social relationships and values.\n\nThe aim is not prediction but structured imagination.",
+  "whenToUse": "Use speculative storytelling when future conditions are too abstract to discuss productively or when a project needs to explore multiple perspectives on possible change.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Identify the issue or change being explored.",
+    "Establish a time and setting.",
+    "Define the conditions that differ from the present.",
+    "Create characters with different relationships to those conditions.",
+    "Develop an everyday situation through which the future becomes visible.",
+    "Introduce tensions, consequences and adaptations.",
+    "Compare alternative stories.",
+    "Use the narratives to identify assumptions, questions and design implications."
+  ],
+  "lookOutFor": [
+    "Avoid treating one story as *the* future.",
+    "Characters should not exist merely as devices for explaining technology.",
+    "Consider who benefits, who carries risk and whose perspective remains absent."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Candy, S. (2010). *The Futures of Everyday Life*. University of Hawai'i at Mānoa."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Dunne, A. & Raby, F. (2013). *Speculative Everything*. MIT Press."
     }
   ]
 }

@@ -3,28 +3,34 @@
   "stages": [
     "Discovery",
     "Define",
-	"Develop"
+    "Develop"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Systems mapping visualises components of a complex situation and the relationships between them. Depending on the purpose, maps may include actors, resources, institutions, causal relationships, flows and feedback loops.\n\nThe method helps designers move beyond isolated problems and consider how outcomes emerge from interconnected conditions.",
+  "whenToUse": "Use systems mapping when a challenge involves multiple actors and interacting causes and when intervening in one part of the situation may create consequences elsewhere.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define a provisional boundary for the system.",
+    "Identify significant actors, elements and resources.",
+    "Place them on a shared mapping surface.",
+    "Draw relationships and flows between elements.",
+    "Identify reinforcing and balancing relationships where relevant.",
+    "Look for clusters, dependencies and feedback.",
+    "Identify missing perspectives and challenge the system boundary.",
+    "Use the map to locate questions, leverage points and potential consequences of intervention.",
+    "Revise the map as understanding develops."
+  ],
+  "lookOutFor": [
+    "A system map is a model constructed for a purpose, not a complete representation of reality.",
+    "Boundaries determine what becomes visible.",
+    "Avoid equating visual complexity with analytical depth."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Meadows, D. H. (2008). *Thinking in Systems*. Chelsea Green."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Jones, P. & Van Ael, K. (2022). *Design Journeys through Complex Systems*. BIS Publishers."
     }
   ]
 }

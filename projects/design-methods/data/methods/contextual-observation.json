@@ -3,26 +3,31 @@
   "stages": [
     "Discovery"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Contextual observation involves watching people, activities and environments in the setting where an experience naturally occurs. The researcher pays attention not only to what people say but also to actions, routines, artefacts, interruptions, spatial conditions and interactions with others.\n\nObservation can expose differences between reported behaviour and situated practice and can reveal aspects of an experience that participants may consider too ordinary to mention.",
+  "whenToUse": "Use contextual observation when behaviour, environment or interactions are central to understanding a design situation.\n\nIt is particularly useful early in research when the team needs to understand an unfamiliar context before deciding which questions are important.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define the setting and broad research focus.",
+    "Establish access, consent and appropriate boundaries.",
+    "Observe activities without attempting to document everything.",
+    "Record actions, sequences, environmental conditions and relevant interactions.",
+    "Separate direct observations from your interpretations.",
+    "Note unusual events as well as recurring patterns.",
+    "Ask clarifying questions where appropriate.",
+    "Review observations across sessions and identify questions requiring further investigation."
+  ],
+  "lookOutFor": [
+    "Observation shows behaviour but does not automatically explain people's motivations.",
+    "Researchers inevitably select what they notice and record.",
+    "Be particularly careful about privacy and incidental observation of people who are not research participants."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Blomberg, J., Burrell, M. & Guest, G. (2003). “An Ethnographic Approach to Design.” In Jacko, J. & Sears, A. (eds.), *The Human-Computer Interaction Handbook*. Lawrence Erlbaum."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Martin, B. & Hanington, B. (2012). *Universal Methods of Design*. Rockport."
     }
   ]
 }

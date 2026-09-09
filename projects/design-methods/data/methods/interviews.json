@@ -3,26 +3,32 @@
   "stages": [
     "Discovery"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Interviews are guided conversations used to investigate people's experiences, practices, perspectives and interpretations. In design research, semi-structured interviews are particularly common: the researcher prepares areas to explore while allowing participants' responses to shape the direction of the conversation.\n\nInterviews are valuable for understanding how people make sense of their experiences, but what people report should not automatically be treated as a complete record of what they actually do.",
+  "whenToUse": "Use interviews when people's experiences, motivations, interpretations or decision-making are important to the design question.\n\nThey can be used early to explore an unfamiliar problem or later to investigate questions emerging from other research.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define what you need to understand.",
+    "Recruit participants with relevant experience.",
+    "Develop a short guide of open-ended questions.",
+    "Establish informed consent.",
+    "Begin with accessible questions about concrete experiences.",
+    "Ask participants for examples rather than relying only on general opinions.",
+    "Probe interesting or contradictory responses.",
+    "Record or document the conversation appropriately.",
+    "Analyse interviews across participants for patterns and differences."
+  ],
+  "lookOutFor": [
+    "Leading questions can shape responses.",
+    "Participants may describe what they remember, believe or consider socially appropriate rather than exactly what occurred.",
+    "Avoid treating a small set of interviews as statistically representative of a population."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Kvale, S. & Brinkmann, S. (2009). *InterViews: Learning the Craft of Qualitative Research Interviewing*, 2nd ed. Sage."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Rubin, H. J. & Rubin, I. S. (2012). *Qualitative Interviewing*, 3rd ed. Sage."
     }
   ]
 }

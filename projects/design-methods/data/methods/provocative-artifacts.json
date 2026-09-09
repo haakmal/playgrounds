@@ -2,29 +2,34 @@
   "name": "Provocative Artifacts",
   "stages": [
     "Define",
-	"Develop",
-	"Deliver"
+    "Develop",
+    "Deliver"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Provocative artefacts are deliberately designed objects or representations intended to elicit reflection, discussion or reaction rather than simply demonstrate a solution. By embodying an unusual, uncomfortable or exaggerated proposition, the artefact can make assumptions and values easier to examine.\n\nThe responses it produces can become material for design research or critical inquiry.",
+  "whenToUse": "Use provocative artefacts when direct questioning is unlikely to expose assumptions or when a tangible proposition can help participants engage with abstract, contested or future-oriented issues.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Identify the assumption or issue to investigate.",
+    "Decide what kind of response would be useful to elicit.",
+    "Develop a proposition that makes the issue tangible.",
+    "Create an artefact with enough coherence to be interpreted.",
+    "Introduce it with an appropriate amount of context.",
+    "Observe initial reactions.",
+    "Ask participants to explain their interpretations and concerns.",
+    "Analyse the discussion rather than treating reactions as simple approval or rejection."
+  ],
+  "lookOutFor": [
+    "Provocation should serve an inquiry rather than exist only to shock.",
+    "Consider emotional consequences for participants before introducing disturbing material.",
+    "Participants may interpret the artefact very differently from the designer's intention; those differences are often important rather than errors to correct."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Gaver, W. (2012). “What Should We Expect from Research Through Design?” *CHI 2012*."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Dunne, A. & Raby, F. (2013). *Speculative Everything*. MIT Press."
     }
   ]
 }

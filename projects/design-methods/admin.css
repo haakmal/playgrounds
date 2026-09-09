@@ -70,7 +70,6 @@ button:disabled { cursor: not-allowed; opacity: 0.45; }
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 0.5rem;
 }
 
 .header-actions { flex-wrap: wrap; justify-content: flex-end; }
@@ -90,7 +89,7 @@ button:disabled { cursor: not-allowed; opacity: 0.45; }
 .button-primary:hover { background: #333; }
 .button-danger { border-color: var(--danger); color: var(--danger); }
 .button-danger:hover { background: #fbeef0; }
-.button-small { min-height: 30px; padding: 4px 9px; font-size: 0.85rem; }
+.button-small { min-height: 30px; padding: 4px 9px; font-size: 0.85rem; margin-bottom: 0.5rem;}
 
 .admin-shell {
   width: min(1600px, 100%);
@@ -248,6 +247,12 @@ textarea { resize: vertical; }
   background: var(--line);
 }
 
+.editor-sticky {
+  position: sticky;
+  top: 5.4rem;
+  z-index: 100;
+}
+
 .form-section {
   min-width: 0;
   padding: 16px;
@@ -377,7 +382,7 @@ textarea { resize: vertical; }
   gap: 0;
   margin: 8px 0 16px;
   border-bottom: 1px solid var(--black);
-  overflow-x: auto;
+  overflow-x: none;
 }
 
 .editor-tab {

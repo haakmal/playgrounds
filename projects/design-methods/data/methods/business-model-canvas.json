@@ -4,26 +4,27 @@
     "Discovery",
     "Define"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "The Business Model Canvas is a visual framework for describing how an organisation proposes, creates and captures value. It brings nine connected areas—including customers, value propositions, activities, resources, relationships, channels, partners, costs and revenue—onto a shared canvas.\n\nFor designers, it can help expose the organisational assumptions surrounding a proposed product or service and reveal dependencies that may not be visible when concentrating only on the user-facing experience.",
+  "whenToUse": "Use the Business Model Canvas when developing or examining a product, service or venture whose organisational model is still uncertain.\n\nIt is particularly useful for comparing alternative propositions and identifying assumptions that need further research or testing.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define the product, service or organisation being examined.",
+    "Identify the people or organisations expected to receive value.",
+    "Describe the proposed value for those groups.",
+    "Map channels and relationships connecting the organisation with them.",
+    "Identify the activities, resources and partners required to deliver the proposition.",
+    "Describe important costs and possible sources of revenue or other forms of value.",
+    "Examine relationships and dependencies across the canvas.",
+    "Mark uncertain assumptions and identify how they could be investigated."
+  ],
+  "lookOutFor": [
+    "Completing every box does not validate a business model. Much of the canvas may initially consist of assumptions.",
+    "The framework can privilege commercial interpretations of value. Public, social and community projects may require broader definitions of value and exchange.",
+    "Treat the canvas as a model to interrogate rather than a form to complete."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
-    },
-    {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Osterwalder, A. & Pigneur, Y. (2010). *Business Model Generation*. Wiley."
     }
   ]
 }

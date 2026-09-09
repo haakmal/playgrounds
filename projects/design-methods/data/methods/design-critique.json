@@ -3,28 +3,30 @@
   "stages": [
     "Discovery",
     "Define",
-	"Develop"
+    "Develop"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Design critique is a structured conversation in which a design is examined against its intentions, context and relevant criteria. Participants describe what they observe, ask questions and offer reasoned feedback intended to help the work develop.\n\nA critique differs from an informal expression of preference. Useful critique connects observations to design goals and explains the reasoning behind suggestions.",
+  "whenToUse": "Use critique throughout development when work is sufficiently tangible for others to examine but still open to change.\n\nIt is especially useful for exposing assumptions, comparing interpretations and helping designers see consequences they may have overlooked.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Clarify what is being designed and what feedback would be useful.",
+    "Present enough context for reviewers to understand the design's intentions.",
+    "Give participants time to examine the work before responding.",
+    "Begin with observations and questions.",
+    "Relate feedback to goals, evidence or design principles.",
+    "Distinguish problems from possible solutions.",
+    "Allow the designer to clarify without needing to defend every decision.",
+    "Record significant questions and observations.",
+    "Decide afterwards which feedback should influence the next iteration."
+  ],
+  "lookOutFor": [
+    "Personal taste is not the same as design reasoning.",
+    "Power relationships can make critique difficult, particularly when senior participants present opinions as instructions.",
+    "Avoid feedback that simply redesigns the work according to the reviewer's preferences."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
-    },
-    {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Connor, A. & Irizarry, A. (2015). *Discussing Design: Improving Communication and Collaboration through Critique*. O'Reilly."
     }
   ]
 }

@@ -3,28 +3,34 @@
   "stages": [
     "Discovery",
     "Define",
-	"Develop"
+    "Develop"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Questionnaires collect structured responses from participants through a consistent set of questions. They can gather quantitative measures, categorical responses and shorter qualitative comments from larger numbers of people than many interview-based approaches.\n\nTheir strength is consistency and reach rather than depth. Good questionnaire design depends on clearly defined research questions, careful sampling and questions that participants can interpret reliably.",
+  "whenToUse": "Use questionnaires when you need comparable responses from many participants, want to measure defined attitudes or behaviours, or need to investigate the prevalence of patterns identified through earlier qualitative research.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define the research questions and target population.",
+    "Decide how participants will be sampled.",
+    "Write questions that each address a clear purpose.",
+    "Select response formats appropriate to the information required.",
+    "Avoid leading, double-barrelled and ambiguous questions.",
+    "Pilot the questionnaire with people similar to the intended participants.",
+    "Revise unclear questions.",
+    "Distribute the questionnaire consistently.",
+    "Analyse results in relation to the sampling method and limitations."
+  ],
+  "lookOutFor": [
+    "A large number of responses does not compensate for a biased sample.",
+    "Question wording and response scales can substantially influence answers.",
+    "Avoid asking participants to provide precision they cannot reasonably know or remember."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Dillman, D. A., Smyth, J. D. & Christian, L. M. (2014). *Internet, Phone, Mail, and Mixed-Mode Surveys*, 4th ed. Wiley."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Fowler, F. J. (2014). *Survey Research Methods*, 5th ed. Sage."
     }
   ]
 }

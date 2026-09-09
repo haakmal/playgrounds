@@ -3,26 +3,27 @@
   "stages": [
     "Develop"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Material exploration investigates design possibilities through direct engagement with materials and making processes. Designers manipulate, combine, test and transform materials to understand qualities that may not be apparent from specifications or images alone.\n\nThe process can generate knowledge about texture, flexibility, weight, resistance, sound, fabrication and sensory experience while simultaneously suggesting new design possibilities.",
+  "whenToUse": "Use material exploration when physical qualities materially affect the design or when making itself can contribute to discovering what the design could become.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Identify a broad material or experiential question.",
+    "Gather a diverse range of relevant materials.",
+    "Handle, manipulate and compare their properties.",
+    "Cut, join, deform or combine materials in different ways.",
+    "Produce small experimental samples rather than finished objects.",
+    "Document unexpected behaviours and sensory qualities.",
+    "Relate these discoveries to the design problem.",
+    "Develop promising experiments into more focused prototypes."
+  ],
+  "lookOutFor": [
+    "Material properties are affected by fabrication, scale and context.",
+    "Consider safety, sourcing, waste, repairability and environmental impact alongside aesthetic qualities.",
+    "Do not restrict exploration to materials already familiar to the design team."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
-    },
-    {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Karana, E., Pedgley, O. & Rognoli, V. (eds.) (2014). *Materials Experience: Fundamentals of Materials and Design*. Butterworth-Heinemann."
     }
   ]
 }

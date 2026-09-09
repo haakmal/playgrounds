@@ -3,26 +3,32 @@
   "stages": [
     "Discovery"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Think-aloud testing asks participants to verbalise what they are noticing, expecting and trying to do while interacting with a design. Their commentary is considered alongside observed behaviour to help researchers understand where expectations and interface behaviour diverge.\n\nIt is commonly used during usability evaluation.",
+  "whenToUse": "Use think aloud when evaluating an interface or prototype and when understanding participants' interpretation of controls, content and feedback is important.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define realistic tasks.",
+    "Explain that the design rather than the participant is being evaluated.",
+    "Demonstrate the type of verbalisation requested if necessary.",
+    "Ask the participant to begin the task.",
+    "Observe behaviour without guiding them toward the solution.",
+    "Prompt them neutrally to keep talking if they become silent.",
+    "Record significant actions, comments and difficulties.",
+    "Debrief after the task.",
+    "Analyse behaviour and verbal reports together."
+  ],
+  "lookOutFor": [
+    "Thinking aloud changes the activity and can slow performance.",
+    "Participants cannot necessarily verbalise every cognitive process.",
+    "Avoid turning the session into an interview by asking explanatory questions during every action."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Ericsson, K. A. & Simon, H. A. (1993). *Protocol Analysis: Verbal Reports as Data*, rev. ed. MIT Press."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Nielsen, J. (1993). *Usability Engineering*. Academic Press."
     }
   ]
 }

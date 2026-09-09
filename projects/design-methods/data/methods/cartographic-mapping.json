@@ -4,26 +4,31 @@
     "Discovery",
     "Define"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Cartographic mapping uses the conventions of maps to investigate relationships between people, activities, resources and places. Rather than treating location as background context, the method makes spatial relationships part of the analysis.\n\nMaps may document existing conditions or become interpretive artefacts that reveal movement, access, boundaries, concentrations, absences and contested understandings of place.",
+  "whenToUse": "Use cartographic mapping when geography or spatial relationships materially influence the experience being designed.\n\nIt can support investigations of neighbourhoods, campuses, transport, public services, mobility, community resources and place-based experiences.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define the geographic area and question being investigated.",
+    "Establish an appropriate base map or mapping surface.",
+    "Identify what information participants or researchers will record.",
+    "Map relevant locations, routes, events, resources or experiences.",
+    "Add annotations that explain why particular places or relationships matter.",
+    "Compare maps or layers where multiple perspectives are involved.",
+    "Look for patterns, gaps, boundaries and contradictions.",
+    "Use these observations to generate further questions or design opportunities."
+  ],
+  "lookOutFor": [
+    "Maps are representations rather than neutral descriptions of reality. Decisions about boundaries, scale and what is included shape what becomes visible.",
+    "Precise geographic data can create privacy risks.",
+    "Participatory mapping should allow people to represent places according to their own experiences rather than forcing every perspective into an official map."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Wood, D. (2010). *Rethinking the Power of Maps*. Guilford Press."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Sanders, E. B.-N. & Stappers, P. J. (2012). *Convivial Toolbox*. BIS Publishers."
     }
   ]
 }

@@ -297,9 +297,6 @@ header {
 
 #method-description {
   margin: 0 0 2rem;
-  padding: 1rem 1.1rem;
-  background: #f1f1f1;
-  border-left: 4px solid #111;
   font-size: 1rem;
   line-height: 1.55;
 }
@@ -328,9 +325,6 @@ header {
 }
 
 #method-details .when-to-use {
-  padding: 1rem 1.1rem;
-  background: #f4f4f4;
-  border-left: 4px solid #111;
   line-height: 1.55;
 }
 
@@ -359,7 +353,7 @@ header {
   content: counter(method-step, decimal-leading-zero);
   position: absolute;
   left: 0;
-  top: 1rem;
+  top: 1.15rem;
   width: 2.2rem;
   font-variant-numeric: tabular-nums;
   font-size: 0.78rem;
@@ -373,36 +367,36 @@ header {
 
 #method-details ul li {
   margin: 0;
-  padding: 0.9rem 1rem 0.9rem 2.9rem;
+  padding: 1rem;
   border-bottom: 1px solid #d2d2d2;
   line-height: 1.5;
   position: relative;
 }
 
 #method-details .look-out-list li {
+  padding-left: 3rem;
   background: #fffdf0;
-  border-left: 4px solid rgba(255, 254, 0, 1);
+  border-left: 4px solid  rgba(255, 219, 0, 1);
 }
 
 #method-details .look-out-list li::before {
   content: '!';
   position: absolute;
   left: 0.9rem;
-  top: 0.9rem;
+  top: 1.15rem;
   width: 1.25rem;
   height: 1.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #111;
   border-radius: 50%;
-  background: rgba(255, 254, 0, 1);
+  background:  rgba(255, 219, 0, 1);
   font-size: 0.72rem;
   font-weight: 800;
 }
 
 #method-details .resource-reference {
-  padding-left: 0;
+  padding: 1rem;
   background: #f6f6f6;
   font-size: 0.95rem;
 }

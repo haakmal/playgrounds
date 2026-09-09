@@ -2,23 +2,30 @@
   "name": "Impact Ripple Canvas",
   "stages": [
     "Define",
-	"Develop"
+    "Develop"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "The Impact Ripple Canvas helps designers explore consequences that may extend beyond the immediate intended effects of a design. Starting with a proposed intervention, participants consider how its effects might spread outward through people, organisations, communities, systems and time.\n\nThe method encourages consideration of indirect and unintended consequences rather than evaluating a proposal only according to its intended users and outcomes.",
+  "whenToUse": "Use the Impact Ripple Canvas when evaluating a concept, product, service or intervention that could have wider social, environmental or organisational effects.\n\nIt is particularly useful before implementation, when there is still an opportunity to redesign in response to potential consequences.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Place the proposed design or intervention at the centre.",
+    "Identify its intended immediate effects.",
+    "Identify people and systems directly affected.",
+    "Consider secondary effects produced by those changes.",
+    "Continue outward to more distant or longer-term consequences.",
+    "Include positive, negative and uncertain impacts.",
+    "Identify groups that may experience benefits and harms differently.",
+    "Prioritise significant consequences for further research or mitigation.",
+    "9. Revisit the design in response to the analysis."
+  ],
+  "lookOutFor": [
+    "The canvas identifies possibilities, not proven future impacts.",
+    "Teams tend to imagine consequences that fit their existing worldview, so include diverse perspectives.",
+    "Do not limit analysis to intended users; people who never interact directly with the design may still be affected."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Tomitsch, M. et al. (2021). *Design. Think. Make. Break. Repeat: A Handbook of Methods*, 2nd ed. BIS Publishers."
     },
     {
       "type": "download",

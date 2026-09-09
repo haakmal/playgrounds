@@ -2,28 +2,30 @@
   "name": "Pop-Up Installations",
   "stages": [
     "Develop",
-	"Deliver"
+    "Deliver"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "A pop-up installation temporarily places a designed intervention in a real or realistic environment so that people can encounter, use or respond to it. Unlike a laboratory prototype, the intervention becomes part of the surrounding context for a limited period.\n\nThis can help designers investigate how a proposition interacts with place, existing activities and people who may not have been recruited specifically for a conventional study.",
+  "whenToUse": "Use a pop-up installation when spatial context, public interaction or situated experience is central to the concept and a temporary deployment is feasible.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define the question the installation should investigate.",
+    "Select an appropriate site.",
+    "Determine permissions, safety and accessibility requirements.",
+    "Create the minimum intervention needed to produce the intended encounter.",
+    "Install it for an appropriate period.",
+    "Observe how people encounter and interpret it.",
+    "Invite feedback where appropriate and ethical.",
+    "Document unexpected uses and contextual effects.",
+    "Remove the installation and analyse the findings."
+  ],
+  "lookOutFor": [
+    "Public deployment introduces safety, consent, privacy and accessibility responsibilities.",
+    "People encountering the installation may not know they are part of a research activity.",
+    "Novelty effects can strongly influence behaviour during short deployments."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
-    },
-    {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Tomitsch, M. et al. (2021). *Design. Think. Make. Break. Repeat*. BIS Publishers."
     }
   ]
 }

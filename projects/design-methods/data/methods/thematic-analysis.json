@@ -4,26 +4,32 @@
     "Discovery",
     "Define"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Thematic analysis is a qualitative analytical method for identifying and interpreting patterns of meaning across a body of data. Researchers become familiar with the material, code relevant features, develop candidate themes and progressively refine their interpretation.\n\nA theme is more than a frequently mentioned topic: it captures a meaningful pattern relevant to the research question.",
+  "whenToUse": "Use thematic analysis when working with qualitative material such as interviews, diary entries, open survey responses or observational notes and when the research question concerns recurring patterns of experience or meaning.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Become familiar with the complete dataset.",
+    "Record initial observations.",
+    "Code relevant features systematically.",
+    "Compare codes across the material.",
+    "Group related codes into candidate themes.",
+    "Review themes against the coded extracts and wider dataset.",
+    "Refine the boundaries and meaning of each theme.",
+    "Name themes clearly.",
+    "Develop an interpretation supported by appropriate evidence."
+  ],
+  "lookOutFor": [
+    "Themes do not simply *'emerge'* independently of the researcher; analysis involves interpretation.",
+    "Frequency alone does not determine importance.",
+    "Maintain a traceable relationship between claims, codes and original material."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Braun, V. & Clarke, V. (2006). “Using Thematic Analysis in Psychology.” *Qualitative Research in Psychology*, 3(2), 77–101."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Braun, V. & Clarke, V. (2022). *Thematic Analysis: A Practical Guide*. Sage."
     }
   ]
 }

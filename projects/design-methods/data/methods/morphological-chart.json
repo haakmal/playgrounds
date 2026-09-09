@@ -4,26 +4,27 @@
     "Discovery",
     "Define"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "A morphological chart generates concepts by separating a design problem into important functions or dimensions and listing alternative ways of addressing each one. Designers then combine options from different rows to construct new concept configurations.\n\nThe method encourages systematic exploration of combinations that may not arise through free-form ideation.",
+  "whenToUse": "Use morphological charts when a design problem contains several relatively independent functions or characteristics and you want to explore combinations systematically.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define the overall design problem.",
+    "Break it into important functions or dimensions.",
+    "Place each function on a separate row.",
+    "Generate multiple alternatives for each function.",
+    "Combine one option from each row to form a concept.",
+    "Explore unusual as well as obvious combinations.",
+    "Sketch or model promising configurations.",
+    "Evaluate developed concepts against project requirements."
+  ],
+  "lookOutFor": [
+    "The quality of the resulting concepts depends heavily on how the problem is decomposed.",
+    "Not every combination will be technically or conceptually coherent.",
+    "Avoid using the chart merely to generate a large number of combinations; develop those that reveal genuinely different approaches."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
-    },
-    {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Zwicky, F. (1969). *Discovery, Invention, Research through the Morphological Approach*. Macmillan."
     }
   ]
 }

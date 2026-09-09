@@ -2,28 +2,34 @@
   "name": "The Thing From The Future",
   "stages": [
     "Define",
-	"Develop"
+    "Develop"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "The Thing from the Future is a futures-oriented ideation game in which prompts are combined to imagine an artefact from a possible future. Constraints commonly describe elements such as the type of future, the time horizon, the kind of object and an emotional or thematic quality.\n\nThe random combination pushes participants away from familiar predictions and toward a wider range of future possibilities.",
+  "whenToUse": "Use the method when a group needs to expand its imagination of possible futures, begin a futures workshop or generate speculative artefacts quickly.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Establish the issue or domain being explored.",
+    "Generate or draw a set of future-oriented prompts.",
+    "Combine prompts to create an unusual design constraint.",
+    "Individually or collaboratively imagine an artefact responding to it.",
+    "Sketch and describe how the artefact works.",
+    "Explain what future conditions would make the artefact meaningful.",
+    "Share propositions across the group.",
+    "Compare the assumptions and worlds implied by different artefacts."
+  ],
+  "lookOutFor": [
+    "The artefact is a doorway into discussing a future, not simply an unusual product-design exercise.",
+    "Randomness can produce superficial ideas unless participants develop the surrounding social context.",
+    "Distinguish imaginative possibility from prediction."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Candy, S. & Watson, J. (2015). *The Thing from the Future*. Situation Lab."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "link",
+      "title": "The (Provoked) Thing From The Future",
+      "url": "https://play.hakmal.com/projects/future-thing/"
     }
   ]
 }

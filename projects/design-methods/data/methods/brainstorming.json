@@ -3,26 +3,31 @@
   "stages": [
     "Develop"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Brainstorming is a structured approach to generating many possible responses to a design question before evaluating them. Participants temporarily defer judgement, build on existing suggestions and deliberately pursue variety rather than immediately selecting the most practical idea.\n\nThe value of brainstorming lies in supporting divergent exploration. It should usually be followed by a separate process for organising, developing and evaluating ideas.",
+  "whenToUse": "Use brainstorming when a design problem has been sufficiently understood to support ideation but the team wants to expand the range of possible responses.\n\nIt can be useful at the beginning of concept development or whenever a project has converged prematurely around a small number of familiar solutions.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Frame a focused question or opportunity.",
+    "Establish a short period dedicated to idea generation.",
+    "Encourage participants to produce ideas without evaluating them immediately.",
+    "Record every contribution visibly.",
+    "Encourage participants to combine, extend and challenge existing ideas.",
+    "Introduce prompts or constraints if the group becomes repetitive.",
+    "Review the resulting ideas after the divergent phase has finished.",
+    "Cluster, develop or evaluate promising directions using appropriate criteria."
+  ],
+  "lookOutFor": [
+    "Speaking in a group does not give everyone an equal opportunity to contribute. Dominant voices, status and confidence can shape which ideas receive attention.",
+    "Individual idea generation before group discussion can reduce some of these effects.",
+    "Brainstorming cannot compensate for weak understanding of the problem. Generating more ideas from unsupported assumptions may simply generate more unsupported solutions."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Osborn, A. F. (1953). *Applied Imagination*. Charles Scribner's Sons."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Paulus, P. B. & Nijstad, B. A. (eds.) (2003). *Group Creativity: Innovation Through Collaboration*. Oxford University Press."
     }
   ]
 }

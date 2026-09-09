@@ -4,26 +4,31 @@
     "Discovery",
     "Define"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Ecology mapping visualises the network of people, organisations, technologies, resources and relationships surrounding a design situation. Rather than examining a product or user in isolation, the map helps designers see the wider ecology in which experiences and outcomes are produced.\n\nThe emphasis is on relationships: who or what influences whom, what resources move through the system and where dependencies or tensions occur.",
+  "whenToUse": "Use ecology mapping when a design challenge involves many interconnected actors or when focusing on a single user-product relationship obscures important influences.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define the situation or experience being mapped.",
+    "Identify relevant human and non-human actors.",
+    "Place the focal issue or experience on the mapping surface.",
+    "Add actors, organisations, technologies and resources around it.",
+    "Draw relationships between them.",
+    "Annotate important flows, dependencies, conflicts or exchanges.",
+    "Identify missing actors and indirect influences.",
+    "Examine the map for leverage points, tensions and questions requiring further research."
+  ],
+  "lookOutFor": [
+    "A visually complex map is not necessarily an insightful map.",
+    "Avoid treating every connection as equally important.",
+    "The map reflects the knowledge and perspective of whoever created it; validate important relationships through research."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Young, I. (2008). *Mental Models*. Rosenfeld Media."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Tomitsch, M. et al. (2021). *Design. Think. Make. Break. Repeat*. BIS Publishers."
     }
   ]
 }

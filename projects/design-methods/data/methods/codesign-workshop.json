@@ -3,28 +3,34 @@
   "stages": [
     "Discovery",
     "Define",
-	"Develop"
+    "Develop"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Co-design involves people affected by a design challenge participating directly in exploring and developing possible responses. A co-design workshop creates structured activities through which participants can share experiences, generate ideas, make representations and negotiate priorities.\n\nThe purpose is not simply to ask people whether they like a designer's proposal. Participants contribute knowledge and ideas to the design process itself.",
+  "whenToUse": "Use co-design when people with lived, professional or community experience should contribute directly to understanding and shaping a design situation.\n\nIt can be particularly valuable when a project affects multiple stakeholder groups or when designers need perspectives that cannot be generated from within the design team.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Clarify what participants can genuinely influence.",
+    "Identify whose perspectives need to be represented.",
+    "Design accessible activities that allow different forms of contribution.",
+    "Establish expectations, consent and an appropriate working environment.",
+    "Begin with activities that surface participants' experiences and perspectives.",
+    "Move toward collaborative exploration or making.",
+    "Document ideas as well as disagreements and uncertainties.",
+    "Explain how workshop outcomes will influence subsequent decisions.",
+    "Return outcomes to participants where appropriate."
+  ],
+  "lookOutFor": [
+    "Participation is not automatically equitable. Differences in authority, confidence, language, expertise and accessibility affect who can contribute.",
+    "Do not describe a workshop as co-design if important decisions have already been made and participants have little capacity to influence them.",
+    "Participation creates responsibilities around recognition, compensation, ownership and communicating what happens next."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Sanders, E. B.-N. & Stappers, P. J. (2008). “Co-creation and the New Landscapes of Design.” *CoDesign*, 4(1), 5–18."
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Sanders, E. B.-N. & Stappers, P. J. (2012). *Convivial Toolbox*. BIS Publishers."
     }
   ]
 }

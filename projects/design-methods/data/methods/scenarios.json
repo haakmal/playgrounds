@@ -2,29 +2,30 @@
   "name": "Scenarios",
   "stages": [
     "Define",
-	"Develop",
-	"Deliver"
+    "Develop",
+    "Deliver"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Scenarios are concise narratives describing how a person or group might encounter and use a design within a particular situation. They connect users, goals, context and sequences of activity, allowing designers to consider an experience over time rather than as isolated interface elements.\n\nScenarios may describe existing situations or explore proposed futures.",
+  "whenToUse": "Use scenarios when developing or evaluating how a concept fits into people's activities and when a sequence needs to be understood before detailed interaction design.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define the person or actor involved.",
+    "Establish a specific context and goal.",
+    "Describe the situation that triggers the interaction.",
+    "Narrate the significant actions and responses.",
+    "Include contextual constraints and interruptions where relevant.",
+    "Identify points where the design supports or obstructs the goal.",
+    "Develop alternative scenarios representing different conditions.",
+    "Use the narratives to inform requirements, flows or prototypes."
+  ],
+  "lookOutFor": [
+    "Scenarios can easily become idealised stories in which everything works as the designer hopes.",
+    "Ground important scenarios in research.",
+    "Include edge conditions and interruptions rather than modelling only the happy path."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
-    },
-    {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Carroll, J. M. (2000). *Making Use: Scenario-Based Design of Human-Computer Interactions*. MIT Press."
     }
   ]
 }

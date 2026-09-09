@@ -2,28 +2,33 @@
   "name": "Slow Design",
   "stages": [
     "Define",
-	"Develop"
+    "Develop"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Slow Design questions design practices centred on speed, novelty and short-term consumption. It encourages attention to duration, locality, reflection, participation, material lifecycles and the longer-term relationships people develop with designed things.\n\nRather than being a single procedural method, Slow Design is better understood as a set of principles through which design decisions and their consequences can be reconsidered.",
+  "whenToUse": "Use Slow Design as a critical lens when a project raises questions about sustainability, longevity, consumption, repair, local context or the pace at which products and services are produced and replaced.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Identify where speed, convenience or novelty shapes the current design.",
+    "Examine the product or service across a longer timeframe.",
+    "Consider material, social and environmental consequences.",
+    "Investigate opportunities for maintenance, adaptation and repair.",
+    "Consider local knowledge, production and participation.",
+    "Explore interactions that encourage reflection rather than automatic consumption.",
+    "Develop alternative propositions.",
+    "Evaluate them according to long-term as well as immediate value."
+  ],
+  "lookOutFor": [
+    "*'Slow'* does not simply mean inefficient or time-consuming.",
+    "Longer-lasting products are not automatically sustainable if their materials or systems remain harmful.",
+    "Consider who has the time and resources to participate in slower practices; slowness can carry different costs for different people."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
+      "type": "reference",
+      "citation": "Strauss, C. F. & Fuad-Luke, A. (2008). “The Slow Design Principles.”"
     },
     {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Fuad-Luke, A. (2009). *Design Activism*. Earthscan."
     }
   ]
 }

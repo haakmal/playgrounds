@@ -1,29 +1,31 @@
 {
-  "name": "Roleplaying",
+  "name": "Role Playing",
   "stages": [
     "Define",
-	"Develop"
+    "Develop"
   ],
-  "description": "A qualitative method involving one-on-one conversations to gather deep insights into user needs, goals, and pain points.",
-  "whenToUse": "",
-  "lookOutFor": [],
+  "description": "Roleplay explores a situation by having participants enact the roles, actions and interactions involved. It can make social dynamics, sequences and service encounters tangible before they are fully implemented.\n\nBy performing an interaction rather than only describing it, designers can discover practical and interpersonal issues that are difficult to anticipate in diagrams.",
+  "whenToUse": "Use roleplay when interpersonal interaction, service delivery, communication or coordination between actors is important to a design.",
   "steps": [
-    "Define your research objectives",
-    "Draft a flexible interview guide",
-    "Recruit participants from your target audience",
-    "Conduct interviews in a neutral, open-ended manner",
-    "Synthesise key findings and themes"
+    "Define the scenario to explore.",
+    "Identify the relevant roles.",
+    "Provide participants with enough context to begin.",
+    "Establish simple props or environmental cues if needed.",
+    "Act through the scenario.",
+    "Pause or repeat when significant issues emerge.",
+    "Exchange roles or alter conditions to explore alternatives.",
+    "Debrief participants about what they noticed.",
+    "Translate observations into design questions or changes."
+  ],
+  "lookOutFor": [
+    "Roleplay reflects participants' assumptions about other people and should not be treated as evidence of how those people actually behave.",
+    "Some participants may be uncomfortable performing.",
+    "Provide alternative roles such as observer, documenter or facilitator where appropriate."
   ],
   "resources": [
     {
-      "type": "link",
-      "title": "IDEO Design Kit: Interviewing",
-      "url": "https://www.designkit.org/methods/interview"
-    },
-    {
-      "type": "download",
-      "title": "Interview Template (PDF)",
-      "url": "assets/templates/interview-template.pdf"
+      "type": "reference",
+      "citation": "Simsarian, K. T. (2003). “Take It to the Next Stage: The Roles of Role Playing in the Design Process.” *CHI 2003 Extended Abstracts*."
     }
   ]
 }
