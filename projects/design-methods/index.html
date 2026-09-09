@@ -58,56 +58,114 @@
       </svg>
     </button>
     <div class="modal-content">
-      <h2>How to use this interface</h2>
+      <h2>How to use this library</h2>
+      
+      <p>
+        Design Methods is a reference library for exploring methods across the design process.
+        Methods are positioned against the four phases of the Double Diamond to indicate where
+        they may be useful, while recognising that design processes are iterative and methods
+        may apply across more than one phase.
+      </p>
+      
+      <h4>Finding a method</h4>
+      
+      <p>
+        Browse the library by phase, use the phase filters to focus the view, or search for a
+        method by name or terminology associated with it.
+      </p>
+      
       <ul>
-        <li><strong>Search:</strong> Use the search bar to find a method by name.</li>
-        <li><strong>Filter:</strong> Use the checkboxes in the phase headers to focus on relevant stages of the design
-          process.</li>
-          <li><strong>Click: </strong> Click on any method to view detailed info, steps, and resources.</li>
-          <li><strong>Responsive:</strong> The interface adapts to smaller screens and shows sticky headers when
-            scrolling.</li>
-          </ul>
-        </div>
-      </div>
-      <script src="script.js"></script>
+        <li><strong>Discovery</strong> — methods concerned with investigating contexts, people, experiences, systems, and existing conditions.</li>
+        <li><strong>Define</strong> — methods for interpreting evidence, identifying patterns, framing problems, and establishing design direction.</li>
+        <li><strong>Develop</strong> — methods for generating, exploring, prototyping, and evaluating possible responses.</li>
+        <li><strong>Deliver</strong> — methods concerned with refinement, implementation, evaluation, communication, and learning from outcomes.</li>
+      </ul>
+      <section id="method-details">
+      <ul class="look-out-list"><li>Note: This classification is not exhaustive and methods may apply across multiple phases. Treat this as a reference, not a rigid framework.</li></ul>
+      </section>
+
+      <h4>Searching the library</h4>
       
+      <p>
+        Search considers both method names and terminology contained within method information.
+        Matches in a method name are prioritised, followed by relevant terms found in its
+        description, guidance, and process.
+      </p>
       
-      <!-- BEGIN RETURN LINK -->
-      <script>
-        // inject-home-link.js
-        (function () {
-          // Inject Font Awesome stylesheet
-          const fa = document.createElement("link");
-          fa.rel = "stylesheet";
-          fa.href = "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css";
-          fa.crossOrigin = "anonymous";
-          document.head.appendChild(fa);
-          
-          // Create the back link
-          const link = document.createElement("a");
-          link.href = "/";
-          link.innerHTML = '← Back to Playgrounds <i class="fab fa-github"><i>';
-            Object.assign(link.style, {
-              position: "fixed",
-              bottom: "20px",
-              right: "20px",
-              background: "#000",
-              color: "#fff",
-              padding: "8px 12px",
-              zIndex: 1000,
-              fontSize: "14px",
-              opacity: 0.7,
-              borderRadius: "6px",
-              textDecoration: "none"
-            });
-            link.onmouseover = () => (link.style.opacity = "1");
-            link.onmouseout = () => (link.style.opacity = "0.7");
-            document.body.appendChild(link);
-          })();
-        </script>
-        <!-- END RETURN LINK -->
-        
-      </body>
+      <p>
+        For example, searching for <em>speculative</em> will prioritise methods with
+        “speculative” in their name while also revealing other methods where speculative
+        approaches are discussed.
+      </p>
       
-      </html>
+      <h4>Reading a method</h4>
       
+      <p>
+        Select a method to open its full entry. Each entry may contain the following sections:
+      </p>
+      
+      <ul>
+        <li><strong>Description</strong> — an overview of what the method is and its purpose.</li>
+        <li><strong>When to use</strong> — guidance on the situations, evidence, or design questions for which the method may be appropriate.</li>
+        <li><strong>Step-by-step guide</strong> — a practical sequence for carrying out the method.</li>
+        <li><strong>Look out for</strong> — limitations, common mistakes, assumptions, or considerations that may affect how the method is used.</li>
+        <li><strong>Further material</strong> — references, readings, links, templates, or other resources for developing a deeper understanding of the method.</li>
+      </ul>
+      
+      <h4>Methods are not recipes</h4>
+      
+      <p>
+        The phases and processes shown here are guides rather than fixed instructions. A method
+        may be adapted, repeated, combined with other methods, or used at different points in a
+        project depending on its context and purpose. They traverse across multiple phases for very reason.
+      </p>
+      
+      <p>
+        Choose methods in response to what you need to learn, understand, make, or evaluate.
+        Consider the evidence you already have, what remains uncertain, and what the method will
+        contribute to your design process.
+      </p>
+    </div>
+  </div>
+  <script src="script.js"></script>
+  
+  
+  <!-- BEGIN RETURN LINK -->
+  <script>
+    // inject-home-link.js
+    (function () {
+      // Inject Font Awesome stylesheet
+      const fa = document.createElement("link");
+      fa.rel = "stylesheet";
+      fa.href = "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css";
+      fa.crossOrigin = "anonymous";
+      document.head.appendChild(fa);
+      
+      // Create the back link
+      const link = document.createElement("a");
+      link.href = "/";
+      link.innerHTML = '← Back to Playgrounds <i class="fab fa-github"><i>';
+        Object.assign(link.style, {
+          position: "fixed",
+          bottom: "20px",
+          right: "20px",
+          background: "#000",
+          color: "#fff",
+          padding: "8px 12px",
+          zIndex: 1000,
+          fontSize: "14px",
+          opacity: 0.7,
+          borderRadius: "6px",
+          textDecoration: "none"
+        });
+        link.onmouseover = () => (link.style.opacity = "1");
+        link.onmouseout = () => (link.style.opacity = "0.7");
+        document.body.appendChild(link);
+      })();
+    </script>
+    <!-- END RETURN LINK -->
+    
+  </body>
+  
+  </html>
+  

@@ -63,8 +63,23 @@ h2 {
   margin: 0;
   padding: 0;
   text-align: left;
-  border: 1px solid #bbb;
 }
+
+.grid-container h2 {
+  border-top: 1px solid #111;
+  border-bottom: 1px solid #111;
+  border-left: 1px solid #111;
+  border-right: none;
+}
+
+.grid-container h2:first-child {
+  border-left: none;
+}
+
+.grid-container h2:last-child {
+  border-right: none;
+}
+
 
 /*--- Structure: Header */
 header {
@@ -161,6 +176,60 @@ header {
   font-style: italic;
   color: #555;
   user-select: none;
+}
+
+.filters input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+
+  width: 14px;
+  height: 14px;
+
+  margin: 0;
+  border: 1px solid #777;
+  background: #f8f8f8;
+
+  display: inline-grid;
+  place-content: center;
+
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+
+.filters input[type="checkbox"]::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background: #111;
+  transform: scale(0);
+  transform-origin: center;
+  transition: transform 0.12s ease;
+}
+
+.filters input[type="checkbox"]:checked {
+  border-color: #111;
+  background: rgba(255, 254, 0, 1);
+}
+
+.filters input[type="checkbox"]:checked::before {
+  transform: scale(1);
+}
+
+.filters input[type="checkbox"]:hover {
+  border-color: #111;
+}
+
+.filters input[type="checkbox"]:focus-visible {
+  outline: 2px solid #111;
+  outline-offset: 2px;
+}
+
+label.filters {
+  cursor: pointer;
+}
+
+label.filters:hover {
+  color: #000;
 }
 
 /*--- Structure: Method grid */
@@ -305,7 +374,7 @@ header {
   display: block;
 }
 
-#method-details h4 {
+h4 {
   margin: 2.25rem 0 0.85rem;
   padding: 0.65rem 0 0.5rem;
   border-top: 2px solid #111;

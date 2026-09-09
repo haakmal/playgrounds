@@ -1,5 +1,8 @@
 const stageOrder = ['Discovery', 'Define', 'Develop', 'Deliver'];
 
+const methodEntries = [];
+const methodData = new Map();
+
 const grid = document.getElementById('method-grid');
 const modal = document.getElementById('modal');
 
@@ -20,8 +23,6 @@ const searchInput = document.getElementById('search');
 const phaseCheckboxes = document.querySelectorAll(
   '.filters input[type="checkbox"]'
 );
-
-const methodEntries = [];
 
 function escapeHtml(value = '') {
   return String(value)
@@ -93,6 +94,7 @@ function renderMethods(data) {
 
       methodDiv.dataset.stages = (method.stages || []).join(',');
       methodDiv.dataset.name = method.name || '';
+      methodDiv.dataset.id = method.id;
 
       const first = stageOrder.indexOf(method.stages?.[0]);
       const last = stageOrder.indexOf(
@@ -132,11 +134,69 @@ function renderMethods(data) {
         }
       });
 
+      methodDiv.dataset.originalOrder = methodEntries.length;
+      
       grid.appendChild(methodDiv);
       methodEntries.push(methodDiv);
     });
 }
 
+async function loadIndex() {
+  try {
+    const response = await fetch('data/methods.index.json', {
+      cache: 'no-store'
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const indexData = await response.json();
+
+    renderMethods(indexData);
+
+    // Load the complete record for every method so search
+    // can consider description, whenToUse, steps, etc.
+    const methodRecords = await Promise.all(
+      indexData.map(async method => {
+        try {
+          const recordResponse = await fetch(
+            `data/methods/${encodeURIComponent(method.id)}.json`,
+            { cache: 'no-store' }
+          );
+
+          if (!recordResponse.ok) {
+            throw new Error(`HTTP ${recordResponse.status}`);
+          }
+
+          const record = await recordResponse.json();
+
+          methodData.set(method.id, {
+            ...method,
+            ...record
+          });
+        } catch (error) {
+          console.warn(
+            `Could not load method record: ${method.id}`,
+            error
+          );
+
+          // Keep the index record available even if the
+          // detailed record cannot be loaded.
+          methodData.set(method.id, method);
+        }
+      })
+    );
+
+    await Promise.all(methodRecords);
+
+  } catch (error) {
+    console.error(error);
+    grid.innerHTML =
+      '<p style="padding:1rem">The method library could not be loaded.</p>';
+  }
+}
+/*
 async function loadIndex() {
   try {
     const response = await fetch('data/methods.index.json', {
@@ -155,7 +215,7 @@ async function loadIndex() {
       '<p style="padding:1rem">The method library could not be loaded.</p>';
   }
 }
-
+*/
 async function loadMethodDetails(id) {
   try {
     const response = await fetch(
@@ -295,6 +355,189 @@ function updatePhaseFilter() {
   });
 }
 
+function getWords(text = '') {
+  return String(text)
+    .toLowerCase()
+    .match(/\b[\p{L}\p{N}'-]+\b/gu) || [];
+}
+
+function hasExactWord(text, query) {
+  return getWords(text).includes(query);
+}
+
+function fuzzyMatch(needle, haystack) {
+  if (!needle) return false;
+
+  let hIndex = 0;
+
+  for (const character of needle) {
+    hIndex = haystack.indexOf(character, hIndex);
+
+    if (hIndex === -1) {
+      return false;
+    }
+
+    hIndex += 1;
+  }
+
+  return true;
+}
+
+function scoreMethod(method, query) {
+  if (!query) return 0;
+
+  const normalizedQuery = query.toLowerCase();
+
+  let score = 0;
+
+  /*
+   * METHOD NAME
+   * Highest priority.
+   */
+
+  if (hasExactWord(method.name, normalizedQuery)) {
+    score += 100;
+  } else if (
+    method.name.toLowerCase().includes(normalizedQuery)
+  ) {
+    score += 70;
+  } else if (
+    fuzzyMatch(
+      normalizedQuery,
+      method.name.toLowerCase()
+    )
+  ) {
+    score += 40;
+  }
+
+
+  /*
+   * DESCRIPTION
+   */
+
+  if (
+    hasExactWord(
+      method.description,
+      normalizedQuery
+    )
+  ) {
+    score += 30;
+  }
+
+
+  /*
+   * WHEN TO USE
+   */
+
+  if (
+    hasExactWord(
+      method.whenToUse,
+      normalizedQuery
+    )
+  ) {
+    score += 20;
+  }
+
+
+  /*
+   * LOOK OUT FOR
+   */
+
+  if (
+    Array.isArray(method.lookOutFor) &&
+    method.lookOutFor.some(item =>
+      hasExactWord(item, normalizedQuery)
+    )
+  ) {
+    score += 15;
+  }
+
+
+  /*
+   * PROCESS STEPS
+   */
+
+  if (
+    Array.isArray(method.steps) &&
+    method.steps.some(step =>
+      hasExactWord(step, normalizedQuery)
+    )
+  ) {
+    score += 10;
+  }
+
+
+  return score;
+}
+
+function filterMethods() {
+  const query = searchInput.value
+    .trim()
+    .toLowerCase();
+
+  /*
+   * No search term:
+   * restore normal ordering and visibility.
+   */
+
+  if (!query) {
+    methodEntries.forEach(methodDiv => {
+      methodDiv.style.display = '';
+    });
+
+    return;
+  }
+
+
+  /*
+   * Score every visible method.
+   */
+
+  const rankedMethods = methodEntries
+    .map(methodDiv => {
+      const method = methodData.get(
+        methodDiv.dataset.id
+      );
+
+      if (!method) {
+        return {
+          element: methodDiv,
+          score: 0
+        };
+      }
+
+      return {
+        element: methodDiv,
+        score: scoreMethod(method, query)
+      };
+    })
+    .sort((a, b) => {
+  if (b.score !== a.score) {
+    return b.score - a.score;
+  }
+
+  return (
+    Number(a.element.dataset.originalOrder) -
+    Number(b.element.dataset.originalOrder)
+  );
+});
+
+
+  /*
+   * Apply ranking and visibility.
+   */
+
+  rankedMethods.forEach(result => {
+    result.element.style.display =
+      result.score > 0 ? '' : 'none';
+
+    if (result.score > 0) {
+      grid.appendChild(result.element);
+    }
+  });
+}
+/* ------ old setuup for search, not used anymore
+
 function fuzzyMatch(needle, haystack) {
   if (!needle) return true;
 
@@ -327,7 +570,7 @@ function filterMethods() {
         : 'none';
   });
 }
-
+*/
 /* --------------------------------------------------
    Method modal controls
 -------------------------------------------------- */
