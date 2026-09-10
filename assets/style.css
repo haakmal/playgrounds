@@ -5,10 +5,10 @@ body {
   margin: 0;
   padding: 0;
   position: relative;
-
+  
   background: #fff;
   color: #111;
-
+  
   font-family: system-ui, sans-serif;
   line-height: 160%;
 }
@@ -16,7 +16,7 @@ body {
 .container {
   position: relative;
   z-index: 1;
-
+  
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;
@@ -31,39 +31,7 @@ a {
   text-underline-offset: 0.15em;
 }
 
-a:hover,
-.project-card:hover h3 a {
-  color: #111;
-  text-decoration: none;
-
-  background-color: transparent;
-  background-image: linear-gradient(
-    90deg,
-    #ff7896,
-    #ffbe6e,
-    #f5e164,
-    #8cdca0,
-    #78bef0,
-    #af91eb,
-    #ff96cd,
-    #ff7896
-  );
-  background-position: 0 100%;
-  background-repeat: no-repeat;
-  background-size: 200% 2px;
-
-  animation: rainbow-underline 2.5s linear infinite;
-}
-
-@keyframes rainbow-underline {
-  from {
-    background-position: 0% 100%;
-  }
-
-  to {
-    background-position: 100% 100%;
-  }
-}
+a:hover, .project-card:hover h3 a { color: #111; text-decoration: none; background-color: transparent; background-image: repeating-linear-gradient( 90deg, #ff7896 0, #ffbe6e 16px, #f5e164 32px, #8cdca0 48px, #78bef0 64px, #af91eb 80px, #ff96cd 96px, #ff7896 112px ); background-position: 0 calc(100% - 1px); background-repeat: repeat-x; background-size: 112px 2px; animation: rainbow-underline 2s linear infinite; } @keyframes rainbow-underline { from { background-position: 0% calc(100% - 1px); } to { background-position: -122px calc(100% - 1px); } }
 
 .project-card h3 a::after {
   content: "";
@@ -125,7 +93,7 @@ h3 {
 
 .control-label {
   margin-right: 0.25rem;
-
+  
   color: #666;
   font-size: 0.85rem;
   text-transform: uppercase;
@@ -140,14 +108,14 @@ h3 {
   border: 1px solid #ccc;
   border-radius: 0;
   padding: 0.25rem 0.5rem;
-
+  
   background: #fff;
   color: #111;
-
+  
   font: inherit;
   font-size: 0.9rem;
   line-height: 1.3;
-
+  
   cursor: pointer;
 }
 
@@ -179,7 +147,7 @@ h3 {
   display: flex;
   flex-direction: column;
   min-width: 0;
-
+  
   border: 1px solid #ddd;
   padding: 1rem;
   background: #fff;
@@ -214,31 +182,31 @@ h3 {
 
 .project-card.is-wip {
   border: 4px solid transparent;
-
+  
   background:
-    linear-gradient(#fff, #fff) padding-box,
-    repeating-linear-gradient(
-      135deg,
-      #333 0,
-      #333 6px,
-      #f5d547 6px,
-      #f5d547 12px
-    ) border-box;
-
-  background-position: 0 0, 0 0;
+  linear-gradient(#fff, #fff) padding-box,
+  repeating-linear-gradient(
+  135deg,
+  #333 0,
+  #333 6px,
+  #f5d547 6px,
+  #f5d547 12px
+  ) border-box;
+  
+  background-position: 0, 0;
   background-repeat: no-repeat, repeat;
 }
 
 .project-card.is-wip:hover {
   border-color: transparent;
-  animation: wip-stripes 1.5s linear infinite;
+  animation: wip-stripes 1s linear infinite alternate;
 }
 
 @keyframes wip-stripes {
   from {
     background-position: 0 0, 0 0;
   }
-
+  
   to {
     background-position: 0 0, 16.9706px 0;
   }
@@ -250,10 +218,10 @@ h3 {
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
   padding: 0.1rem 0.35rem;
-
+  
   background: #111;
   color: #fff;
-
+  
   font-size: 0.7rem;
   font-weight: 600;
   line-height: 1.4;
@@ -269,10 +237,10 @@ h3 {
   gap: 1rem;
   margin-top: auto;
   padding-top: 0.75rem;
-
+  
   border-top: 1px solid #eee;
   color: #666;
-
+  
   font-size: 0.75rem;
   line-height: 1.4;
 }
@@ -295,7 +263,7 @@ h3 {
 .no-results {
   margin: 1rem 0;
   padding: 1rem;
-
+  
   border: 1px solid #ddd;
   color: #666;
 }
@@ -306,10 +274,10 @@ footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-
+  
   margin-top: 1.5rem;
   border-top: 1px solid #ddd;
-
+  
   color: #999;
   font-size: 0.9rem;
   text-align: left;
@@ -317,7 +285,7 @@ footer {
 
 .footer-right a {
   margin-left: 0.5rem;
-
+  
   color: #333;
   font-size: 1.4rem;
   text-decoration: none;
@@ -336,47 +304,47 @@ body::before {
   top: 0;
   left: 0;
   z-index: 0;
-
+  
   width: 100%;
   height: 200px;
-
+  
   pointer-events: none;
-
+  
   background: linear-gradient(
-    90deg,
-    rgba(255, 120, 150, 0.35) 0%,
-    rgba(255, 190, 110, 0.35) 7%,
-    rgba(245, 225, 100, 0.35) 14%,
-    rgba(140, 220, 160, 0.35) 21%,
-    rgba(120, 190, 240, 0.35) 28%,
-    rgba(175, 145, 235, 0.35) 35%,
-    rgba(255, 150, 205, 0.35) 42%,
-    rgba(255, 120, 150, 0.35) 50%,
-    rgba(255, 120, 150, 0.35) 50%,
-    rgba(255, 190, 110, 0.35) 57%,
-    rgba(245, 225, 100, 0.35) 64%,
-    rgba(140, 220, 160, 0.35) 71%,
-    rgba(120, 190, 240, 0.35) 78%,
-    rgba(175, 145, 235, 0.35) 85%,
-    rgba(255, 150, 205, 0.35) 92%,
-    rgba(255, 120, 150, 0.35) 100%
+  90deg,
+  rgba(255, 120, 150, 0.35) 0%,
+  rgba(255, 190, 110, 0.35) 7%,
+  rgba(245, 225, 100, 0.35) 14%,
+  rgba(140, 220, 160, 0.35) 21%,
+  rgba(120, 190, 240, 0.35) 28%,
+  rgba(175, 145, 235, 0.35) 35%,
+  rgba(255, 150, 205, 0.35) 42%,
+  rgba(255, 120, 150, 0.35) 50%,
+  rgba(255, 120, 150, 0.35) 50%,
+  rgba(255, 190, 110, 0.35) 57%,
+  rgba(245, 225, 100, 0.35) 64%,
+  rgba(140, 220, 160, 0.35) 71%,
+  rgba(120, 190, 240, 0.35) 78%,
+  rgba(175, 145, 235, 0.35) 85%,
+  rgba(255, 150, 205, 0.35) 92%,
+  rgba(255, 120, 150, 0.35) 100%
   );
-
+  
   background-size: 200% 100%;
-
+  
   -webkit-mask-image: linear-gradient(
-    to bottom,
-    #000 0%,
-    #000 25%,
-    transparent 100%
+  to bottom,
+  #000 0%,
+  #000 25%,
+  transparent 100%
   );
   mask-image: linear-gradient(
-    to bottom,
-    #000 0%,
-    #000 25%,
-    transparent 100%
+  to bottom,
+  #000 0%,
+  #000 25%,
+  transparent 100%
   );
-
+  
   animation: playground-rainbow 30s linear infinite;
 }
 
@@ -384,7 +352,7 @@ body::before {
   from {
     background-position: 0% 50%;
   }
-
+  
   to {
     background-position: 100% 50%;
   }
@@ -398,7 +366,7 @@ body::before {
     flex-direction: column;
     gap: 1rem;
   }
-
+  
   .project-controls {
     justify-content: flex-start;
   }
