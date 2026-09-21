@@ -65,6 +65,7 @@
               <div>
                 <p class="section-kicker">01 / SESSION</p>
                 <h2>Import setup</h2>
+              <small>These actions are read-only.</small>
               </div>
               <div class="drawer-summary-right">
                 <span class="status-pill" id="sessionStatus">Not ready</span>
@@ -91,8 +92,7 @@
                     >
                   </div>
                   <small
-                    >Use the raw Moodle export. No spreadsheet preprocessing is
-                    required.</small
+                    >Use raw Excel exports from Moodle.</small
                   >
                 </label>
 
@@ -136,8 +136,7 @@
                     <option value="PG">PG</option>
                   </select>
                   <small
-                    >Used only when creating new student files. Existing student
-                    properties are preserved.</small
+                    >For new student records.</small
                   >
                 </label>
 
@@ -157,7 +156,7 @@
                   </div>
                   <small
                     >Select the directory containing student
-                    <code>.md</code> files. The scan is read-only.</small
+                    <code>.md</code> files.</small
                   >
                 </label>
 
@@ -176,8 +175,8 @@
                     >
                   </div>
                   <small
-                    >Names are read from the selected Markdown files and used
-                    for Tutor:: [[Name]].</small
+                    >Select the directory containing tutor
+                    <code>.md</code> files.</small
                   >
                 </label>
               </div>
@@ -211,9 +210,8 @@
             </summary>
             <div class="drawer-content">
               <p class="panel-intro">
-                Each Moodle group is mapped once for this import session. The
-                selected tutor is written into the existing
-                <code>Tutor:: [[Name]]</code> structure.
+                Each Moodle group is mapped once for this import session. Be mindful of Access groups,
+                they may have overlaps. Better to redact Access from Moodle export first.
               </p>
               <div id="mappingTable" class="mapping-table"></div>
               <div class="action-row">

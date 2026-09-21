@@ -111,7 +111,7 @@ async function chooseTutorDir() {
 function compatibilityFallback(kind) {
   $('compatNotice').classList.remove('hidden');
   $('compatNotice').className = 'notice warning';
-  $('compatNotice').textContent = `This browser does not expose the folder ${kind} API required by v1. Use Chrome or Edge for the local folder workflow.`;
+  $('compatNotice').textContent = `This browser does not expose the folder ${kind} API required by this version. Use Chrome or Edge for the local folder workflow.`;
 }
 
 async function loadTutorRecords(dirHandle) {
@@ -507,6 +507,6 @@ $('closeHelpBtn').addEventListener('click', () => $('helpDialog').close());
 if (!supportsFSAccess()) {
   $('compatNotice').classList.remove('hidden');
   $('compatNotice').className = 'notice warning';
-  $('compatNotice').textContent = 'This browser may not support the local folder read/write workflow required by v1. Chrome or Edge is recommended for testing.';
+  $('compatNotice').textContent = 'This browser may not support the local folder read/write workflow required by this version. Chrome or Edge is recommended for testing.';
 }
 refreshScanAvailability();

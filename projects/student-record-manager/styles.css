@@ -195,7 +195,7 @@ h2 {
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
-.field small {
+.drawer-summary small, .field small {
   color: var(--muted);
   font-size: 12px;
 }
