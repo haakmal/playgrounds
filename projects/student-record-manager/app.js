@@ -358,7 +358,7 @@ function openPreview(key) {
   $('currentPreview').innerHTML = formatMarkdown(record.current || '[ No existing student file ]');
   $('proposedPreview').innerHTML = formatMarkdown(record.proposed || '[ No proposal available ]');
   $('changeSummary').textContent = record.state === 'new'
-    ? `This will create ${record.student.id}.md with the current course record.`
+    ? `This will create ${record.year}/${record.student.id}.md with the current course record.`
     : record.state === 'recorded'
       ? 'No file change is proposed because the course session tag already exists.'
       : record.rejected
@@ -408,21 +408,24 @@ async function applySelected() {
       record.applied = true;
       record.state = 'change';
     } else {
-      const filename = `${record.student.id}.md`;
-      let existingHandle = null;
-      try {
-        existingHandle = await state.studentDir.getFileHandle(filename, { create: false });
-      } catch (error) {
-        if (error.name !== 'NotFoundError') throw error;
+      const latestFiles = await readAllMarkdownFiles(state.studentDir);
+      const existingNow = latestFiles.find(file => studentIdFromMarkdown(file.name, file.content) === record.student.id);
+      if (existingNow) throw new Error('A student file with this ID now exists. Re-scan before applying.');
+
+      const yearFolder = normalize(record.year);
+      if (!yearFolder || /[\\/:*?"<>|]/.test(yearFolder) || yearFolder === '.' || yearFolder === '..') {
+        throw new Error('The current year cannot be used as a valid student-folder name. Re-scan with a valid year.');
       }
-      if (existingHandle) throw new Error('A student file with this ID now exists. Re-scan before applying.');
-      const newHandle = await state.studentDir.getFileHandle(filename, { create: true });
+      const yearDir = await state.studentDir.getDirectoryHandle(yearFolder, { create: true });
+      const filename = `${record.student.id}.md`;
+      const newHandle = await yearDir.getFileHandle(filename, { create: true });
       const writable = await newHandle.createWritable();
       await writable.write(record.proposed);
       await writable.close();
       record.applied = true;
       record.fileHandle = newHandle;
       record.current = record.proposed;
+      record.targetPath = `${yearFolder}/${filename}`;
     }
     $('previewContent').classList.remove('hidden');
     renderStats();
