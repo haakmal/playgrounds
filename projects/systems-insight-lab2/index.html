@@ -31,5 +31,41 @@
   <aside id="toolboxDrawer" class="drawer toolbox-drawer" aria-hidden="true"><div class="drawer-head"><div><p class="eyebrow">SESSION TOOLBOX</p><h2>Session tools</h2></div><button class="icon-button" id="closeToolbox">×</button></div><p class="muted">Manage this local session or move its records between browsers.</p><button class="outline full" id="exportTool">Export JSON</button><button class="outline full" id="importTool">Import JSON</button><button class="outline full" id="clearTool">Clear session</button></aside>
   <div id="helpModal" class="modal" aria-hidden="true"><div class="modal-box"><div class="drawer-head"><div><p class="eyebrow">SYSTEM INSIGHT LAB</p><h2>How to use this tool</h2></div><button class="icon-button" id="closeHelp">×</button></div><p>Use this local workspace after mapping a system on paper, a whiteboard or through other field material.</p><ol><li>Capture data points as observations, mutations or insights.</li><li>Use Observe and Analyse to record what is present and how you currently read it.</li><li>Use Connect to create optional, named relationships between entries.</li><li>Review the Atlas to create named threads and inspect selected entries.</li><li>Use History to remove records from view or restore them later.</li></ol><p class="muted">The tool stores records in this browser. It does not interpret or generate connections for you.</p></div></div><div id="toast" class="toast"></div><input id="importFile" type="file" accept="application/json" hidden>
   <script src="script.js"></script>
+
+<!-- BEGIN RETURN LINK -->
+<script>
+// inject-home-link.js
+(function () {
+	// Inject Font Awesome stylesheet
+	const fa = document.createElement("link");
+	fa.rel = "stylesheet";
+	fa.href = "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css";
+	fa.crossOrigin = "anonymous";
+	document.head.appendChild(fa);
+	
+	// Create the back link
+	const link = document.createElement("a");
+	link.href = "/";
+	link.innerHTML = '← Back to Playgrounds <i class="fab fa-github"><i>';
+	Object.assign(link.style, {
+	  position: "fixed",
+	  bottom: "20px",
+	  right: "20px",
+	  background: "#000",
+	  color: "#fff",
+	  padding: "8px 12px",
+	  zIndex: 1000,
+	  fontSize: "14px",
+	  opacity: 0.7,
+	  borderRadius: "6px",
+	  textDecoration: "none"
+	});
+	link.onmouseover = () => (link.style.opacity = "1");
+	link.onmouseout = () => (link.style.opacity = "0.7");
+	document.body.appendChild(link);
+})();
+</script>
+<!-- END RETURN LINK -->
+
 </body>
 </html>
