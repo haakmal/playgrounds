@@ -1,9 +1,6 @@
 {
   "name": "Sketching",
-  "stages": [
-    "Develop",
-    "Deliver"
-  ],
+  "stages": ["Develop", "Deliver"],
   "description": "Sketching uses rapid visual representations to explore, externalise and communicate ideas. In design, sketches are not simply illustrations of decisions already made; they are tools for thinking through form, relationships, interactions and alternatives.\n\nTheir provisional quality makes ideas easier to change and supports exploration before detailed commitment.",
   "whenToUse": "Use sketching throughout design whenever visualising an idea can help you think about it, compare alternatives or communicate it to others.",
   "steps": [

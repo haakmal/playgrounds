@@ -1,11 +1,6 @@
 {
   "name": "User Flow Diagram",
-  "stages": [
-    "Discovery",
-    "Define",
-    "Develop",
-    "Deliver"
-  ],
+  "stages": ["Discovery", "Define", "Develop", "Deliver"],
   "description": "A user flow visualises the routes a person may take through a product or service to reach one or more goals. Unlike a simple task flow, it may include multiple entry points, decisions and alternative paths through the system.\n\nUser flows help designers examine how individual screens, states or touchpoints connect into a coherent experience.",
   "whenToUse": "Use user flows when designing navigation and interaction across multiple states or screens and when several routes through an experience need to be considered.",
   "steps": [

@@ -1,10 +1,6 @@
 {
   "name": "Design Timescapes",
-  "stages": [
-    "Discovery",
-    "Define",
-    "Develop"
-  ],
+  "stages": ["Discovery", "Define", "Develop"],
   "description": "A design timescape is a visual futures-thinking method for examining relationships between design propositions and broader changes over time. It places developments, events, trends and possible interventions along a temporal landscape so designers can consider how a proposal might interact with changing social, technological, environmental or political conditions.\n\nRather than treating a design as an isolated future object, the method encourages designers to consider the changing context around it.",
   "whenToUse": "Use a design timescape when investigating a design proposition whose relevance or consequences may change over a longer time horizon.\n\nIt is particularly useful in design-futures work and when introducing students to relationships between design decisions and societal change.",
   "steps": [

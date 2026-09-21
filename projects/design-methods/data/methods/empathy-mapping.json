@@ -1,9 +1,6 @@
 {
   "name": "Empathy Mapping",
-  "stages": [
-    "Discovery",
-    "Define"
-  ],
+  "stages": ["Discovery", "Define"],
   "description": "An empathy map is a synthesis tool used to organise what is known or hypothesised about a person's experience. Common versions consider what a person says, does, thinks and feels, although the exact structure varies.\n\nUsed carefully, the map can help a team bring scattered research observations together and notice contradictions or gaps in its understanding.",
   "whenToUse": "Use empathy mapping after collecting research about people's experiences and when a team needs a shared representation to support discussion or identify unanswered questions.",
   "steps": [

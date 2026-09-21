@@ -1,8 +1,6 @@
 {
   "name": "Specluative Storytelling",
-  "stages": [
-    "Develop"
-  ],
+  "stages": ["Develop"],
   "description": "Speculative storytelling uses narrative to explore possible situations, futures and consequences through characters and events. Stories allow designers to examine how broad changes might be experienced in everyday life and to connect technological or systemic propositions with social relationships and values.\n\nThe aim is not prediction but structured imagination.",
   "whenToUse": "Use speculative storytelling when future conditions are too abstract to discuss productively or when a project needs to explore multiple perspectives on possible change.",
   "steps": [

@@ -1,10 +1,6 @@
 {
   "name": "Scenarios",
-  "stages": [
-    "Define",
-    "Develop",
-    "Deliver"
-  ],
+  "stages": ["Define", "Develop", "Deliver"],
   "description": "Scenarios are concise narratives describing how a person or group might encounter and use a design within a particular situation. They connect users, goals, context and sequences of activity, allowing designers to consider an experience over time rather than as isolated interface elements.\n\nScenarios may describe existing situations or explore proposed futures.",
   "whenToUse": "Use scenarios when developing or evaluating how a concept fits into people's activities and when a sequence needs to be understood before detailed interaction design.",
   "steps": [

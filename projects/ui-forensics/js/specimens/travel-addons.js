@@ -1,5 +1,5 @@
 export function render(root) {
-    root.innerHTML = `
+  root.innerHTML = `
         <div class="specimen-shell s42">
             <div class="specimen-mobile travel-app">
                 <header class="s42-header"><strong>Northline Air</strong><span>2 / 4</span></header>
@@ -15,23 +15,28 @@ export function render(root) {
             </div>
         </div>`;
 
-    const baggage = root.querySelector('#s42-baggage');
-    const insurance = root.querySelector('#s42-insurance');
-    const total = root.querySelector('#s42-extra-total');
-    baggage.addEventListener('click', () => baggage.classList.toggle('selected'));
-    insurance.addEventListener('click', () => insurance.classList.toggle('selected'));
-    root.querySelector('#s42-continue').addEventListener('click', () => {
-        root.querySelector('#s42-next').hidden = false;
-        total.textContent = '$67';
-        const summary = root.querySelector('.s42-summary');
-        if (!summary.querySelector('.insurance-row')) {
-            summary.insertAdjacentHTML('beforeend', '<span class="insurance-row">Trip protection</span><strong class="insurance-row">$19</strong>');
-        }
-    });
-    root.querySelector('#s42-decline').addEventListener('click', () => {
-        baggage.classList.remove('selected');
-        insurance.classList.remove('selected');
-        total.textContent = '$0';
-        root.querySelector('#s42-next').hidden = false;
-    });
+  const baggage = root.querySelector("#s42-baggage");
+  const insurance = root.querySelector("#s42-insurance");
+  const total = root.querySelector("#s42-extra-total");
+  baggage.addEventListener("click", () => baggage.classList.toggle("selected"));
+  insurance.addEventListener("click", () =>
+    insurance.classList.toggle("selected"),
+  );
+  root.querySelector("#s42-continue").addEventListener("click", () => {
+    root.querySelector("#s42-next").hidden = false;
+    total.textContent = "$67";
+    const summary = root.querySelector(".s42-summary");
+    if (!summary.querySelector(".insurance-row")) {
+      summary.insertAdjacentHTML(
+        "beforeend",
+        '<span class="insurance-row">Trip protection</span><strong class="insurance-row">$19</strong>',
+      );
+    }
+  });
+  root.querySelector("#s42-decline").addEventListener("click", () => {
+    baggage.classList.remove("selected");
+    insurance.classList.remove("selected");
+    total.textContent = "$0";
+    root.querySelector("#s42-next").hidden = false;
+  });
 }

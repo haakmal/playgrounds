@@ -1,9 +1,6 @@
 {
   "name": "Design Fictions",
-  "stages": [
-    "Develop",
-    "Deliver"
-  ],
+  "stages": ["Develop", "Deliver"],
   "description": "Design fiction explores possible worlds through fictional but tangible representations of products, services, systems or media. These artefacts are often presented as though they belong to another present or a possible future.\n\nBy making an imagined condition concrete enough to encounter and discuss, design fiction can help people examine how technologies might intersect with everyday life, institutions, behaviours and values.",
   "whenToUse": "Use design fiction when abstract discussion of future possibilities is insufficient and a project would benefit from making assumptions or consequences tangible.\n\nIt is useful for emerging technologies, strategic exploration, futures work and critical discussion.",
   "steps": [

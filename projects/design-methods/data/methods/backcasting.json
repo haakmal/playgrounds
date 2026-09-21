@@ -1,10 +1,6 @@
 {
   "name": "Backcasting",
-  "stages": [
-    "Discovery",
-    "Define",
-    "Develop"
-  ],
+  "stages": ["Discovery", "Define", "Develop"],
   "description": "Backcasting begins with a desirable or challenging future and works backwards to investigate how that future might be reached. Rather than extending current trends forward, participants first describe a future condition and then identify the changes, decisions, capabilities and intermediate states that would need to occur between that future and the present.\n\nThe method is useful for shifting attention from predicting what is likely to happen toward considering what would have to change for a preferred future to become possible.",
   "whenToUse": "Use backcasting when a project involves long-term transformation, sustainability, policy, strategy or systemic change and incremental improvement of the present may be insufficient.\n\nIt works particularly well when a team has already developed a future scenario or vision but needs to connect that proposition to actions in the present.",
   "steps": [

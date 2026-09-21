@@ -1,9 +1,6 @@
 {
   "name": "Design Metaphors",
-  "stages": [
-    "Define",
-    "Develop"
-  ],
+  "stages": ["Define", "Develop"],
   "description": "Design metaphors use the characteristics of one domain to help imagine or explain another. A designer might ask how a service could behave like a library, ecosystem, conversation or marketplace and use relationships from that source domain to generate new possibilities.\n\nMetaphors can support ideation and communication by making unfamiliar concepts easier to think about through familiar structures.",
   "whenToUse": "Use design metaphors when a team is struggling to move beyond existing conventions, when an abstract system needs to become easier to understand, or when alternative interaction models are being explored.",
   "steps": [

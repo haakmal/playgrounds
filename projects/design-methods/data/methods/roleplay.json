@@ -1,9 +1,6 @@
 {
   "name": "Role Playing",
-  "stages": [
-    "Define",
-    "Develop"
-  ],
+  "stages": ["Define", "Develop"],
   "description": "Roleplay explores a situation by having participants enact the roles, actions and interactions involved. It can make social dynamics, sequences and service encounters tangible before they are fully implemented.\n\nBy performing an interaction rather than only describing it, designers can discover practical and interpersonal issues that are difficult to anticipate in diagrams.",
   "whenToUse": "Use roleplay when interpersonal interaction, service delivery, communication or coordination between actors is important to a design.",
   "steps": [

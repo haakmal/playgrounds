@@ -1,8 +1,6 @@
 {
   "name": "Spatial Mapping",
-  "stages": [
-    "Discovery"
-  ],
+  "stages": ["Discovery"],
   "description": "Spatial mapping records how activities, people, objects or experiences are distributed and connected within a physical environment. Designers may map movement, occupation, interaction, visibility, obstacles, resources or moments of activity.\n\nThe resulting representation helps make relationships between behaviour and space visible.",
   "whenToUse": "Use spatial mapping when physical arrangement, movement or environmental conditions influence an experience.",
   "steps": [

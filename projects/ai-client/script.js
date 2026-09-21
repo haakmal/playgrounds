@@ -41,9 +41,11 @@ const INTENSITY_CONFIG = {
     return "This client is demanding and direct";
   },
   guidance: (v) => {
-    if (v <= 2) return `Lead with what works before addressing gaps. Use warm, collaborative language.
+    if (v <= 2)
+      return `Lead with what works before addressing gaps. Use warm, collaborative language.
 Gently probe with open questions. Acknowledge good thinking generously.`;
-    if (v <= 3) return `Balance acknowledgement of strengths with clear identification of gaps.
+    if (v <= 3)
+      return `Balance acknowledgement of strengths with clear identification of gaps.
 Ask direct but constructive follow-up questions.`;
     return `Lead with gaps and weaknesses first. Hold the student to every requirement and constraint.
 Ask sharp, specific questions that expose weaknesses. Do not soften critique.`;
@@ -78,17 +80,23 @@ function loadSession() {
       }));
       return s;
     }
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
   return null;
 }
 
 function saveSession(role, text) {
   try {
     const saved = localStorage.getItem("ai_client_session");
-    const s = saved ? JSON.parse(saved) : { pseudonym, startedAt: new Date().toISOString(), history: [] };
+    const s = saved
+      ? JSON.parse(saved)
+      : { pseudonym, startedAt: new Date().toISOString(), history: [] };
     s.history.push({ role, text, ts: new Date().toISOString() });
     localStorage.setItem("ai_client_session", JSON.stringify(s));
-  } catch { /* non-critical */ }
+  } catch {
+    /* non-critical */
+  }
 }
 
 // ── System prompt builder ─────────────────────────────────
@@ -127,7 +135,7 @@ PERSONA INSTRUCTIONS:
 // ── Gemini API call ───────────────────────────────────────
 async function fetchAIResponse() {
   const systemPrompt = buildSystemPrompt(brief, pseudonym);
-  
+
   // Package history into the shape the Worker expects
   // The worker receives: { contents: [{ parts: [{ text: ... }] }] }
   // To pass system instructions and history, we concatenate them for the worker
@@ -135,7 +143,7 @@ async function fetchAIResponse() {
 ${systemPrompt}
 
 CONVERSATION HISTORY:
-${conversationHistory.map(m => `${m.role.toUpperCase()}: ${m.parts[0].text}`).join('\n\n')}
+${conversationHistory.map((m) => `${m.role.toUpperCase()}: ${m.parts[0].text}`).join("\n\n")}
 
 CLIENT RESPONSE (You):`;
 
@@ -147,12 +155,16 @@ CLIENT RESPONSE (You):`;
         contents: [{ parts: [{ text: fullPrompt }] }],
       }),
     });
-    
+
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    
+
     const data = await res.json();
     // Support both the standard Gemini response shape and the specific scenario/provoked shape from the worker
-    return data?.scenario || data?.candidates?.[0]?.content?.parts?.[0]?.text || "No response received.";
+    return (
+      data?.scenario ||
+      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "No response received."
+    );
   } catch (err) {
     console.error("Worker error:", err);
     return "Something went wrong reaching the client. Please try again.";
@@ -161,14 +173,21 @@ CLIENT RESPONSE (You):`;
 
 // ── UI rendering ──────────────────────────────────────────
 function renderBrief(b) {
-  document.getElementById("brief-title").textContent = b.scenario.split("\n")[0].trim().slice(0, 80) || "Design Brief";
+  document.getElementById("brief-title").textContent =
+    b.scenario.split("\n")[0].trim().slice(0, 80) || "Design Brief";
   document.getElementById("brief-scenario").textContent = b.scenario;
   document.getElementById("client-name").textContent = b.clientName;
   document.getElementById("client-title").textContent = b.clientTitle;
-  document.getElementById("intensity-badge").textContent = INTENSITY_CONFIG.badge(b.intensity);
+  document.getElementById("intensity-badge").textContent =
+    INTENSITY_CONFIG.badge(b.intensity);
 
   // Avatar initials
-  const initials = b.clientName.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
+  const initials = b.clientName
+    .split(" ")
+    .map((w) => w[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
   document.getElementById("client-avatar").textContent = initials;
 
   const renderList = (id, items) => {
@@ -194,9 +213,13 @@ function renderBubble(role, text) {
   const body = document.createElement("div");
   body.classList.add("bubble-body");
   // Render markdown for client; plain text for student
-  body.innerHTML = role === "client"
-    ? marked.parse(text, { breaks: true })
-    : text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/\n/g, "<br>");
+  body.innerHTML =
+    role === "client"
+      ? marked.parse(text, { breaks: true })
+      : text
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/\n/g, "<br>");
 
   bubble.appendChild(sender);
   bubble.appendChild(body);
@@ -283,7 +306,11 @@ function startSession(name) {
   // Persist new session
   localStorage.setItem(
     "ai_client_session",
-    JSON.stringify({ pseudonym, startedAt: new Date().toISOString(), history: [] })
+    JSON.stringify({
+      pseudonym,
+      startedAt: new Date().toISOString(),
+      history: [],
+    }),
   );
 
   sendWelcome();

@@ -1,5 +1,5 @@
 export function render(root) {
-    root.innerHTML = `
+  root.innerHTML = `
         <div class="specimen-shell s46">
             <div class="specimen-mobile productivity-app">
                 <header class="s46-head"><strong>Focusday</strong><button id="s46-bell">Notifications</button></header>
@@ -7,21 +7,38 @@ export function render(root) {
             </div>
         </div>`;
 
-    root.querySelector('#s46-add').addEventListener('click', () => { root.querySelector('#s46-form').hidden = false; });
-    root.querySelector('#s46-save').addEventListener('click', () => {
-        const value = root.querySelector('#s46-input').value.trim() || 'Untitled task';
-        root.querySelector('#s46-task-list')?.remove();
-        root.querySelector('#s46-form').insertAdjacentHTML('afterend', `<div id="s46-task-list" class="s46-task">${value}<span>Today</span></div>`);
-    });
-    root.querySelector('#s46-allow').addEventListener('click', () => root.querySelector('#s46-prompt').remove());
-    root.querySelector('#s46-later').addEventListener('click', () => {
-        const prompt = root.querySelector('#s46-prompt');
-        prompt.classList.add('dismissed');
-        setTimeout(() => {
-            if (!prompt.isConnected) return;
-            prompt.classList.remove('dismissed');
-            prompt.querySelector('p').textContent = 'Notifications can help you stay on track.';
-        }, 1500);
-    });
-    root.querySelector('#s46-bell').addEventListener('click', () => root.querySelector('#s46-prompt').classList.remove('dismissed'));
+  root.querySelector("#s46-add").addEventListener("click", () => {
+    root.querySelector("#s46-form").hidden = false;
+  });
+  root.querySelector("#s46-save").addEventListener("click", () => {
+    const value =
+      root.querySelector("#s46-input").value.trim() || "Untitled task";
+    root.querySelector("#s46-task-list")?.remove();
+    root
+      .querySelector("#s46-form")
+      .insertAdjacentHTML(
+        "afterend",
+        `<div id="s46-task-list" class="s46-task">${value}<span>Today</span></div>`,
+      );
+  });
+  root
+    .querySelector("#s46-allow")
+    .addEventListener("click", () =>
+      root.querySelector("#s46-prompt").remove(),
+    );
+  root.querySelector("#s46-later").addEventListener("click", () => {
+    const prompt = root.querySelector("#s46-prompt");
+    prompt.classList.add("dismissed");
+    setTimeout(() => {
+      if (!prompt.isConnected) return;
+      prompt.classList.remove("dismissed");
+      prompt.querySelector("p").textContent =
+        "Notifications can help you stay on track.";
+    }, 1500);
+  });
+  root
+    .querySelector("#s46-bell")
+    .addEventListener("click", () =>
+      root.querySelector("#s46-prompt").classList.remove("dismissed"),
+    );
 }

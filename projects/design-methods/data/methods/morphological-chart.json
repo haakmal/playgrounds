@@ -1,9 +1,6 @@
 {
   "name": "Morphological Charts",
-  "stages": [
-    "Discovery",
-    "Define"
-  ],
+  "stages": ["Discovery", "Define"],
   "description": "A morphological chart generates concepts by separating a design problem into important functions or dimensions and listing alternative ways of addressing each one. Designers then combine options from different rows to construct new concept configurations.\n\nThe method encourages systematic exploration of combinations that may not arise through free-form ideation.",
   "whenToUse": "Use morphological charts when a design problem contains several relatively independent functions or characteristics and you want to explore combinations systematically.",
   "steps": [

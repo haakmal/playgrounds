@@ -1,9 +1,6 @@
 {
   "name": "Impact Ripple Canvas",
-  "stages": [
-    "Define",
-    "Develop"
-  ],
+  "stages": ["Define", "Develop"],
   "description": "The Impact Ripple Canvas helps designers explore consequences that may extend beyond the immediate intended effects of a design. Starting with a proposed intervention, participants consider how its effects might spread outward through people, organisations, communities, systems and time.\n\nThe method encourages consideration of indirect and unintended consequences rather than evaluating a proposal only according to its intended users and outcomes.",
   "whenToUse": "Use the Impact Ripple Canvas when evaluating a concept, product, service or intervention that could have wider social, environmental or organisational effects.\n\nIt is particularly useful before implementation, when there is still an opportunity to redesign in response to potential consequences.",
   "steps": [

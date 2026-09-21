@@ -1,9 +1,6 @@
 {
   "name": "Laddering",
-  "stages": [
-    "Discovery",
-    "Define"
-  ],
+  "stages": ["Discovery", "Define"],
   "description": "Laddering is an interviewing technique that moves between concrete attributes and deeper reasons, consequences or values by repeatedly asking participants why something matters. The researcher begins with a specific preference, feature or behaviour and progressively explores its significance.\n\nThe resulting chains can help designers understand connections between product characteristics, experiences and personal values.",
   "whenToUse": "Use laddering when you need to understand why particular features, choices or experiences matter to people rather than simply knowing which option they prefer.",
   "steps": [

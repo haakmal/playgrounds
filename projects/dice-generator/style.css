@@ -8,9 +8,12 @@
   --font: Inter, Arial, Helvetica, sans-serif;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
-html, body {
+html,
+body {
   margin: 0;
   min-height: 100%;
   font-family: var(--font);
@@ -23,7 +26,10 @@ body {
   overflow-x: hidden;
 }
 
-button, input, select, textarea {
+button,
+input,
+select,
+textarea {
   font: inherit;
 }
 
@@ -166,7 +172,9 @@ textarea {
   word-break: break-word;
   overflow-wrap: anywhere;
   hyphens: auto;
-  transition: transform 140ms ease, opacity 140ms ease;
+  transition:
+    transform 140ms ease,
+    opacity 140ms ease;
 }
 
 .dice.rolling {
@@ -174,11 +182,21 @@ textarea {
 }
 
 @keyframes shake {
-  0% { transform: translate(0, 0) rotate(0deg); }
-  25% { transform: translate(-2px, 1px) rotate(-1deg); }
-  50% { transform: translate(2px, -1px) rotate(1deg); }
-  75% { transform: translate(-1px, -2px) rotate(0deg); }
-  100% { transform: translate(0, 0) rotate(0deg); }
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(-2px, 1px) rotate(-1deg);
+  }
+  50% {
+    transform: translate(2px, -1px) rotate(1deg);
+  }
+  75% {
+    transform: translate(-1px, -2px) rotate(0deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
 }
 
 .drawer {
@@ -277,16 +295,16 @@ textarea {
   .topbar {
     grid-template-columns: 1fr;
   }
-  
+
   .layout {
     grid-template-columns: 1fr;
   }
-  
+
   .controls {
     border-right: 0;
     border-bottom: 1px solid var(--line);
   }
-  
+
   .main {
     min-height: 60vh;
   }

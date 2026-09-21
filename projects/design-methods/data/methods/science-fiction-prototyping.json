@@ -1,9 +1,6 @@
 {
   "name": "Science Fiction Prototyping",
-  "stages": [
-    "Develop",
-    "Deliver"
-  ],
+  "stages": ["Develop", "Deliver"],
   "description": "Science fiction prototyping uses fictional narratives to explore how a technology or design proposition might operate within a future social context. Rather than describing a technology in isolation, the story considers people using, adapting to or resisting it.\n\nThe narrative becomes a prototype of relationships and consequences rather than a prediction of what will happen.",
   "whenToUse": "Use science fiction prototyping when emerging technologies need to be considered beyond technical capability and when social adoption, everyday use or longer-term consequences are important.",
   "steps": [

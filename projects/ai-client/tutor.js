@@ -5,7 +5,7 @@
 
 // ── Default brief (mirrors DEFAULT_BRIEF in script.js) ───
 const DEFAULT_BRIEF = {
-  clientName:  "Alex Chen",
+  clientName: "Alex Chen",
   clientTitle: "Creative Director, Spatial UX Lab",
   scenario: `The university has seen a 40% increase in visitor complaints about navigating between buildings. Current signage was designed in 2003 and does not account for accessibility needs or digital interaction points.`,
   requirements: [
@@ -66,26 +66,24 @@ function addItem(listId, value = "") {
 }
 
 function getListValues(listId) {
-  return Array.from(
-    document.querySelectorAll(`#${listId} .field-input`)
-  )
+  return Array.from(document.querySelectorAll(`#${listId} .field-input`))
     .map((el) => el.value.trim())
     .filter(Boolean);
 }
 
 // ── Populate form from a brief object ────────────────────
 function populateForm(b) {
-  document.getElementById("input-client-name").value  = b.clientName  || "";
+  document.getElementById("input-client-name").value = b.clientName || "";
   document.getElementById("input-client-title").value = b.clientTitle || "";
-  document.getElementById("input-scenario").value     = b.scenario    || "";
+  document.getElementById("input-scenario").value = b.scenario || "";
 
   // Clear and repopulate dynamic lists
   ["requirements-list", "constraints-list", "metrics-list"].forEach(
-    (id) => (document.getElementById(id).innerHTML = "")
+    (id) => (document.getElementById(id).innerHTML = ""),
   );
   (b.requirements || []).forEach((v) => addItem("requirements-list", v));
-  (b.constraints  || []).forEach((v) => addItem("constraints-list",  v));
-  (b.metrics      || []).forEach((v) => addItem("metrics-list",      v));
+  (b.constraints || []).forEach((v) => addItem("constraints-list", v));
+  (b.metrics || []).forEach((v) => addItem("metrics-list", v));
 
   // Intensity
   const slider = document.getElementById("intensity-slider");
@@ -107,21 +105,21 @@ function loadSavedBrief() {
 // ── Build brief object from form ──────────────────────────
 function readForm() {
   return {
-    clientName:   document.getElementById("input-client-name").value.trim(),
-    clientTitle:  document.getElementById("input-client-title").value.trim(),
-    scenario:     document.getElementById("input-scenario").value.trim(),
+    clientName: document.getElementById("input-client-name").value.trim(),
+    clientTitle: document.getElementById("input-client-title").value.trim(),
+    scenario: document.getElementById("input-scenario").value.trim(),
     requirements: getListValues("requirements-list"),
-    constraints:  getListValues("constraints-list"),
-    metrics:      getListValues("metrics-list"),
-    intensity:    parseInt(document.getElementById("intensity-slider").value, 10),
+    constraints: getListValues("constraints-list"),
+    metrics: getListValues("metrics-list"),
+    intensity: parseInt(document.getElementById("intensity-slider").value, 10),
   };
 }
 
 // ── Validate ──────────────────────────────────────────────
 function validate(b) {
-  if (!b.clientName)  return "Please enter a client name.";
+  if (!b.clientName) return "Please enter a client name.";
   if (!b.clientTitle) return "Please enter a client title.";
-  if (!b.scenario)    return "Please enter a scenario / context.";
+  if (!b.scenario) return "Please enter a scenario / context.";
   return null;
 }
 
@@ -129,7 +127,10 @@ function validate(b) {
 function saveBrief() {
   const b = readForm();
   const err = validate(b);
-  if (err) { alert(err); return; }
+  if (err) {
+    alert(err);
+    return;
+  }
 
   try {
     localStorage.setItem("ai_client_brief", JSON.stringify(b));
@@ -156,31 +157,38 @@ function updateIntensityLabel(value) {
 
 // ── Clear student session ─────────────────────────────────
 function clearStudentSession() {
-  if (confirm("Clear the student session stored in this browser? This will reset the conversation history.")) {
+  if (
+    confirm(
+      "Clear the student session stored in this browser? This will reset the conversation history.",
+    )
+  ) {
     localStorage.removeItem("ai_client_session");
     showToast();
-    document.getElementById("save-toast").textContent = "Student session cleared.";
+    document.getElementById("save-toast").textContent =
+      "Student session cleared.";
   }
 }
 
 // ── Event listeners ───────────────────────────────────────
 document.getElementById("save-btn").addEventListener("click", saveBrief);
 
-document.getElementById("add-requirement").addEventListener("click", () =>
-  addItem("requirements-list")
-);
-document.getElementById("add-constraint").addEventListener("click", () =>
-  addItem("constraints-list")
-);
-document.getElementById("add-metric").addEventListener("click", () =>
-  addItem("metrics-list")
-);
+document
+  .getElementById("add-requirement")
+  .addEventListener("click", () => addItem("requirements-list"));
+document
+  .getElementById("add-constraint")
+  .addEventListener("click", () => addItem("constraints-list"));
+document
+  .getElementById("add-metric")
+  .addEventListener("click", () => addItem("metrics-list"));
 
-document.getElementById("intensity-slider").addEventListener("input", (e) =>
-  updateIntensityLabel(e.target.value)
-);
+document
+  .getElementById("intensity-slider")
+  .addEventListener("input", (e) => updateIntensityLabel(e.target.value));
 
-document.getElementById("clear-session-btn").addEventListener("click", clearStudentSession);
+document
+  .getElementById("clear-session-btn")
+  .addEventListener("click", clearStudentSession);
 
 // ── Save on Ctrl/Cmd+S ────────────────────────────────────
 document.addEventListener("keydown", (e) => {

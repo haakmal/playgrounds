@@ -1,5 +1,5 @@
 export function render(root) {
-    root.innerHTML = `
+  root.innerHTML = `
         <div class="specimen-shell s47">
             <div class="specimen-desktop dark-checkout-app">
                 <header class="s47-head"><strong>Arc Objects</strong><span>Checkout</span></header>
@@ -9,12 +9,17 @@ export function render(root) {
                 </main>
             </div>
         </div>`;
-    root.querySelector('#s47-continue').addEventListener('click', () => {
-        root.querySelector('#s47-fee').hidden = false;
-        root.querySelector('#s47-pay').hidden = false;
-        root.querySelector('#s47-total').textContent = '$91.50';
-    });
-    root.querySelector('#s47-pay').addEventListener('click', () => {
-        root.querySelector('.s47-summary').insertAdjacentHTML('beforeend', '<p class="s47-note">Payment ready to process.</p>');
-    });
+  root.querySelector("#s47-continue").addEventListener("click", () => {
+    root.querySelector("#s47-fee").hidden = false;
+    root.querySelector("#s47-pay").hidden = false;
+    root.querySelector("#s47-total").textContent = "$91.50";
+  });
+  root.querySelector("#s47-pay").addEventListener("click", () => {
+    root
+      .querySelector(".s47-summary")
+      .insertAdjacentHTML(
+        "beforeend",
+        '<p class="s47-note">Payment ready to process.</p>',
+      );
+  });
 }

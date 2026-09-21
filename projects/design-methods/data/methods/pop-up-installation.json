@@ -1,9 +1,6 @@
 {
   "name": "Pop-Up Installations",
-  "stages": [
-    "Develop",
-    "Deliver"
-  ],
+  "stages": ["Develop", "Deliver"],
   "description": "A pop-up installation temporarily places a designed intervention in a real or realistic environment so that people can encounter, use or respond to it. Unlike a laboratory prototype, the intervention becomes part of the surrounding context for a limited period.\n\nThis can help designers investigate how a proposition interacts with place, existing activities and people who may not have been recruited specifically for a conventional study.",
   "whenToUse": "Use a pop-up installation when spatial context, public interaction or situated experience is central to the concept and a temporary deployment is feasible.",
   "steps": [

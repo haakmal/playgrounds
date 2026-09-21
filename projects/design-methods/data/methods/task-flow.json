@@ -1,10 +1,6 @@
 {
   "name": "Task Flow Diagram",
-  "stages": [
-    "Discovery",
-    "Develop",
-    "Deliver"
-  ],
+  "stages": ["Discovery", "Develop", "Deliver"],
   "description": "A task flow represents the sequence of actions required to complete a particular goal. It focuses on the path through a defined task and can include user actions, system responses and decision points.\n\nTask flows help designers examine whether necessary steps are understandable, appropriately ordered and unnecessarily complex.",
   "whenToUse": "Use task flows when designing or reviewing a specific interaction such as registration, booking, purchasing, submitting information or completing a workflow.",
   "steps": [

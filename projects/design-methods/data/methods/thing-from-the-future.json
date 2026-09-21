@@ -1,9 +1,6 @@
 {
   "name": "The Thing From The Future",
-  "stages": [
-    "Define",
-    "Develop"
-  ],
+  "stages": ["Define", "Develop"],
   "description": "The Thing from the Future is a futures-oriented ideation game in which prompts are combined to imagine an artefact from a possible future. Constraints commonly describe elements such as the type of future, the time horizon, the kind of object and an emotional or thematic quality.\n\nThe random combination pushes participants away from familiar predictions and toward a wider range of future possibilities.",
   "whenToUse": "Use the method when a group needs to expand its imagination of possible futures, begin a futures workshop or generate speculative artefacts quickly.",
   "steps": [

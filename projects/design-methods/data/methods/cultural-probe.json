@@ -1,10 +1,6 @@
 {
   "name": "Cultural Probes",
-  "stages": [
-    "Discovery",
-    "Define",
-    "Deliver"
-  ],
+  "stages": ["Discovery", "Define", "Deliver"],
   "description": "Cultural probes are collections of open-ended activities given to participants to document aspects of their lives, experiences and environments. A probe might include prompts, postcards, maps, cameras, diaries or playful tasks.\n\nOriginally developed as an intentionally evocative design-research approach, probes are intended to generate rich and sometimes surprising material that can inspire design thinking rather than function as a conventional instrument for collecting standardised data.",
   "whenToUse": "Use cultural probes when designers want exploratory access to experiences that are personal, dispersed over time or difficult to observe directly.\n\nThey are useful when ambiguity and participant interpretation are productive rather than when standardised answers are required.",
   "steps": [

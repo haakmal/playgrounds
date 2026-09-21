@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Systems Insight Lab</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="screen-warning">
+      <div>
+        <span class="warning-mark">!</span>
+        <p class="eyebrow">LARGE SCREEN TOOL</p>
+        <h1>Open this on a larger screen.</h1>
+        <p>
+          System Insight Lab is designed for a desktop or tablet viewport so you
+          can see your entries and system record together.
+        </p>
+      </div>
+    </div>
+    <header class="top">
+      <div class="brand"><span>◌</span> INTERACTION STREAM</div>
+      <div class="session-name">
+        <label for="sessionName">SESSION</label
+        ><input
+          id="sessionName"
+          placeholder="Untitled session"
+          aria-label="Session name"
+        />
+      </div>
+      <div class="scenario"></div>
+      <div class="top-actions">
+        <button class="top-button" id="helpButton">Help</button
+        ><button class="top-button" id="toolboxButton">Toolbox</button
+        ><button class="top-button" id="topHistory">History</button>
+      </div>
+      <div class="version">PROTOTYPE <b>0.7.6</b></div>
+    </header>
+    <main class="app">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">SYSTEM INSIGHT LAB</p>
+          <h1>Record first. Review later.</h1>
+          <p>
+            Begin with your physical map, whiteboard or field material. This
+            workspace records what you enter; the Atlas lets you inspect and
+            link that record.
+          </p>
+        </div>
+        <div class="hero-stat">
+          <b id="heroCount">0</b><span>ACTIVE<br />ENTRIES</span>
+        </div>
+      </section>
+      <nav class="mode-switch" aria-label="Workspace mode">
+        <button class="mode active" data-mode="capture">
+          <span class="mode-symbol">○</span
+          ><span
+            ><b>CAPTURE</b><small>Enter and develop field notes</small></span
+          ><em>1</em></button
+        ><button class="mode" data-mode="atlas">
+          <span class="mode-symbol">□</span
+          ><span
+            ><b>REVIEW ATLAS</b
+            ><small>Filter and inspect the record</small></span
+          ><em>2</em>
+        </button>
+      </nav>
+
+      <section id="capture" class="workspace capture-view">
+        <aside class="capture-entries panel">
+          <button
+            class="panel-help"
+            data-help="The field index holds every active record in this session."
+          >
+            ?
+          </button>
+          <div class="section-kicker">
+            <span>01</span>
+            <p class="eyebrow">FIELD INDEX</p>
+          </div>
+          <div class="aside-heading">
+            <div>
+              <h2>Your entries</h2>
+              <p class="muted">Select a record to edit it.</p>
+            </div>
+            <button class="icon-button" id="newEntry">+</button>
+          </div>
+          <input
+            class="search"
+            id="entrySearch"
+            placeholder="Search entries"
+            aria-label="Search entries"
+          />
+          <div id="captureIndex" class="entry-list"></div>
+          <div class="key-box">
+            <p class="eyebrow">ENTRY KEY</p>
+            <p>
+              <span class="symbol observation">○</span><b>OB-##</b> Observation
+              / source
+            </p>
+            <p>
+              <span class="symbol mutation">△</span><b>MU-##</b> Mutation /
+              altered condition
+            </p>
+            <p>
+              <span class="symbol insight">□</span><b>IN-##</b> Insight /
+              consequence
+            </p>
+          </div>
+        </aside>
+        <div class="capture-main">
+          <div class="workspace-label">
+            <span>CAPTURE WORKSPACE</span
+            ><span id="captureLocation">NO ENTRY SELECTED</span>
+          </div>
+          <div id="captureEmpty" class="capture-empty">
+            <button
+              class="panel-help"
+              data-help="Start with a record from your physical map, notes, discussion or source material."
+            >
+              ?</button
+            ><span class="empty-symbol">○</span>
+            <p class="eyebrow">START WITH A DATA POINT</p>
+            <h2>Choose an entry or start a new one.</h2>
+            <p>
+              Use something already recorded in your physical map, notes,
+              discussion or source material. The app does not interpret the
+              material for you.
+            </p>
+            <button class="dark" id="emptyNew">Start new entry →</button>
+          </div>
+          <div id="editor" class="editor hidden">
+            <div class="entry-head">
+              <div class="entry-identity">
+                <span id="entrySymbol" class="big-symbol observation">○</span>
+                <div>
+                  <p class="eyebrow" id="entryCode">OB-01 / OBSERVATION</p>
+                  <h2 id="entryTitle">New entry</h2>
+                </div>
+              </div>
+              <span id="entrySource" class="source">PHYSICAL MAP</span>
+            </div>
+            <div class="editor-grid">
+              <div id="capturePanelInput" class="capture-panel"></div>
+              <div id="capturePanelObserve" class="capture-panel"></div>
+              <div id="capturePanelAnalyse" class="capture-panel"></div>
+              <div id="capturePanelConnect" class="capture-panel"></div>
+            </div>
+            <div class="editor-footer">
+              <button class="dark" id="saveEntry">Save entry</button
+              ><button class="outline danger" id="archiveEntry">
+                Remove from view</button
+              ><button class="outline" id="historyButton">History</button
+              ><span id="saveState">Local session</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="atlas" class="workspace atlas-view hidden">
+        <div class="atlas-thread-column">
+          <!-- <button
+            class="panel-help"
+            data-help="The Atlas lets you inspect named threads and focus the record with filters."
+          >
+            ?
+          </button> -->
+          <div class="atlas-toolbar">
+            <div>
+              <p class="eyebrow">REVIEW ATLAS</p>
+              <h2>System record</h2>
+            </div>
+            <button class="dark" id="newThread">+ New thread</button>
+          </div>
+          <div class="filter-strip">
+            <span>FOCUS</span>
+            <div id="typeFilters"></div>
+            <div id="catFilters"></div>
+            <button class="text-button" id="clearFilters">Clear</button>
+          </div>
+          <div class="filter-status" id="filterStatus">
+            Showing all active entries
+          </div>
+          <div id="threads" class="thread-list"></div>
+          <div id="threadNoteReadOnly" class="thread-note-read hidden"></div>
+        </div>
+        <aside class="atlas-edit-column">
+          <div id="threadEditor" class="thread-editor panel"></div>
+          <div class="atlas-readings panel">
+            <button
+              class="panel-help"
+              data-help="Student readings are timestamped interpretations kept separately from entry records."
+            >
+              ?
+            </button>
+            <div>
+              <p class="eyebrow">STUDENT READINGS</p>
+              <h3>Interpretations entered by students</h3>
+              <p class="muted" id="readingCount">No readings yet.</p>
+            </div>
+            <button class="outline full" id="readingButton">
+              Open readings drawer →
+            </button>
+          </div>
+        </aside>
+      </section>
+    </main>
+    <aside id="readingsDrawer" class="drawer" aria-hidden="true">
+      <div class="drawer-head">
+        <div>
+          <p class="eyebrow">STUDENT READINGS</p>
+          <h2>Reading log</h2>
+        </div>
+        <button class="icon-button" id="closeDrawer">×</button>
+      </div>
+      <p class="muted">
+        These are timestamped notes entered by students. They are not generated
+        by the tool.
+      </p>
+      <div id="readingList"></div>
+      <form id="readingForm" class="reading-form">
+        <h3 id="readingFormTitle">Add reading</h3>
+        <textarea
+          id="readingText"
+          rows="4"
+          placeholder="Write a reading of the record…"
+        ></textarea>
+        <div>
+          <button class="dark" type="submit">Save reading</button
+          ><button class="outline hidden" type="button" id="cancelReading">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </aside>
+    <aside id="historyDrawer" class="drawer history-drawer" aria-hidden="true">
+      <div class="drawer-head">
+        <div>
+          <p class="eyebrow">SESSION HISTORY</p>
+          <h2>Record history</h2>
+        </div>
+        <button class="icon-button" id="closeHistory">×</button>
+      </div>
+      <p class="muted">
+        Active records remain in the tool. Records removed from view are kept
+        here and can be restored.
+      </p>
+      <section>
+        <div class="drawer-section-head">
+          <h3>Active records</h3>
+          <span id="historyActiveCount"></span>
+        </div>
+        <div id="historyActive"></div>
+      </section>
+      <section>
+        <div class="drawer-section-head">
+          <h3>Removed from view</h3>
+          <span id="historyArchivedCount"></span>
+        </div>
+        <div id="historyArchived"></div>
+      </section>
+      <section>
+        <div class="drawer-section-head">
+          <h3>Edit events</h3>
+          <span id="historyEventCount"></span>
+        </div>
+        <div id="historyEvents"></div>
+      </section>
+    </aside>
+    <aside id="toolboxDrawer" class="drawer toolbox-drawer" aria-hidden="true">
+      <div class="drawer-head">
+        <div>
+          <p class="eyebrow">SESSION TOOLBOX</p>
+          <h2>Session tools</h2>
+        </div>
+        <button class="icon-button" id="closeToolbox">×</button>
+      </div>
+      <p class="muted">
+        Manage this local session or move its records between browsers.
+      </p>
+      <button class="outline full" id="exportTool">Export JSON</button
+      ><button class="outline full" id="importTool">Import JSON</button
+      ><button class="outline full" id="clearTool">Clear session</button>
+    </aside>
+    <div id="helpModal" class="modal" aria-hidden="true">
+      <div class="modal-box">
+        <div class="drawer-head">
+          <div>
+            <p class="eyebrow">SYSTEM INSIGHT LAB</p>
+            <h2>How to use this tool</h2>
+          </div>
+          <button class="icon-button" id="closeHelp">×</button>
+        </div>
+        <p>
+          Use this local workspace after mapping a system on paper, a whiteboard
+          or through other field material.
+        </p>
+        <ol>
+          <li>Capture data points as observations, mutations or insights.</li>
+          <li>
+            Use Observe and Analyse to record what is present and how you
+            currently read it.
+          </li>
+          <li>
+            Use Connect to create optional, named relationships between entries.
+          </li>
+          <li>
+            Review the Atlas to create named threads and inspect selected
+            entries.
+          </li>
+          <li>
+            Use History to remove records from view or restore them later.
+          </li>
+        </ol>
+        <p class="muted">
+          The tool stores records in this browser. It does not interpret or
+          generate connections for you.
+        </p>
+      </div>
+    </div>
+    <div id="toast" class="toast"></div>
+    <input id="importFile" type="file" accept="application/json" hidden />
+    <script src="script.js"></script>
+  </body>
+</html>

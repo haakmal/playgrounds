@@ -1,9 +1,6 @@
 {
   "name": "Slow Design",
-  "stages": [
-    "Define",
-    "Develop"
-  ],
+  "stages": ["Define", "Develop"],
   "description": "Slow Design questions design practices centred on speed, novelty and short-term consumption. It encourages attention to duration, locality, reflection, participation, material lifecycles and the longer-term relationships people develop with designed things.\n\nRather than being a single procedural method, Slow Design is better understood as a set of principles through which design decisions and their consequences can be reconsidered.",
   "whenToUse": "Use Slow Design as a critical lens when a project raises questions about sustainability, longevity, consumption, repair, local context or the pace at which products and services are produced and replaced.",
   "steps": [

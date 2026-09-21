@@ -1,9 +1,6 @@
 {
   "name": "Low-Fidelity Prototyping",
-  "stages": [
-    "Develop",
-    "Deliver"
-  ],
+  "stages": ["Develop", "Deliver"],
   "description": "Low-fidelity prototyping creates deliberately simple representations of a design so that ideas can be explored before substantial resources are committed to implementation. Prototypes may use paper, cardboard, rough digital screens, simple models or improvised materials.\n\nTheir value comes from making ideas tangible enough to examine, change and test while signalling that the design remains unfinished.",
   "whenToUse": "Use low-fidelity prototypes early and repeatedly when the important questions concern structure, sequence, interaction or overall concept rather than visual polish or technical performance.",
   "steps": [

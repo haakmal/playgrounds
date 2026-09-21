@@ -1,254 +1,335 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>Prompt Logs</title>
-	<style>
-		body { font-family: system-ui, sans-serif; padding: 2rem; max-width: 1000px; margin: auto; }
-		table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-		select { padding: 0.5rem; font-size: 1rem; }
-		#log-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-		#log-table th, #log-table td { border: 1px solid #ccc; padding: 8px; vertical-align: top; word-wrap: break-word; }
-		#log-table th:nth-child(1),
-		#log-table td:nth-child(1) { width: 10%; }
-		#log-table th:nth-child(2),
-		#log-table td:nth-child(2) { width: 10%; }
-		#log-table th:nth-child(3),
-		#log-table td:nth-child(3) { width: 40%; }
-		#log-table th:nth-child(4),
-		#log-table td:nth-child(4) { width: 40%; }
-		.prompt-header { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-		.scenario-wrapper { max-height: 100px; overflow: hidden; position: relative; cursor: pointer; }
-		.scenario-wrapper.expanded { max-height: none; }
-		.toggle-label { cursor: pointer; font-weight: bold; margin-bottom: 5px; color: #007bff; }
-		.toggle-content { display: none; margin-top: 5px; }
-		.toggle-content.expanded { display: block; }
-		.provocation-tag { background-color: #ffcc00; color: #000; padding: 2px 6px; font-size: 0.8rem; border-radius: 4px; }
-	</style>
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Prompt Logs</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        padding: 2rem;
+        max-width: 1000px;
+        margin: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+      }
+      select {
+        padding: 0.5rem;
+        font-size: 1rem;
+      }
+      #log-table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+      }
+      #log-table th,
+      #log-table td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        vertical-align: top;
+        word-wrap: break-word;
+      }
+      #log-table th:nth-child(1),
+      #log-table td:nth-child(1) {
+        width: 10%;
+      }
+      #log-table th:nth-child(2),
+      #log-table td:nth-child(2) {
+        width: 10%;
+      }
+      #log-table th:nth-child(3),
+      #log-table td:nth-child(3) {
+        width: 40%;
+      }
+      #log-table th:nth-child(4),
+      #log-table td:nth-child(4) {
+        width: 40%;
+      }
+      .prompt-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+      }
+      .scenario-wrapper {
+        max-height: 100px;
+        overflow: hidden;
+        position: relative;
+        cursor: pointer;
+      }
+      .scenario-wrapper.expanded {
+        max-height: none;
+      }
+      .toggle-label {
+        cursor: pointer;
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #007bff;
+      }
+      .toggle-content {
+        display: none;
+        margin-top: 5px;
+      }
+      .toggle-content.expanded {
+        display: block;
+      }
+      .provocation-tag {
+        background-color: #ffcc00;
+        color: #000;
+        padding: 2px 6px;
+        font-size: 0.8rem;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
 
-<body>
-	<h1>Prompt Logs</h1>
-	<div class="filters">
-		<label for="filter">Filter by time:</label>
-			<select id="filter">
-				<option value="24h">Last 24 hours</option>
-				<option value="week" selected>This week</option>
-				<option value="month">This month</option>
-				<option value="year">This year</option>
-				<option value="all">All of time</option>
-			</select>
-		<button id="expand-all">Expand all</button>
-		<button id="collapse-all">Collapse all</button>
-	</div>
-		
-			
-	
-	
-	<table id="log-table">
-		<thead>
-			<tr>
-				<th>Timestamp</th>
-				<th>IP / Location</th>
-				<th>Prompt</th>
-				<th>Response</th>
-			</tr>
-		</thead>
-		<tbody></tbody>
-	</table>
-	
+  <body>
+    <h1>Prompt Logs</h1>
+    <div class="filters">
+      <label for="filter">Filter by time:</label>
+      <select id="filter">
+        <option value="24h">Last 24 hours</option>
+        <option value="week" selected>This week</option>
+        <option value="month">This month</option>
+        <option value="year">This year</option>
+        <option value="all">All of time</option>
+      </select>
+      <button id="expand-all">Expand all</button>
+      <button id="collapse-all">Collapse all</button>
+    </div>
 
-	<div id="password-modal" style="display:non; position:fixed; inset:0; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center;">
-		<div style="background:white; padding:2rem; border-radius:8px; max-width:300px; width:100%; text-align:center;">
-			<h2>Enter Password</h2>
-			<input type="password" id="password-input" style="width:100%; padding:0.5rem; margin:1rem 0;" />
-			<button id="password-submit">Submit</button>
-		</div>
-	</div>
-	
-	<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-	<script>
-	const tableBody = document.querySelector("#log-table tbody");
-	const filter = document.getElementById("filter");
-	const PASSWORD_KEY = "logs_password";
-	const PASSWORD_TS_KEY = "logs_password_ts";
-	const PASSWORD_TTL = 30 * 60 * 1000; // 30 minutes in ms
-	const WORKER_URL = "https://gemini-worker.hakmal.workers.dev";
+    <table id="log-table">
+      <thead>
+        <tr>
+          <th>Timestamp</th>
+          <th>IP / Location</th>
+          <th>Prompt</th>
+          <th>Response</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
 
-	// Prompt user for password if missing or expired
-	function getPassword() {
-	  const storedPassword = localStorage.getItem(PASSWORD_KEY);
-	  const storedTs = parseInt(localStorage.getItem(PASSWORD_TS_KEY), 10);
-	  const now = Date.now();
+    <div
+      id="password-modal"
+      style="
+        display: non;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <div
+        style="
+          background: white;
+          padding: 2rem;
+          border-radius: 8px;
+          max-width: 300px;
+          width: 100%;
+          text-align: center;
+        "
+      >
+        <h2>Enter Password</h2>
+        <input
+          type="password"
+          id="password-input"
+          style="width: 100%; padding: 0.5rem; margin: 1rem 0"
+        />
+        <button id="password-submit">Submit</button>
+      </div>
+    </div>
 
-	  if (!storedPassword || !storedTs || now - storedTs > PASSWORD_TTL) {
-		  return new Promise((resolve, reject) => {
-			  const modal = document.getElementById("password-modal");
-			  const input = document.getElementById("password-input");
-			  const submitBtn = document.getElementById("password-submit");
-			  
-			  modal.style.display = "flex";
-			  input.value = "";
-			  input.focus();
-			  
-			  function submit() {
-				  const password = input.value.trim();
-				  if (!password) {
-					  alert("Password is required to view logs.");
-					  reject(new Error("No password entered"));
-					  return;
-				  }
-				  localStorage.setItem(PASSWORD_KEY, password);
-				  localStorage.setItem(PASSWORD_TS_KEY, Date.now().toString());
-				  modal.style.display = "none";
-				  resolve(password);
-			  }
-			  
-			  submitBtn.onclick = submit;
-			  input.onkeydown = (e) => {
-				  if (e.key === "Enter") submit();
-			  };
-		  });
-	  }
-	  
-	  return Promise.resolve(storedPassword);
-	}
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+      const tableBody = document.querySelector("#log-table tbody");
+      const filter = document.getElementById("filter");
+      const PASSWORD_KEY = "logs_password";
+      const PASSWORD_TS_KEY = "logs_password_ts";
+      const PASSWORD_TTL = 30 * 60 * 1000; // 30 minutes in ms
+      const WORKER_URL = "https://gemini-worker.hakmal.workers.dev";
 
-	async function loadLogs(range = "week") {
-	  tableBody.innerHTML = "<tr><td colspan='4'>Loading...</td></tr>";
+      // Prompt user for password if missing or expired
+      function getPassword() {
+        const storedPassword = localStorage.getItem(PASSWORD_KEY);
+        const storedTs = parseInt(localStorage.getItem(PASSWORD_TS_KEY), 10);
+        const now = Date.now();
 
-	  let password;
-	  try {
-	    password = await getPassword();
-	  } catch (e) {
-	    tableBody.innerHTML = "<tr><td colspan='4'>Access denied</td></tr>";
-	    return;
-	  }
+        if (!storedPassword || !storedTs || now - storedTs > PASSWORD_TTL) {
+          return new Promise((resolve, reject) => {
+            const modal = document.getElementById("password-modal");
+            const input = document.getElementById("password-input");
+            const submitBtn = document.getElementById("password-submit");
 
-	  try {
-	    const res = await fetch(`${WORKER_URL}/logs?range=${range}`, {
-	      headers: { "x-logs-secret": password }
-	    });
+            modal.style.display = "flex";
+            input.value = "";
+            input.focus();
 
-	    if (!res.ok) {
-	      if (res.status === 403) {
-	        // Password wrong, clear and reprompt
-	        localStorage.removeItem(PASSWORD_KEY);
-	        localStorage.removeItem(PASSWORD_TS_KEY);
-	        alert("Invalid or expired password. Please enter again.");
+            function submit() {
+              const password = input.value.trim();
+              if (!password) {
+                alert("Password is required to view logs.");
+                reject(new Error("No password entered"));
+                return;
+              }
+              localStorage.setItem(PASSWORD_KEY, password);
+              localStorage.setItem(PASSWORD_TS_KEY, Date.now().toString());
+              modal.style.display = "none";
+              resolve(password);
+            }
 
-					// Defer retry so getPassword() is called fresh
-					setTimeout(() => loadLogs(range), 0);
-					return;
-				}
-				throw new Error(`HTTP ${res.status}`);
-	    }
+            submitBtn.onclick = submit;
+            input.onkeydown = (e) => {
+              if (e.key === "Enter") submit();
+            };
+          });
+        }
 
-	    const data = await res.json();
-	    if (!Array.isArray(data) || data.length === 0) {
-	      tableBody.innerHTML = "<tr><td colspan='4'>No entries found.</td></tr>";
-	      return;
-	    }
+        return Promise.resolve(storedPassword);
+      }
 
-	    // Sort newest first
-	    data.sort((a, b) => b.timestamp - a.timestamp);
-	    tableBody.innerHTML = "";
+      async function loadLogs(range = "week") {
+        tableBody.innerHTML = "<tr><td colspan='4'>Loading...</td></tr>";
 
-	    data.forEach(entry => {
-	      const row = document.createElement("tr");
+        let password;
+        try {
+          password = await getPassword();
+        } catch (e) {
+          tableBody.innerHTML = "<tr><td colspan='4'>Access denied</td></tr>";
+          return;
+        }
 
-	      // Timestamp
-	      const tsCell = document.createElement("td");
-	      tsCell.textContent = new Date(entry.timestamp).toLocaleString();
-	      row.appendChild(tsCell);
+        try {
+          const res = await fetch(`${WORKER_URL}/logs?range=${range}`, {
+            headers: { "x-logs-secret": password },
+          });
 
-	      // IP/location
-	      const ipCell = document.createElement("td");
-		  
-		  // Always visible city/country
-		  const locationSpan = document.createElement("span");
-		  locationSpan.textContent = ` (${entry.city || "N/A"}, ${entry.country || "N/A"}) `;
+          if (!res.ok) {
+            if (res.status === 403) {
+              // Password wrong, clear and reprompt
+              localStorage.removeItem(PASSWORD_KEY);
+              localStorage.removeItem(PASSWORD_TS_KEY);
+              alert("Invalid or expired password. Please enter again.");
 
-			// Hide/reveal IP
-			const ipToggle = document.createElement("span");
-			ipToggle.style.cursor = "pointer";
-			ipToggle.style.color = "#007bff";
-			ipToggle.style.marginRight = "6px";
+              // Defer retry so getPassword() is called fresh
+              setTimeout(() => loadLogs(range), 0);
+              return;
+            }
+            throw new Error(`HTTP ${res.status}`);
+          }
 
-			const ipValue = document.createElement("span");
-			ipValue.textContent = entry.ip || "unknown";
-			ipValue.style.display = "none"; // Hidden by default
-			ipValue.style.marginLeft = "4px";
+          const data = await res.json();
+          if (!Array.isArray(data) || data.length === 0) {
+            tableBody.innerHTML =
+              "<tr><td colspan='4'>No entries found.</td></tr>";
+            return;
+          }
 
-			let shown = false;
-			ipToggle.textContent = "🐵 Show IP";
-			ipToggle.addEventListener("click", () => {
-				shown = !shown;
-				if (shown) {
-					ipValue.style.display = "inline";
-					ipToggle.textContent = "🙈 Hide IP";
-				} else {
-					ipValue.style.display = "none";
-					ipToggle.textContent = "🐵 Show IP";
-				}
-			});
+          // Sort newest first
+          data.sort((a, b) => b.timestamp - a.timestamp);
+          tableBody.innerHTML = "";
 
-			// Assemble
-			ipCell.appendChild(ipToggle);
-			ipCell.appendChild(ipValue);
-			ipCell.appendChild(locationSpan);
-			row.appendChild(ipCell);
+          data.forEach((entry) => {
+            const row = document.createElement("tr");
 
-	      // Prompt
-	      const promptCell = document.createElement("td");
-	      const promptToggle = document.createElement("div");
-	      promptToggle.classList.add("toggle-label");
-	      promptToggle.textContent = "Show full prompt ⏵";
-	      const promptContent = document.createElement("div");
-	      promptContent.classList.add("toggle-content");
-	      promptContent.innerHTML = marked.parse(entry.prompt || "");
-	      promptToggle.addEventListener("click", () => {
-	        const expanded = promptContent.classList.toggle("expanded");
-	        promptToggle.textContent = expanded ? "Hide prompt ⏷" : "Show full prompt ⏵";
-	      });
-	      promptCell.appendChild(promptToggle);
-	      promptCell.appendChild(promptContent);
-	      row.appendChild(promptCell);
+            // Timestamp
+            const tsCell = document.createElement("td");
+            tsCell.textContent = new Date(entry.timestamp).toLocaleString();
+            row.appendChild(tsCell);
 
-	      // Scenario
-	      const scenarioCell = document.createElement("td");
-	      const scenarioToggle = document.createElement("div");
-	      scenarioToggle.classList.add("toggle-label");
-	      scenarioToggle.textContent = "Show full response ⏵";
-	      const scenarioContent = document.createElement("div");
-	      scenarioContent.classList.add("toggle-content");
-	      scenarioContent.innerHTML = marked.parse(entry.scenario || "");
-	      scenarioToggle.addEventListener("click", () => {
-	        const expanded = scenarioContent.classList.toggle("expanded");
-	        scenarioToggle.textContent = expanded ? "Hide response ⏷" : "Show full response ⏵";
-	      });
-	      scenarioCell.appendChild(scenarioToggle);
-	      scenarioCell.appendChild(scenarioContent);
-	      row.appendChild(scenarioCell);
+            // IP/location
+            const ipCell = document.createElement("td");
 
-	      tableBody.appendChild(row);
-	    });
+            // Always visible city/country
+            const locationSpan = document.createElement("span");
+            locationSpan.textContent = ` (${entry.city || "N/A"}, ${entry.country || "N/A"}) `;
 
-	  } catch (err) {
-	    console.error(err);
-	    tableBody.innerHTML = "<tr><td colspan='4'>Error loading logs</td></tr>";
-	  }
-	}
+            // Hide/reveal IP
+            const ipToggle = document.createElement("span");
+            ipToggle.style.cursor = "pointer";
+            ipToggle.style.color = "#007bff";
+            ipToggle.style.marginRight = "6px";
 
-	// Filter change
-	filter.addEventListener("change", () => {
-	  loadLogs(filter.value);
-	});
+            const ipValue = document.createElement("span");
+            ipValue.textContent = entry.ip || "unknown";
+            ipValue.style.display = "none"; // Hidden by default
+            ipValue.style.marginLeft = "4px";
 
-	// Initial load
-	loadLogs();
-	</script>
-	
-	
-</body>
+            let shown = false;
+            ipToggle.textContent = "🐵 Show IP";
+            ipToggle.addEventListener("click", () => {
+              shown = !shown;
+              if (shown) {
+                ipValue.style.display = "inline";
+                ipToggle.textContent = "🙈 Hide IP";
+              } else {
+                ipValue.style.display = "none";
+                ipToggle.textContent = "🐵 Show IP";
+              }
+            });
+
+            // Assemble
+            ipCell.appendChild(ipToggle);
+            ipCell.appendChild(ipValue);
+            ipCell.appendChild(locationSpan);
+            row.appendChild(ipCell);
+
+            // Prompt
+            const promptCell = document.createElement("td");
+            const promptToggle = document.createElement("div");
+            promptToggle.classList.add("toggle-label");
+            promptToggle.textContent = "Show full prompt ⏵";
+            const promptContent = document.createElement("div");
+            promptContent.classList.add("toggle-content");
+            promptContent.innerHTML = marked.parse(entry.prompt || "");
+            promptToggle.addEventListener("click", () => {
+              const expanded = promptContent.classList.toggle("expanded");
+              promptToggle.textContent = expanded
+                ? "Hide prompt ⏷"
+                : "Show full prompt ⏵";
+            });
+            promptCell.appendChild(promptToggle);
+            promptCell.appendChild(promptContent);
+            row.appendChild(promptCell);
+
+            // Scenario
+            const scenarioCell = document.createElement("td");
+            const scenarioToggle = document.createElement("div");
+            scenarioToggle.classList.add("toggle-label");
+            scenarioToggle.textContent = "Show full response ⏵";
+            const scenarioContent = document.createElement("div");
+            scenarioContent.classList.add("toggle-content");
+            scenarioContent.innerHTML = marked.parse(entry.scenario || "");
+            scenarioToggle.addEventListener("click", () => {
+              const expanded = scenarioContent.classList.toggle("expanded");
+              scenarioToggle.textContent = expanded
+                ? "Hide response ⏷"
+                : "Show full response ⏵";
+            });
+            scenarioCell.appendChild(scenarioToggle);
+            scenarioCell.appendChild(scenarioContent);
+            row.appendChild(scenarioCell);
+
+            tableBody.appendChild(row);
+          });
+        } catch (err) {
+          console.error(err);
+          tableBody.innerHTML =
+            "<tr><td colspan='4'>Error loading logs</td></tr>";
+        }
+      }
+
+      // Filter change
+      filter.addEventListener("change", () => {
+        loadLogs(filter.value);
+      });
+
+      // Initial load
+      loadLogs();
+    </script>
+  </body>
 </html>

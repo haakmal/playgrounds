@@ -1,10 +1,6 @@
 {
   "name": "Co-Design Workshops",
-  "stages": [
-    "Discovery",
-    "Define",
-    "Develop"
-  ],
+  "stages": ["Discovery", "Define", "Develop"],
   "description": "Co-design involves people affected by a design challenge participating directly in exploring and developing possible responses. A co-design workshop creates structured activities through which participants can share experiences, generate ideas, make representations and negotiate priorities.\n\nThe purpose is not simply to ask people whether they like a designer's proposal. Participants contribute knowledge and ideas to the design process itself.",
   "whenToUse": "Use co-design when people with lived, professional or community experience should contribute directly to understanding and shaping a design situation.\n\nIt can be particularly valuable when a project affects multiple stakeholder groups or when designers need perspectives that cannot be generated from within the design team.",
   "steps": [

@@ -1,5 +1,5 @@
 export function render(root) {
-    root.innerHTML = `
+  root.innerHTML = `
         <div class="specimen-shell s45">
             <div class="specimen-desktop cancellation-app">
                 <header class="s45-head"><strong>Northline Plus</strong><span>Membership</span></header>
@@ -13,9 +13,19 @@ export function render(root) {
             </div>
         </div>`;
 
-    const reason = root.querySelector('#s45-reason');
-    root.querySelector('#s45-start').addEventListener('click', () => { root.querySelector('#s45-stage').hidden = true; reason.hidden = false; });
-    root.querySelector('#s45-select').addEventListener('change', event => { root.querySelector('#s45-reason-next').disabled = !event.target.value; });
-    root.querySelector('#s45-reason-next').addEventListener('click', () => { reason.hidden = true; root.querySelector('#s45-final').hidden = false; });
-    root.querySelector('#s45-cancel').addEventListener('click', () => { root.querySelector('#s45-done').hidden = false; });
+  const reason = root.querySelector("#s45-reason");
+  root.querySelector("#s45-start").addEventListener("click", () => {
+    root.querySelector("#s45-stage").hidden = true;
+    reason.hidden = false;
+  });
+  root.querySelector("#s45-select").addEventListener("change", (event) => {
+    root.querySelector("#s45-reason-next").disabled = !event.target.value;
+  });
+  root.querySelector("#s45-reason-next").addEventListener("click", () => {
+    reason.hidden = true;
+    root.querySelector("#s45-final").hidden = false;
+  });
+  root.querySelector("#s45-cancel").addEventListener("click", () => {
+    root.querySelector("#s45-done").hidden = false;
+  });
 }

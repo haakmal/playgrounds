@@ -1,10 +1,6 @@
 {
   "name": "Systems Mapping",
-  "stages": [
-    "Discovery",
-    "Define",
-    "Develop"
-  ],
+  "stages": ["Discovery", "Define", "Develop"],
   "description": "Systems mapping visualises components of a complex situation and the relationships between them. Depending on the purpose, maps may include actors, resources, institutions, causal relationships, flows and feedback loops.\n\nThe method helps designers move beyond isolated problems and consider how outcomes emerge from interconnected conditions.",
   "whenToUse": "Use systems mapping when a challenge involves multiple actors and interacting causes and when intervening in one part of the situation may create consequences elsewhere.",
   "steps": [

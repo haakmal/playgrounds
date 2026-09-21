@@ -1,150 +1,203 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Design Research Methods</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Design Research Methods</title>
-  <link rel="stylesheet" href="style.css">
-</head>
+  <body>
+    <header>
+      <h1>Design Research Methods</h1>
+      <div id="header-tools">
+        <input type="text" id="search" placeholder="Search methods..." />
+        <button id="help-btn" title="Help">?</button>
+      </div>
+    </header>
+    <div id="timeline">
+      <div class="grid-container">
+        <h2 class="grid-label">
+          Discovery
+          <label class="filters"
+            >focus <input type="checkbox" value="Discovery"
+          /></label>
+        </h2>
+        <h2 class="grid-label">
+          Define
+          <label class="filters"
+            >focus <input type="checkbox" value="Define"
+          /></label>
+        </h2>
+        <h2 class="grid-label">
+          Develop
+          <label class="filters"
+            >focus <input type="checkbox" value="Develop"
+          /></label>
+        </h2>
+        <h2 class="grid-label">
+          Deliver
+          <label class="filters"
+            >focus <input type="checkbox" value="Deliver"
+          /></label>
+        </h2>
+      </div>
+      <div class="method-grid" id="method-grid"></div>
+    </div>
 
-<body>
-  <header>
-    <h1>Design Research Methods</h1>
-    <div id="header-tools">
-      <input type="text" id="search" placeholder="Search methods...">
-      <button id="help-btn" title="Help">?</button>
+    <!-- Modal Popup -->
+    <div id="modal" class="modal-overlay hidden">
+      <button class="close-button" aria-label="Close">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <line x1="6" y1="6" x2="26" y2="26" />
+          <line x1="26" y1="6" x2="6" y2="26" />
+        </svg>
+      </button>
+      <div class="modal-content">
+        <h3 id="method-title"></h3>
+        <p id="method-description"></p>
+        <div id="method-details"></div>
+      </div>
     </div>
-  </header>
-  <div id="timeline">
-    <div class="grid-container">
-      <h2 class="grid-label">Discovery
-        <label class="filters">focus <input type="checkbox" value="Discovery"></label>
-      </h2>
-      <h2 class="grid-label">Define
-        <label class="filters">focus <input type="checkbox" value="Define"></label>
-      </h2>
-      <h2 class="grid-label">Develop
-        <label class="filters">focus <input type="checkbox" value="Develop"></label>
-      </h2>
-      <h2 class="grid-label">Deliver
-        <label class="filters">focus <input type="checkbox" value="Deliver"></label>
-      </h2>
-    </div>
-    <div class="method-grid" id="method-grid"></div>
-  </div>
-  
-  <!-- Modal Popup -->
-  <div id="modal" class="modal-overlay hidden">
-    <button class="close-button" aria-label="Close">
-      <svg viewBox="0 0 32 32" aria-hidden="true">
-        <line x1="6" y1="6" x2="26" y2="26" />
-        <line x1="26" y1="6" x2="6" y2="26" />
-      </svg>
-    </button>
-    <div class="modal-content">
-      <h3 id="method-title"></h3>
-      <p id="method-description"></p>
-      <div id="method-details"></div>
-    </div>
-  </div>
-  
-  <!-- Help screen -->
-  <div id="help-modal" class="modal-overlay hidden">
-    <button class="close-button" aria-label="Close">
-      <svg viewBox="0 0 32 32" aria-hidden="true">
-        <line x1="6" y1="6" x2="26" y2="26" />
-        <line x1="26" y1="6" x2="6" y2="26" />
-      </svg>
-    </button>
-    <div class="modal-content">
-      <h2>How to use this library</h2>
-      
-      <p>
-        Design Methods is a reference library for exploring methods across the design process.
-        Methods are positioned against the four phases of the Double Diamond to indicate where
-        they may be useful, while recognising that design processes are iterative and methods
-        may apply across more than one phase.
-      </p>
-      
-      <h4>Finding a method</h4>
-      
-      <p>
-        Browse the library by phase, use the phase filters to focus the view, or search for a
-        method by name or terminology associated with it.
-      </p>
-      
-      <ul>
-        <li><strong>Discovery</strong> — methods concerned with investigating contexts, people, experiences, systems, and existing conditions.</li>
-        <li><strong>Define</strong> — methods for interpreting evidence, identifying patterns, framing problems, and establishing design direction.</li>
-        <li><strong>Develop</strong> — methods for generating, exploring, prototyping, and evaluating possible responses.</li>
-        <li><strong>Deliver</strong> — methods concerned with refinement, implementation, evaluation, communication, and learning from outcomes.</li>
-      </ul>
-      <section id="method-details">
-      <ul class="look-out-list"><li>Note: This classification is not exhaustive and methods may apply across multiple phases. Treat this as a reference, not a rigid framework.</li></ul>
-      </section>
 
-      <h4>Searching the library</h4>
-      
-      <p>
-        Search considers both method names and terminology contained within method information.
-        Matches in a method name are prioritised, followed by relevant terms found in its
-        description, guidance, and process.
-      </p>
-      
-      <p>
-        For example, searching for <em>speculative</em> will prioritise methods with
-        “speculative” in their name while also revealing other methods where speculative
-        approaches are discussed.
-      </p>
-      
-      <h4>Reading a method</h4>
-      
-      <p>
-        Select a method to open its full entry. Each entry may contain the following sections:
-      </p>
-      
-      <ul>
-        <li><strong>Description</strong> — an overview of what the method is and its purpose.</li>
-        <li><strong>When to use</strong> — guidance on the situations, evidence, or design questions for which the method may be appropriate.</li>
-        <li><strong>Step-by-step guide</strong> — a practical sequence for carrying out the method.</li>
-        <li><strong>Look out for</strong> — limitations, common mistakes, assumptions, or considerations that may affect how the method is used.</li>
-        <li><strong>Further material</strong> — references, readings, links, templates, or other resources for developing a deeper understanding of the method.</li>
-      </ul>
-      
-      <h4>Methods are not recipes</h4>
-      
-      <p>
-        The phases and processes shown here are guides rather than fixed instructions. A method
-        may be adapted, repeated, combined with other methods, or used at different points in a
-        project depending on its context and purpose. They traverse across multiple phases for very reason.
-      </p>
-      
-      <p>
-        Choose methods in response to what you need to learn, understand, make, or evaluate.
-        Consider the evidence you already have, what remains uncertain, and what the method will
-        contribute to your design process.
-      </p>
+    <!-- Help screen -->
+    <div id="help-modal" class="modal-overlay hidden">
+      <button class="close-button" aria-label="Close">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <line x1="6" y1="6" x2="26" y2="26" />
+          <line x1="26" y1="6" x2="6" y2="26" />
+        </svg>
+      </button>
+      <div class="modal-content">
+        <h2>How to use this library</h2>
+
+        <p>
+          Design Methods is a reference library for exploring methods across the
+          design process. Methods are positioned against the four phases of the
+          Double Diamond to indicate where they may be useful, while recognising
+          that design processes are iterative and methods may apply across more
+          than one phase.
+        </p>
+
+        <h4>Finding a method</h4>
+
+        <p>
+          Browse the library by phase, use the phase filters to focus the view,
+          or search for a method by name or terminology associated with it.
+        </p>
+
+        <ul>
+          <li>
+            <strong>Discovery</strong> — methods concerned with investigating
+            contexts, people, experiences, systems, and existing conditions.
+          </li>
+          <li>
+            <strong>Define</strong> — methods for interpreting evidence,
+            identifying patterns, framing problems, and establishing design
+            direction.
+          </li>
+          <li>
+            <strong>Develop</strong> — methods for generating, exploring,
+            prototyping, and evaluating possible responses.
+          </li>
+          <li>
+            <strong>Deliver</strong> — methods concerned with refinement,
+            implementation, evaluation, communication, and learning from
+            outcomes.
+          </li>
+        </ul>
+        <section id="method-details">
+          <ul class="look-out-list">
+            <li>
+              Note: This classification is not exhaustive and methods may apply
+              across multiple phases. Treat this as a reference, not a rigid
+              framework.
+            </li>
+          </ul>
+        </section>
+
+        <h4>Searching the library</h4>
+
+        <p>
+          Search considers both method names and terminology contained within
+          method information. Matches in a method name are prioritised, followed
+          by relevant terms found in its description, guidance, and process.
+        </p>
+
+        <p>
+          For example, searching for <em>speculative</em> will prioritise
+          methods with “speculative” in their name while also revealing other
+          methods where speculative approaches are discussed.
+        </p>
+
+        <h4>Reading a method</h4>
+
+        <p>
+          Select a method to open its full entry. Each entry may contain the
+          following sections:
+        </p>
+
+        <ul>
+          <li>
+            <strong>Description</strong> — an overview of what the method is and
+            its purpose.
+          </li>
+          <li>
+            <strong>When to use</strong> — guidance on the situations, evidence,
+            or design questions for which the method may be appropriate.
+          </li>
+          <li>
+            <strong>Step-by-step guide</strong> — a practical sequence for
+            carrying out the method.
+          </li>
+          <li>
+            <strong>Look out for</strong> — limitations, common mistakes,
+            assumptions, or considerations that may affect how the method is
+            used.
+          </li>
+          <li>
+            <strong>Further material</strong> — references, readings, links,
+            templates, or other resources for developing a deeper understanding
+            of the method.
+          </li>
+        </ul>
+
+        <h4>Methods are not recipes</h4>
+
+        <p>
+          The phases and processes shown here are guides rather than fixed
+          instructions. A method may be adapted, repeated, combined with other
+          methods, or used at different points in a project depending on its
+          context and purpose. They traverse across multiple phases for very
+          reason.
+        </p>
+
+        <p>
+          Choose methods in response to what you need to learn, understand,
+          make, or evaluate. Consider the evidence you already have, what
+          remains uncertain, and what the method will contribute to your design
+          process.
+        </p>
+      </div>
     </div>
-  </div>
-  <script src="script.js"></script>
-  
-  
-  <!-- BEGIN RETURN LINK -->
-  <script>
-    // inject-home-link.js
-    (function () {
-      // Inject Font Awesome stylesheet
-      const fa = document.createElement("link");
-      fa.rel = "stylesheet";
-      fa.href = "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css";
-      fa.crossOrigin = "anonymous";
-      document.head.appendChild(fa);
-      
-      // Create the back link
-      const link = document.createElement("a");
-      link.href = "/";
-      link.innerHTML = '← Back to Playgrounds <i class="fab fa-github"><i>';
+    <script src="script.js"></script>
+
+    <!-- BEGIN RETURN LINK -->
+    <script>
+      // inject-home-link.js
+      (function () {
+        // Inject Font Awesome stylesheet
+        const fa = document.createElement("link");
+        fa.rel = "stylesheet";
+        fa.href =
+          "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css";
+        fa.crossOrigin = "anonymous";
+        document.head.appendChild(fa);
+
+        // Create the back link
+        const link = document.createElement("a");
+        link.href = "/";
+        link.innerHTML = '← Back to Playgrounds <i class="fab fa-github"><i>';
         Object.assign(link.style, {
           position: "fixed",
           bottom: "20px",
@@ -156,7 +209,7 @@
           fontSize: "14px",
           opacity: 0.7,
           borderRadius: "6px",
-          textDecoration: "none"
+          textDecoration: "none",
         });
         link.onmouseover = () => (link.style.opacity = "1");
         link.onmouseout = () => (link.style.opacity = "0.7");
@@ -164,8 +217,5 @@
       })();
     </script>
     <!-- END RETURN LINK -->
-    
   </body>
-  
-  </html>
-  
+</html>

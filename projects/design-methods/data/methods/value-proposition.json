@@ -1,10 +1,6 @@
 {
   "name": "Value Proposition Canvas",
-  "stages": [
-    "Define",
-    "Develop",
-    "Deliver"
-  ],
+  "stages": ["Define", "Develop", "Deliver"],
   "description": "A value proposition articulates why a particular group might find a product, service or intervention valuable. It connects the circumstances, needs or goals of that group with the benefits a proposed offering intends to create.\n\nDeveloping a value proposition can help teams make assumptions explicit and examine whether a concept addresses something people actually value.",
   "whenToUse": "Use value proposition work when developing or refining a concept and when the relationship between the proposed offering and the needs it addresses remains unclear.",
   "steps": [

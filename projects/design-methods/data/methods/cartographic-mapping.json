@@ -1,9 +1,6 @@
 {
   "name": "Cartographic Mapping",
-  "stages": [
-    "Discovery",
-    "Define"
-  ],
+  "stages": ["Discovery", "Define"],
   "description": "Cartographic mapping uses the conventions of maps to investigate relationships between people, activities, resources and places. Rather than treating location as background context, the method makes spatial relationships part of the analysis.\n\nMaps may document existing conditions or become interpretive artefacts that reveal movement, access, boundaries, concentrations, absences and contested understandings of place.",
   "whenToUse": "Use cartographic mapping when geography or spatial relationships materially influence the experience being designed.\n\nIt can support investigations of neighbourhoods, campuses, transport, public services, mobility, community resources and place-based experiences.",
   "steps": [

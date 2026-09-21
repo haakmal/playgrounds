@@ -1,5 +1,5 @@
 export function render(root) {
-    root.innerHTML = `
+  root.innerHTML = `
         <div class="specimen-shell s43">
             <div class="specimen-desktop privacy-app">
                 <header class="s43-header"><strong>Northline</strong><span>Privacy centre</span></header>
@@ -14,22 +14,32 @@ export function render(root) {
             </div>
         </div>`;
 
-    root.querySelector('#s43-optional').addEventListener('click', event => {
-        const button = event.currentTarget;
-        button.classList.toggle('selected');
-        button.textContent = button.classList.contains('selected') ? 'ON' : 'OFF';
-    });
-    root.querySelector('#s43-accept').addEventListener('click', () => {
-        root.querySelector('#s43-extra').hidden = true;
-        root.querySelector('.s43-actions').insertAdjacentHTML('afterend', '<p class="s43-confirm">Recommended settings accepted.</p>');
-    });
-    root.querySelector('#s43-reject').addEventListener('click', () => {
-        root.querySelector('#s43-optional').classList.remove('selected');
-        root.querySelector('#s43-optional').textContent = 'OFF';
-        root.querySelector('.s43-actions').insertAdjacentHTML('afterend', '<p class="s43-confirm">Optional data use disabled.</p>');
-    });
-    root.querySelector('#s43-customise').addEventListener('click', event => {
-        event.preventDefault();
-        root.querySelector('#s43-extra').hidden = false;
-    });
+  root.querySelector("#s43-optional").addEventListener("click", (event) => {
+    const button = event.currentTarget;
+    button.classList.toggle("selected");
+    button.textContent = button.classList.contains("selected") ? "ON" : "OFF";
+  });
+  root.querySelector("#s43-accept").addEventListener("click", () => {
+    root.querySelector("#s43-extra").hidden = true;
+    root
+      .querySelector(".s43-actions")
+      .insertAdjacentHTML(
+        "afterend",
+        '<p class="s43-confirm">Recommended settings accepted.</p>',
+      );
+  });
+  root.querySelector("#s43-reject").addEventListener("click", () => {
+    root.querySelector("#s43-optional").classList.remove("selected");
+    root.querySelector("#s43-optional").textContent = "OFF";
+    root
+      .querySelector(".s43-actions")
+      .insertAdjacentHTML(
+        "afterend",
+        '<p class="s43-confirm">Optional data use disabled.</p>',
+      );
+  });
+  root.querySelector("#s43-customise").addEventListener("click", (event) => {
+    event.preventDefault();
+    root.querySelector("#s43-extra").hidden = false;
+  });
 }

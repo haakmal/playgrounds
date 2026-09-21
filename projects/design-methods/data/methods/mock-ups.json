@@ -1,9 +1,6 @@
 {
   "name": "Mock Up's",
-  "stages": [
-    "Develop",
-    "Deliver"
-  ],
+  "stages": ["Develop", "Deliver"],
   "description": "A mock-up is a representation used to explore or communicate the appearance, arrangement or physical form of a proposed design. Mock-ups range from rough representations to highly realistic models, but unlike fully functional prototypes they often reproduce only selected aspects of the intended design.\n\nThey allow designers and stakeholders to encounter a proposal more concretely than they can through verbal description alone.",
   "whenToUse": "Use mock-ups when questions concern visual hierarchy, scale, spatial arrangement, physical form or presentation and full functionality is unnecessary.",
   "steps": [

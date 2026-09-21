@@ -17,14 +17,14 @@
   const elNoRepeats = document.getElementById("noRepeats");
 
   // --- Data --------------------------------------------------------------
-  let DATA = null;      // category -> array of {title, desc}
-  let ANY_POOL = [];    // flattened [{title, desc, category}, ...]
+  let DATA = null; // category -> array of {title, desc}
+  let ANY_POOL = []; // flattened [{title, desc, category}, ...]
 
   // --- State -------------------------------------------------------------
   const state = {
     current: [],
     history: [], // newest first: {time: Date, items: []}
-    usedKeys: new Set()
+    usedKeys: new Set(),
   };
 
   // --- Helpers -----------------------------------------------------------
@@ -54,13 +54,14 @@
     return items.map((it) => ({
       title: it.title,
       desc: it.desc,
-      category: selectedCategory
+      category: selectedCategory,
     }));
   }
 
   async function loadConstraints() {
     const res = await fetch("./constraints.json", { cache: "no-store" });
-    if (!res.ok) throw new Error(`Failed to load constraints.json (${res.status})`);
+    if (!res.ok)
+      throw new Error(`Failed to load constraints.json (${res.status})`);
     DATA = await res.json();
 
     // Build flattened pool for "Any Category"
@@ -145,7 +146,7 @@
 
     state.history.unshift({
       time: new Date(),
-      items: picked
+      items: picked,
     });
 
     // keep last 12 draw events
@@ -192,7 +193,10 @@
         elHistory.appendChild(none);
       } else {
         for (const entry of state.history) {
-          const stamp = entry.time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+          const stamp = entry.time.toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
 
           const div = document.createElement("div");
           div.className = "histItem";
@@ -201,13 +205,13 @@
             .map(
               (it) =>
                 `• <b>${escapeHtml(it.title)}</b> <span style="color: var(--muted)">(${escapeHtml(
-                  it.category
-                )})</span>`
+                  it.category,
+                )})</span>`,
             )
             .join("<br/>");
 
           div.innerHTML = `<div style="margin-bottom:8px;color:var(--muted)">Draw @ ${escapeHtml(
-            stamp
+            stamp,
           )}</div>${lines}`;
 
           elHistory.appendChild(div);
@@ -237,24 +241,24 @@
   }
 
   function resetAll() {
-  // Clear state
-  state.current = [];
-  state.history = [];
-  state.usedKeys.clear();
+    // Clear state
+    state.current = [];
+    state.history = [];
+    state.usedKeys.clear();
 
-  // Reset controls to defaults
-  if (elCategory) elCategory.value = "Any Category";
-  if (elDrawCount) elDrawCount.value = "1";
-  if (elNoRepeats) elNoRepeats.value = "on";
+    // Reset controls to defaults
+    if (elCategory) elCategory.value = "Any Category";
+    if (elDrawCount) elDrawCount.value = "1";
+    if (elNoRepeats) elNoRepeats.value = "on";
 
-  // Optional: collapse the options drawer if open
-  const drawer = document.querySelector(".optionsDrawer");
-  if (drawer && drawer.hasAttribute("open")) {
-    drawer.removeAttribute("open");
+    // Optional: collapse the options drawer if open
+    const drawer = document.querySelector(".optionsDrawer");
+    if (drawer && drawer.hasAttribute("open")) {
+      drawer.removeAttribute("open");
+    }
+
+    render();
   }
-
-  render();
-}
 
   function bindEvents() {
     elDrawBtn?.addEventListener("click", drawConstraints);
@@ -264,7 +268,11 @@
     // Optional: Spacebar draws (unless user is focused on a control)
     window.addEventListener("keydown", (e) => {
       const tag = document.activeElement?.tagName?.toLowerCase();
-      const typing = tag === "input" || tag === "select" || tag === "textarea" || tag === "button";
+      const typing =
+        tag === "input" ||
+        tag === "select" ||
+        tag === "textarea" ||
+        tag === "button";
       if (!typing && e.code === "Space") {
         e.preventDefault();
         drawConstraints();

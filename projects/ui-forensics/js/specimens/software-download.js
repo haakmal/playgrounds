@@ -1,5 +1,5 @@
 export function render(root) {
-    root.innerHTML = `
+  root.innerHTML = `
         <div class="specimen-shell s50">
             <div class="specimen-desktop software-app">
                 <header class="s50-head"><strong>EDITFLOW</strong><span>DOWNLOAD</span></header>
@@ -13,5 +13,7 @@ export function render(root) {
                 </main>
             </div>
         </div>`;
-    root.querySelector('#s50-free').addEventListener('click', () => { root.querySelector('#s50-result').hidden = false; });
+  root.querySelector("#s50-free").addEventListener("click", () => {
+    root.querySelector("#s50-result").hidden = false;
+  });
 }

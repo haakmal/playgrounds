@@ -1,5 +1,5 @@
 export function render(root) {
-    root.innerHTML = `
+  root.innerHTML = `
         <div class="specimen-shell s44">
             <div class="specimen-mobile fashion-app">
                 <header class="s44-top"><strong>FORM / OBJECT</strong><span>SALE</span></header>
@@ -8,16 +8,23 @@ export function render(root) {
             </div>
         </div>`;
 
-    let seconds = 8;
-    const timer = root.querySelector('#s44-timer');
-    const interval = setInterval(() => {
-        seconds -= 1;
-        timer.textContent = `00:${String(Math.max(seconds, 0)).padStart(2, '0')}`;
-        if (seconds <= 0) {
-            clearInterval(interval);
-            timer.textContent = '00:00';
-            root.querySelector('.s44-sale').insertAdjacentHTML('afterend', '<p class="s44-continued">Offer still available.</p>');
-        }
-    }, 1000);
-    root.querySelector('#s44-buy').addEventListener('click', () => { root.querySelector('#s44-message').hidden = false; });
+  let seconds = 8;
+  const timer = root.querySelector("#s44-timer");
+  const interval = setInterval(() => {
+    seconds -= 1;
+    timer.textContent = `00:${String(Math.max(seconds, 0)).padStart(2, "0")}`;
+    if (seconds <= 0) {
+      clearInterval(interval);
+      timer.textContent = "00:00";
+      root
+        .querySelector(".s44-sale")
+        .insertAdjacentHTML(
+          "afterend",
+          '<p class="s44-continued">Offer still available.</p>',
+        );
+    }
+  }, 1000);
+  root.querySelector("#s44-buy").addEventListener("click", () => {
+    root.querySelector("#s44-message").hidden = false;
+  });
 }

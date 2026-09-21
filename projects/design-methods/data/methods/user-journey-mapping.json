@@ -1,11 +1,6 @@
 {
   "name": "User Journey Mapping",
-  "stages": [
-    "Discovery",
-    "Define",
-    "Develop",
-    "Deliver"
-  ],
+  "stages": ["Discovery", "Define", "Develop", "Deliver"],
   "description": "A user journey map represents an experience across a sequence of stages or touchpoints from the perspective of a person pursuing a goal. It can combine actions, interactions, thoughts, difficulties and contextual information to show how an experience develops over time.\n\nJourney maps help teams see connections between moments that organisational structures may otherwise treat separately.",
   "whenToUse": "Use journey mapping when an experience crosses multiple touchpoints, channels or periods of time and when the team needs a shared view of the end-to-end experience.",
   "steps": [

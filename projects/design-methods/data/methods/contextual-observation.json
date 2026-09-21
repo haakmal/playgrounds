@@ -1,8 +1,6 @@
 {
   "name": "Contextual Observation",
-  "stages": [
-    "Discovery"
-  ],
+  "stages": ["Discovery"],
   "description": "Contextual observation involves watching people, activities and environments in the setting where an experience naturally occurs. The researcher pays attention not only to what people say but also to actions, routines, artefacts, interruptions, spatial conditions and interactions with others.\n\nObservation can expose differences between reported behaviour and situated practice and can reveal aspects of an experience that participants may consider too ordinary to mention.",
   "whenToUse": "Use contextual observation when behaviour, environment or interactions are central to understanding a design situation.\n\nIt is particularly useful early in research when the team needs to understand an unfamiliar context before deciding which questions are important.",
   "steps": [

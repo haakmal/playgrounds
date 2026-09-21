@@ -1,63 +1,67 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Blindspots</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <div class="app">
-    <header>
-      <div>
-        <h1>Blindspots</h1>
-        <div class="subtitle">Draw cards from four decks to explore design blindspots. Removed cards return to their original deck. Symbols indicate suggested stages where the card is best used, i.e. early or later.</div>
-      </div>
-      <div class="actions">
-        <button id="randomDrawAll">Random draw from each deck</button>
-        <button id="clearDrawn">Clear all drawn cards</button>
-      </div>
-    </header>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blindspots</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header>
+        <div>
+          <h1>Blindspots</h1>
+          <div class="subtitle">
+            Draw cards from four decks to explore design blindspots. Removed
+            cards return to their original deck. Symbols indicate suggested
+            stages where the card is best used, i.e. early or later.
+          </div>
+        </div>
+        <div class="actions">
+          <button id="randomDrawAll">Random draw from each deck</button>
+          <button id="clearDrawn">Clear all drawn cards</button>
+        </div>
+      </header>
 
-    <div class="grid" id="deckGrid"></div>
-  </div>
+      <div class="grid" id="deckGrid"></div>
+    </div>
 
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 
-<!-- BEGIN RETURN LINK -->
-<script>
-// inject-home-link.js
-(function () {
-	// Inject Font Awesome stylesheet
-	const fa = document.createElement("link");
-	fa.rel = "stylesheet";
-	fa.href = "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css";
-	fa.crossOrigin = "anonymous";
-	document.head.appendChild(fa);
-	
-	// Create the back link
-	const link = document.createElement("a");
-	link.href = "/";
-	link.innerHTML = '← Back to Playgrounds <i class="fab fa-github"><i>';
-	Object.assign(link.style, {
-	  position: "fixed",
-	  bottom: "20px",
-	  right: "20px",
-	  background: "#000",
-	  color: "#fff",
-	  padding: "8px 12px",
-	  zIndex: 1000,
-	  fontSize: "14px",
-	  opacity: 0.7,
-	  borderRadius: "6px",
-	  textDecoration: "none"
-	});
-	link.onmouseover = () => (link.style.opacity = "1");
-	link.onmouseout = () => (link.style.opacity = "0.7");
-	document.body.appendChild(link);
-})();
-</script>
-<!-- END RETURN LINK -->
+    <!-- BEGIN RETURN LINK -->
+    <script>
+      // inject-home-link.js
+      (function () {
+        // Inject Font Awesome stylesheet
+        const fa = document.createElement("link");
+        fa.rel = "stylesheet";
+        fa.href =
+          "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css";
+        fa.crossOrigin = "anonymous";
+        document.head.appendChild(fa);
 
-</body>
+        // Create the back link
+        const link = document.createElement("a");
+        link.href = "/";
+        link.innerHTML = '← Back to Playgrounds <i class="fab fa-github"><i>';
+        Object.assign(link.style, {
+          position: "fixed",
+          bottom: "20px",
+          right: "20px",
+          background: "#000",
+          color: "#fff",
+          padding: "8px 12px",
+          zIndex: 1000,
+          fontSize: "14px",
+          opacity: 0.7,
+          borderRadius: "6px",
+          textDecoration: "none",
+        });
+        link.onmouseover = () => (link.style.opacity = "1");
+        link.onmouseout = () => (link.style.opacity = "0.7");
+        document.body.appendChild(link);
+      })();
+    </script>
+    <!-- END RETURN LINK -->
+  </body>
 </html>

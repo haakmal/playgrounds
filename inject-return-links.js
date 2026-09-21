@@ -41,24 +41,23 @@ const returnLinkHTML = `
 `;
 
 fs.readdirSync(projectsDir).forEach((project) => {
-	const indexPath = path.join(projectsDir, project, "index.html");
-	
-	if (fs.existsSync(indexPath)) {
-		const contents = fs.readFileSync(indexPath, "utf8");
-		
-		// Check if return link already exists
-		if (!contents.includes("<!-- BEGIN RETURN LINK -->")) {
-			const updated = contents.replace(
-				/<\/body>/i,
-				`${returnLinkHTML}\n</body>`
-			);
-			fs.writeFileSync(indexPath, updated, "utf8");
-			console.log(`✅ Injected return link into: ${project}/index.html`);
-		} else {
-			console.log(`☑️ Already has return link: ${project}/index.html`);
-		}
-	} else {
-		console.log(`❌ No index.html found in: ${project}/`);			
-		}
-	}
-);
+  const indexPath = path.join(projectsDir, project, "index.html");
+
+  if (fs.existsSync(indexPath)) {
+    const contents = fs.readFileSync(indexPath, "utf8");
+
+    // Check if return link already exists
+    if (!contents.includes("<!-- BEGIN RETURN LINK -->")) {
+      const updated = contents.replace(
+        /<\/body>/i,
+        `${returnLinkHTML}\n</body>`,
+      );
+      fs.writeFileSync(indexPath, updated, "utf8");
+      console.log(`✅ Injected return link into: ${project}/index.html`);
+    } else {
+      console.log(`☑️ Already has return link: ${project}/index.html`);
+    }
+  } else {
+    console.log(`❌ No index.html found in: ${project}/`);
+  }
+});

@@ -1,8 +1,6 @@
 {
   "name": "Wireframing",
-  "stages": [
-    "Develop"
-  ],
+  "stages": ["Develop"],
   "description": "Wireframing represents the structure and organisation of a digital interface without requiring finished visual styling. Wireframes typically show content hierarchy, controls, navigation and relationships between interface elements.\n\nTheir reduced visual detail allows designers to examine structure and interaction before typography, imagery and visual identity dominate discussion.",
   "whenToUse": "Use wireframes when moving from flows and requirements toward interface layouts and when the main questions concern hierarchy, navigation and interaction rather than final appearance.",
   "steps": [

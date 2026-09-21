@@ -68,7 +68,10 @@ button {
   font-size: 13px;
   cursor: pointer;
   border-radius: var(--radius);
-  transition: background 0.15s ease, color 0.15s ease, transform 0.05s ease;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    transform 0.05s ease;
 }
 
 button:hover {

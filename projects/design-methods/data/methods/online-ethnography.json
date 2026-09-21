@@ -1,8 +1,6 @@
 {
   "name": "Online Ethnography",
-  "stages": [
-    "Discovery"
-  ],
+  "stages": ["Discovery"],
   "description": "Online ethnography adapts ethnographic approaches to digitally mediated communities, platforms and practices. Researchers examine interactions, norms, language, artefacts and behaviours within online contexts while considering how those spaces connect with participants' wider lives.\n\nDepending on the research question, this may involve observation, participation, interviews or analysis of digital materials.",
   "whenToUse": "Use online ethnography when the activity or community being investigated substantially exists through digital platforms or when online interactions are an important part of a broader social practice.",
   "steps": [

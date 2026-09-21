@@ -1,8 +1,6 @@
 {
   "name": "Material Exploration",
-  "stages": [
-    "Develop"
-  ],
+  "stages": ["Develop"],
   "description": "Material exploration investigates design possibilities through direct engagement with materials and making processes. Designers manipulate, combine, test and transform materials to understand qualities that may not be apparent from specifications or images alone.\n\nThe process can generate knowledge about texture, flexibility, weight, resistance, sound, fabrication and sensory experience while simultaneously suggesting new design possibilities.",
   "whenToUse": "Use material exploration when physical qualities materially affect the design or when making itself can contribute to discovering what the design could become.",
   "steps": [

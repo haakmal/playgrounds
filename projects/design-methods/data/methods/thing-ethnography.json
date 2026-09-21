@@ -1,10 +1,6 @@
 {
   "name": "Thing Ethnography",
-  "stages": [
-    "Discovery",
-    "Define",
-    "Develop"
-  ],
+  "stages": ["Discovery", "Define", "Develop"],
   "description": "Thing ethnography investigates everyday practices from the perspective of objects and other non-human participants. Rather than treating things as passive props around human activity, the method asks how objects participate in relationships, routines and infrastructures.\n\nApproaches can include attaching sensors or cameras to objects, tracing their movement and interactions, or deliberately adopting a \"thing perspective\" to expose relationships that conventional human-centred observation might overlook.",
   "whenToUse": "Use thing ethnography when relationships between people, objects and infrastructures are important and when a conventional user-centred perspective appears too narrow.\n\nIt is particularly relevant to connected products, Internet of Things research and more-than-human design.",
   "steps": [

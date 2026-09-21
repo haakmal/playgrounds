@@ -1,10 +1,6 @@
 {
   "name": "A/B Testing",
-  "stages": [
-    "Define",
-    "Develop",
-    "Deliver"
-  ],
+  "stages": ["Define", "Develop", "Deliver"],
   "description": "A/B testing compares two versions of a design to investigate whether a specific change affects user behaviour or another predefined measure. Participants encounter one of the alternatives and their responses are compared across the two conditions. The method is particularly useful when a design question can be expressed as a clear hypothesis and evaluated using observable measures.\n\nA/B testing can help designers choose between alternatives, but it explains **which version performed differently**, not *why*. Qualitative research may therefore be useful alongside an A/B test.",
   "whenToUse": "Use A/B testing when you have two clearly defined alternatives and enough participants or interactions to make a meaningful comparison. It is particularly useful for evaluating focused changes to an existing interface, service, or communication rahter than exploring an undefined design problem.",
   "steps": [

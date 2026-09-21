@@ -1,9 +1,6 @@
 {
   "name": "Futures Cone",
-  "stages": [
-    "Define",
-    "Develop"
-  ],
+  "stages": ["Define", "Develop"],
   "description": "The Futures Cone is a framework for distinguishing different kinds of future possibility. Futures are commonly considered in terms such as possible, plausible, probable and preferable, widening outward from the present.\n\nThe framework helps designers avoid treating a single imagined future as inevitable and encourages exploration of a broader space of alternatives.",
   "whenToUse": "Use the Futures Cone when beginning futures-oriented design work, comparing scenarios or helping participants distinguish prediction from possibility and preference.",
   "steps": [

@@ -1,5 +1,5 @@
 export function render(root) {
-    root.innerHTML = `
+  root.innerHTML = `
         <div class="specimen-shell s41">
             <div class="specimen-desktop streaming-app">
                 <header class="s41-topbar"><strong>Northline Play</strong><span>30 DAY TRIAL</span></header>
@@ -16,17 +16,20 @@ export function render(root) {
             </div>
         </div>`;
 
-    const plans = root.querySelectorAll('.s41-plan');
-    plans.forEach(plan => plan.addEventListener('click', () => {
-        plans.forEach(item => item.classList.remove('selected'));
-        plan.classList.add('selected');
-    }));
-    root.querySelector('#s41-cancel-info').addEventListener('click', event => {
-        event.preventDefault();
-        root.querySelector('#s41-terms').classList.add('expanded');
-        root.querySelector('#s41-terms').innerHTML += '<p class="s41-fine">Cancellation controls are available from Account > Membership after trial activation.</p>';
-    });
-    root.querySelector('#s41-start').addEventListener('click', () => {
-        root.querySelector('#s41-result').hidden = false;
-    });
+  const plans = root.querySelectorAll(".s41-plan");
+  plans.forEach((plan) =>
+    plan.addEventListener("click", () => {
+      plans.forEach((item) => item.classList.remove("selected"));
+      plan.classList.add("selected");
+    }),
+  );
+  root.querySelector("#s41-cancel-info").addEventListener("click", (event) => {
+    event.preventDefault();
+    root.querySelector("#s41-terms").classList.add("expanded");
+    root.querySelector("#s41-terms").innerHTML +=
+      '<p class="s41-fine">Cancellation controls are available from Account > Membership after trial activation.</p>';
+  });
+  root.querySelector("#s41-start").addEventListener("click", () => {
+    root.querySelector("#s41-result").hidden = false;
+  });
 }

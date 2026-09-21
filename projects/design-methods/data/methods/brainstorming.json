@@ -1,8 +1,6 @@
 {
   "name": "Brainstorming",
-  "stages": [
-    "Develop"
-  ],
+  "stages": ["Develop"],
   "description": "Brainstorming is a structured approach to generating many possible responses to a design question before evaluating them. Participants temporarily defer judgement, build on existing suggestions and deliberately pursue variety rather than immediately selecting the most practical idea.\n\nThe value of brainstorming lies in supporting divergent exploration. It should usually be followed by a separate process for organising, developing and evaluating ideas.",
   "whenToUse": "Use brainstorming when a design problem has been sufficiently understood to support ideation but the team wants to expand the range of possible responses.\n\nIt can be useful at the beginning of concept development or whenever a project has converged prematurely around a small number of familiar solutions.",
   "steps": [

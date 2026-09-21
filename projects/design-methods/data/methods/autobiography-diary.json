@@ -1,9 +1,6 @@
 {
   "name": "Autobiographical Diary",
-  "stages": [
-    "Discovery",
-    "Define"
-  ],
+  "stages": ["Discovery", "Define"],
   "description": "Autobiographical and diary approaches investigate experiences as they unfold over time. In diary studies, participants document selected activities, experiences, decisions or feelings over a period rather than attempting to reconstruct them later in an interview. In autobiographical design research, designers may systematically examine their own experiences as material for reflection and inquiry.\n\nThese approaches can reveal routines, changes and contextual details that are difficult to observe directly, particularly when experiences are private, intermittent or distributed across long periods.",
   "whenToUse": "Use diary approaches when the phenomenon you are studying occurs over days or weeks, cannot easily be observed by a researcher, or is strongly influenced by context.\n\nAutobiographical approaches can be useful for exploratory and reflective design work, particularly when the designer has direct experience of the situation being investigated.",
   "steps": [

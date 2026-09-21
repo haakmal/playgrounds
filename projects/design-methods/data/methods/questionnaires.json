@@ -1,10 +1,6 @@
 {
   "name": "Questionnaires",
-  "stages": [
-    "Discovery",
-    "Define",
-    "Develop"
-  ],
+  "stages": ["Discovery", "Define", "Develop"],
   "description": "Questionnaires collect structured responses from participants through a consistent set of questions. They can gather quantitative measures, categorical responses and shorter qualitative comments from larger numbers of people than many interview-based approaches.\n\nTheir strength is consistency and reach rather than depth. Good questionnaire design depends on clearly defined research questions, careful sampling and questions that participants can interpret reliably.",
   "whenToUse": "Use questionnaires when you need comparable responses from many participants, want to measure defined attitudes or behaviours, or need to investigate the prevalence of patterns identified through earlier qualitative research.",
   "steps": [

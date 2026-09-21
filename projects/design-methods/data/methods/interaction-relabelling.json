@@ -1,9 +1,6 @@
 {
   "name": "Interaction Relabelling",
-  "stages": [
-    "Define",
-    "Develop"
-  ],
+  "stages": ["Define", "Develop"],
   "description": "Interaction relabelling is an ideation method in which the interactions afforded by an existing object are reinterpreted as interactions with a different product or system. Designers explore how actions such as turning, sliding, squeezing, balancing or unfolding might suggest alternative ways of interacting with the thing being designed.\n\nThe method deliberately shifts attention away from familiar interface conventions toward the expressive and physical qualities of interaction.",
   "whenToUse": "Use interaction relabelling when developing interactive products and when existing conventions are constraining the range of ideas being considered.\n\nIt is particularly useful for exploring tangible and embodied interaction.",
   "steps": [

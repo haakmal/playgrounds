@@ -1,3 +1,4 @@
 ---
+
 BUNDLE_FORCE_RUBY_PLATFORM: "false"
-BUNDLE_BUILD__GOOGLE___PROTOBUF: "--with-cflags=-fno-lto"
+BUNDLE_BUILD**GOOGLE\_**PROTOBUF: "--with-cflags=-fno-lto"

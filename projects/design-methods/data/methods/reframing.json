@@ -1,9 +1,6 @@
 {
   "name": "Reframing",
-  "stages": [
-    "Define",
-    "Develop"
-  ],
+  "stages": ["Define", "Develop"],
   "description": "Reframing deliberately changes how a design problem is understood. Instead of accepting the initial problem statement as fixed, designers examine assumptions, boundaries and perspectives and construct alternative ways of describing the situation.\n\nA productive reframe can reveal different questions and therefore different spaces for design intervention.",
   "whenToUse": "Use reframing when a project appears stuck, when solutions repeatedly address symptoms rather than underlying issues, or when the initial brief contains assumptions that have not been examined.",
   "steps": [

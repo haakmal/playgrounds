@@ -1,9 +1,6 @@
 {
   "name": "STEP Method",
-  "stages": [
-    "Discovery",
-    "Define"
-  ],
+  "stages": ["Discovery", "Define"],
   "description": "STEP is used as a structured prompt for examining the broader context surrounding a design problem rather than considering the immediate product or user alone. It directs attention toward larger social, technological, economic and political conditions that may influence the project.\n\nThe framework can help designers recognise external forces, constraints and emerging changes that would otherwise remain outside a narrowly framed brief.",
   "whenToUse": "Use STEP during early contextual research, strategic design or futures work when wider environmental conditions may substantially affect a project.",
   "steps": [

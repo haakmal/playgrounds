@@ -1,6 +1,4 @@
-const files = [
-  { name: "action-logger.js", path: "scripts/action-logger.js" }
-];
+const files = [{ name: "action-logger.js", path: "scripts/action-logger.js" }];
 
 const list = document.getElementById("script-list");
 
@@ -21,22 +19,22 @@ function highlightJavaScript(text) {
 
   html = html.replace(
     /(\/\/.*$|\/\*[\s\S]*?\*\/)/gm,
-    '<span class="token-comment">$1</span>'
+    '<span class="token-comment">$1</span>',
   );
 
   html = html.replace(
     /("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`)/g,
-    '<span class="token-string">$1</span>'
+    '<span class="token-string">$1</span>',
   );
 
   html = html.replace(
     /\b(const|let|var|function|return|if|else|for|while|switch|case|break|continue|class|new|try|catch|finally|throw|async|await|import|export|default|true|false|null|undefined)\b/g,
-    '<span class="token-keyword">$1</span>'
+    '<span class="token-keyword">$1</span>',
   );
 
   html = html.replace(
     /\b(\d+(\.\d+)?)\b/g,
-    '<span class="token-number">$1</span>'
+    '<span class="token-number">$1</span>',
   );
 
   return html;
@@ -47,27 +45,27 @@ function highlightCSS(text) {
 
   html = html.replace(
     /(\/\*[\s\S]*?\*\/)/g,
-    '<span class="token-comment">$1</span>'
+    '<span class="token-comment">$1</span>',
   );
 
   html = html.replace(
     /([^{\s][^{]*)(\s*\{)/g,
-    '<span class="token-selector">$1</span>$2'
+    '<span class="token-selector">$1</span>$2',
   );
 
   html = html.replace(
     /([a-zA-Z-]+)(\s*:)/g,
-    '<span class="token-property">$1</span>$2'
+    '<span class="token-property">$1</span>$2',
   );
 
   html = html.replace(
     /("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')/g,
-    '<span class="token-string">$1</span>'
+    '<span class="token-string">$1</span>',
   );
 
   html = html.replace(
     /\b(\d+(\.\d+)?)(px|rem|em|vh|vw|%|s)?\b/g,
-    '<span class="token-number">$1$3</span>'
+    '<span class="token-number">$1$3</span>',
   );
 
   return html;
@@ -78,22 +76,22 @@ function highlightHTML(text) {
 
   html = html.replace(
     /(&lt;!--[\s\S]*?--&gt;)/g,
-    '<span class="token-comment">$1</span>'
+    '<span class="token-comment">$1</span>',
   );
 
   html = html.replace(
     /(&lt;\/?)([a-zA-Z0-9-]+)/g,
-    '$1<span class="token-tag">$2</span>'
+    '$1<span class="token-tag">$2</span>',
   );
 
   html = html.replace(
     /\s([a-zA-Z-:]+)=/g,
-    ' <span class="token-attr">$1</span>='
+    ' <span class="token-attr">$1</span>=',
   );
 
   html = html.replace(
     /("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')/g,
-    '<span class="token-string">$1</span>'
+    '<span class="token-string">$1</span>',
   );
 
   return html;
@@ -102,24 +100,21 @@ function highlightHTML(text) {
 function highlightPython(text) {
   let html = escapeHtml(text);
 
-  html = html.replace(
-    /(#.*$)/gm,
-    '<span class="token-comment">$1</span>'
-  );
+  html = html.replace(/(#.*$)/gm, '<span class="token-comment">$1</span>');
 
   html = html.replace(
     /("""[\s\S]*?"""|'''[\s\S]*?'''|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')/g,
-    '<span class="token-string">$1</span>'
+    '<span class="token-string">$1</span>',
   );
 
   html = html.replace(
     /\b(def|class|return|if|elif|else|for|while|try|except|finally|with|as|import|from|pass|break|continue|True|False|None|lambda|yield|async|await)\b/g,
-    '<span class="token-keyword">$1</span>'
+    '<span class="token-keyword">$1</span>',
   );
 
   html = html.replace(
     /\b(\d+(\.\d+)?)\b/g,
-    '<span class="token-number">$1</span>'
+    '<span class="token-number">$1</span>',
   );
 
   return html;

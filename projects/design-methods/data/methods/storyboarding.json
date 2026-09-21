@@ -1,9 +1,6 @@
 {
   "name": "Storboarding",
-  "stages": [
-    "Develop",
-    "Deliver"
-  ],
+  "stages": ["Develop", "Deliver"],
   "description": "Storyboarding represents an experience as a sequence of illustrated frames. Borrowed from filmmaking, the technique helps designers show how a situation unfolds over time, including context, actions, interactions and transitions.\n\nStoryboards are particularly useful for communicating experiences that extend beyond a single screen or object.",
   "whenToUse": "Use storyboarding when the timing and sequence of an experience matter, when communicating a scenario to others, or when exploring how a concept fits into everyday activity.",
   "steps": [

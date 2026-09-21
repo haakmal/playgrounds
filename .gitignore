@@ -1,3 +1,8 @@
 .DS_Store
 _site/
 */gemini.js
+.vscode
+*.zip
+*.rar
+*.tar.gz
+*.7z

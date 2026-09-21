@@ -1,9 +1,6 @@
 {
   "name": "Speed Testing",
-  "stages": [
-    "Develop",
-    "Deliver"
-  ],
+  "stages": ["Develop", "Deliver"],
   "description": "Speed testing uses short, focused rounds of evaluation to expose obvious problems and compare design alternatives before investing in more extensive testing. The emphasis is on rapid learning and iteration rather than comprehensive validation.\n\nA small number of targeted sessions can reveal significant usability or comprehension issues early enough for designers to change direction cheaply.",
   "whenToUse": "Use speed testing when a design is changing rapidly and the team needs quick evidence to inform the next iteration.",
   "steps": [

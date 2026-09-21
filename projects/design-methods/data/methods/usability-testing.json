@@ -1,9 +1,6 @@
 {
   "name": "Usability Testing",
-  "stages": [
-    "Develop",
-    "Deliver"
-  ],
+  "stages": ["Develop", "Deliver"],
   "description": "Usability testing involves observing representative participants attempting realistic tasks with a product, service or prototype. Researchers look for difficulties, misunderstandings and successful interactions and use these observations to improve the design.\n\nThe emphasis is on what happens during use rather than asking participants only whether they like the design.",
   "whenToUse": "Use usability testing whenever a design is sufficiently developed for people to attempt meaningful tasks. Testing can begin with paper prototypes and continue through implementation.",
   "steps": [

@@ -1,9 +1,6 @@
 {
   "name": "Focus Groups",
-  "stages": [
-    "Discovery",
-    "Define"
-  ],
+  "stages": ["Discovery", "Define"],
   "description": "A focus group is a moderated group discussion used to explore participants' perceptions, experiences, language and responses to a topic. Interaction between participants is part of the method: people can agree, disagree, elaborate on one another's comments and expose different perspectives.\n\nFocus groups are useful for understanding discussion around a topic, but they do not provide the same depth of individual experience as one-to-one interviews.",
   "whenToUse": "Use focus groups when interaction between participants is valuable, when you want to explore a range of perspectives efficiently, or when social norms and shared understandings are relevant to the research question.",
   "steps": [

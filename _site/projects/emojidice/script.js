@@ -2,11 +2,11 @@ let emojis = [];
 
 async function loadEmojis() {
   try {
-    const response = await fetch('emojis.json');
+    const response = await fetch("emojis.json");
     emojis = await response.json();
   } catch (error) {
-    console.error('Failed to load emojis:', error);
-    emojis = ['❌']; // fallback emoji
+    console.error("Failed to load emojis:", error);
+    emojis = ["❌"]; // fallback emoji
   }
 }
 
@@ -16,9 +16,9 @@ function getRandomEmoji() {
 }
 
 function rollDice() {
-  const count = parseInt(document.getElementById('diceCount').value);
-  const diceContainer = document.getElementById('dice');
-  diceContainer.innerHTML = '';
+  const count = parseInt(document.getElementById("diceCount").value);
+  const diceContainer = document.getElementById("dice");
+  diceContainer.innerHTML = "";
 
   if (emojis.length < count) {
     alert("Not enough unique emojis to roll that many dice");
@@ -29,11 +29,11 @@ function rollDice() {
   const selected = shuffled.slice(0, count);
 
   for (let emoji of selected) {
-    const die = document.createElement('div');
-    die.classList.add('die');
+    const die = document.createElement("div");
+    die.classList.add("die");
     die.textContent = emoji;
     diceContainer.appendChild(die);
   }
 }
 
-window.addEventListener('DOMContentLoaded', loadEmojis);
+window.addEventListener("DOMContentLoaded", loadEmojis);

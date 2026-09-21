@@ -1,11 +1,10 @@
 /*--- Vars */
 :root {
-	--font-size-label: 0.9em;
+  --font-size-label: 0.9em;
 }
 
 /*--- Responsive */
 @media (max-width: 768px) {
-
   .grid-container,
   .method-grid {
     grid-template-columns: 1fr 1fr;
@@ -56,7 +55,6 @@ h1 {
   padding: 0.5rem 1rem;
 }
 
-
 h2 {
   font-size: 1rem;
   font-weight: normal;
@@ -79,7 +77,6 @@ h2 {
 .grid-container h2:last-child {
   border-right: none;
 }
-
 
 /*--- Structure: Header */
 header {
@@ -291,14 +288,13 @@ label.filters:hover {
 }
 
 .method:hover .phase-segment {
-	border-color: rgba(245, 39, 39, 0.8);
+  border-color: rgba(245, 39, 39, 0.8);
 }
 
 .phase-segment:first-child {
   min-width: 0;
   /* allow shrinking */
 }
-
 
 /*--- Structure: Modal Styles */
 .hidden {
@@ -318,7 +314,9 @@ label.filters:hover {
   visibility: hidden;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.25s ease, visibility 0s linear 0.25s;
+  transition:
+    opacity 0.25s ease,
+    visibility 0s linear 0.25s;
 }
 
 /* Keep the overlay in the layout while it fades out; JS applies .hidden
@@ -327,7 +325,9 @@ label.filters:hover {
   visibility: visible;
   opacity: 1;
   pointer-events: auto;
-  transition: opacity 0.25s ease, visibility 0s linear 0s;
+  transition:
+    opacity 0.25s ease,
+    visibility 0s linear 0s;
 }
 
 .modal-overlay.hidden {
@@ -445,11 +445,11 @@ h4 {
 #method-details .look-out-list li {
   padding-left: 3rem;
   background: #fffdf0;
-  border-left: 4px solid  rgba(255, 219, 0, 1);
+  border-left: 4px solid rgba(255, 219, 0, 1);
 }
 
 #method-details .look-out-list li::before {
-  content: '!';
+  content: "!";
   position: absolute;
   left: 0.9rem;
   top: 1.15rem;
@@ -459,7 +459,7 @@ h4 {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background:  rgba(255, 219, 0, 1);
+  background: rgba(255, 219, 0, 1);
   font-size: 0.72rem;
   font-weight: 800;
 }
@@ -502,7 +502,6 @@ h4 {
 #help-modal .modal-content li + li {
   margin-top: 0.8rem;
 }
-
 
 .close-button {
   position: absolute;

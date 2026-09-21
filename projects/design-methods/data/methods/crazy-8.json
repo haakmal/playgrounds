@@ -1,9 +1,6 @@
 {
   "name": "Crazy 8's",
-  "stages": [
-    "Define",
-    "Develop"
-  ],
+  "stages": ["Define", "Develop"],
   "description": "Crazy 8s is a rapid sketching exercise in which participants generate multiple responses to the same design problem within a short period. A page is commonly divided into eight spaces and participants produce one idea in each.\n\nThe time and quantity constraints encourage designers to move beyond their first solution and explore variations without investing heavily in any single concept.",
   "whenToUse": "Use Crazy 8s when a team understands the design problem but has converged too quickly on one solution or needs to generate alternative forms for a concept.\n\nIt works well as a short individual activity before group discussion.",
   "steps": [

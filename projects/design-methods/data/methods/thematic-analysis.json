@@ -1,9 +1,6 @@
 {
   "name": "Thematic Analysis",
-  "stages": [
-    "Discovery",
-    "Define"
-  ],
+  "stages": ["Discovery", "Define"],
   "description": "Thematic analysis is a qualitative analytical method for identifying and interpreting patterns of meaning across a body of data. Researchers become familiar with the material, code relevant features, develop candidate themes and progressively refine their interpretation.\n\nA theme is more than a frequently mentioned topic: it captures a meaningful pattern relevant to the research question.",
   "whenToUse": "Use thematic analysis when working with qualitative material such as interviews, diary entries, open survey responses or observational notes and when the research question concerns recurring patterns of experience or meaning.",
   "steps": [

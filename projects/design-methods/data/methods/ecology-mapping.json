@@ -1,9 +1,6 @@
 {
   "name": "Ecology Mapping",
-  "stages": [
-    "Discovery",
-    "Define"
-  ],
+  "stages": ["Discovery", "Define"],
   "description": "Ecology mapping visualises the network of people, organisations, technologies, resources and relationships surrounding a design situation. Rather than examining a product or user in isolation, the map helps designers see the wider ecology in which experiences and outcomes are produced.\n\nThe emphasis is on relationships: who or what influences whom, what resources move through the system and where dependencies or tensions occur.",
   "whenToUse": "Use ecology mapping when a design challenge involves many interconnected actors or when focusing on a single user-product relationship obscures important influences.",
   "steps": [

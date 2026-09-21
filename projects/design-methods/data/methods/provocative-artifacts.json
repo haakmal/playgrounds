@@ -1,10 +1,6 @@
 {
   "name": "Provocative Artifacts",
-  "stages": [
-    "Define",
-    "Develop",
-    "Deliver"
-  ],
+  "stages": ["Define", "Develop", "Deliver"],
   "description": "Provocative artefacts are deliberately designed objects or representations intended to elicit reflection, discussion or reaction rather than simply demonstrate a solution. By embodying an unusual, uncomfortable or exaggerated proposition, the artefact can make assumptions and values easier to examine.\n\nThe responses it produces can become material for design research or critical inquiry.",
   "whenToUse": "Use provocative artefacts when direct questioning is unlikely to expose assumptions or when a tangible proposition can help participants engage with abstract, contested or future-oriented issues.",
   "steps": [

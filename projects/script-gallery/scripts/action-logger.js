@@ -15,19 +15,41 @@ module.exports = async (params) => {
     "Research",
     "Leadership & Service",
     "Invisible Labour",
-    "Key Wins / Impact Highlights"
+    "Key Wins / Impact Highlights",
   ];
 
-  const category = await quickAddApi.suggester(categoryOptions, categoryOptions);
+  const category = await quickAddApi.suggester(
+    categoryOptions,
+    categoryOptions,
+  );
   if (!category) return;
 
   // CATEGORY-SPECIFIC TYPE OPTIONS
   const typeMap = {
-    "Teaching": ["curriculum development", "course delivery", "student supervision", "assessment", "other"],
-    "Research": ["publication", "review", "grant", "collaboration", "project related", "other"],
+    Teaching: [
+      "curriculum development",
+      "course delivery",
+      "student supervision",
+      "assessment",
+      "other",
+    ],
+    Research: [
+      "publication",
+      "review",
+      "grant",
+      "collaboration",
+      "project related",
+      "other",
+    ],
     "Leadership & Service": ["committee", "governance", "leadership", "other"],
-    "Invisible Labour": ["mentoring", "student support", "conflict resolution", "peer support", "other"],
-    "Key Wins / Impact Highlights": []
+    "Invisible Labour": [
+      "mentoring",
+      "student support",
+      "conflict resolution",
+      "peer support",
+      "other",
+    ],
+    "Key Wins / Impact Highlights": [],
   };
 
   const availableTypes = typeMap[category] ?? [];
@@ -46,30 +68,36 @@ module.exports = async (params) => {
   // Dropdown option
   const impactLabels = ["Skip", "High", "Medium", "Low", "Future-focused"];
   const impactValues = ["", "high", "medium", "low", "future-focused"];
-  const impact = await quickAddApi.suggester(impactLabels, impactValues, "What was the impact level (optional)?");
+  const impact = await quickAddApi.suggester(
+    impactLabels,
+    impactValues,
+    "What was the impact level (optional)?",
+  );
   if (impact === null) return;
 
   const description = await quickAddApi.inputPrompt("What did you do?");
   if (!description || !description.trim()) return;
 
-  const evidence = await quickAddApi.inputPrompt("Share evidence if you can (optional)");
+  const evidence = await quickAddApi.inputPrompt(
+    "Share evidence if you can (optional)",
+  );
   if (evidence === null) return;
 
   // SECTION + CATEGORY VALUE MAPS
   const sectionMap = {
-    "Teaching": "## 🎓 Teaching",
-    "Research": "## 🔬 Research",
+    Teaching: "## 🎓 Teaching",
+    Research: "## 🔬 Research",
     "Leadership & Service": "## 🏛️ Leadership & Service",
     "Invisible Labour": "## 👁️ Invisible Labour",
-    "Key Wins / Impact Highlights": "## 💥 Key Wins / Impact Highlights"
+    "Key Wins / Impact Highlights": "## 💥 Key Wins / Impact Highlights",
   };
 
   const categoryValueMap = {
-    "Teaching": "teaching",
-    "Research": "research",
+    Teaching: "teaching",
+    Research: "research",
     "Leadership & Service": "service",
     "Invisible Labour": "invisible",
-    "Key Wins / Impact Highlights": "highlight"
+    "Key Wins / Impact Highlights": "highlight",
   };
 
   const sectionHeader = sectionMap[category];
@@ -124,7 +152,7 @@ type:: academic-log
       new Notice("Could not create this week's log: " + filepath);
       return;
     }
-}
+  }
 
   // BUILD ENTRY
   let entry = `- ${description}\n`;
@@ -140,12 +168,12 @@ type:: academic-log
   const content = await app.vault.read(file);
   const lines = content.split("\n");
 
-  const sectionIndex = lines.findIndex(line => line.trim() === sectionHeader);
+  const sectionIndex = lines.findIndex((line) => line.trim() === sectionHeader);
   if (sectionIndex === -1) {
     new Notice(`Section not found: ${sectionHeader}`);
     return;
   }
-  
+
   // INSERT AT TOP OF SECTION
   let insertIndex = sectionIndex + 1;
 

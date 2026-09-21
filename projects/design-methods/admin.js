@@ -1,6 +1,6 @@
-const STAGES = ['Discovery', 'Define', 'Develop', 'Deliver'];
-const INDEX_PATH = ['data', 'methods.index.json'];
-const METHODS_DIR = ['data', 'methods'];
+const STAGES = ["Discovery", "Define", "Develop", "Deliver"];
+const INDEX_PATH = ["data", "methods.index.json"];
+const METHODS_DIR = ["data", "methods"];
 
 const state = {
   rootHandle: null,
@@ -11,67 +11,69 @@ const state = {
   isNew: false,
   originalId: null,
   dirty: false,
-  activeTab: 'process',
+  activeTab: "process",
   lastFocusedField: null,
-  formatTarget: null
+  formatTarget: null,
 };
 
 const elements = {
-  connect: document.getElementById('connect-project'),
-  environment: document.getElementById('environment-banner'),
-  projectName: document.getElementById('project-name'),
-  projectStatus: document.getElementById('project-status'),
-  projectStats: document.getElementById('project-stats'),
-  methodCount: document.getElementById('method-count'),
-  errorCount: document.getElementById('error-count'),
-  workspace: document.getElementById('workspace'),
-  methodList: document.getElementById('method-list'),
-  search: document.getElementById('method-search'),
-  newMethod: document.getElementById('new-method'),
-  form: document.getElementById('method-form'),
-  editorMode: document.getElementById('editor-mode'),
-  editorTitle: document.getElementById('editor-title'),
-  name: document.getElementById('method-name'),
-  id: document.getElementById('method-id'),
-  description: document.getElementById('method-description'),
-  whenToUse: document.getElementById('method-when-to-use'),
-  lookout: document.getElementById('lookout-list'),
-  addLookout: document.getElementById('add-lookout'),
-  stageOptions: document.getElementById('stage-options'),
-  steps: document.getElementById('steps-list'),
-  resources: document.getElementById('resources-list'),
-  preview: document.getElementById('method-preview'),
-  addStep: document.getElementById('add-step'),
-  addResource: document.getElementById('add-resource'),
-  duplicate: document.getElementById('duplicate-method'),
-  delete: document.getElementById('delete-method'),
-  save: document.getElementById('save-method'),
-  toast: document.getElementById('toast')
+  connect: document.getElementById("connect-project"),
+  environment: document.getElementById("environment-banner"),
+  projectName: document.getElementById("project-name"),
+  projectStatus: document.getElementById("project-status"),
+  projectStats: document.getElementById("project-stats"),
+  methodCount: document.getElementById("method-count"),
+  errorCount: document.getElementById("error-count"),
+  workspace: document.getElementById("workspace"),
+  methodList: document.getElementById("method-list"),
+  search: document.getElementById("method-search"),
+  newMethod: document.getElementById("new-method"),
+  form: document.getElementById("method-form"),
+  editorMode: document.getElementById("editor-mode"),
+  editorTitle: document.getElementById("editor-title"),
+  name: document.getElementById("method-name"),
+  id: document.getElementById("method-id"),
+  description: document.getElementById("method-description"),
+  whenToUse: document.getElementById("method-when-to-use"),
+  lookout: document.getElementById("lookout-list"),
+  addLookout: document.getElementById("add-lookout"),
+  stageOptions: document.getElementById("stage-options"),
+  steps: document.getElementById("steps-list"),
+  resources: document.getElementById("resources-list"),
+  preview: document.getElementById("method-preview"),
+  addStep: document.getElementById("add-step"),
+  addResource: document.getElementById("add-resource"),
+  duplicate: document.getElementById("duplicate-method"),
+  delete: document.getElementById("delete-method"),
+  save: document.getElementById("save-method"),
+  toast: document.getElementById("toast"),
 };
 
 function isLocalHost() {
-  return ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname);
+  return ["localhost", "127.0.0.1", "[::1]"].includes(window.location.hostname);
 }
 
 function supportsFileSystemAccess() {
-  return 'showDirectoryPicker' in window && 'FileSystemDirectoryHandle' in window;
+  return (
+    "showDirectoryPicker" in window && "FileSystemDirectoryHandle" in window
+  );
 }
 
-function escapeHtml(value = '') {
+function escapeHtml(value = "") {
   return String(value)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#039;');
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
-function formatInline(value = '') {
+function formatInline(value = "") {
   let text = escapeHtml(value);
-  text = text.replace(/\r?\n/g, '<br>');
-  text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-  text = text.replace(/\*(.+?)\*/g, '<em>$1</em>');
-  text = text.replace(/\[u\](.+?)\[\/u\]/g, '<u>$1</u>');
+  text = text.replace(/\r?\n/g, "<br>");
+  text = text.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+  text = text.replace(/\*(.+?)\*/g, "<em>$1</em>");
+  text = text.replace(/\[u\](.+?)\[\/u\]/g, "<u>$1</u>");
   return text;
 }
 
@@ -79,9 +81,9 @@ function slugify(value) {
   return value
     .trim()
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .replace(/-{2,}/g, '-');
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .replace(/-{2,}/g, "-");
 }
 
 function clone(value) {
@@ -90,20 +92,25 @@ function clone(value) {
 
 function showToast(message, isError = false) {
   elements.toast.textContent = message;
-  elements.toast.style.background = isError ? '#b00020' : '#111';
-  elements.toast.classList.add('show');
+  elements.toast.style.background = isError ? "#b00020" : "#111";
+  elements.toast.classList.add("show");
   window.clearTimeout(showToast.timeout);
-  showToast.timeout = window.setTimeout(() => elements.toast.classList.remove('show'), 2800);
+  showToast.timeout = window.setTimeout(
+    () => elements.toast.classList.remove("show"),
+    2800,
+  );
 }
 
 function setDirty(value) {
   state.dirty = value;
-  const label = state.isNew ? 'Create method' : 'Edit method';
+  const label = state.isNew ? "Create method" : "Edit method";
   elements.editorMode.textContent = state.dirty ? `${label} · unsaved` : label;
 }
 
 function confirmDiscard() {
-  return !state.dirty || window.confirm('You have unsaved changes. Discard them?');
+  return (
+    !state.dirty || window.confirm("You have unsaved changes. Discard them?")
+  );
 }
 
 function getStageChecks() {
@@ -113,145 +120,165 @@ function getStageChecks() {
 function getCurrentMethod() {
   return {
     name: elements.name.value.trim(),
-    stages: getStageChecks().filter(input => input.checked).map(input => input.value),
+    stages: getStageChecks()
+      .filter((input) => input.checked)
+      .map((input) => input.value),
     description: elements.description.value.trim(),
     whenToUse: elements.whenToUse.value.trim(),
     steps: [...elements.steps.querySelectorAll('textarea[data-field="step"]')]
-      .map(input => input.value.trim())
+      .map((input) => input.value.trim())
       .filter(Boolean),
-    lookOutFor: [...elements.lookout.querySelectorAll('textarea[data-field="lookout"]')]
-      .map(input => input.value.trim())
+    lookOutFor: [
+      ...elements.lookout.querySelectorAll('textarea[data-field="lookout"]'),
+    ]
+      .map((input) => input.value.trim())
       .filter(Boolean),
-    resources: [...elements.resources.querySelectorAll('.resource-row')]
-      .map(row => {
+    resources: [...elements.resources.querySelectorAll(".resource-row")]
+      .map((row) => {
         const type = row.querySelector('[data-field="type"]').value;
-        if (type === 'reference') {
+        if (type === "reference") {
           return {
             type,
-            citation: row.querySelector('[data-field="citation"]')?.value.trim() || ''
+            citation:
+              row.querySelector('[data-field="citation"]')?.value.trim() || "",
           };
         }
         return {
           type,
           title: row.querySelector('[data-field="title"]').value.trim(),
-          url: row.querySelector('[data-field="url"]').value.trim()
+          url: row.querySelector('[data-field="url"]').value.trim(),
         };
       })
-      .filter(item => item.type === 'reference' ? item.citation : (item.title || item.url))
+      .filter((item) =>
+        item.type === "reference" ? item.citation : item.title || item.url,
+      ),
   };
 }
 
 function renderStageOptions(selected = []) {
-  elements.stageOptions.innerHTML = STAGES.map(stage => `
+  elements.stageOptions.innerHTML = STAGES.map(
+    (stage) => `
     <label class="check-option">
-      <input type="checkbox" value="${escapeHtml(stage)}" ${selected.includes(stage) ? 'checked' : ''}>
+      <input type="checkbox" value="${escapeHtml(stage)}" ${selected.includes(stage) ? "checked" : ""}>
       <span>${escapeHtml(stage)}</span>
     </label>
-  `).join('');
+  `,
+  ).join("");
 }
 
 function setFormattingTarget(field) {
-  if (!field || !['TEXTAREA', 'INPUT'].includes(field.tagName)) return;
-  if (field.dataset.field === 'title' || field.id === 'method-id' || field.id === 'method-name') return;
+  if (!field || !["TEXTAREA", "INPUT"].includes(field.tagName)) return;
+  if (
+    field.dataset.field === "title" ||
+    field.id === "method-id" ||
+    field.id === "method-name"
+  )
+    return;
 
   state.formatTarget = field;
   state.lastFocusedField = field;
 
-  const toolbar = document.getElementById('shared-format-toolbar');
-  const targetLabel = document.getElementById('format-target');
+  const toolbar = document.getElementById("shared-format-toolbar");
+  const targetLabel = document.getElementById("format-target");
   if (!toolbar || !targetLabel) return;
 
-  toolbar.querySelectorAll('.format-button').forEach(button => {
+  toolbar.querySelectorAll(".format-button").forEach((button) => {
     button.disabled = false;
   });
 
   const labels = {
-    'method-description': 'Description',
-    'method-when-to-use': 'When to use'
+    "method-description": "Description",
+    "method-when-to-use": "When to use",
   };
 
   let label = labels[field.id];
-  if (!label && field.dataset.field === 'step') label = 'Process step';
-  if (!label && field.dataset.field === 'lookout') label = 'Look out for';
-  if (!label && field.dataset.field === 'citation') label = 'Reference';
+  if (!label && field.dataset.field === "step") label = "Process step";
+  if (!label && field.dataset.field === "lookout") label = "Look out for";
+  if (!label && field.dataset.field === "citation") label = "Reference";
 
-  targetLabel.textContent = label || 'Active text field';
+  targetLabel.textContent = label || "Active text field";
 }
 
 function clearFormattingTarget() {
-  const toolbar = document.getElementById('shared-format-toolbar');
-  const targetLabel = document.getElementById('format-target');
+  const toolbar = document.getElementById("shared-format-toolbar");
+  const targetLabel = document.getElementById("format-target");
   if (!toolbar || !targetLabel) return;
 
-  toolbar.querySelectorAll('.format-button').forEach(button => {
+  toolbar.querySelectorAll(".format-button").forEach((button) => {
     button.disabled = !state.formatTarget;
   });
 
-  if (!state.formatTarget) targetLabel.textContent = 'Select a text field to format';
+  if (!state.formatTarget)
+    targetLabel.textContent = "Select a text field to format";
 }
 
 function applyFormatting(field, format) {
-  const textarea = typeof field === 'string' ? document.querySelector(field) : field;
+  const textarea =
+    typeof field === "string" ? document.querySelector(field) : field;
   if (!textarea) return;
 
   const start = textarea.selectionStart ?? textarea.value.length;
   const end = textarea.selectionEnd ?? textarea.value.length;
   const selected = textarea.value.slice(start, end);
   const markers = {
-    bold: ['**', '**'],
-    italic: ['*', '*'],
-    underline: ['[u]', '[/u]']
+    bold: ["**", "**"],
+    italic: ["*", "*"],
+    underline: ["[u]", "[/u]"],
   };
   const [open, close] = markers[format] || markers.bold;
-  const replacement = `${open}${selected || 'text'}${close}`;
+  const replacement = `${open}${selected || "text"}${close}`;
 
-  textarea.setRangeText(replacement, start, end, 'select');
+  textarea.setRangeText(replacement, start, end, "select");
   textarea.focus();
   handleEditorInput();
 }
 
 function bindSharedFormattingToolbar() {
-  const toolbar = document.getElementById('shared-format-toolbar');
+  const toolbar = document.getElementById("shared-format-toolbar");
   if (!toolbar) return;
 
-  document.addEventListener('focusin', event => {
-    if (event.target.matches('#method-description, #method-when-to-use, textarea[data-field="step"], textarea[data-field="lookout"], textarea[data-field="citation"]')) {
+  document.addEventListener("focusin", (event) => {
+    if (
+      event.target.matches(
+        '#method-description, #method-when-to-use, textarea[data-field="step"], textarea[data-field="lookout"], textarea[data-field="citation"]',
+      )
+    ) {
       setFormattingTarget(event.target);
     }
   });
 
-  toolbar.addEventListener('mousedown', event => {
-    if (event.target.closest('.format-button')) event.preventDefault();
+  toolbar.addEventListener("mousedown", (event) => {
+    if (event.target.closest(".format-button")) event.preventDefault();
   });
 
-  toolbar.querySelectorAll('.format-button').forEach(button => {
-    button.addEventListener('click', () => {
-      if (state.formatTarget) applyFormatting(state.formatTarget, button.dataset.format);
+  toolbar.querySelectorAll(".format-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      if (state.formatTarget)
+        applyFormatting(state.formatTarget, button.dataset.format);
     });
   });
 }
 
-function addStep(value = '') {
-  const row = document.createElement('div');
-  row.className = 'repeat-row';
+function addStep(value = "") {
+  const row = document.createElement("div");
+  row.className = "repeat-row";
 
-  const content = document.createElement('div');
-  content.className = 'repeat-row-content';
+  const content = document.createElement("div");
+  content.className = "repeat-row-content";
 
-  const textarea = document.createElement('textarea');
+  const textarea = document.createElement("textarea");
   textarea.rows = 2;
-  textarea.placeholder = 'Describe this step';
-  textarea.dataset.field = 'step';
+  textarea.placeholder = "Describe this step";
+  textarea.dataset.field = "step";
   textarea.value = value;
-  textarea.addEventListener('input', handleEditorInput);
+  textarea.addEventListener("input", handleEditorInput);
 
-
-  const remove = document.createElement('button');
-  remove.className = 'icon-button';
-  remove.type = 'button';
-  remove.setAttribute('aria-label', 'Remove step');
-  remove.textContent = '×';
-  remove.addEventListener('click', () => {
+  const remove = document.createElement("button");
+  remove.className = "icon-button";
+  remove.type = "button";
+  remove.setAttribute("aria-label", "Remove step");
+  remove.textContent = "×";
+  remove.addEventListener("click", () => {
     row.remove();
     setDirty(true);
     updatePreview();
@@ -262,27 +289,26 @@ function addStep(value = '') {
   elements.steps.appendChild(row);
 }
 
-function addLookout(value = '') {
-  const row = document.createElement('div');
-  row.className = 'repeat-row lookout-row';
+function addLookout(value = "") {
+  const row = document.createElement("div");
+  row.className = "repeat-row lookout-row";
 
-  const content = document.createElement('div');
-  content.className = 'repeat-row-content';
+  const content = document.createElement("div");
+  content.className = "repeat-row-content";
 
-  const textarea = document.createElement('textarea');
+  const textarea = document.createElement("textarea");
   textarea.rows = 2;
-  textarea.placeholder = 'Describe something to look out for';
-  textarea.dataset.field = 'lookout';
+  textarea.placeholder = "Describe something to look out for";
+  textarea.dataset.field = "lookout";
   textarea.value = value;
-  textarea.addEventListener('input', handleEditorInput);
+  textarea.addEventListener("input", handleEditorInput);
 
-
-  const remove = document.createElement('button');
-  remove.className = 'icon-button';
-  remove.type = 'button';
-  remove.setAttribute('aria-label', 'Remove consideration');
-  remove.textContent = '×';
-  remove.addEventListener('click', () => {
+  const remove = document.createElement("button");
+  remove.className = "icon-button";
+  remove.type = "button";
+  remove.setAttribute("aria-label", "Remove consideration");
+  remove.textContent = "×";
+  remove.addEventListener("click", () => {
     row.remove();
     setDirty(true);
     updatePreview();
@@ -295,36 +321,37 @@ function addLookout(value = '') {
 
 function renderResourceFields(row, resource = {}) {
   const type = row.querySelector('[data-field="type"]').value;
-  const target = row.querySelector('.resource-target');
+  const target = row.querySelector(".resource-target");
   const titleInput = row.querySelector('[data-field="title"]');
 
-  row.classList.toggle('resource-reference', type === 'reference');
+  row.classList.toggle("resource-reference", type === "reference");
 
-  if (type === 'reference') {
+  if (type === "reference") {
     titleInput.hidden = true;
-    titleInput.value = '';
+    titleInput.value = "";
     target.innerHTML = `
       <textarea data-field="citation" rows="3" placeholder="Full citation"></textarea>
       <p class="field-note">Add the bibliographic citation. It will appear as text in Further Material.</p>
     `;
-    target.querySelector('[data-field="citation"]').value = resource.citation || '';
+    target.querySelector('[data-field="citation"]').value =
+      resource.citation || "";
   } else {
     titleInput.hidden = false;
     target.innerHTML = `
       <input data-field="url" type="text" inputmode="url" autocomplete="off" placeholder="https://... or assets/...">
       <p class="field-note">Use a web URL or a path inside this project.</p>
     `;
-    target.querySelector('[data-field="url"]').value = resource.url || '';
+    target.querySelector('[data-field="url"]').value = resource.url || "";
   }
 
-  target.querySelectorAll('input, textarea').forEach(input => {
-    input.addEventListener('input', handleEditorInput);
+  target.querySelectorAll("input, textarea").forEach((input) => {
+    input.addEventListener("input", handleEditorInput);
   });
 }
 
 function addResource(resource = {}) {
-  const row = document.createElement('div');
-  row.className = 'resource-row';
+  const row = document.createElement("div");
+  row.className = "resource-row";
   row.innerHTML = `
     <select data-field="type" aria-label="Resource type">
       <option value="link">Link</option>
@@ -337,15 +364,17 @@ function addResource(resource = {}) {
   `;
 
   const select = row.querySelector('[data-field="type"]');
-  select.value = resource.type || 'link';
-  row.querySelector('[data-field="title"]').value = resource.title || '';
-  row.querySelector('[data-field="title"]').addEventListener('input', handleEditorInput);
-  select.addEventListener('change', () => {
+  select.value = resource.type || "link";
+  row.querySelector('[data-field="title"]').value = resource.title || "";
+  row
+    .querySelector('[data-field="title"]')
+    .addEventListener("input", handleEditorInput);
+  select.addEventListener("change", () => {
     renderResourceFields(row, resource);
     handleEditorInput();
   });
 
-  row.querySelector('button').addEventListener('click', () => {
+  row.querySelector("button").addEventListener("click", () => {
     row.remove();
     setDirty(true);
     updatePreview();
@@ -356,18 +385,18 @@ function addResource(resource = {}) {
 }
 
 function clearEditor() {
-  elements.name.value = '';
-  elements.id.value = '';
-  elements.description.value = '';
-  elements.whenToUse.value = '';
+  elements.name.value = "";
+  elements.id.value = "";
+  elements.description.value = "";
+  elements.whenToUse.value = "";
   renderStageOptions([]);
-  elements.steps.innerHTML = '';
-  elements.lookout.innerHTML = '';
-  elements.resources.innerHTML = '';
+  elements.steps.innerHTML = "";
+  elements.lookout.innerHTML = "";
+  elements.resources.innerHTML = "";
   state.formatTarget = null;
   clearFormattingTarget();
   addStep();
-  setActiveTab('process');
+  setActiveTab("process");
   updatePreview();
 }
 
@@ -384,7 +413,7 @@ function showProjectEmptyEditor() {
   state.selectedId = null;
   state.originalId = null;
   elements.form.hidden = true;
-  setEditorHeader('Project connected', 'Select a method');
+  setEditorHeader("Project connected", "Select a method");
   setDirty(false);
 }
 
@@ -393,18 +422,22 @@ function populateEditor(method, { isNew = false } = {}) {
   state.selectedId = method?.id || null;
   state.originalId = method?.id || null;
   elements.form.hidden = false;
-  setEditorHeader(isNew ? 'Create method' : 'Edit method', method?.name || 'New method', { showActions: true });
-  elements.name.value = method?.name || '';
-  elements.id.value = method?.id || '';
-  elements.description.value = method?.description || '';
-  elements.whenToUse.value = method?.whenToUse || '';
+  setEditorHeader(
+    isNew ? "Create method" : "Edit method",
+    method?.name || "New method",
+    { showActions: true },
+  );
+  elements.name.value = method?.name || "";
+  elements.id.value = method?.id || "";
+  elements.description.value = method?.description || "";
+  elements.whenToUse.value = method?.whenToUse || "";
   renderStageOptions(method?.stages || []);
-  elements.steps.innerHTML = '';
+  elements.steps.innerHTML = "";
   (method?.steps || []).forEach(addStep);
   if (!elements.steps.children.length) addStep();
-  elements.lookout.innerHTML = '';
+  elements.lookout.innerHTML = "";
   (method?.lookOutFor || []).forEach(addLookout);
-  elements.resources.innerHTML = '';
+  elements.resources.innerHTML = "";
   (method?.resources || []).forEach(addResource);
   state.formatTarget = null;
   clearFormattingTarget();
@@ -416,35 +449,41 @@ function populateEditor(method, { isNew = false } = {}) {
 function updatePreview() {
   const method = getCurrentMethod();
   const stages = method.stages.length
-    ? method.stages.map(stage => `<span class="preview-stage">${escapeHtml(stage)}</span>`).join('')
+    ? method.stages
+        .map(
+          (stage) => `<span class="preview-stage">${escapeHtml(stage)}</span>`,
+        )
+        .join("")
     : '<span class="muted">No phases selected</span>';
 
   const steps = method.steps.length
-    ? `<ol class="preview-list">${method.steps.map(step => `<li>${formatInline(step)}</li>`).join('')}</ol>`
+    ? `<ol class="preview-list">${method.steps.map((step) => `<li>${formatInline(step)}</li>`).join("")}</ol>`
     : '<p class="muted">No steps added.</p>';
 
   const whenToUse = method.whenToUse
     ? `<div class="preview-when"><strong>When to use</strong><p>${formatInline(method.whenToUse)}</p></div>`
-    : '';
+    : "";
 
   const lookout = method.lookOutFor.length
-    ? `<div class="preview-lookout"><strong>Look out for</strong><ul class="preview-lookout-list">${method.lookOutFor.map(item => `<li>${formatInline(item)}</li>`).join('')}</ul></div>`
-    : '';
+    ? `<div class="preview-lookout"><strong>Look out for</strong><ul class="preview-lookout-list">${method.lookOutFor.map((item) => `<li>${formatInline(item)}</li>`).join("")}</ul></div>`
+    : "";
 
   const resources = method.resources.length
-    ? `<div class="preview-resources"><strong>Further material</strong><ul class="preview-list">${method.resources.map(resource => {
-        if (resource.type === 'reference') {
-          return `<li class="preview-reference">${formatInline(resource.citation)}</li>`;
-        }
-        return `<li>${escapeHtml(resource.type)} — ${formatInline(resource.title || resource.url || 'Untitled')}</li>`;
-      }).join('')}</ul></div>`
-    : '';
+    ? `<div class="preview-resources"><strong>Further material</strong><ul class="preview-list">${method.resources
+        .map((resource) => {
+          if (resource.type === "reference") {
+            return `<li class="preview-reference">${formatInline(resource.citation)}</li>`;
+          }
+          return `<li>${escapeHtml(resource.type)} — ${formatInline(resource.title || resource.url || "Untitled")}</li>`;
+        })
+        .join("")}</ul></div>`
+    : "";
 
   elements.preview.innerHTML = `
-    <p class="eyebrow">${escapeHtml(state.isNew ? 'New record' : 'Method record')}</p>
-    <h3>${escapeHtml(method.name || 'Untitled method')}</h3>
+    <p class="eyebrow">${escapeHtml(state.isNew ? "New record" : "Method record")}</p>
+    <h3>${escapeHtml(method.name || "Untitled method")}</h3>
     <div class="preview-stage-row">${stages}</div>
-    <p class="preview-description">${formatInline(method.description || 'No description added yet.')}</p>
+    <p class="preview-description">${formatInline(method.description || "No description added yet.")}</p>
     ${whenToUse}
     <h4>Steps</h4>
     ${steps}
@@ -457,65 +496,79 @@ function setActiveTab(tabName) {
   state.activeTab = tabName;
   state.formatTarget = null;
   clearFormattingTarget();
-  document.querySelectorAll('.editor-tab').forEach(tab => {
+  document.querySelectorAll(".editor-tab").forEach((tab) => {
     const active = tab.dataset.tab === tabName;
-    tab.classList.toggle('active', active);
-    tab.setAttribute('aria-selected', active ? 'true' : 'false');
+    tab.classList.toggle("active", active);
+    tab.setAttribute("aria-selected", active ? "true" : "false");
   });
-  document.querySelectorAll('.editor-tab-panel').forEach(panel => {
+  document.querySelectorAll(".editor-tab-panel").forEach((panel) => {
     panel.hidden = panel.id !== `tab-${tabName}`;
-    panel.classList.toggle('active', !panel.hidden);
+    panel.classList.toggle("active", !panel.hidden);
   });
 }
 
 function handleEditorInput() {
-  if (elements.name.value.trim()) elements.editorTitle.textContent = elements.name.value.trim();
+  if (elements.name.value.trim())
+    elements.editorTitle.textContent = elements.name.value.trim();
   setDirty(true);
   updatePreview();
 }
 
 function isValidResourceTarget(value) {
-  const target = String(value || '').trim();
+  const target = String(value || "").trim();
   if (!target) return false;
 
   // Allow normal web URLs.
   try {
     const url = new URL(target);
-    if (['http:', 'https:'].includes(url.protocol)) return true;
+    if (["http:", "https:"].includes(url.protocol)) return true;
   } catch {
     // Treat non-URL values as project-relative paths below.
   }
 
   // Allow project-relative assets without allowing traversal outside the connected project.
-  if (target.startsWith('/') || target.startsWith('\\') || /^[a-zA-Z]:[\\/]/.test(target)) return false;
-  if (target.split('/').includes('..') || target.split('\\').includes('..')) return false;
-  if (target.includes('\\')) return false;
+  if (
+    target.startsWith("/") ||
+    target.startsWith("\\") ||
+    /^[a-zA-Z]:[\\/]/.test(target)
+  )
+    return false;
+  if (target.split("/").includes("..") || target.split("\\").includes(".."))
+    return false;
+  if (target.includes("\\")) return false;
   return /^[^?#]+(?:[?#].*)?$/.test(target);
 }
 
 function validateMethod(method, id, existingId = null) {
   const issues = [];
-  if (!method.name) issues.push('Name is required.');
-  if (!id || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id)) issues.push('ID must use lowercase letters, numbers and hyphens.');
-  if (method.stages.length === 0) issues.push('Select at least one design phase.');
-  if (existingId !== id && state.files.has(id)) issues.push(`A method with ID "${id}" already exists.`);
+  if (!method.name) issues.push("Name is required.");
+  if (!id || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id))
+    issues.push("ID must use lowercase letters, numbers and hyphens.");
+  if (method.stages.length === 0)
+    issues.push("Select at least one design phase.");
+  if (existingId !== id && state.files.has(id))
+    issues.push(`A method with ID "${id}" already exists.`);
 
   for (const resource of method.resources) {
-    if (resource.type === 'reference') {
-      if (!resource.citation) issues.push('Each reference needs a citation.');
+    if (resource.type === "reference") {
+      if (!resource.citation) issues.push("Each reference needs a citation.");
       continue;
     }
 
     if (!resource.title || !resource.url) {
-      issues.push('Each link or download needs a title and a URL or project-relative path.');
+      issues.push(
+        "Each link or download needs a title and a URL or project-relative path.",
+      );
     }
 
     if (resource.url && !isValidResourceTarget(resource.url)) {
-      issues.push(`Resource target "${resource.url}" must be a web URL or a project-relative path such as assets/templates/file.pdf.`);
+      issues.push(
+        `Resource target "${resource.url}" must be a web URL or a project-relative path such as assets/templates/file.pdf.`,
+      );
     }
 
-    if (!['link', 'download'].includes(resource.type)) {
-      issues.push('Resource type must be link, download, or reference.');
+    if (!["link", "download"].includes(resource.type)) {
+      issues.push("Resource type must be link, download, or reference.");
     }
   }
 
@@ -525,10 +578,12 @@ function validateMethod(method, id, existingId = null) {
 async function getMethodsDirectory() {
   let dataHandle;
   try {
-    dataHandle = await state.rootHandle.getDirectoryHandle('data');
-    return await dataHandle.getDirectoryHandle('methods');
+    dataHandle = await state.rootHandle.getDirectoryHandle("data");
+    return await dataHandle.getDirectoryHandle("methods");
   } catch {
-    throw new Error('Could not find data/methods/. Select the design-methods project folder itself.');
+    throw new Error(
+      "Could not find data/methods/. Select the design-methods project folder itself.",
+    );
   }
 }
 
@@ -556,51 +611,67 @@ async function deleteFile(dirHandle, filename) {
 
 async function connectProject() {
   if (!supportsFileSystemAccess()) {
-    showToast('This browser does not support local file authoring. Try a Chromium-based browser.', true);
+    showToast(
+      "This browser does not support local file authoring. Try a Chromium-based browser.",
+      true,
+    );
     return;
   }
   if (!isLocalHost()) {
-    showToast('Authoring is available only on localhost.', true);
+    showToast("Authoring is available only on localhost.", true);
     return;
   }
   try {
-    state.rootHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
+    state.rootHandle = await window.showDirectoryPicker({ mode: "readwrite" });
     await initialiseProject();
   } catch (error) {
-    if (error?.name !== 'AbortError') showToast(error.message || 'Could not connect to the project.', true);
+    if (error?.name !== "AbortError")
+      showToast(error.message || "Could not connect to the project.", true);
   }
 }
 
 async function initialiseProject() {
-  const permission = await state.rootHandle.queryPermission({ mode: 'readwrite' });
-  if (permission !== 'granted') {
-    const requested = await state.rootHandle.requestPermission({ mode: 'readwrite' });
-    if (requested !== 'granted') throw new Error('Write permission was not granted.');
+  const permission = await state.rootHandle.queryPermission({
+    mode: "readwrite",
+  });
+  if (permission !== "granted") {
+    const requested = await state.rootHandle.requestPermission({
+      mode: "readwrite",
+    });
+    if (requested !== "granted")
+      throw new Error("Write permission was not granted.");
   }
 
-  const indexHandle = await state.rootHandle.getDirectoryHandle('data');
-  const indexFile = await indexHandle.getFileHandle('methods.index.json');
+  const indexHandle = await state.rootHandle.getDirectoryHandle("data");
+  const indexFile = await indexHandle.getFileHandle("methods.index.json");
   const index = JSON.parse(await (await indexFile.getFile()).text());
-  if (!Array.isArray(index)) throw new Error('methods.index.json must contain an array.');
+  if (!Array.isArray(index))
+    throw new Error("methods.index.json must contain an array.");
 
   const methodsDir = await getMethodsDirectory();
   const files = new Map();
 
   for await (const [name, handle] of methodsDir.entries()) {
-    if (handle.kind !== 'file' || !name.endsWith('.json')) continue;
+    if (handle.kind !== "file" || !name.endsWith(".json")) continue;
     try {
       const method = JSON.parse(await (await handle.getFile()).text());
-      files.set(name.replace(/\.json$/, ''), method);
+      files.set(name.replace(/\.json$/, ""), method);
     } catch (error) {
       console.warn(`Could not parse ${name}`, error);
     }
   }
 
-  const missing = index.filter(entry => !files.has(entry.id));
-  const orphan = [...files.keys()].filter(id => !index.some(entry => entry.id === id));
+  const missing = index.filter((entry) => !files.has(entry.id));
+  const orphan = [...files.keys()].filter(
+    (id) => !index.some((entry) => entry.id === id),
+  );
   state.index = clone(index);
   state.files = files;
-  state.methods = index.map(entry => ({ ...(files.get(entry.id) || {}), ...entry, id: entry.id }));
+  state.methods = index.map((entry) => ({
+    ...(files.get(entry.id) || {}),
+    ...entry,
+    id: entry.id,
+  }));
 
   elements.projectName.textContent = state.rootHandle.name;
   elements.projectStatus.textContent = `${state.methods.length} indexed methods loaded from data/methods/.`;
@@ -610,58 +681,77 @@ async function initialiseProject() {
   elements.workspace.hidden = false;
 
   const issues = [];
-  if (missing.length) issues.push(`Missing method file: ${missing.join(', ')}`);
-  if (orphan.length) issues.push(`Unindexed method file: ${orphan.join(', ')}`);
+  if (missing.length) issues.push(`Missing method file: ${missing.join(", ")}`);
+  if (orphan.length) issues.push(`Unindexed method file: ${orphan.join(", ")}`);
   if (issues.length) {
     elements.environment.hidden = false;
-    elements.environment.textContent = `Data check: ${issues.join(' ')} The editor will not delete or overwrite these files unless you explicitly edit the affected record.`;
+    elements.environment.textContent = `Data check: ${issues.join(" ")} The editor will not delete or overwrite these files unless you explicitly edit the affected record.`;
   } else {
     elements.environment.hidden = true;
   }
 
   renderMethodList();
   showProjectEmptyEditor();
-  showToast('Project connected.');
+  showToast("Project connected.");
 }
 
 function renderMethodList() {
   const query = elements.search.value.trim().toLowerCase();
   const methods = [...state.methods]
     .sort((a, b) => a.name.localeCompare(b.name))
-    .filter(method => `${method.name} ${method.id}`.toLowerCase().includes(query));
+    .filter((method) =>
+      `${method.name} ${method.id}`.toLowerCase().includes(query),
+    );
 
   if (!methods.length) {
-    elements.methodList.innerHTML = '<div class="method-list-empty"><p class="muted">No matching methods.</p></div>';
+    elements.methodList.innerHTML =
+      '<div class="method-list-empty"><p class="muted">No matching methods.</p></div>';
     return;
   }
 
-  elements.methodList.innerHTML = methods.map(method => `
-    <button class="method-item ${method.id === state.selectedId ? 'active' : ''}" type="button" data-id="${escapeHtml(method.id)}">
+  elements.methodList.innerHTML = methods
+    .map(
+      (method) => `
+    <button class="method-item ${method.id === state.selectedId ? "active" : ""}" type="button" data-id="${escapeHtml(method.id)}">
       <strong>${escapeHtml(method.name)}</strong>
-      <small>${escapeHtml(method.id)} · ${(method.stages || []).join(' / ')}</small>
+      <small>${escapeHtml(method.id)} · ${(method.stages || []).join(" / ")}</small>
     </button>
-  `).join('');
+  `,
+    )
+    .join("");
 
-  elements.methodList.querySelectorAll('.method-item').forEach(button => {
-    button.addEventListener('click', () => selectMethod(button.dataset.id));
+  elements.methodList.querySelectorAll(".method-item").forEach((button) => {
+    button.addEventListener("click", () => selectMethod(button.dataset.id));
   });
 }
 
 function selectMethod(id) {
   if (!confirmDiscard()) return;
-  const method = state.methods.find(item => item.id === id);
+  const method = state.methods.find((item) => item.id === id);
   if (!method) return;
   populateEditor(method);
 }
 
 function startNewMethod() {
   if (!confirmDiscard()) return;
-  populateEditor({ id: '', name: '', stages: [], description: '', whenToUse: '', steps: [], lookOutFor: [], resources: [] }, { isNew: true });
+  populateEditor(
+    {
+      id: "",
+      name: "",
+      stages: [],
+      description: "",
+      whenToUse: "",
+      steps: [],
+      lookOutFor: [],
+      resources: [],
+    },
+    { isNew: true },
+  );
 }
 
 function duplicateMethod() {
   const source = getCurrentMethod();
-  const base = slugify(source.name) || 'new-method';
+  const base = slugify(source.name) || "new-method";
   let id = `${base}-copy`;
   let suffix = 2;
   while (state.files.has(id) || id === state.originalId) {
@@ -692,90 +782,113 @@ async function saveMethod(event) {
       await deleteFile(methodsDir, `${oldId}.json`);
     }
 
-    const indexEntry = state.index.find(entry => entry.id === oldId || entry.id === id);
+    const indexEntry = state.index.find(
+      (entry) => entry.id === oldId || entry.id === id,
+    );
     if (indexEntry) {
       indexEntry.id = id;
       indexEntry.name = method.name;
       indexEntry.stages = clone(method.stages);
     } else {
-      state.index.push({ id, name: method.name, stages: clone(method.stages), summary: ' ' });
+      state.index.push({
+        id,
+        name: method.name,
+        stages: clone(method.stages),
+        summary: " ",
+      });
     }
 
-    await writeJsonFile(await state.rootHandle.getDirectoryHandle('data'), 'methods.index.json', state.index);
+    await writeJsonFile(
+      await state.rootHandle.getDirectoryHandle("data"),
+      "methods.index.json",
+      state.index,
+    );
     await initialiseProject();
     selectMethod(id);
     setDirty(false);
-    showToast('Method saved to the local repository.');
+    showToast("Method saved to the local repository.");
   } catch (error) {
     console.error(error);
-    showToast(error.message || 'Could not save method.', true);
+    showToast(error.message || "Could not save method.", true);
   }
 }
 
 async function deleteSelectedMethod() {
   if (state.isNew || !state.originalId || !state.rootHandle) return;
-  const method = state.methods.find(item => item.id === state.originalId);
+  const method = state.methods.find((item) => item.id === state.originalId);
   if (!method) return;
-  if (!window.confirm(`Delete "${method.name}"? This removes the JSON file and its index entry.`)) return;
+  if (
+    !window.confirm(
+      `Delete "${method.name}"? This removes the JSON file and its index entry.`,
+    )
+  )
+    return;
 
   try {
     const methodsDir = await getMethodsDirectory();
-    if (state.files.has(state.originalId)) await deleteFile(methodsDir, `${state.originalId}.json`);
-    state.index = state.index.filter(entry => entry.id !== state.originalId);
-    await writeJsonFile(await state.rootHandle.getDirectoryHandle('data'), 'methods.index.json', state.index);
+    if (state.files.has(state.originalId))
+      await deleteFile(methodsDir, `${state.originalId}.json`);
+    state.index = state.index.filter((entry) => entry.id !== state.originalId);
+    await writeJsonFile(
+      await state.rootHandle.getDirectoryHandle("data"),
+      "methods.index.json",
+      state.index,
+    );
     await initialiseProject();
-    showToast('Method deleted.');
+    showToast("Method deleted.");
   } catch (error) {
     console.error(error);
-    showToast(error.message || 'Could not delete method.', true);
+    showToast(error.message || "Could not delete method.", true);
   }
 }
 
-elements.connect.addEventListener('click', connectProject);
-elements.newMethod.addEventListener('click', startNewMethod);
-elements.search.addEventListener('input', renderMethodList);
-elements.form.addEventListener('submit', saveMethod);
-elements.addStep.addEventListener('click', () => {
+elements.connect.addEventListener("click", connectProject);
+elements.newMethod.addEventListener("click", startNewMethod);
+elements.search.addEventListener("input", renderMethodList);
+elements.form.addEventListener("submit", saveMethod);
+elements.addStep.addEventListener("click", () => {
   addStep();
   setDirty(true);
   updatePreview();
 });
-elements.addResource.addEventListener('click', () => {
+elements.addResource.addEventListener("click", () => {
   addResource();
   setDirty(true);
   updatePreview();
 });
-elements.name.addEventListener('input', handleEditorInput);
-elements.description.addEventListener('input', handleEditorInput);
-elements.whenToUse.addEventListener('input', handleEditorInput);
-elements.addLookout.addEventListener('click', () => {
+elements.name.addEventListener("input", handleEditorInput);
+elements.description.addEventListener("input", handleEditorInput);
+elements.whenToUse.addEventListener("input", handleEditorInput);
+elements.addLookout.addEventListener("click", () => {
   addLookout();
   setDirty(true);
   updatePreview();
 });
-document.querySelectorAll('.editor-tab').forEach(tab => {
-  tab.addEventListener('click', () => setActiveTab(tab.dataset.tab));
+document.querySelectorAll(".editor-tab").forEach((tab) => {
+  tab.addEventListener("click", () => setActiveTab(tab.dataset.tab));
 });
 bindSharedFormattingToolbar();
-elements.id.addEventListener('input', handleEditorInput);
-elements.stageOptions.addEventListener('change', handleEditorInput);
-elements.duplicate.addEventListener('click', duplicateMethod);
-elements.delete.addEventListener('click', deleteSelectedMethod);
+elements.id.addEventListener("input", handleEditorInput);
+elements.stageOptions.addEventListener("change", handleEditorInput);
+elements.duplicate.addEventListener("click", duplicateMethod);
+elements.delete.addEventListener("click", deleteSelectedMethod);
 
-setEditorHeader('Project', 'Connect a project');
-setActiveTab('process');
+setEditorHeader("Project", "Connect a project");
+setActiveTab("process");
 
-window.addEventListener('beforeunload', event => {
+window.addEventListener("beforeunload", (event) => {
   if (!state.dirty) return;
   event.preventDefault();
-  event.returnValue = '';
+  event.returnValue = "";
 });
 
 if (!isLocalHost()) {
   elements.environment.hidden = false;
-  elements.environment.textContent = 'Authoring is intentionally disabled on the deployed site. Open this page through your local Jekyll server at localhost:4000/ to edit repository files.';
+  elements.environment.textContent =
+    "Authoring is intentionally disabled on the deployed site. Open this page through your local Jekyll server at localhost:4000/ to edit repository files.";
   elements.connect.disabled = true;
 } else if (!supportsFileSystemAccess()) {
   elements.environment.hidden = false;
-  elements.environment.textContent = 'This browser does not provide the File System Access API needed to write JSON files directly. The public library still works normally; use a Chromium-based browser for local authoring.';
+  elements.environment.textContent =
+    "This browser does not provide the File System Access API needed to write JSON files directly. The public library still works normally; use a Chromium-based browser for local authoring.";
 }

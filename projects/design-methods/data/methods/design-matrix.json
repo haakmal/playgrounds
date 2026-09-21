@@ -1,9 +1,6 @@
 {
   "name": "Design Matrices",
-  "stages": [
-    "Discovery",
-    "Define"
-  ],
+  "stages": ["Discovery", "Define"],
   "description": "A design matrix compares multiple concepts against a consistent set of criteria. Concepts are placed on one axis and criteria on another so that alternatives can be examined systematically.\n\nThe matrix helps make decision-making assumptions visible and can prevent teams from selecting concepts solely on intuition or enthusiasm. Its purpose is to structure judgement rather than produce an automatically correct answer.",
   "whenToUse": "Use a design matrix when several concepts have been generated and the team needs a transparent way to compare their relative strengths, limitations and trade-offs.",
   "steps": [

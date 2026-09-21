@@ -1,10 +1,6 @@
 {
   "name": "Personas",
-  "stages": [
-    "Define",
-    "Develop",
-    "Deliver"
-  ],
+  "stages": ["Define", "Develop", "Deliver"],
   "description": "Personas are research-informed representations of patterns found among people relevant to a design project. They typically bring together goals, behaviours, contexts and needs into a memorable character that teams can use when discussing design decisions.\n\nA persona is a synthesis artefact rather than a research method in itself. Its usefulness depends on the quality of the evidence and analysis from which it was constructed.",
   "whenToUse": "Use personas when substantial research has revealed meaningful patterns in goals or behaviours and a team needs a shared representation of those patterns during design.",
   "steps": [

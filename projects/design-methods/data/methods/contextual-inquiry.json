@@ -1,8 +1,6 @@
 {
   "name": "Contextual Inquiry",
-  "stages": [
-    "Discovery"
-  ],
+  "stages": ["Discovery"],
   "description": "Contextual inquiry combines observation and interviewing while a participant carries out an activity in its normal context. Instead of asking someone to recall a process away from the situation, the researcher observes the activity and asks questions as relevant events occur.\n\nThis can reveal tacit knowledge, workarounds, environmental constraints and relationships between people, tools and information that may be difficult to articulate in a conventional interview.",
   "whenToUse": "Use contextual inquiry when understanding **how an activity is actually performed** is important to the design problem.\n\nIt is particularly useful for complex work practices, services, professional environments and activities involving multiple tools or interruptions.",
   "steps": [

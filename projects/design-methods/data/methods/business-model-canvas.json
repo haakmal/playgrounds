@@ -1,9 +1,6 @@
 {
   "name": "Business Model Canvas",
-  "stages": [
-    "Discovery",
-    "Define"
-  ],
+  "stages": ["Discovery", "Define"],
   "description": "The Business Model Canvas is a visual framework for describing how an organisation proposes, creates and captures value. It brings nine connected areas—including customers, value propositions, activities, resources, relationships, channels, partners, costs and revenue—onto a shared canvas.\n\nFor designers, it can help expose the organisational assumptions surrounding a proposed product or service and reveal dependencies that may not be visible when concentrating only on the user-facing experience.",
   "whenToUse": "Use the Business Model Canvas when developing or examining a product, service or venture whose organisational model is still uncertain.\n\nIt is particularly useful for comparing alternative propositions and identifying assumptions that need further research or testing.",
   "steps": [

@@ -1,10 +1,6 @@
 {
   "name": "Mind Mapping",
-  "stages": [
-    "Discovery",
-    "Define",
-    "Develop"
-  ],
+  "stages": ["Discovery", "Define", "Develop"],
   "description": "Mind mapping is a visual technique for expanding and organising ideas around a central topic. Related concepts branch outward from a central node, allowing associations, subtopics and relationships to become visible on a single surface.\n\nIt can support individual thinking or collaborative exploration and is particularly useful before the structure of a problem is fully understood.",
   "whenToUse": "Use mind mapping when exploring the scope of a topic, organising early research questions or generating associations around a design challenge.",
   "steps": [

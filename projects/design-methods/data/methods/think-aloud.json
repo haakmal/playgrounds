@@ -1,8 +1,6 @@
 {
   "name": "Think-Aloud Protocol",
-  "stages": [
-    "Discovery"
-  ],
+  "stages": ["Discovery"],
   "description": "Think-aloud testing asks participants to verbalise what they are noticing, expecting and trying to do while interacting with a design. Their commentary is considered alongside observed behaviour to help researchers understand where expectations and interface behaviour diverge.\n\nIt is commonly used during usability evaluation.",
   "whenToUse": "Use think aloud when evaluating an interface or prototype and when understanding participants' interpretation of controls, content and feedback is important.",
   "steps": [

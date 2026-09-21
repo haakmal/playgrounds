@@ -1,9 +1,6 @@
 {
   "name": "Body Mapping",
-  "stages": [
-    "Discovery",
-    "Define"
-  ],
+  "stages": ["Discovery", "Define"],
   "description": "Body mapping uses an outline or representation of the body as a surface for recording physical sensations, emotions, experiences or relationships to an activity. Participants annotate, draw or otherwise mark locations on the body map in response to prompts.\n\nThe method can make embodied aspects of experience easier to discuss, particularly when those experiences are difficult to communicate through conventional verbal descriptions alone.",
   "whenToUse": "Use body mapping when bodily sensation, movement, emotion, comfort, discomfort or physical interaction is important to the design question.\n\nIt can support research into experiences involving products, environments, healthcare, wearables, movement and embodied interaction.",
   "steps": [

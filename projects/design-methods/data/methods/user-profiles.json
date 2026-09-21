@@ -1,10 +1,6 @@
 {
   "name": "User Profiles",
-  "stages": [
-    "Define",
-    "Develop",
-    "Deliver"
-  ],
+  "stages": ["Define", "Develop", "Deliver"],
   "description": "User profiles summarise relevant characteristics of people or groups who interact with a product or service. Profiles may describe experience, behaviours, contexts, capabilities, constraints and goals without constructing the fictional character typically associated with a persona.\n\nThey can provide a concise way to communicate meaningful differences within a user population.",
   "whenToUse": "Use user profiles when research reveals important user characteristics that should inform design but a full persona format would add unnecessary narrative detail.",
   "steps": [

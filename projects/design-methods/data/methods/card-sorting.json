@@ -1,9 +1,6 @@
 {
   "name": "Card Sorting",
-  "stages": [
-    "Define",
-    "Develop"
-  ],
+  "stages": ["Define", "Develop"],
   "description": "Card sorting investigates how people understand and group information. Participants organise cards representing topics, functions or content into categories that make sense to them. In an open card sort they create their own categories; in a closed card sort they place items into categories supplied by the researcher.\n\nPatterns across participants can help designers understand mental models and inform information architecture, navigation and terminology.",
   "whenToUse": "Use card sorting when you need to understand how people expect information or functions to be organised.\n\nIt is particularly useful when developing or revising the structure of websites, applications, services, documentation or other information-rich systems.",
   "steps": [

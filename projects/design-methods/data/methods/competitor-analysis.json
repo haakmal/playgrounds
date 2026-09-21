@@ -1,10 +1,6 @@
 {
   "name": "Competitor Analysis",
-  "stages": [
-    "Discovery",
-    "Define",
-    "Deliver"
-  ],
+  "stages": ["Discovery", "Define", "Deliver"],
   "description": "Competitor analysis systematically compares existing products, services or organisations operating in a related area. Designers examine how alternatives address similar needs, communicate value, structure interactions or differentiate themselves.\n\nThe method can reveal established conventions, gaps and opportunities, but its purpose is not simply to imitate successful competitors.",
   "whenToUse": "Use competitor analysis when entering an established product or service space, reviewing an existing offering or investigating how similar problems are currently addressed.\n\nIt can also be used more broadly to examine analogous experiences outside the immediate market.",
   "steps": [

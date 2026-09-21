@@ -1,9 +1,6 @@
 {
   "name": "Video Prototyping",
-  "stages": [
-    "Develop",
-    "Deliver"
-  ],
+  "stages": ["Develop", "Deliver"],
   "description": "Video prototyping uses recorded or edited video to represent how a proposed product, service or interaction might work in context. People, props, interfaces and environments can be combined to simulate functionality that does not yet exist.\n\nVideo is particularly effective for representing interactions involving movement, time, multiple devices or changing environments.",
   "whenToUse": "Use video prototyping when an experience is difficult to communicate through static sketches and when implementing the underlying technology would be unnecessary or expensive at the current stage.",
   "steps": [

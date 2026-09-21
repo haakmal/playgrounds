@@ -1,287 +1,570 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Usability Report Tool</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <header class="app-header">
-    <div class="header-copy">
-      <div class="eyebrow">Interaction Stream · Toolkit</div>
-      <h1>Usability Report Tool</h1>
-      <p class="header-subtitle">Record, interpret and prioritise usability findings.</p>
-      <div class="project-line"><span>Report</span><strong id="appTitle">Untitled usability report</strong><span class="save-state" id="saveState">Saved locally</span></div>
-      <div class="print-meta" id="printTimestamp">Generated: —</div>
-    </div>
-    <nav class="header-actions no-print" aria-label="Report tools">
-      <button class="button secondary" id="libraryBtn" type="button">Heuristic library</button>
-      <button class="button secondary" id="reportToolsBtn" type="button">Report tools</button>
-      <button class="icon-button header-help-button" id="interfaceHelpBtn" type="button" aria-label="How to use this interface">?</button>
-    </nav>
-  </header>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Usability Report Tool</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="header-copy">
+        <div class="eyebrow">Interaction Stream · Toolkit</div>
+        <h1>Usability Report Tool</h1>
+        <p class="header-subtitle">
+          Record, interpret and prioritise usability findings.
+        </p>
+        <div class="project-line">
+          <span>Report</span
+          ><strong id="appTitle">Untitled usability report</strong
+          ><span class="save-state" id="saveState">Saved locally</span>
+        </div>
+        <div class="print-meta" id="printTimestamp">Generated: —</div>
+      </div>
+      <nav class="header-actions no-print" aria-label="Report tools">
+        <button class="button secondary" id="libraryBtn" type="button">
+          Heuristic library
+        </button>
+        <button class="button secondary" id="reportToolsBtn" type="button">
+          Report tools
+        </button>
+        <button
+          class="icon-button header-help-button"
+          id="interfaceHelpBtn"
+          type="button"
+          aria-label="How to use this interface"
+        >
+          ?
+        </button>
+      </nav>
+    </header>
 
-  <main class="app-shell">
-    <section class="context-panel panel no-print">
-      <div class="panel-heading compact-heading">
-        <div>
-          <div class="eyebrow">01 · CONTEXT</div>
-          <h2>Report context</h2>
+    <main class="app-shell">
+      <section class="context-panel panel no-print">
+        <div class="panel-heading compact-heading">
+          <div>
+            <div class="eyebrow">01 · CONTEXT</div>
+            <h2>Report context</h2>
+          </div>
+        </div>
+        <div class="context-grid">
+          <label
+            ><span>Report title</span
+            ><input
+              id="reportTitle"
+              type="text"
+              placeholder="Untitled usability report" /><span
+              class="field-error"
+              id="error-reportTitle"
+              role="alert"
+            ></span
+          ></label>
+          <label
+            ><span>Evaluator</span
+            ><input id="evaluator" type="text" placeholder="Your name" /><span
+              class="field-error"
+              id="error-evaluator"
+              role="alert"
+            ></span
+          ></label>
+          <label
+            ><span>Interface / project</span
+            ><input
+              id="interfaceName"
+              type="text"
+              placeholder="Interface, prototype or service" /><span
+              class="field-error"
+              id="error-interfaceName"
+              role="alert"
+            ></span
+          ></label>
+          <label
+            ><span>Evaluation method</span
+            ><select id="method">
+              <option>Heuristic evaluation</option>
+              <option>Usability testing</option>
+              <option>Contextual review</option>
+              <option>Remote usability test</option>
+              <option>Other</option></select
+            ><span class="field-error" id="error-method" role="alert"></span
+          ></label>
+          <label class="full"
+            ><span>Evaluation goal / task</span
+            ><textarea
+              id="goal"
+              rows="2"
+              placeholder="What were you evaluating or asking participants to do?"
+            ></textarea
+            ><span class="field-error" id="error-goal" role="alert"></span
+          ></label>
+        </div>
+      </section>
+
+      <section
+        id="printContext"
+        class="print-context print-only"
+        aria-label="Report context for print"
+      ></section>
+
+      <section class="findings-panel panel">
+        <div class="panel-heading findings-heading">
+          <div>
+            <div class="eyebrow">02 · FINDINGS</div>
+            <h2>Usability findings</h2>
+            <p>
+              Each issue becomes one row in the report. Select a row to edit it.
+            </p>
+          </div>
+          <button class="button primary no-print" id="addFindingBtn">
+            + Add finding
+          </button>
+        </div>
+
+        <div class="filters no-print" aria-label="Finding filters">
+          <input
+            id="findingSearch"
+            type="search"
+            placeholder="Search findings..."
+          />
+          <select id="severityFilter">
+            <option value="all">All severity</option>
+            <option value="Serious">Serious</option>
+            <option value="Moderate">Moderate</option>
+            <option value="Minor">Minor</option>
+          </select>
+          <select id="categoryFilter">
+            <option value="all">All categories</option>
+          </select>
+          <select id="heuristicFilter">
+            <option value="all">All heuristics</option>
+          </select>
+          <select id="sortFindings">
+            <option value="severity">Sort: severity</option>
+            <option value="id">Sort: ID</option>
+            <option value="location">Sort: location</option>
+            <option value="created">Sort: created</option>
+          </select>
+        </div>
+
+        <div
+          id="findingEditor"
+          class="finding-editor no-print hidden"
+          aria-live="polite"
+        ></div>
+
+        <div class="table-wrap">
+          <table class="findings-table">
+            <thead>
+              <tr>
+                <th scope="col" class="col-id">ID / Location</th>
+                <th scope="col" class="col-severity">Severity</th>
+                <th scope="col" class="col-category">Category</th>
+                <th scope="col" class="col-heuristic">Heuristic</th>
+                <th scope="col">Description</th>
+                <th scope="col" class="col-recommendation">Recommendation</th>
+              </tr>
+            </thead>
+            <tbody id="findingsTableBody"></tbody>
+          </table>
+        </div>
+
+        <div id="emptyState" class="empty-state">
+          <strong>No findings yet.</strong>
+          <span>Add your first finding to build the report.</span>
+          <button class="button secondary no-print" id="emptyAddBtn">
+            Add finding
+          </button>
+        </div>
+        <div id="tableCount" class="table-count">0 findings</div>
+      </section>
+    </main>
+
+    <div
+      id="reportToolsModal"
+      class="modal-backdrop hidden no-print"
+      aria-hidden="true"
+    >
+      <div
+        class="modal modal-medium"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="reportToolsHeading"
+      >
+        <div class="modal-header">
+          <div>
+            <div class="eyebrow">REPORT TOOLS</div>
+            <h2 id="reportToolsHeading">Manage this report</h2>
+            <p>Open, save, move or export the current usability report.</p>
+          </div>
+          <button class="button" data-close="reportToolsModal" type="button">
+            Close
+          </button>
+        </div>
+        <div class="tool-card-grid">
+          <button class="tool-card" id="openReportsToolBtn" type="button">
+            <strong>My reports</strong
+            ><span>Open saved reports, rename, duplicate or delete them.</span>
+          </button>
+          <button class="tool-card" id="newReportToolBtn" type="button">
+            <strong>New report</strong
+            ><span>Start a separate report with an empty findings table.</span>
+          </button>
+          <button class="tool-card" id="importToolBtn" type="button">
+            <strong>Import JSON</strong
+            ><span>Restore a report exported from this tool.</span>
+          </button>
+          <button class="tool-card" id="exportToolBtn" type="button">
+            <strong>Export JSON</strong
+            ><span>Save a portable copy of the current report data.</span>
+          </button>
+          <button
+            class="tool-card tool-card-primary"
+            id="printToolBtn"
+            type="button"
+          >
+            <strong>Print / Save PDF</strong
+            ><span
+              >Generate the submission-ready report using the print
+              layout.</span
+            >
+          </button>
+        </div>
+        <p class="dialog-note">
+          <strong>Stored locally</strong> Your report remains in this browser
+          using localStorage. Export JSON regularly when moving between devices.
+        </p>
+      </div>
+    </div>
+
+    <div
+      id="reportsModal"
+      class="modal-backdrop hidden no-print"
+      aria-hidden="true"
+    >
+      <div
+        class="modal modal-medium"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="reportsHeading"
+      >
+        <div class="modal-header">
+          <div>
+            <div class="eyebrow">WORKSPACE</div>
+            <h2 id="reportsHeading">My reports</h2>
+          </div>
+          <button class="button" data-close="reportsModal">Close</button>
+        </div>
+        <div id="reportsList" class="reports-list"></div>
+        <div class="modal-footer">
+          <button class="button secondary" id="newReportBtn">New report</button>
+          <div class="footer-actions">
+            <button class="button secondary" id="importBtn">Import JSON</button
+            ><button class="button primary" id="exportBtn">Export JSON</button
+            ><input
+              id="importFile"
+              type="file"
+              accept="application/json"
+              hidden
+            />
+          </div>
         </div>
       </div>
-      <div class="context-grid">
-        <label><span>Report title</span><input id="reportTitle" type="text" placeholder="Untitled usability report"><span class="field-error" id="error-reportTitle" role="alert"></span></label>
-        <label><span>Evaluator</span><input id="evaluator" type="text" placeholder="Your name"><span class="field-error" id="error-evaluator" role="alert"></span></label>
-        <label><span>Interface / project</span><input id="interfaceName" type="text" placeholder="Interface, prototype or service"><span class="field-error" id="error-interfaceName" role="alert"></span></label>
-        <label><span>Evaluation method</span><select id="method"><option>Heuristic evaluation</option><option>Usability testing</option><option>Contextual review</option><option>Remote usability test</option><option>Other</option></select><span class="field-error" id="error-method" role="alert"></span></label>
-        <label class="full"><span>Evaluation goal / task</span><textarea id="goal" rows="2" placeholder="What were you evaluating or asking participants to do?"></textarea><span class="field-error" id="error-goal" role="alert"></span></label>
-      </div>
-    </section>
+    </div>
 
-    <section id="printContext" class="print-context print-only" aria-label="Report context for print"></section>
-
-    <section class="findings-panel panel">
-      <div class="panel-heading findings-heading">
-        <div>
-          <div class="eyebrow">02 · FINDINGS</div>
-          <h2>Usability findings</h2>
-          <p>Each issue becomes one row in the report. Select a row to edit it.</p>
+    <div
+      id="libraryModal"
+      class="modal-backdrop hidden no-print"
+      aria-hidden="true"
+    >
+      <div
+        class="modal modal-large"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="libraryHeading"
+      >
+        <div class="modal-header library-header">
+          <div>
+            <div class="eyebrow">REFERENCE</div>
+            <h2 id="libraryHeading">Heuristic library</h2>
+            <p>
+              Search or browse the combined library. Open a principle to
+              understand what it means, what to look for, and an example.
+            </p>
+          </div>
+          <button class="button" data-close="libraryModal">Close</button>
         </div>
-        <button class="button primary no-print" id="addFindingBtn">+ Add finding</button>
-      </div>
-
-      <div class="filters no-print" aria-label="Finding filters">
-        <input id="findingSearch" type="search" placeholder="Search findings...">
-        <select id="severityFilter"><option value="all">All severity</option><option value="Serious">Serious</option><option value="Moderate">Moderate</option><option value="Minor">Minor</option></select>
-        <select id="categoryFilter"><option value="all">All categories</option></select>
-        <select id="heuristicFilter"><option value="all">All heuristics</option></select>
-        <select id="sortFindings"><option value="severity">Sort: severity</option><option value="id">Sort: ID</option><option value="location">Sort: location</option><option value="created">Sort: created</option></select>
-      </div>
-
-      <div id="findingEditor" class="finding-editor no-print hidden" aria-live="polite"></div>
-
-      <div class="table-wrap">
-        <table class="findings-table">
-          <thead>
-            <tr>
-              <th scope="col" class="col-id">ID / Location</th>
-              <th scope="col" class="col-severity">Severity</th>
-              <th scope="col" class="col-category">Category</th>
-              <th scope="col" class="col-heuristic">Heuristic</th>
-              <th scope="col">Description</th>
-              <th scope="col" class="col-recommendation">Recommendation</th>
-            </tr>
-          </thead>
-          <tbody id="findingsTableBody"></tbody>
-        </table>
-      </div>
-
-      <div id="emptyState" class="empty-state">
-        <strong>No findings yet.</strong>
-        <span>Add your first finding to build the report.</span>
-        <button class="button secondary no-print" id="emptyAddBtn">Add finding</button>
-      </div>
-      <div id="tableCount" class="table-count">0 findings</div>
-    </section>
-  </main>
-
-  <div id="reportToolsModal" class="modal-backdrop hidden no-print" aria-hidden="true">
-    <div class="modal modal-medium" role="dialog" aria-modal="true" aria-labelledby="reportToolsHeading">
-      <div class="modal-header">
-        <div>
-          <div class="eyebrow">REPORT TOOLS</div>
-          <h2 id="reportToolsHeading">Manage this report</h2>
-          <p>Open, save, move or export the current usability report.</p>
+        <div class="library-toolbar">
+          <input
+            id="librarySearch"
+            type="search"
+            placeholder="Search heuristics, concepts or examples"
+          />
+          <div class="chip-row" id="sourceChips"></div>
+          <div class="chip-row" id="libraryCategoryChips"></div>
         </div>
-        <button class="button" data-close="reportToolsModal" type="button">Close</button>
-      </div>
-      <div class="tool-card-grid">
-        <button class="tool-card" id="openReportsToolBtn" type="button"><strong>My reports</strong><span>Open saved reports, rename, duplicate or delete them.</span></button>
-        <button class="tool-card" id="newReportToolBtn" type="button"><strong>New report</strong><span>Start a separate report with an empty findings table.</span></button>
-        <button class="tool-card" id="importToolBtn" type="button"><strong>Import JSON</strong><span>Restore a report exported from this tool.</span></button>
-        <button class="tool-card" id="exportToolBtn" type="button"><strong>Export JSON</strong><span>Save a portable copy of the current report data.</span></button>
-        <button class="tool-card tool-card-primary" id="printToolBtn" type="button"><strong>Print / Save PDF</strong><span>Generate the submission-ready report using the print layout.</span></button>
-      </div>
-      <p class="dialog-note"><strong>Stored locally</strong> Your report remains in this browser using localStorage. Export JSON regularly when moving between devices.</p>
-    </div>
-  </div>
-
-  <div id="reportsModal" class="modal-backdrop hidden no-print" aria-hidden="true">
-    <div class="modal modal-medium" role="dialog" aria-modal="true" aria-labelledby="reportsHeading">
-      <div class="modal-header">
-        <div><div class="eyebrow">WORKSPACE</div><h2 id="reportsHeading">My reports</h2></div>
-        <button class="button" data-close="reportsModal">Close</button>
-      </div>
-      <div id="reportsList" class="reports-list"></div>
-      <div class="modal-footer">
-        <button class="button secondary" id="newReportBtn">New report</button>
-        <div class="footer-actions"><button class="button secondary" id="importBtn">Import JSON</button><button class="button primary" id="exportBtn">Export JSON</button><input id="importFile" type="file" accept="application/json" hidden></div>
-      </div>
-    </div>
-  </div>
-
-  <div id="libraryModal" class="modal-backdrop hidden no-print" aria-hidden="true">
-    <div class="modal modal-large" role="dialog" aria-modal="true" aria-labelledby="libraryHeading">
-      <div class="modal-header library-header">
-        <div>
-          <div class="eyebrow">REFERENCE</div>
-          <h2 id="libraryHeading">Heuristic library</h2>
-          <p>Search or browse the combined library. Open a principle to understand what it means, what to look for, and an example.</p>
+        <div class="library-layout">
+          <aside id="heuristicList" class="heuristic-list"></aside>
+          <section id="heuristicDetail" class="heuristic-detail">
+            <div class="detail-empty">Select a heuristic.</div>
+          </section>
         </div>
-        <button class="button" data-close="libraryModal">Close</button>
-      </div>
-      <div class="library-toolbar">
-        <input id="librarySearch" type="search" placeholder="Search heuristics, concepts or examples">
-        <div class="chip-row" id="sourceChips"></div>
-        <div class="chip-row" id="libraryCategoryChips"></div>
-      </div>
-      <div class="library-layout">
-        <aside id="heuristicList" class="heuristic-list"></aside>
-        <section id="heuristicDetail" class="heuristic-detail"><div class="detail-empty">Select a heuristic.</div></section>
-      </div>
-      <div class="modal-footer">
-        <span id="libraryContext" class="library-context"></span>
-        <button class="button primary" id="selectHeuristicBtn" disabled>Use this heuristic</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="interfaceHelpDialog" class="modal-backdrop hidden no-print" aria-hidden="true">
-    <div class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="interfaceHelpHeading">
-      <div class="modal-header">
-        <div>
-          <div class="eyebrow">HOW TO USE THIS TOOL</div>
-          <h2 id="interfaceHelpHeading">Usability Report Tool</h2>
-          <p>Use this tool to turn usability observations into a structured findings report.</p>
+        <div class="modal-footer">
+          <span id="libraryContext" class="library-context"></span>
+          <button class="button primary" id="selectHeuristicBtn" disabled>
+            Use this heuristic
+          </button>
         </div>
-        <button class="button" data-close="interfaceHelpDialog" type="button">Close</button>
-      </div>
-      <div class="interface-help-content">
-        <section class="help-block">
-          <div class="eyebrow">01 · CONTEXT</div>
-          <h3>Set up the report before recording findings</h3>
-          <p>Complete the report title, evaluator, interface or project, evaluation method, and evaluation goal or task. These fields form the context of your submitted report and are required before you can export the PDF.</p>
-        </section>
-        <section class="help-block">
-          <div class="eyebrow">02 · FINDINGS</div>
-          <h3>Record one usability issue at a time</h3>
-          <p>Each row should describe one focused issue. Give it an ID, identify where it occurs, choose a category, record what you observed, select a primary heuristic, and recommend what could be changed or tested next.</p>
-        </section>
-        <section class="help-block help-block-blue">
-          <div class="eyebrow">OBSERVATION FIRST</div>
-          <h3>Describe what happened before explaining why</h3>
-          <p>Start with evidence from the evaluation. Avoid inventing findings or reporting what you expected to happen instead of what was observed. A good description should let another designer understand the issue without being present for the test.</p>
-        </section>
-        <section class="help-block help-block-blue">
-          <div class="eyebrow">HEURISTICS</div>
-          <h3>Use the library as an analytical reference</h3>
-          <p>The library combines Nielsen, Andy Budd and Bruce Tognazzini. Shared concepts are consolidated and the library includes definitions, things to look for, examples and related principles. You do not need to memorise the list.</p>
-        </section>
-        <section class="help-block">
-          <div class="eyebrow">PRIMARY + RELATED</div>
-          <h3>Choose the principle that best explains the issue</h3>
-          <p>Select one primary heuristic. Related principles can be useful when the same issue can be understood from more than one perspective. Use them to deepen your explanation rather than to collect labels.</p>
-        </section>
-        <section class="help-block">
-          <div class="eyebrow">SEVERITY</div>
-          <h3>Prioritise issues by impact</h3>
-          <p><strong>Minor</strong> indicates a lower-impact usability concern. <strong>Moderate</strong> indicates a problem that meaningfully interferes with the interaction. <strong>Serious</strong> indicates a high-impact problem that significantly obstructs, confuses or prevents the intended task. Use severity to help prioritise the report.</p>
-        </section>
-        <section class="help-block">
-          <div class="eyebrow">OPTIONAL NOTES</div>
-          <h3>Use evidence and heuristic reasoning when useful</h3>
-          <p><strong>Why does this heuristic apply?</strong> gives you space to explain the connection between the observation and the principle. <strong>Evidence / notes</strong> can capture participant comments, frequencies, screenshot references or other supporting information. Both are optional.</p>
-        </section>
-        <section class="help-block help-block-red">
-          <div class="eyebrow">VALIDATION</div>
-          <h3>Required information cannot be left blank</h3>
-          <p>The tool will stop a finding from being saved when required fields are missing. It will also stop PDF generation until the report context is complete. Red fields identify exactly what needs attention.</p>
-        </section>
-        <section class="help-block">
-          <div class="eyebrow">REVIEW</div>
-          <h3>Use the table to check your report</h3>
-          <p>Saved findings return to the condensed table. Click any row to edit it. Use the search, severity, category and heuristic filters to review particular groups of issues, then sort them to help prioritise your work.</p>
-        </section>
-        <section class="help-block">
-          <div class="eyebrow">PDF OUTPUT</div>
-          <h3>The PDF is a report, not a screenshot of the tool</h3>
-          <p>Print / Save PDF creates a simplified document containing the report context and findings table. The working editor, filters and other interface controls are removed from the print layout. A generated timestamp is included.</p>
-        </section>
-        <section class="help-block">
-          <div class="eyebrow">LOCAL STORAGE</div>
-          <h3>Your work is stored in this browser</h3>
-          <p>The tool uses browser localStorage and has no server-side database. Browser data can be cleared or lost, so export JSON regularly, especially before changing browser, device or computer.</p>
-        </section>
-        <section class="help-block help-block-complexity">
-          <div class="eyebrow">REPORT QUALITY</div>
-          <h3>A usability report is detailed evaluation evidence</h3>
-          <p>A usability report records focused findings, analysis and recommendations from evaluation. It is not the same as a UX case study or a visual summary. Prioritise clear evidence and well-substantiated reasoning over the number of findings.</p>
-        </section>
       </div>
     </div>
-  </div>
 
-  <div id="confirmModal" class="modal-backdrop hidden no-print" aria-hidden="true">
-    <div class="modal modal-small" role="dialog" aria-modal="true">
-      <div class="modal-header">
-        <div><div class="eyebrow">CONFIRM</div><h2>Delete this report?</h2></div>
-        <button class="button" data-close="confirmModal">Close</button>
+    <div
+      id="interfaceHelpDialog"
+      class="modal-backdrop hidden no-print"
+      aria-hidden="true"
+    >
+      <div
+        class="modal modal-wide"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="interfaceHelpHeading"
+      >
+        <div class="modal-header">
+          <div>
+            <div class="eyebrow">HOW TO USE THIS TOOL</div>
+            <h2 id="interfaceHelpHeading">Usability Report Tool</h2>
+            <p>
+              Use this tool to turn usability observations into a structured
+              findings report.
+            </p>
+          </div>
+          <button class="button" data-close="interfaceHelpDialog" type="button">
+            Close
+          </button>
+        </div>
+        <div class="interface-help-content">
+          <section class="help-block">
+            <div class="eyebrow">01 · CONTEXT</div>
+            <h3>Set up the report before recording findings</h3>
+            <p>
+              Complete the report title, evaluator, interface or project,
+              evaluation method, and evaluation goal or task. These fields form
+              the context of your submitted report and are required before you
+              can export the PDF.
+            </p>
+          </section>
+          <section class="help-block">
+            <div class="eyebrow">02 · FINDINGS</div>
+            <h3>Record one usability issue at a time</h3>
+            <p>
+              Each row should describe one focused issue. Give it an ID,
+              identify where it occurs, choose a category, record what you
+              observed, select a primary heuristic, and recommend what could be
+              changed or tested next.
+            </p>
+          </section>
+          <section class="help-block help-block-blue">
+            <div class="eyebrow">OBSERVATION FIRST</div>
+            <h3>Describe what happened before explaining why</h3>
+            <p>
+              Start with evidence from the evaluation. Avoid inventing findings
+              or reporting what you expected to happen instead of what was
+              observed. A good description should let another designer
+              understand the issue without being present for the test.
+            </p>
+          </section>
+          <section class="help-block help-block-blue">
+            <div class="eyebrow">HEURISTICS</div>
+            <h3>Use the library as an analytical reference</h3>
+            <p>
+              The library combines Nielsen, Andy Budd and Bruce Tognazzini.
+              Shared concepts are consolidated and the library includes
+              definitions, things to look for, examples and related principles.
+              You do not need to memorise the list.
+            </p>
+          </section>
+          <section class="help-block">
+            <div class="eyebrow">PRIMARY + RELATED</div>
+            <h3>Choose the principle that best explains the issue</h3>
+            <p>
+              Select one primary heuristic. Related principles can be useful
+              when the same issue can be understood from more than one
+              perspective. Use them to deepen your explanation rather than to
+              collect labels.
+            </p>
+          </section>
+          <section class="help-block">
+            <div class="eyebrow">SEVERITY</div>
+            <h3>Prioritise issues by impact</h3>
+            <p>
+              <strong>Minor</strong> indicates a lower-impact usability concern.
+              <strong>Moderate</strong> indicates a problem that meaningfully
+              interferes with the interaction.
+              <strong>Serious</strong> indicates a high-impact problem that
+              significantly obstructs, confuses or prevents the intended task.
+              Use severity to help prioritise the report.
+            </p>
+          </section>
+          <section class="help-block">
+            <div class="eyebrow">OPTIONAL NOTES</div>
+            <h3>Use evidence and heuristic reasoning when useful</h3>
+            <p>
+              <strong>Why does this heuristic apply?</strong> gives you space to
+              explain the connection between the observation and the principle.
+              <strong>Evidence / notes</strong> can capture participant
+              comments, frequencies, screenshot references or other supporting
+              information. Both are optional.
+            </p>
+          </section>
+          <section class="help-block help-block-red">
+            <div class="eyebrow">VALIDATION</div>
+            <h3>Required information cannot be left blank</h3>
+            <p>
+              The tool will stop a finding from being saved when required fields
+              are missing. It will also stop PDF generation until the report
+              context is complete. Red fields identify exactly what needs
+              attention.
+            </p>
+          </section>
+          <section class="help-block">
+            <div class="eyebrow">REVIEW</div>
+            <h3>Use the table to check your report</h3>
+            <p>
+              Saved findings return to the condensed table. Click any row to
+              edit it. Use the search, severity, category and heuristic filters
+              to review particular groups of issues, then sort them to help
+              prioritise your work.
+            </p>
+          </section>
+          <section class="help-block">
+            <div class="eyebrow">PDF OUTPUT</div>
+            <h3>The PDF is a report, not a screenshot of the tool</h3>
+            <p>
+              Print / Save PDF creates a simplified document containing the
+              report context and findings table. The working editor, filters and
+              other interface controls are removed from the print layout. A
+              generated timestamp is included.
+            </p>
+          </section>
+          <section class="help-block">
+            <div class="eyebrow">LOCAL STORAGE</div>
+            <h3>Your work is stored in this browser</h3>
+            <p>
+              The tool uses browser localStorage and has no server-side
+              database. Browser data can be cleared or lost, so export JSON
+              regularly, especially before changing browser, device or computer.
+            </p>
+          </section>
+          <section class="help-block help-block-complexity">
+            <div class="eyebrow">REPORT QUALITY</div>
+            <h3>A usability report is detailed evaluation evidence</h3>
+            <p>
+              A usability report records focused findings, analysis and
+              recommendations from evaluation. It is not the same as a UX case
+              study or a visual summary. Prioritise clear evidence and
+              well-substantiated reasoning over the number of findings.
+            </p>
+          </section>
+        </div>
       </div>
-      <p class="confirm-text">This removes the report from this browser. An exported JSON copy will still work.</p>
-      <div class="modal-footer"><button class="button secondary" data-close="confirmModal">Cancel</button><button class="button danger" id="confirmDeleteBtn">Delete report</button></div>
     </div>
-  </div>
 
-  <div id="findingDeleteModal" class="modal-backdrop hidden no-print" aria-hidden="true">
-    <div class="modal modal-small" role="dialog" aria-modal="true" aria-labelledby="findingDeleteHeading">
-      <div class="modal-header">
-        <div><div class="eyebrow">CONFIRM</div><h2 id="findingDeleteHeading">Delete this finding?</h2></div>
-        <button class="button" data-close="findingDeleteModal">Close</button>
+    <div
+      id="confirmModal"
+      class="modal-backdrop hidden no-print"
+      aria-hidden="true"
+    >
+      <div class="modal modal-small" role="dialog" aria-modal="true">
+        <div class="modal-header">
+          <div>
+            <div class="eyebrow">CONFIRM</div>
+            <h2>Delete this report?</h2>
+          </div>
+          <button class="button" data-close="confirmModal">Close</button>
+        </div>
+        <p class="confirm-text">
+          This removes the report from this browser. An exported JSON copy will
+          still work.
+        </p>
+        <div class="modal-footer">
+          <button class="button secondary" data-close="confirmModal">
+            Cancel</button
+          ><button class="button danger" id="confirmDeleteBtn">
+            Delete report
+          </button>
+        </div>
       </div>
-      <p class="confirm-text">This removes the finding from the current report. The action cannot be undone.</p>
-      <div class="modal-footer"><button class="button secondary" data-close="findingDeleteModal">Cancel</button><button class="button danger" id="confirmDeleteFindingBtn">Delete finding</button></div>
     </div>
-  </div>
 
-  <div id="toast" class="toast" aria-live="polite"></div>
-  <script src="heuristics.js"></script>
-  <script src="app.js"></script>
+    <div
+      id="findingDeleteModal"
+      class="modal-backdrop hidden no-print"
+      aria-hidden="true"
+    >
+      <div
+        class="modal modal-small"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="findingDeleteHeading"
+      >
+        <div class="modal-header">
+          <div>
+            <div class="eyebrow">CONFIRM</div>
+            <h2 id="findingDeleteHeading">Delete this finding?</h2>
+          </div>
+          <button class="button" data-close="findingDeleteModal">Close</button>
+        </div>
+        <p class="confirm-text">
+          This removes the finding from the current report. The action cannot be
+          undone.
+        </p>
+        <div class="modal-footer">
+          <button class="button secondary" data-close="findingDeleteModal">
+            Cancel</button
+          ><button class="button danger" id="confirmDeleteFindingBtn">
+            Delete finding
+          </button>
+        </div>
+      </div>
+    </div>
 
-<!-- BEGIN RETURN LINK -->
-<script>
-// inject-home-link.js
-(function () {
-	// Inject Font Awesome stylesheet
-	const fa = document.createElement("link");
-	fa.rel = "stylesheet";
-	fa.href = "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css";
-	fa.crossOrigin = "anonymous";
-	document.head.appendChild(fa);
-	
-	// Create the back link
-	const link = document.createElement("a");
-	link.href = "/";
-	link.innerHTML = '← Back to Playgrounds <i class="fab fa-github"><i>';
-	Object.assign(link.style, {
-	  position: "fixed",
-	  bottom: "20px",
-	  right: "20px",
-	  background: "#000",
-	  color: "#fff",
-	  padding: "8px 12px",
-	  zIndex: 1000,
-	  fontSize: "14px",
-	  opacity: 0.7,
-	  borderRadius: "6px",
-	  textDecoration: "none"
-	});
-	link.onmouseover = () => (link.style.opacity = "1");
-	link.onmouseout = () => (link.style.opacity = "0.7");
-	document.body.appendChild(link);
-})();
-</script>
-<!-- END RETURN LINK -->
+    <div id="toast" class="toast" aria-live="polite"></div>
+    <script src="heuristics.js"></script>
+    <script src="app.js"></script>
 
-</body>
+    <!-- BEGIN RETURN LINK -->
+    <script>
+      // inject-home-link.js
+      (function () {
+        // Inject Font Awesome stylesheet
+        const fa = document.createElement("link");
+        fa.rel = "stylesheet";
+        fa.href =
+          "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css";
+        fa.crossOrigin = "anonymous";
+        document.head.appendChild(fa);
+
+        // Create the back link
+        const link = document.createElement("a");
+        link.href = "/";
+        link.innerHTML = '← Back to Playgrounds <i class="fab fa-github"><i>';
+        Object.assign(link.style, {
+          position: "fixed",
+          bottom: "20px",
+          right: "20px",
+          background: "#000",
+          color: "#fff",
+          padding: "8px 12px",
+          zIndex: 1000,
+          fontSize: "14px",
+          opacity: 0.7,
+          borderRadius: "6px",
+          textDecoration: "none",
+        });
+        link.onmouseover = () => (link.style.opacity = "1");
+        link.onmouseout = () => (link.style.opacity = "0.7");
+        document.body.appendChild(link);
+      })();
+    </script>
+    <!-- END RETURN LINK -->
+  </body>
 </html>

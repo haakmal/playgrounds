@@ -1,9 +1,6 @@
 {
   "name": "Affinity Diagrams",
-  "stages": [
-    "Discovery",
-    "Define"
-  ],
+  "stages": ["Discovery", "Define"],
   "description": "Affinity diagramming is a collaborative synthesis method for organising a large collection of observations, ideas, or pieces of research data into meaningful groups. Individual items are arranged according to relationships that emerge from the material rather than being forced immediately into predetermined categories.\n\nAs clusters develop, designers examine what connects the items and give each group a descriptive label. The resulting structure can help transform fragmented observations into themes, questions, and areas for further investigation.",
   "whenToUse": "Use affinity diagramming when a project has accumulated more observations or ideas than can easily be considered individually. it is particularly useful after interviews, observations, workshops, or brainstorming sessions when a team needs to identify patterns across many pieces of information.",
   "steps": [

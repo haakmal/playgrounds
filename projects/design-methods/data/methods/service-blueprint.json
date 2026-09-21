@@ -1,10 +1,6 @@
 {
   "name": "Service Blueprint",
-  "stages": [
-    "Define",
-    "Develop",
-    "Deliver"
-  ],
+  "stages": ["Define", "Develop", "Deliver"],
   "description": "A service blueprint visualises how a service is produced across customer-facing interactions and the activities occurring behind them. It commonly aligns user actions, touchpoints, frontstage staff activity, backstage processes and supporting systems along a timeline.\n\nThe blueprint helps teams see dependencies between the experience people encounter and the organisational work required to deliver it.",
   "whenToUse": "Use service blueprints when designing or improving services involving multiple touchpoints, staff roles, systems or organisational processes.",
   "steps": [

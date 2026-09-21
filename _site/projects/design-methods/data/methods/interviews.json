@@ -1,8 +1,6 @@
 {
   "name": "Interviews",
-  "stages": [
-    "Discovery"
-  ],
+  "stages": ["Discovery"],
   "description": "Interviews are guided conversations used to investigate people's experiences, practices, perspectives and interpretations. In design research, semi-structured interviews are particularly common: the researcher prepares areas to explore while allowing participants' responses to shape the direction of the conversation.\n\nInterviews are valuable for understanding how people make sense of their experiences, but what people report should not automatically be treated as a complete record of what they actually do.",
   "whenToUse": "Use interviews when people's experiences, motivations, interpretations or decision-making are important to the design question.\n\nThey can be used early to explore an unfamiliar problem or later to investigate questions emerging from other research.",
   "steps": [

@@ -1,9 +1,6 @@
 {
   "name": "Mood Boards",
-  "stages": [
-    "Develop",
-    "Deliver"
-  ],
+  "stages": ["Develop", "Deliver"],
   "description": "A mood board is a curated collection of images, colours, materials, typography, textures and other references assembled to explore the intended experiential or aesthetic direction of a design.\n\nMood boards can help teams discuss qualities that are difficult to communicate verbally and compare different interpretations before committing to a detailed visual language.",
   "whenToUse": "Use mood boards when exploring visual, material or experiential direction and when collaborators need a shared vocabulary for qualities such as atmosphere, character or tone.",
   "steps": [

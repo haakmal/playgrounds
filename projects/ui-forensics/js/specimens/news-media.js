@@ -1,5 +1,5 @@
 export function render(root) {
-    root.innerHTML = `
+  root.innerHTML = `
         <div class="specimen-shell s48">
             <div class="specimen-desktop news-app">
                 <header class="s48-head"><strong>THE DAILY NORTH</strong><nav><span>Latest</span><span>Ideas</span><span>Culture</span></nav></header>
@@ -7,6 +7,10 @@ export function render(root) {
                 <div class="s48-modal" id="s48-modal"><div><span class="s48-kicker">KEEP READING</span><h2>Get the stories that matter.</h2><p>Join our weekly email for the latest ideas and essays.</p><button id="s48-join" class="s48-join">Keep me informed</button><button id="s48-no" class="s48-no">No thanks, I prefer to miss important stories.</button></div></div>
             </div>
         </div>`;
-    root.querySelector('#s48-join').addEventListener('click', () => root.querySelector('#s48-modal').remove());
-    root.querySelector('#s48-no').addEventListener('click', () => root.querySelector('#s48-modal').remove());
+  root
+    .querySelector("#s48-join")
+    .addEventListener("click", () => root.querySelector("#s48-modal").remove());
+  root
+    .querySelector("#s48-no")
+    .addEventListener("click", () => root.querySelector("#s48-modal").remove());
 }

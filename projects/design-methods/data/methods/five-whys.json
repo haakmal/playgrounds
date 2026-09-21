@@ -1,9 +1,6 @@
 {
   "name": "Five Whys",
-  "stages": [
-    "Discovery",
-    "Define"
-  ],
+  "stages": ["Discovery", "Define"],
   "description": "Five Whys is a questioning technique for moving beyond an immediately visible problem by repeatedly asking why a condition occurs. Each response becomes the basis for another question, helping participants trace possible contributing causes.\n\nThe number five is a prompt rather than a rule. The purpose is to investigate causal assumptions rather than stop at the first explanation.",
   "whenToUse": "Use Five Whys when a team is reacting to a symptom and needs to investigate what conditions might be producing it.\n\nIt works best for relatively focused problems and as an entry point to deeper investigation.",
   "steps": [

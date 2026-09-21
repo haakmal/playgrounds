@@ -1,10 +1,6 @@
 {
   "name": "Critical Speculations",
-  "stages": [
-    "Define",
-    "Develop",
-    "Deliver"
-  ],
+  "stages": ["Define", "Develop", "Deliver"],
   "description": "Critical speculation uses designed propositions to question assumptions about technologies, systems, values and possible futures. Rather than proposing an immediately implementable solution, designers construct scenarios, artefacts or experiences that make an issue available for examination and debate.\n\nThe value of the work often lies in the questions and tensions it exposes rather than in whether the proposition should literally be produced.",
   "whenToUse": "Use critical speculation when a project needs to examine assumptions, values or consequences that conventional solution-focused methods leave unchallenged.\n\nIt is particularly useful for emerging technologies, social change, contested futures and situations where asking *\"should this exist?\"* is as important as asking *\"how should we design it?\"*",
   "steps": [

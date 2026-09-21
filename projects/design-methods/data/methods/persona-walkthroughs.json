@@ -1,10 +1,6 @@
 {
   "name": "Persona-based Walkthroughs",
-  "stages": [
-    "Discovery",
-    "Define",
-    "Develop"
-  ],
+  "stages": ["Discovery", "Define", "Develop"],
   "description": "A persona walkthrough examines a proposed design by stepping through an activity from the perspective represented by a persona. At each stage, designers consider the persona's goals, circumstances, capabilities and likely questions.\n\nThe method can help teams expose mismatches between a concept and previously identified user needs, provided that the persona itself is grounded in credible research.",
   "whenToUse": "Use persona walkthroughs when evaluating early flows, scenarios or concepts and when research-based personas already exist.",
   "steps": [

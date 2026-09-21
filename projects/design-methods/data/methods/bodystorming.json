@@ -1,10 +1,6 @@
 {
   "name": "Bodystorming",
-  "stages": [
-    "Discovery",
-    "Define",
-    "Develop"
-  ],
+  "stages": ["Discovery", "Define", "Develop"],
   "description": "Bodystorming explores design ideas by physically acting within a situation rather than discussing it only in the abstract. Participants enact activities, interactions or scenarios using their bodies, spaces and simple props. Through performance, designers can notice spatial relationships, movement, timing, coordination and social interactions that may be difficult to anticipate through sketches alone.\n\nThe aim is not polished acting. It is to think through making and doing.",
   "whenToUse": "Use bodystorming when physical movement, spatial arrangement, interpersonal interaction or sequences of activity are important to a design.\n\nIt is useful during early concept development because situations can be enacted and changed rapidly without producing detailed prototypes.",
   "steps": [
