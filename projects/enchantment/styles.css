@@ -256,3 +256,75 @@ button { color: inherit; }
   .draw-stack { grid-template-columns:1fr 1fr; width:100%; }
   .draw-card { width:100%; min-height:180px; }
 }
+
+/* v2.2 typography and crystal-reading refinements */
+.draw-card .card-face-result strong {
+  max-width: 100%;
+  font-size: clamp(20px, 2.25vw, 32px);
+  line-height: 1.02;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  hyphens: auto;
+}
+.draw-card .card-face-result small {
+  max-width: 24ch;
+  overflow-wrap: anywhere;
+}
+
+.ball-shell {
+  min-height: 300px;
+}
+.ball-reading {
+  position: static;
+  transform: none;
+  width: min(520px, 100%);
+  margin: 6px auto 0;
+  min-height: 90px;
+  padding: 0 18px;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 1100ms var(--ease);
+}
+.ball-reading.is-visible {
+  opacity: 1;
+}
+.ball-reading strong {
+  max-width: 42ch;
+  margin: 0 auto;
+  line-height: 1.35;
+}
+.ball-reading span {
+  max-width: 54ch;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.ball-context {
+  width: min(520px, 100%);
+  margin: 14px auto 0;
+  text-align: center;
+}
+.ball-context strong,
+.ball-context span {
+  max-width: 54ch;
+  margin-left: auto;
+  margin-right: auto;
+  overflow-wrap: anywhere;
+}
+
+.table-cards .draw-card .card-face-result strong,
+.table-cards .draw-card .card-face-result small {
+  display: block;
+}
+
+/* Keep the active reading compact enough for the three-column table. */
+.table-ball .ball-reading {
+  flex-shrink: 0;
+}
+
+@media (max-width: 680px) {
+  .ball-reading,
+  .ball-context { width: 100%; padding-left: 8px; padding-right: 8px; }
+  .draw-card .card-face-result strong { font-size: clamp(19px, 7vw, 28px); }
+}

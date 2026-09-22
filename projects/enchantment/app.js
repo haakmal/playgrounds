@@ -539,8 +539,16 @@
 
   function printRecord() {
     const s=activeSession();
-    const rows=s.spells.map((sp,i)=>`<article><h2>${i+1}. ${esc(sp.name)}</h2><p><strong>Enchantment:</strong> ${esc(sp.desire.name)} + ${esc(sp.power.name)}</p><p><strong>Context:</strong> ${esc((INGREDIENTS.find(x=>x.id===sp.ingredient?.type)||{}).label||'')}</p><p><strong>Idea:</strong> ${esc(sp.idea)}</p>${sp.variations.map(v=>`<p><strong>Ether:</strong> ${esc(v.ether.text)}<br><strong>Variation:</strong> ${esc(v.response)}</p>`).join('')}</article>`).join('');
-    const html=`<!doctype html><html><head><title>${esc(s.name)}</title><style>body{font-family:Arial,sans-serif;max-width:800px;margin:40px auto;color:#111;line-height:1.55}h1{font:400 38px Georgia,serif}h2{font:400 24px Georgia,serif;border-top:1px solid #ccc;padding-top:20px}small{color:#666}article{break-inside:avoid}</style></head><body><small>ENCHANTMENT SPELL BOOK</small><h1>${esc(s.name)}</h1><p><strong>Quandary:</strong> ${esc(s.interaction)}</p><p><strong>Ingredients:</strong> ${s.ingredients.map(i=>esc((INGREDIENTS.find(x=>x.id===i.type)||{}).label||i.label)).join(' · ')}</p>${rows || '<p>No spells yet.</p>'}</body></html>`;
+    const ingredientLabel = item => (INGREDIENTS.find(x=>x.id===item?.type)||{}).label || item?.label || '';
+    const rows=s.spells.map((sp,i)=>`<article>
+      <h2>${i+1}. ${esc(sp.name)}</h2>
+      <p><strong>Ideation direction:</strong> ${esc(sp.desire.name)} + ${esc(sp.power.name)}</p>
+      <p><strong>Contextual lens:</strong> ${esc(ingredientLabel(sp.ingredient))}</p>
+      <p><strong>Concept:</strong> ${esc(sp.idea)}</p>
+      ${sp.variations.map((v,vi)=>`<section class="variation"><p><strong>Provocation ${vi+1}:</strong> ${esc(v.ether.text)}</p><p><strong>Revised interaction:</strong> ${esc(v.response)}</p></section>`).join('')}
+    </article>`).join('');
+    const contextualFactors = s.ingredients.map(ingredientLabel).filter(Boolean).join(' · ');
+    const html=`<!doctype html><html><head><meta charset="utf-8"><title>${esc(s.name)}</title><style>body{font-family:Arial,Helvetica,sans-serif;max-width:820px;margin:42px auto;color:#111;line-height:1.55}h1{font:400 38px Georgia,serif;margin:8px 0 22px}h2{font:400 24px Georgia,serif;border-top:1px solid #ccc;padding-top:20px;margin:28px 0 12px}h3{font:400 18px Georgia,serif}small{color:#666;text-transform:uppercase;letter-spacing:.08em}article{break-inside:avoid}.variation{margin:14px 0 0;padding:12px 0 0 16px;border-left:2px solid #ddd}p{margin:8px 0}.meta{color:#555}</style></head><body><small>INTERACTION DESIGN IDEATION RECORD</small><h1>${esc(s.name)}</h1><p><strong>Interaction / design opportunity:</strong> ${esc(s.interaction)}</p><p class="meta"><strong>Contextual factors considered:</strong> ${esc(contextualFactors || 'None recorded')}</p><h2>Ideation explorations</h2>${rows || '<p>No concepts recorded yet.</p>'}<p class="meta">This record documents an exploratory ideation activity. Concepts are student-generated and were developed through contextual prompts and iterative provocations.</p></body></html>`;
     const w=window.open('','_blank'); if(!w) return; w.document.write(html); w.document.close(); w.focus(); setTimeout(()=>w.print(),250);
   }
 
