@@ -10,7 +10,7 @@
 <body>
   <main class="app" id="app">
     <button class="edge-control edge-menu" id="menuButton" type="button" aria-label="Open tools">☰</button>
-    <button class="edge-control edge-book" id="bookButton" type="button" aria-label="Open spell book">✦ <span>Spell book</span></button>
+    <button class="edge-control edge-book" id="bookButton" type="button" aria-label="Open grimoire">✦ <span>Grimoire</span></button>
 
     <section class="stage-wrap">
       <div id="stage" class="stage" aria-live="polite"></div>
@@ -39,12 +39,12 @@
   </aside>
 
   <aside class="drawer drawer-right" id="bookDrawer" aria-hidden="true">
-    <div class="drawer-header"><strong>Spell book</strong><button class="icon-button" id="closeBook" type="button">×</button></div>
+    <div class="drawer-header"><strong>Grimoire</strong><button class="icon-button" id="closeBook" type="button">×</button></div>
     <div class="drawer-body" id="bookContent"></div>
   </aside>
 
   <div class="modal" id="sessionsModal" aria-hidden="true">
-    <div class="modal-panel"><div class="drawer-header"><strong>My sessions</strong><button class="icon-button" data-close-modal="sessionsModal" type="button">×</button></div><div class="modal-body" id="sessionsList"></div><div class="modal-actions"><button class="button button-primary" id="newSessionButton" type="button">New session</button></div></div>
+    <div class="modal-panel"><div class="drawer-header"><strong>My grimoires</strong><button class="icon-button" data-close-modal="sessionsModal" type="button">×</button></div><div class="modal-body" id="sessionsList"></div><div class="modal-actions"><button class="button button-primary" id="newSessionButton" type="button">New grimoire</button></div></div>
   </div>
 
   <div class="modal" id="helpModal" aria-hidden="true">

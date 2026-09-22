@@ -21,6 +21,9 @@
     menuOpen: false,
     ballIndex: 0,
     etherIndex: 0,
+    drawnDesire: false,
+    drawnPower: false,
+    ballComplete: false,
     savingTimer: null,
     transitionTimer: null
   };
@@ -41,7 +44,7 @@
   function activeSpell() { const s = activeSession(); return s?.spells.find(x => x.id === app.currentSpellId) || null; }
   function now() { return Date.now(); }
 
-  function blankSession(name='Untitled spell book') {
+  function blankSession(name='The Untitled Grimoire') {
     return {
       id: uid('session'), name, interaction:'', context:'', ingredients:[], spells:[],
       created: now(), updated: now(), status:'active'
@@ -49,14 +52,14 @@
   }
 
   function defaultWorkspace() {
-    const session = blankSession('Untitled spell book');
+    const session = blankSession('The Untitled Grimoire');
     return { activeId: session.id, sessions:[session] };
   }
 
   function normaliseWorkspace(data) {
     if (!data || !Array.isArray(data.sessions) || !data.sessions.length) return null;
     const sessions = data.sessions.map(raw => {
-      const base = blankSession(raw.name || 'Untitled spell book');
+      const base = blankSession(raw.name || 'The Untitled Grimoire');
       Object.assign(base, raw);
       base.id = raw.id || base.id;
       base.ingredients = Array.isArray(raw.ingredients) ? raw.ingredients.map(i => ({ id:i.id || uid('ingredient'), type:i.type || '', label:i.label || '', value:i.value || '' })) : [];
@@ -99,12 +102,22 @@
       void el.stage.offsetWidth;
       el.stage.classList.add('is-entering');
       renderBook();
-    }, 260);
+    }, 680);
   }
 
-  function setPrompt(copy, actionHtml='') {
-    el.promptCopy.innerHTML = copy || '';
+  function setPrompt(copy, actionHtml='', feedback='') {
+    el.promptCopy.innerHTML = `${copy || ''}${feedback ? `<span class=\"prompt-feedback\">${esc(feedback)}</span>` : ''}`;
     el.promptAction.innerHTML = actionHtml || '';
+  }
+
+  function setPromptFeedback(message) {
+    const existing = el.promptCopy.querySelector('.prompt-feedback');
+    if (existing) existing.remove();
+    if (!message) return;
+    const note = document.createElement('span');
+    note.className = 'prompt-feedback';
+    note.textContent = message;
+    el.promptCopy.appendChild(note);
   }
 
   function openDrawer(which) { if (which === 'tools') { el.tools.classList.add('is-open'); el.tools.setAttribute('aria-hidden','false'); } else { el.book.classList.add('is-open'); el.book.setAttribute('aria-hidden','false'); renderBook(); } }
@@ -167,7 +180,7 @@
     });
   }
 
-  function gateQuandary() { const b=$('#quandaryNext'); if (b) b.disabled=activeSession().interaction.trim().length < Number(SETTINGS.minInteractionLength || 12); }
+  function gateQuandary() {}
 
   function renderIngredients() {
     app.currentStage = 'ingredients';
@@ -188,7 +201,7 @@
         </div>`;
       $$('.ingredient-card').forEach(card => card.addEventListener('click', () => editIngredient(card.dataset.ingredient)));
       $('#ingredientsDone').addEventListener('click', () => {
-        if (s.ingredients.length < Number(SETTINGS.minIngredients || 2)) return softNudge('ingredientsDone','Choose at least two ingredients. A couple of useful details are enough.');
+        if (s.ingredients.length < Number(SETTINGS.minIngredients || 2)) return softNudge('ingredientsDone','A couple of useful ingredients are enough to begin. Choose at least two.');
         beginSpell();
       });
       if (s.ingredients[0]) editIngredient(s.ingredients[0].type, false);
@@ -217,130 +230,180 @@
     updateIngredientGate();
   }
 
-  function updateIngredientGate() { const b=$('#ingredientsDone'); if(b) b.disabled=activeSession().ingredients.length < Number(SETTINGS.minIngredients || 2); }
+  function updateIngredientGate() {}
 
   function beginSpell() {
     app.currentPair = chooseUnusedPair();
-    app.currentIngredientId = chooseUnusedIngredient()?.id || activeSession().ingredients[0]?.type || null;
-    renderSummon();
+    app.currentIngredientId = chooseRandom(activeSession().ingredients)?.id || activeSession().ingredients[0]?.type || null;
+    app.drawnDesire = false;
+    app.drawnPower = false;
+    app.ballComplete = false;
+    app.currentSpellDraft = '';
+    app.currentSpellName = '';
+    renderSpellTable();
   }
 
-  function renderSummon() {
-    app.currentStage='summon';
-    setPrompt('The cards are ready. Draw a desire and a power to craft the beginning of a spell.', '<button class="button button-primary" id="drawCards">Draw the cards</button>');
-    transition(() => {
-      el.stage.innerHTML = `
-        <div class="scene">
-          <p class="kicker">Draw from the Seer</p>
-          <h2 class="title" style="font-size:clamp(38px,5.8vw,68px)">Let us craft a spell.</h2>
-          <p class="subtitle">You bring the interaction. The cards only decide where to look.</p>
-          <div class="deal-area">
-            <div class="deck-wrap"><div class="deck" id="desireDeck"><div class="deck-face"><span>Desire</span></div></div><div class="deck-hint">Draw one</div></div>
-            <div class="deck-wrap"><div class="deck" id="powerDeck"><div class="deck-face"><span>Power</span></div></div><div class="deck-hint">Draw one</div></div>
-          </div>
-        </div>`;
-      $('#drawCards').addEventListener('click', revealCards);
-    });
-  }
-
-  function revealCards() {
-    const pair = app.currentPair;
-    $('#desireDeck')?.classList.add('is-dealt');
-    setTimeout(()=>$('#powerDeck')?.classList.add('is-dealt'), 850);
-    setTimeout(()=>renderCardReveal(pair), 1600);
-  }
-
-  function renderCardReveal(pair) {
-    app.currentStage='cards';
-    setPrompt('Your spell has two ingredients. Now look through one of your own contextual details.', '<button class="button button-primary" id="consultBall">Consult the crystal ball</button>');
-    transition(() => {
-      el.stage.innerHTML = `
-        <div class="scene">
-          <p class="kicker">The spell begins</p>
-          <div class="spell-pair">
-            <article class="spell-card"><h3>${esc(pair.desire.name)}</h3><p>${esc(pair.desire.description)}</p></article>
-            <div class="pair-plus">+</div>
-            <article class="spell-card"><h3>${esc(pair.power.name)}</h3><p>${esc(pair.power.nudge)}</p></article>
-          </div>
-          <p class="subtitle" style="margin-top:32px">Desire has met power. What could it make possible?</p>
-        </div>`;
-      $('#consultBall').addEventListener('click', renderCrystalBall);
-    });
-  }
-
-  function renderCrystalBall() {
-    app.currentStage='crystal';
-    const ingredient = activeSession().ingredients.find(i=>i.type===app.currentIngredientId) || activeSession().ingredients[0];
-    const data = INGREDIENTS.find(i=>i.id===ingredient?.type) || INGREDIENTS[0];
-    const reading = BALL_READINGS[app.ballIndex++ % Math.max(BALL_READINGS.length,1)] || 'Look at the interaction through this lens.';
-    setPrompt('The Seer is looking through the detail you brought with you.', '');
-    transition(() => {
-      el.stage.innerHTML = `
-        <div class="scene ball-stage">
-          <p class="kicker" style="position:absolute;top:0">Into the crystal ball</p>
-          <div class="ball" id="crystalBall">
-            <span class="ball-ring r1"></span><span class="ball-ring r2"></span><span class="ball-ring r3"></span><span class="ball-ring r4"></span>
-            <div class="ball-core" id="ballCore">${esc(data.label)}</div>
-            <div class="ball-reading" id="ballReading"><strong>${esc(reading)}</strong><span>${esc(ingredient?.value || 'This part of the situation has not been described yet.')}</span></div>
-          </div>
-        </div>`;
-      const ball=$('#crystalBall'), core=$('#ballCore'), text=$('#ballReading');
-      setTimeout(()=>ball.classList.add('is-reading'), 120);
-      setTimeout(()=>core.classList.add('is-visible'), 1500);
-      setTimeout(()=>text.classList.add('is-visible'), 2550);
-      setTimeout(()=>setPrompt('The Seer has seen enough. Step away from the screen and sketch what you imagine.', '<button class="button button-primary" id="sketchButton">I have sketched something</button>'), 3400);
-      setTimeout(()=>$('#sketchButton')?.addEventListener('click', renderCraftSpell), 3400);
-    });
-  }
-
-  function renderCraftSpell() {
-    app.currentStage='craft';
+  function renderSpellTable() {
+    app.currentStage='spell-table';
+    const s=activeSession();
     const pair=app.currentPair;
-    const ingredient=activeSession().ingredients.find(i=>i.id===app.currentIngredientId) || activeSession().ingredients[0];
+    const ingredient=s.ingredients.find(i=>i.id===app.currentIngredientId) || s.ingredients[0];
     const ingredientDef=INGREDIENTS.find(i=>i.id===ingredient?.type);
-    setPrompt('Now put your own idea into words. The Seer will not do this part for you.', '<button class="button button-primary" id="saveSpell">Put it in the spell book</button>');
+    setPrompt('The Seer has laid the tools before you. Draw both cards, then let the crystal ball show you what from your world belongs in the spell.', '');
     transition(() => {
-      el.stage.innerHTML=`
-        <div class="scene narrow">
-          <p class="kicker">Craft the spell</p>
-          <h2 class="title" style="font-size:clamp(38px,5.8vw,66px)">What did you imagine?</h2>
-          <div class="idea-work" style="margin-top:30px">
-            <article class="sketch-card"><h3>Leave the screen.</h3><p style="color:var(--muted);line-height:1.5">Sketch the interaction first. Think about what the person does, what changes, and what happens next.</p></article>
-            <article class="capture-card">
-              <h3>${esc(pair.desire.name)} + ${esc(pair.power.name)}</h3>
-              <div class="spell-context"><strong>${esc(ingredientDef?.label || 'Context')}</strong><br>${esc(ingredient?.value || 'Your contextual detail')}</div>
-              <label class="field"><span>Your spell</span><textarea id="ideaInput" rows="8" placeholder="Describe the interaction you sketched...">${esc(app.currentSpellDraft || '')}</textarea></label>
-              <label class="field"><span>Give it a name <em>(optional)</em></span><input id="spellName" placeholder="The Whispering Table" value="${esc(app.currentSpellName || '')}"></label>
-            </article>
+      el.stage.innerHTML = `
+        <div class="scene spell-table-scene">
+          <p class="kicker">The Seer’s table</p>
+          <h2 class="table-title">Draw. Look. Craft.</h2>
+          <div class="spell-table">
+            <section class="table-panel table-cards" aria-label="Spell cards">
+              <p class="table-label">Cards</p>
+              <div class="draw-stack">
+                <button class="draw-card ${app.drawnDesire ? 'is-drawn' : ''}" id="desireCard" type="button" aria-label="Draw desire card">
+                  <span class="card-face-back">Desire</span>
+                  <span class="card-face-result"></span>
+                </button>
+                <button class="draw-card ${app.drawnPower ? 'is-drawn' : ''}" id="powerCard" type="button" aria-label="Draw power card">
+                  <span class="card-face-back">Power</span>
+                  <span class="card-face-result"></span>
+                </button>
+              </div>
+              <p class="table-hint">The cards decide where to look. The idea is yours.</p>
+            </section>
+
+            <section class="table-panel table-ball" aria-label="Crystal ball">
+              <p class="table-label">Crystal ball</p>
+              <div class="ball-shell" id="ballShell">
+                <div class="ball" id="crystalBall">
+                  <span class="ball-ring r1"></span><span class="ball-ring r2"></span><span class="ball-ring r3"></span><span class="ball-ring r4"></span>
+                  <div class="ball-core" id="ballCore">Awaiting the spell</div>
+                  <div class="ball-reading" id="ballReading"></div>
+                </div>
+              </div>
+              <div class="ball-context" id="ballContext">
+                <span>Waiting for both cards.</span>
+              </div>
+            </section>
+
+            <section class="table-panel table-craft" aria-label="Spell crafting">
+              <p class="table-label">Your spell</p>
+              <div id="craftPanel" class="craft-panel-empty">
+                <p>The spell will take shape here.</p>
+                <small>Draw both cards and let the Seer look into the crystal ball.</small>
+              </div>
+            </section>
           </div>
         </div>`;
-      $('#ideaInput').addEventListener('input',e=>{app.currentSpellDraft=e.target.value; scheduleSave();});
-      $('#spellName').addEventListener('input',e=>{app.currentSpellName=e.target.value; scheduleSave();});
-      $('#saveSpell').addEventListener('click', saveSpellDraft);
-      $('#ideaInput').focus();
+      $('#desireCard').addEventListener('click', () => dealCard('desire'));
+      $('#powerCard').addEventListener('click', () => dealCard('power'));
+      if (app.drawnDesire) revealCardVisual('desire');
+      if (app.drawnPower) revealCardVisual('power');
+      if (app.drawnDesire && app.drawnPower && !app.ballComplete) startCrystalReading();
     });
+  }
+
+  function dealCard(type) {
+    if (type === 'desire' && app.drawnDesire) return;
+    if (type === 'power' && app.drawnPower) return;
+    const button = type === 'desire' ? $('#desireCard') : $('#powerCard');
+    if (!button) return;
+    button.classList.add('is-flipping');
+    setPrompt(type === 'desire' ? 'The first card turns. Let it change how you see the interaction.' : 'The second card turns. Notice what happens when these two forces meet.', '');
+    setTimeout(() => {
+      if (type === 'desire') app.drawnDesire = true;
+      if (type === 'power') app.drawnPower = true;
+      revealCardVisual(type);
+      button.classList.remove('is-flipping');
+      if (app.drawnDesire && app.drawnPower) setTimeout(startCrystalReading, 520);
+      else setPrompt('One card has spoken. Draw the other.', '');
+    }, 820);
+  }
+
+  function revealCardVisual(type) {
+    const pair=app.currentPair;
+    const button = type === 'desire' ? $('#desireCard') : $('#powerCard');
+    if (!button || !pair) return;
+    const item = type === 'desire' ? pair.desire : pair.power;
+    const result = $('.card-face-result', button);
+    $('.card-face-back', button)?.classList.add('is-hidden');
+    if (result) result.innerHTML = `<strong>${esc(item.name)}</strong><small>${esc(type === 'desire' ? item.description : item.nudge)}</small>`;
+    button.classList.add('is-drawn');
+  }
+
+  function startCrystalReading() {
+    if (app.ballComplete) return;
+    app.currentStage='crystal-reading';
+    const s=activeSession();
+    const ingredient=s.ingredients.find(i=>i.id===app.currentIngredientId) || s.ingredients[0];
+    const data=INGREDIENTS.find(i=>i.id===ingredient?.type) || INGREDIENTS[0];
+    const reading=BALL_READINGS[app.ballIndex++ % Math.max(BALL_READINGS.length,1)] || 'Look at the interaction through this lens.';
+    const ball=$('#crystalBall');
+    const core=$('#ballCore');
+    const read=$('#ballReading');
+    const ctx=$('#ballContext');
+    const craft=$('#craftPanel');
+    if (!ball || !core || !read || !ctx || !craft) return;
+
+    setPrompt('The cards have met. The Seer is looking for something from the world you brought in.', '');
+    $('.table-ball')?.classList.add('is-active-reading');
+    core.textContent=data.label;
+    read.innerHTML=`<strong>${esc(reading)}</strong><span>${esc(ingredient?.value || 'This part of the situation has not been described yet.')}</span>`;
+    ctx.innerHTML=`<strong>${esc(data.label)}</strong><span>${esc(ingredient?.value || 'Your contextual detail')}</span>`;
+    craft.innerHTML=`
+      <div class="craft-context">
+        <div class="craft-combination"><span>${esc(app.currentPair.desire.name)}</span><b>+</b><span>${esc(app.currentPair.power.name)}</span></div>
+        <div class="craft-lens"><span>seen through</span><strong>${esc(data.label)}</strong></div>
+        <label class="field"><span>What did you imagine?</span><textarea id="ideaInput" rows="7" placeholder="Describe what the person does, what changes, and what happens next..."></textarea></label>
+        <label class="field"><span>Name your spell <em>(optional)</em></span><input id="spellName" placeholder="The Whispering Table"></label>
+      </div>`;
+    $('#ideaInput').addEventListener('input',e=>{app.currentSpellDraft=e.target.value; setPromptFeedback(''); scheduleSave();});
+    $('#spellName').addEventListener('input',e=>{app.currentSpellName=e.target.value; scheduleSave();});
+    setTimeout(()=>ball.classList.add('is-reading'), 80);
+    setTimeout(()=>core.classList.add('is-visible'), 1550);
+    setTimeout(()=>read.classList.add('is-visible'), 2850);
+    setTimeout(()=>{
+      app.ballComplete=true;
+      $('.table-ball')?.classList.remove('is-active-reading');
+      setPrompt('The crystal ball has found its lens. Now give the spell a form of your own.', '<button class="button button-primary" id="saveSpell">Place the spell in the grimoire</button>');
+      $('#ideaInput')?.focus();
+      $('#saveSpell')?.addEventListener('click', saveSpellDraft);
+    }, 3900);
   }
 
   function saveSpellDraft() {
-    const text=$('#ideaInput')?.value.trim() || '';
-    if (!canContinue(text, SETTINGS.minIdeaLength || 20)) return softNudge('saveSpell','The spell needs a little more shape. Tell us what the person does and what changes.');
+    const text=$('#ideaInput')?.value.trim() || app.currentSpellDraft || '';
+    if (!canContinue(text, SETTINGS.minIdeaLength || 20)) return softNudge('saveSpell','The Seer is waiting for the idea itself. Give the interaction a little more shape.');
     const s=activeSession();
-    const spell={ id:uid('spell'), name:(($('#spellName')?.value.trim() || '') || `Spell ${s.spells.length+1}`), desire:app.currentPair.desire, power:app.currentPair.power, ingredient:{ id:app.currentIngredientId, type:(s.ingredients.find(i=>i.id===app.currentIngredientId)||{}).type || '', value:(s.ingredients.find(i=>i.id===app.currentIngredientId)||{}).value || '' }, idea:text, variations:[], created:now(), updated:now() };
-    s.spells.push(spell); app.currentSpellId=spell.id; app.currentPair=null; app.currentIngredientId=null; app.currentSpellDraft=''; app.currentSpellName=''; scheduleSave();
-    renderSpellSaved();
+    const name=(($('#spellName')?.value.trim() || '') || `Spell ${s.spells.length+1}`);
+    const ingredient=s.ingredients.find(i=>i.id===app.currentIngredientId) || s.ingredients[0];
+    const spell={ id:uid('spell'), name, desire:app.currentPair.desire, power:app.currentPair.power, ingredient:{ id:ingredient?.id || '', type:ingredient?.type || '', value:ingredient?.value || '' }, idea:text, variations:[], created:now(), updated:now() };
+    s.spells.push(spell); app.currentSpellId=spell.id; scheduleSave();
+    app.currentPair=null; app.currentIngredientId=null; app.currentSpellDraft=''; app.currentSpellName='';
+    renderCraftedSpell(spell);
   }
 
-  function renderSpellSaved() {
-    const spell=activeSpell();
-    setPrompt('The spell is in your book. You can make another one or disturb this one.', `<button class="button button-secondary" id="anotherSpell">Craft another</button><button class="button button-primary" id="disturbSpell">Pull from the Ether</button>`);
-    transition(() => {
-      el.stage.innerHTML=`<div class="scene narrow"><p class="kicker">Spell saved</p><h2 class="title" style="font-size:clamp(40px,6vw,72px)">${esc(spell.name)}</h2><p class="subtitle">${esc(spell.idea)}</p><div class="form-card" style="margin-top:30px;text-align:left"><div class="kicker">${esc(spell.desire.name)} + ${esc(spell.power.name)}</div><p style="margin:8px 0 0;font-size:14px;color:var(--muted)">Seen through ${esc((INGREDIENTS.find(i=>i.id===spell.ingredient?.type)||{}).label || 'your chosen context')}.</p></div></div>`;
-      $('#anotherSpell').addEventListener('click', beginSpell);
-      $('#disturbSpell').addEventListener('click', renderEther);
-    });
+  function renderCraftedSpell(spell) {
+    const ingredientDef=INGREDIENTS.find(i=>i.id===spell.ingredient?.type);
+    setPrompt('The spell is now written in your grimoire. You can disturb it or return to the table for another.', '<button class="button button-secondary" id="disturbSpell">Pull from the Ether</button><button class="button button-primary" id="anotherSpell">Craft another spell</button>');
+    const craft=$('#craftPanel');
+    if (craft) {
+      craft.innerHTML=`
+        <article class="crafted-spell-card">
+          <span class="crafted-badge">Written in ${esc(activeSession().name)}</span>
+          <h3>${esc(spell.name)}</h3>
+          <p>${esc(spell.idea)}</p>
+          <div class="crafted-meta"><strong>${esc(spell.desire.name)} + ${esc(spell.power.name)}</strong><span>through ${esc(ingredientDef?.label || 'your context')}</span></div>
+        </article>`;
+    }
+    $('#disturbSpell').addEventListener('click',renderEther);
+    $('#anotherSpell').addEventListener('click',beginSpell);
+    const stage=$('#craftPanel')?.closest('.spell-table-scene');
+    if (stage) stage.classList.add('spell-written');
+    renderBook();
   }
 
   function renderSpellBookFull() {
+
     openDrawer('book');
   }
 
@@ -351,7 +414,7 @@
     const spells=s.spells.map((sp,i)=>`
       <article class="book-card" data-open-spell="${esc(sp.id)}"><h3>${esc(sp.name)}</h3><p>${esc(sp.idea)}</p><div class="book-meta">${esc(sp.desire.name)} + ${esc(sp.power.name)} · ${sp.variations.length} variation${sp.variations.length===1?'':'s'}</div></article>`).join('');
     el.bookContent.innerHTML=`
-      <section class="spell-section"><h3>Book title</h3><p><button class="drawer-action" id="renameFromBook" type="button">${esc(s.name)}</button></p></section>
+      <section class="spell-section"><h3>Grimoire</h3><p><button class="drawer-action" id="renameFromBook" type="button">${esc(s.name)}</button></p></section>
       <section class="spell-section"><h3>Your quandary</h3><p>${esc(s.interaction || 'Not started yet.')}</p></section>
       <section class="spell-section"><h3>Ingredients</h3><ul style="padding-left:18px;line-height:1.6;font-size:13px">${ingredients || '<li>None yet</li>'}</ul></section>
       <section class="spell-section"><h3>Spells</h3><div class="spellbook-list">${spells || '<p style="color:var(--muted)">Your first spell will appear here.</p>'}</div></section>`;
@@ -362,7 +425,7 @@
   function openSavedSpell(id) {
     const s=activeSession(); const spell=s.spells.find(x=>x.id===id); if(!spell) return;
     app.currentSpellId=id; closeDrawers();
-    setPrompt('This spell is still yours to disturb. Or return to the book and make another.', `<button class="button button-secondary" id="backToBook">Spell book</button><button class="button button-primary" id="disturbSaved">Pull from the Ether</button>`);
+    setPrompt('This spell is still yours to disturb. Or return to the book and make another.', `<button class="button button-secondary" id="backToBook">Grimoire</button><button class="button button-primary" id="disturbSaved">Pull from the Ether</button>`);
     transition(()=>{
       el.stage.innerHTML=`<div class="scene narrow"><p class="kicker">From the spell book</p><h2 class="title" style="font-size:clamp(40px,6vw,72px)">${esc(spell.name)}</h2><p class="subtitle">${esc(spell.idea)}</p><div class="preview-grid" style="grid-template-columns:1fr;margin-top:28px"><article class="idea-tile is-selected"><small>${esc(spell.desire.name)} + ${esc(spell.power.name)}</small><h3>Original spell</h3><p>${esc(spell.idea)}</p></article>${spell.variations.map(v=>`<article class="idea-tile"><small>Ether</small><h3>${esc(v.ether?.text || 'Variation')}</h3><p>${esc(v.response || 'No response recorded yet.')}</p></article>`).join('')}</div></div>`;
       $('#backToBook').addEventListener('click',()=>openDrawer('book'));
@@ -371,41 +434,56 @@
   }
 
   function renderEther() {
-    const spell=activeSpell(); if(!spell) return renderSpellSaved();
+    const spell=activeSpell(); if(!spell) return;
     app.currentStage='ether';
-    setPrompt('Pull something unexpected from the Ether. You can always return to this spell later.', '<button class="button button-primary" id="pullEther">Pull from the Ether</button>');
+    setPrompt('The Ether is stirring around this spell. Watch for what changes.', '');
     transition(()=>{
-      el.stage.innerHTML=`<div class="scene ether-wrap"><p class="kicker">The Ether</p><h2 class="title" style="font-size:clamp(38px,5.5vw,65px)">What else might this spell become?</h2><p class="subtitle">Let one strange condition interrupt it.</p><div class="ether-window" id="etherWindow"><div class="ether-line" id="etherLine">…</div></div></div>`;
-      $('#pullEther').addEventListener('click', spinEther);
+      el.stage.innerHTML=`
+        <div class="scene ether-wrap">
+          <p class="kicker">The Ether</p>
+          <h2 class="title" style="font-size:clamp(38px,5.5vw,65px)">${esc(spell.name)}</h2>
+          <div class="ether-source"><span>${esc(spell.idea)}</span></div>
+          <div class="ether-window" id="etherWindow"><div class="ether-line" id="etherLine">…</div></div>
+          <p class="ether-nudge" id="etherNudge">The spell is never quite finished.</p>
+        </div>`;
+      setTimeout(spinEther, 520);
     });
   }
 
   function spinEther() {
     const line=$('#etherLine'); if(!line || !ETHER.length) return;
-    const button=$('#pullEther'); if(button) button.disabled=true;
     line.classList.add('is-spinning');
     let i=0;
-    const interval=setInterval(()=>{ line.textContent=ETHER[i % ETHER.length].text; i++; }, 115);
+    const interval=setInterval(()=>{ line.textContent=ETHER[i % ETHER.length].text; i++; }, 120);
     setTimeout(()=>{
       clearInterval(interval);
-      const choice=chooseRandom(ETHER); line.textContent=choice.text; line.classList.remove('is-spinning'); line.classList.add('is-settled');
+      const choice=chooseRandom(ETHER);
+      line.textContent=choice.text;
+      line.classList.remove('is-spinning');
+      line.classList.add('is-settled');
       app.pendingEther=choice;
-      setTimeout(renderEtherCapture, 900);
-    }, 1450);
+      setTimeout(revealEtherCapture, 850);
+    }, 2100);
   }
 
-  function renderEtherCapture() {
+  function revealEtherCapture() {
     const spell=activeSpell(), choice=app.pendingEther; if(!spell||!choice) return;
-    app.currentStage='ether-capture';
-    setPrompt('The Ether changed one condition. Sketch the variation, then record what survives.', '<button class="button button-primary" id="saveVariation">Save this variation</button>');
-    transition(()=>{
-      el.stage.innerHTML=`<div class="scene narrow"><p class="kicker">The Ether has spoken</p><h2 class="title" style="font-size:clamp(34px,5.4vw,62px)">${esc(choice.text)}</h2><p class="subtitle">${esc(choice.nudge)}</p><div class="idea-work" style="margin-top:30px"><article class="sketch-card"><h3>Sketch the disturbed version.</h3><p style="color:var(--muted);line-height:1.5">Do not solve the whole thing. Follow the change and see what it forces.</p></article><article class="capture-card"><label class="field"><span>What changed?</span><textarea id="variationInput" rows="8" placeholder="Describe the revised interaction..."></textarea></label></article></div></div>`;
-      $('#saveVariation').addEventListener('click', saveVariation);
-      $('#variationInput').focus();
-    });
+    const wrap=$('.ether-wrap'); if(!wrap) return;
+    const nudge=$('#etherNudge'); if(nudge) nudge.textContent=choice.nudge;
+    const line=$('#etherLine'); if(line) line.classList.add('is-quiet');
+    setPrompt('The Ether has altered one condition. Follow that change and give the variation a form.', '<button class="button button-primary" id="saveVariation">Write the variation</button>');
+    const capture=document.createElement('div');
+    capture.className='ether-capture';
+    capture.innerHTML=`
+      <div class="variation-rule"><strong>${esc(choice.text)}</strong><span>${esc(choice.nudge)}</span></div>
+      <label class="field"><span>What changed?</span><textarea id="variationInput" rows="6" placeholder="Describe the revised interaction..."></textarea></label>`;
+    wrap.appendChild(capture);
+    $('#saveVariation').addEventListener('click', saveVariation);
+    $('#variationInput')?.focus();
   }
 
   function saveVariation() {
+
     const text=$('#variationInput')?.value.trim() || '';
     if(!canContinue(text, SETTINGS.minIdeaLength || 20)) return softNudge('saveVariation','The Ether changed the spell. Give the variation enough shape that you can recognise it later.');
     const spell=activeSpell(); spell.variations.push({ id:uid('variation'), ether:app.pendingEther, response:text, created:now() }); spell.updated=now(); app.pendingEther=null; scheduleSave();
@@ -413,31 +491,42 @@
   }
 
   function renderVariationSaved(spell) {
-    setPrompt('Your spell has a new variation. Return to the book, disturb it again, or craft a different spell.', `<button class="button button-subtle" id="bookAfterVariation">Spell book</button><button class="button button-secondary" id="againAfterVariation">Disturb again</button><button class="button button-primary" id="newAfterVariation">Craft another spell</button>`);
-    transition(()=>{ el.stage.innerHTML=`<div class="scene narrow"><p class="kicker">Variation saved</p><h2 class="title" style="font-size:clamp(40px,6vw,72px)">${esc(spell.name)}</h2><div class="form-card" style="margin-top:28px;text-align:left"><p class="kicker">${esc(spell.variations.at(-1).ether.text)}</p><p style="font-size:16px;line-height:1.55;margin:0">${esc(spell.variations.at(-1).response)}</p></div></div>`;
-      $('#bookAfterVariation').addEventListener('click',()=>openDrawer('book'));
-      $('#againAfterVariation').addEventListener('click',renderEther);
-      $('#newAfterVariation').addEventListener('click',beginSpell);
-    });
+    const last=spell.variations.at(-1);
+    setPrompt('The variation is written in the grimoire. You can disturb this spell again, return to the book, or craft another.', '<button class="button button-secondary" id="bookAfterVariation">Grimoire</button><button class="button button-secondary" id="againAfterVariation">Disturb again</button><button class="button button-primary" id="newAfterVariation">Craft another spell</button>');
+    const wrap=$('.ether-wrap');
+    if (!wrap) return;
+    const capture=$('.ether-capture');
+    if (capture) capture.innerHTML=`<div class="variation-saved"><span class="crafted-badge">Variation written</span><h3>${esc(last.ether.text)}</h3><p>${esc(last.response)}</p></div>`;
+    $('#bookAfterVariation').addEventListener('click',()=>openDrawer('book'));
+    $('#againAfterVariation').addEventListener('click',renderEther);
+    $('#newAfterVariation').addEventListener('click',beginSpell);
+    renderBook();
   }
 
   function canContinue(text,min) { return String(text||'').trim().length >= Number(min); }
 
   function softNudge(buttonId,message) {
-    const button=document.getElementById(buttonId); const stage=button?.closest('.scene'); if(!stage) return;
-    const existing=stage.querySelector('.soft-nudge') || (()=>{const p=document.createElement('p');p.className='soft-nudge';p.style.cssText='margin:18px auto 0;color:var(--muted);font:12px/1.45 Arial,Helvetica,sans-serif';stage.appendChild(p);return p;})();
-    existing.textContent=message; button.classList.add('is-jiggling'); setTimeout(()=>button.classList.remove('is-jiggling'),280);
+    const button=document.getElementById(buttonId);
+    const field = button?.closest('.prompt-rail') ? null : document.querySelector('.field input:focus, .field textarea:focus');
+    setPromptFeedback(message);
+    button?.classList.add('is-jiggling');
+    setTimeout(()=>button?.classList.remove('is-jiggling'),420);
+    if (field) {
+      field.classList.add('is-invalid');
+      field.setAttribute('aria-invalid','true');
+      setTimeout(()=>field.classList.remove('is-invalid'),1200);
+    }
   }
 
   function renameSession() {
-    const s=activeSession(); const value=window.prompt('Name this spell book', s.name || 'Untitled spell book'); if(value===null) return; s.name=value.trim() || 'Untitled spell book'; scheduleSave(); renderBook(); closeDrawers();
+    const s=activeSession(); const value=window.prompt('Name your grimoire', s.name || 'The Untitled Grimoire'); if(value===null) return; s.name=value.trim() || 'The Untitled Grimoire'; scheduleSave(); renderBook(); closeDrawers();
   }
 
   function openSessions() { closeDrawers(); renderSessions(); openModal('sessionsModal'); }
   function renderSessions() {
     el.sessionsList.innerHTML=app.workspace.sessions.map(s=>`<div class="session-row"><div><strong>${esc(s.name)}</strong><small>${s.spells.length} spell${s.spells.length===1?'':'s'}</small></div><div class="session-actions"><button data-open-session="${esc(s.id)}">Open</button><button data-duplicate-session="${esc(s.id)}">Duplicate</button><button data-delete-session="${esc(s.id)}">Delete</button></div></div>`).join('');
     $$('[data-open-session]').forEach(b=>b.addEventListener('click',()=>{app.workspace.activeId=b.dataset.openSession; save(); closeModal('sessionsModal'); renderWelcome();}));
-    $$('[data-duplicate-session]').forEach(b=>b.addEventListener('click',()=>{const source=app.workspace.sessions.find(x=>x.id===b.dataset.duplicateSession); const copy=JSON.parse(JSON.stringify(source)); copy.id=uid('session'); copy.name=source.name+' copy'; copy.spells.forEach(sp=>{sp.id=uid('spell');sp.variations.forEach(v=>v.id=uid('variation'));}); app.workspace.sessions.push(copy); app.workspace.activeId=copy.id; save(); renderSessions();}));
+    $$('[data-duplicate-session]').forEach(b=>b.addEventListener('click',()=>{const source=app.workspace.sessions.find(x=>x.id===b.dataset.duplicateSession); const copy=JSON.parse(JSON.stringify(source)); copy.id=uid('session'); copy.name=source.name+' — copy'; copy.spells.forEach(sp=>{sp.id=uid('spell');sp.variations.forEach(v=>v.id=uid('variation'));}); app.workspace.sessions.push(copy); app.workspace.activeId=copy.id; save(); renderSessions();}));
     $$('[data-delete-session]').forEach(b=>b.addEventListener('click',()=>{if(app.workspace.sessions.length===1) return; if(!confirm('Delete this spell book?')) return; app.workspace.sessions=app.workspace.sessions.filter(x=>x.id!==b.dataset.deleteSession); if(!app.workspace.sessions.some(x=>x.id===app.workspace.activeId)) app.workspace.activeId=app.workspace.sessions[0].id; save(); renderSessions(); renderWelcome();}));
   }
 
@@ -467,7 +556,7 @@
     $('#importButton').addEventListener('click',importWorkspace);
     $('#printButton').addEventListener('click',printRecord);
     $('#helpButton').addEventListener('click',()=>{closeDrawers();openModal('helpModal');});
-    $('#newSessionButton').addEventListener('click',()=>{const name=window.prompt('Name this spell book','Untitled spell book'); if(name===null) return; const s=blankSession(name.trim()||'Untitled spell book'); app.workspace.sessions.push(s); app.workspace.activeId=s.id; save(); closeModal('sessionsModal'); renderWelcome();});
+    $('#newSessionButton').addEventListener('click',()=>{const name=window.prompt('Name this grimoire','The Necronomicon'); if(name===null) return; const s=blankSession(name.trim()||'The Untitled Grimoire'); app.workspace.sessions.push(s); app.workspace.activeId=s.id; save(); closeModal('sessionsModal'); renderWelcome();});
     $$('[data-close-modal]').forEach(b=>b.addEventListener('click',()=>closeModal(b.dataset.closeModal)));
     $$('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m) closeModal(m.id);}));
     renderWelcome(); renderBook();
