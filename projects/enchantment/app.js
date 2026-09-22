@@ -238,6 +238,7 @@
     app.drawnDesire = false;
     app.drawnPower = false;
     app.ballComplete = false;
+    app.ballHasReading = false;
     app.currentSpellDraft = '';
     app.currentSpellName = '';
     renderSpellTable();
@@ -348,7 +349,7 @@
     $('.table-ball')?.classList.add('is-active-reading');
     core.textContent=data.label;
     read.innerHTML=`<strong>${esc(reading)}</strong><span>${esc(ingredient?.value || 'This part of the situation has not been described yet.')}</span>`;
-    ctx.innerHTML=`<strong>${esc(data.label)}</strong><span>${esc(ingredient?.value || 'Your contextual detail')}</span>`;
+    ctx.innerHTML=`<strong>${esc(data.label)}</strong><span>Your contextual lens</span>`;
     craft.innerHTML=`
       <div class="craft-context">
         <div class="craft-combination"><span>${esc(app.currentPair.desire.name)}</span><b>+</b><span>${esc(app.currentPair.power.name)}</span></div>
@@ -360,7 +361,7 @@
     $('#spellName').addEventListener('input',e=>{app.currentSpellName=e.target.value; scheduleSave();});
     setTimeout(()=>ball.classList.add('is-reading'), 80);
     setTimeout(()=>core.classList.add('is-visible'), 1550);
-    setTimeout(()=>read.classList.add('is-visible'), 2850);
+    setTimeout(()=>{ read.classList.add('is-visible'); ball.classList.add('has-reading'); }, 2850);
     setTimeout(()=>{
       app.ballComplete=true;
       $('.table-ball')?.classList.remove('is-active-reading');
@@ -384,7 +385,7 @@
 
   function renderCraftedSpell(spell) {
     const ingredientDef=INGREDIENTS.find(i=>i.id===spell.ingredient?.type);
-    setPrompt('The spell is now written in your grimoire. You can disturb it or return to the table for another.', '<button class="button button-secondary" id="disturbSpell">Pull from the Ether</button><button class="button button-primary" id="anotherSpell">Craft another spell</button>');
+    setPrompt('The spell is now written in your grimoire. You can disturb it or return to the Seer’s table.', '<button class="button button-secondary" id="disturbSpell">Pull from the Ether</button><button class="button button-primary" id="anotherSpell">Return to the Seer’s table</button>');
     const craft=$('#craftPanel');
     if (craft) {
       craft.innerHTML=`
@@ -492,14 +493,14 @@
 
   function renderVariationSaved(spell) {
     const last=spell.variations.at(-1);
-    setPrompt('The variation is written in the grimoire. You can disturb this spell again, return to the book, or craft another.', '<button class="button button-secondary" id="bookAfterVariation">Grimoire</button><button class="button button-secondary" id="againAfterVariation">Disturb again</button><button class="button button-primary" id="newAfterVariation">Craft another spell</button>');
+    setPrompt('The variation is written in the grimoire. You can disturb this spell again, return to the book, or return to the Seer’s table.', '<button class="button button-secondary" id="bookAfterVariation">Grimoire</button><button class="button button-secondary" id="againAfterVariation">Disturb again</button><button class="button button-primary" id="tableAfterVariation">Return to the Seer’s table</button>');
     const wrap=$('.ether-wrap');
     if (!wrap) return;
     const capture=$('.ether-capture');
     if (capture) capture.innerHTML=`<div class="variation-saved"><span class="crafted-badge">Variation written</span><h3>${esc(last.ether.text)}</h3><p>${esc(last.response)}</p></div>`;
     $('#bookAfterVariation').addEventListener('click',()=>openDrawer('book'));
     $('#againAfterVariation').addEventListener('click',renderEther);
-    $('#newAfterVariation').addEventListener('click',beginSpell);
+    $('#tableAfterVariation').addEventListener('click',beginSpell);
     renderBook();
   }
 
