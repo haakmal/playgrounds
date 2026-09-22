@@ -1,0 +1,677 @@
+(function () {
+  'use strict';
+
+  const STORAGE_KEY = 'ddes1150-enchantment-v1';
+  const IDEA_ROUNDS = 4;
+
+  const DESIRES = [
+    { name: 'Omniscience', description: 'The desire to know all.' },
+    { name: 'Telepathy', description: 'The desire for human connection.' },
+    { name: 'Safekeeping', description: 'The desire to protect and be protected.' },
+    { name: 'Immortality', description: 'The desire to be healthy and vital.' },
+    { name: 'Teleportation', description: 'The desire to move effortlessly.' },
+    { name: 'Expression', description: 'The desire to create, make, and play.' }
+  ];
+
+  const POWERS = [
+    { name: 'Anticipate', nudge: 'Act before the person needs to ask.' },
+    { name: 'Reveal', nudge: 'Make something known that was previously hidden.' },
+    { name: 'Remember', nudge: 'Hold onto something from an earlier encounter.' },
+    { name: 'Connect', nudge: 'Create a relationship without the usual exchange.' },
+    { name: 'Protect', nudge: 'Intervene before something is lost, damaged, or forgotten.' },
+    { name: 'Transform', nudge: 'Change the state of the interaction as it unfolds.' },
+    { name: 'Sense', nudge: 'Notice something the person cannot easily notice themselves.' },
+    { name: 'Refuse', nudge: 'Choose not to comply when the conditions are wrong.' },
+    { name: 'Create', nudge: 'Turn an action into something expressive or playful.' },
+    { name: 'Move', nudge: 'Remove effort or change how movement happens.' }
+  ];
+
+  const WHAT_IFS = [
+    { text: 'It had no screen', nudge: 'Change the interaction, not just its interface.' },
+    { text: 'It could remember', nudge: 'How would the next encounter be different?' },
+    { text: 'It could refuse', nudge: 'What would make the system say no?' },
+    { text: 'It only worked between two people', nudge: 'What changes when another person becomes part of the interaction?' },
+    { text: 'It communicated without words', nudge: 'How would the person know something happened?' },
+    { text: 'It changed over time', nudge: 'What does the interaction become after repeated use?' },
+    { text: 'It sometimes got it wrong', nudge: 'What happens when the enchantment misreads the situation?' },
+    { text: 'It acted before the user', nudge: 'What happens when the system gets there first?' }
+  ];
+
+  const app = {
+    workspace: null,
+    pendingTimer: null,
+    journeyOpen: false,
+    revealed: false,
+    spinning: false,
+    stageToken: 0
+  };
+
+  const els = {
+    stage: document.querySelector('#stage'),
+    progress: document.querySelector('#stageProgress'),
+    saveStatus: document.querySelector('#saveStatus'),
+    sessionStageLabel: document.querySelector('#sessionStageLabel'),
+    journeyRail: document.querySelector('#journeyRail'),
+    journeyTitle: document.querySelector('#journeyTitle'),
+    journeyContent: document.querySelector('#journeyContent'),
+    toolsDialog: document.querySelector('#toolsDialog'),
+    sessionsDialog: document.querySelector('#sessionsDialog'),
+    helpDialog: document.querySelector('#helpDialog'),
+    savedSessionsList: document.querySelector('#savedSessionsList'),
+    importFileInput: document.querySelector('#importFileInput'),
+    printRecord: document.querySelector('#printRecord')
+  };
+
+  function uid() {
+    return 'ench-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 7);
+  }
+
+  function blankSession(name) {
+    return {
+      id: uid(),
+      name: name || 'Untitled enchantment',
+      interaction: '',
+      context: '',
+      variables: [{ label: '', value: '' }, { label: '', value: '' }, { label: '', value: '' }],
+      rounds: [],
+      selectedRoundId: '',
+      whatIf: null,
+      reflection: '',
+      stage: 'start',
+      created: Date.now(),
+      updated: Date.now()
+    };
+  }
+
+  function createWorkspace(session) {
+    return { activeId: session.id, sessions: [session] };
+  }
+
+  function normaliseWorkspace(saved) {
+    if (!saved || !Array.isArray(saved.sessions) || !saved.sessions.length) return null;
+    const sessions = saved.sessions.map(function (session) {
+      const s = blankSession(session.name || 'Untitled enchantment');
+      Object.assign(s, session);
+      s.id = session.id || s.id;
+      s.variables = Array.isArray(session.variables) && session.variables.length ? session.variables.map(function (v) { return { label: v.label || '', value: v.value || '' }; }) : s.variables;
+      s.rounds = Array.isArray(session.rounds) ? session.rounds.map(function (r) { return Object.assign({ id: uid(), desire: null, power: null, idea: '', created: Date.now() }, r); }) : [];
+      s.whatIf = session.whatIf ? Object.assign({ option: '', nudge: '', revised: '' }, session.whatIf) : null;
+      s.stage = session.stage || 'start';
+      s.updated = session.updated || Date.now();
+      return s;
+    });
+    return {
+      activeId: sessions.some(function (s) { return s.id === saved.activeId; }) ? saved.activeId : sessions[0].id,
+      sessions: sessions
+    };
+  }
+
+  function loadWorkspace() {
+    try { return normaliseWorkspace(JSON.parse(localStorage.getItem(STORAGE_KEY))); }
+    catch (error) { return null; }
+  }
+
+  function activeSession() {
+    return app.workspace.sessions.find(function (s) { return s.id === app.workspace.activeId; }) || app.workspace.sessions[0];
+  }
+
+  function markUnsaved() {
+    els.saveStatus.textContent = 'Saving…';
+    els.saveStatus.classList.add('is-unsaved');
+    clearTimeout(app.pendingTimer);
+    app.pendingTimer = setTimeout(saveWorkspace, 300);
+  }
+
+  function saveWorkspace() {
+    const session = activeSession();
+    session.updated = Date.now();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(app.workspace));
+    els.saveStatus.textContent = 'Saved locally';
+    els.saveStatus.classList.remove('is-unsaved');
+  }
+
+  function randomItem(list) {
+    return list[Math.floor(Math.random() * list.length)];
+  }
+
+  function randomPair() {
+    let desire = randomItem(DESIRES);
+    let power = randomItem(POWERS);
+    const session = activeSession();
+    const used = session.rounds.map(function (r) { return (r.desire && r.desire.name) + '|' + (r.power && r.power.name); });
+    let tries = 0;
+    while (used.indexOf(desire.name + '|' + power.name) !== -1 && tries < 20) {
+      desire = randomItem(DESIRES);
+      power = randomItem(POWERS);
+      tries += 1;
+    }
+    return { desire: desire, power: power };
+  }
+
+  function getVariables(session) {
+    return session.variables.filter(function (v) { return v.label.trim() || v.value.trim(); });
+  }
+
+  function narrativeStart(session) {
+    if (!session.interaction.trim()) return 'You have not given the enchantment a starting point yet.';
+    const context = session.context.trim() ? ' It happens ' + session.context.trim() + '.' : '';
+    return 'You began with “' + session.interaction.trim() + '.”' + context;
+  }
+
+  function renderJourney() {
+    const session = activeSession();
+    els.journeyTitle.textContent = session.name || 'A new enchantment';
+    const variables = getVariables(session);
+    const html = [];
+    html.push('<section class="journey-section"><p class="journey-label">Starting point</p><p class="journey-value">' + escapeHtml(narrativeStart(session)) + '</p></section>');
+    if (variables.length) {
+      html.push('<section class="journey-section"><p class="journey-label">Things shaping the interaction</p><div class="journey-mini">' + variables.map(function (v) { return '<p><strong>' + escapeHtml(v.label || 'Variable') + '</strong><br>' + escapeHtml(v.value) + '</p>'; }).join('') + '</div></section>');
+    }
+    session.rounds.forEach(function (round, index) {
+      html.push('<section class="journey-section"><p class="journey-label">Enchantment ' + String(index + 1).padStart(2, '0') + '</p><p class="journey-value"><strong>' + escapeHtml(round.desire.name) + ' + ' + escapeHtml(round.power.name) + '</strong></p><div class="journey-idea">' + escapeHtml(round.idea || 'Idea not described yet.') + '</div></section>');
+    });
+    if (session.selectedRoundId) {
+      const selected = session.rounds.find(function (r) { return r.id === session.selectedRoundId; });
+      if (selected) html.push('<section class="journey-section"><p class="journey-label">You chose</p><p class="journey-value">' + escapeHtml(selected.desire.name + ' + ' + selected.power.name) + '</p><div class="journey-idea">' + escapeHtml(selected.idea) + '</div></section>');
+    }
+    if (session.whatIf) {
+      html.push('<section class="journey-section"><p class="journey-label">The disturbance</p><p class="journey-value">What if <strong>' + escapeHtml(session.whatIf.option) + '</strong>?</p><div class="journey-idea">' + escapeHtml(session.whatIf.revised || 'The revised idea is still waiting.') + '</div></section>');
+    }
+    if (session.reflection.trim()) html.push('<section class="journey-section"><p class="journey-label">Carrying forward</p><p class="journey-value">' + escapeHtml(session.reflection) + '</p></section>');
+    if (!session.rounds.length && !session.interaction) html.push('<p class="journey-mini">Your journey will appear here as you work.</p>');
+    els.journeyContent.innerHTML = html.join('');
+  }
+
+  function escapeHtml(value) {
+    return String(value || '').replace(/[&<>"']/g, function (char) {
+      return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[char];
+    });
+  }
+
+  function transitionTo(html, progress, callback) {
+    const token = ++app.stageToken;
+    els.stage.classList.remove('is-entering');
+    els.stage.classList.add('is-leaving');
+    setTimeout(function () {
+      if (token !== app.stageToken) return;
+      els.stage.innerHTML = html;
+      els.progress.textContent = progress || '';
+      els.stage.classList.remove('is-leaving');
+      void els.stage.offsetWidth;
+      els.stage.classList.add('is-entering');
+      if (callback) callback();
+      renderJourney();
+    }, 220);
+  }
+
+  function inputValue(id) {
+    const element = document.getElementById(id);
+    return element ? element.value : '';
+  }
+
+  function canContinueStart() {
+    const session = activeSession();
+    return session.interaction.trim().length >= 12;
+  }
+
+  function canContinueVariables() {
+    return getVariables(activeSession()).length >= 3;
+  }
+
+  function renderStart() {
+    const session = activeSession();
+    transitionTo(
+      '<div class="scene narrow">' +
+        '<p class="scene-kicker">Start here</p>' +
+        '<h2 class="scene-title">Bring an interaction.<br>Leave the solution at home.</h2>' +
+        '<p class="scene-intro">This is your starting point. Keep the situation in view while the next few prompts deliberately push it somewhere unfamiliar.</p>' +
+        '<div class="form-stack">' +
+          '<label class="field"><span>What interaction are you exploring?</span><textarea id="interactionInput" rows="4" placeholder="e.g. Finding an available place to study on campus">' + escapeHtml(session.interaction) + '</textarea></label>' +
+          '<label class="field"><span>Where or when does it happen? <span class="journey-mini">(optional)</span></span><input id="contextInput" value="' + escapeHtml(session.context) + '" placeholder="e.g. Before class, around lunchtime, in the library"></label>' +
+        '</div>' +
+        '<div class="gentle-nudge"><strong>Something is waiting.</strong> Give it enough of a situation to work with.</div>' +
+        '<div class="button-row"><button class="button button-primary" id="startNext" type="button">Continue</button></div>' +
+      '</div>', '01 · Begin', function () {
+        const interaction = document.getElementById('interactionInput');
+        const context = document.getElementById('contextInput');
+        interaction.addEventListener('input', function () { session.interaction = interaction.value; markUnsaved(); updateStartGate(); renderJourney(); });
+        context.addEventListener('input', function () { session.context = context.value; markUnsaved(); renderJourney(); });
+        document.getElementById('startNext').addEventListener('click', function () {
+          if (!canContinueStart()) { showSoftNudge('startNext', 'Give the enchantment a little more to begin with.'); return; }
+          session.stage = 'variables';
+          saveWorkspace();
+          renderVariables();
+        });
+        updateStartGate();
+        interaction.focus();
+      }
+    );
+  }
+
+  function updateStartGate(message) {
+    const button = document.getElementById('startNext');
+    if (button) button.disabled = !canContinueStart();
+    const nudge = document.querySelector('.gentle-nudge');
+    if (message && nudge) nudge.innerHTML = '<strong>' + message + '</strong> The next part will appear when there is enough to work with.';
+    if (!message && nudge) nudge.innerHTML = '<strong>Something is waiting.</strong> Give it enough of a situation to work with.';
+  }
+
+  function renderVariables() {
+    const session = activeSession();
+    transitionTo(
+      '<div class="scene narrow">' +
+        '<p class="scene-kicker">Notice</p>' +
+        '<h2 class="scene-title">What shapes this interaction?</h2>' +
+        '<p class="scene-intro">Give the daemon a few ingredients. People, place, time, information, habits, constraints — whatever might change the way you think about the situation.</p>' +
+        '<div class="variable-list" id="variableList"></div>' +
+        '<div class="button-row"><button class="button button-secondary" id="addVariable" type="button">+ Add another</button><button class="button button-primary" id="variablesNext" type="button">Continue</button></div>' +
+        '<div class="gentle-nudge" id="variableNudge"><strong>Three ingredients are enough.</strong> You can add more if the situation needs them.</div>' +
+      '</div>', '02 · Notice', function () {
+        renderVariableRows();
+        document.getElementById('addVariable').addEventListener('click', function () { session.variables.push({ label: '', value: '' }); renderVariableRows(); markUnsaved(); });
+        document.getElementById('variablesNext').addEventListener('click', function () {
+          if (!canContinueVariables()) { document.getElementById('variableNudge').innerHTML = '<strong>A few more ingredients.</strong> Give me three things that genuinely shape this situation.'; return; }
+          session.stage = 'enchant';
+          session.currentPair = null;
+          saveWorkspace();
+          renderEnchantReveal();
+        });
+      }
+    );
+  }
+
+  function renderVariableRows() {
+    const session = activeSession();
+    const container = document.getElementById('variableList');
+    if (!container) return;
+    container.innerHTML = session.variables.map(function (variable, index) {
+      return '<div class="variable-row"><input data-var-label="' + index + '" value="' + escapeHtml(variable.label) + '" placeholder="Thing that matters"><input data-var-value="' + index + '" value="' + escapeHtml(variable.value) + '" placeholder="How does it shape the interaction?"><button class="variable-remove" data-var-remove="' + index + '" type="button" aria-label="Remove variable">×</button></div>';
+    }).join('');
+    container.querySelectorAll('[data-var-label]').forEach(function (input) { input.addEventListener('input', function () { session.variables[Number(input.dataset.varLabel)].label = input.value; markUnsaved(); renderJourney(); }); });
+    container.querySelectorAll('[data-var-value]').forEach(function (input) { input.addEventListener('input', function () { session.variables[Number(input.dataset.varValue)].value = input.value; markUnsaved(); renderJourney(); }); });
+    container.querySelectorAll('[data-var-remove]').forEach(function (button) { button.addEventListener('click', function () { if (session.variables.length <= 3) return; session.variables.splice(Number(button.dataset.varRemove), 1); renderVariableRows(); markUnsaved(); renderJourney(); }); });
+  }
+
+  function ensureCurrentPair() {
+    const session = activeSession();
+    if (!session.currentPair) session.currentPair = randomPair();
+    return session.currentPair;
+  }
+
+  function renderEnchantReveal() {
+    const session = activeSession();
+    const pair = ensureCurrentPair();
+    app.revealed = false;
+    transitionTo(
+      '<div class="scene centered enchantment-scene">' +
+        '<p class="scene-kicker">Summon something strange</p>' +
+        '<h2 class="scene-title">What happens if this interaction<br>is enchanted?</h2>' +
+        '<p class="scene-intro" style="margin-inline:auto;">You bring the situation. We only choose the direction of the disturbance.</p>' +
+        '<button class="ball-button" id="revealButton" type="button"><span class="ball-label">Reveal</span></button>' +
+        '<p class="scene-intro" style="font-size:13px;margin:0 auto;">Sketch before you type. The idea belongs to you.</p>' +
+      '</div>', '03 · Summon', function () {
+        document.getElementById('revealButton').addEventListener('click', function () {
+          revealPair(pair);
+        });
+      }
+    );
+  }
+
+  function revealPair(pair) {
+    if (app.revealed) return;
+    app.revealed = true;
+    const session = activeSession();
+    const button = document.getElementById('revealButton');
+    if (button) button.classList.add('is-revealing');
+    setTimeout(function () {
+      transitionTo(
+        '<div class="scene centered">' +
+          '<p class="scene-kicker">Your enchantment</p>' +
+          '<div class="enchantment-reveal">' +
+            '<div class="enchantment-card"><h2>' + escapeHtml(pair.desire.name) + '</h2><p>' + escapeHtml(pair.desire.description) + '</p></div>' +
+            '<div class="enchantment-plus">+</div>' +
+            '<div class="enchantment-card"><h2>' + escapeHtml(pair.power.name) + '</h2><p>' + escapeHtml(pair.power.nudge) + '</p></div>' +
+          '</div>' +
+          '<p class="scene-intro" style="margin-inline:auto;">' + escapeHtml(pair.power.nudge) + ' Apply that disturbance to your own interaction.</p>' +
+          '<div class="gentle-nudge" style="max-width:760px;margin-inline:auto;"><strong>Sketch first.</strong> Then describe what you imagined.</div>' +
+          '<div class="button-row" style="justify-content:center;"><button class="button button-primary" id="describeIdea" type="button">I have an idea</button></div>' +
+        '</div>', '03 · Summon', function () {
+          document.getElementById('describeIdea').addEventListener('click', function () { renderIdeaCapture(pair); });
+        }
+      );
+    }, 320);
+    session.currentPair = pair;
+  }
+
+  function renderIdeaCapture(pair) {
+    const session = activeSession();
+    const existing = session.currentPair && session.currentPair.idea ? session.currentPair.idea : '';
+    transitionTo(
+      '<div class="scene narrow">' +
+        '<p class="scene-kicker">Capture it</p>' +
+        '<h2 class="scene-title">What did you imagine?</h2>' +
+        '<p class="scene-intro">Keep the focus on the interaction — what the person does, what changes, and what happens next.</p>' +
+        '<div class="idea-card">' +
+          '<p class="prompt-line">' + escapeHtml(pair.desire.name) + ' + ' + escapeHtml(pair.power.name) + '</p>' +
+          '<p class="prompt-subline">' + escapeHtml(pair.power.nudge) + '</p>' +
+          '<label class="field" style="margin-top:18px;"><span>Your idea</span><textarea id="ideaInput" rows="7" placeholder="Describe the interaction you sketched...">' + escapeHtml(existing) + '</textarea></label>' +
+        '</div>' +
+        '<div class="gentle-nudge"><strong>The enchantment is only the push.</strong> You are doing the designing.</div>' +
+        '<div class="button-row"><button class="button button-primary" id="saveIdea" type="button">Keep this idea</button></div>' +
+      '</div>', '03 · Capture', function () {
+        const input = document.getElementById('ideaInput');
+        input.addEventListener('input', function () { if (session.currentPair) session.currentPair.idea = input.value; markUnsaved(); });
+        document.getElementById('saveIdea').addEventListener('click', function () {
+          if (input.value.trim().length < 20) { showSoftNudge('saveIdea', 'Don’t let this one disappear yet. Give the interaction a little more shape.'); return; }
+          const pairToSave = session.currentPair;
+          session.rounds.push({ id: uid(), desire: pairToSave.desire, power: pairToSave.power, idea: input.value.trim(), created: Date.now() });
+          delete session.currentPair;
+          session.stage = session.rounds.length >= IDEA_ROUNDS ? 'select' : 'enchant';
+          saveWorkspace();
+          if (session.rounds.length >= IDEA_ROUNDS) renderSelect(); else renderEnchantReveal();
+        });
+        input.focus();
+      }
+    );
+  }
+
+  function showSoftNudge(buttonId, message) {
+    const button = document.getElementById(buttonId);
+    if (!button) return;
+    const existing = button.closest('.scene').querySelector('.gentle-nudge');
+    if (existing) existing.innerHTML = '<strong>' + message + '</strong>';
+    button.classList.add('is-jiggling');
+    setTimeout(function () { button.classList.remove('is-jiggling'); }, 280);
+  }
+
+  function renderSelect() {
+    const session = activeSession();
+    transitionTo(
+      '<div class="scene narrow">' +
+        '<p class="scene-kicker">Look back</p>' +
+        '<h2 class="scene-title">Which one won’t leave you alone?</h2>' +
+        '<p class="scene-intro">Choose the idea that opened something interesting — not necessarily the one that is easiest to build.</p>' +
+        '<div class="idea-list">' +
+          session.rounds.map(function (round, index) {
+            const selected = session.selectedRoundId === round.id;
+            return '<button class="idea-choice" data-select-id="' + round.id + '" type="button"><span class="idea-number">' + String(index + 1).padStart(2, '0') + '</span><span><span class="idea-title">' + escapeHtml(round.desire.name + ' + ' + round.power.name) + '</span><br><span class="idea-excerpt">' + escapeHtml(round.idea.length > 120 ? round.idea.slice(0, 120) + '…' : round.idea) + '</span></span><span class="idea-pick">' + (selected ? 'Selected' : 'Choose') + '</span></button>';
+          }).join('') +
+        '</div>' +
+        '<div class="button-row"><button class="button button-primary" id="selectNext" type="button">Disturb it</button></div>' +
+        '<div class="gentle-nudge" id="selectNudge"><strong>There is no best answer here.</strong> Choose the one you want to keep thinking about.</div>' +
+      '</div>', '04 · Choose', function () {
+        els.stage.querySelectorAll('[data-select-id]').forEach(function (button) {
+          button.addEventListener('click', function () { session.selectedRoundId = button.dataset.selectId; markUnsaved(); renderSelect(); });
+        });
+        const next = document.getElementById('selectNext');
+        next.disabled = !session.selectedRoundId;
+        next.addEventListener('click', function () {
+          if (!session.selectedRoundId) { document.getElementById('selectNudge').innerHTML = '<strong>One idea wants your attention.</strong> Choose it first.'; return; }
+          renderWhatIfReveal();
+        });
+      }
+    );
+  }
+
+  function renderWhatIfReveal() {
+    transitionTo(
+      '<div class="scene centered what-if-card">' +
+        '<p class="scene-kicker">Disturb it</p>' +
+        '<h2 class="scene-title">What if...?</h2>' +
+        '<p class="scene-intro" style="margin-inline:auto;">One small disturbance. Let it change the interaction.</p>' +
+        '<div class="ticker-result" id="tickerResult"><div class="ticker-word">?</div></div>' +
+        '<div class="button-row" style="justify-content:center;"><button class="button button-primary" id="spinButton" type="button">Spin the possibility</button></div>' +
+      '</div>', '05 · Disturb', function () {
+        document.getElementById('spinButton').addEventListener('click', spinWhatIf);
+      }
+    );
+  }
+
+  function spinWhatIf() {
+    if (app.spinning) return;
+    app.spinning = true;
+    const result = document.getElementById('tickerResult');
+    const word = result.querySelector('.ticker-word');
+    const button = document.getElementById('spinButton');
+    result.classList.add('is-spinning');
+    button.disabled = true;
+    let index = 0;
+    const interval = setInterval(function () {
+      word.textContent = WHAT_IFS[index % WHAT_IFS.length].text;
+      index += 1;
+    }, 90);
+    setTimeout(function () {
+      clearInterval(interval);
+      const choice = randomItem(WHAT_IFS);
+      activeSession().whatIf = Object.assign({}, choice, { revised: '' });
+      result.classList.remove('is-spinning');
+      word.textContent = choice.text;
+      setTimeout(function () { renderWhatIfCapture(choice); }, 800);
+    }, 1250);
+  }
+
+  function renderWhatIfCapture(choice) {
+    const session = activeSession();
+    transitionTo(
+      '<div class="scene narrow centered">' +
+        '<p class="scene-kicker">The possibility</p>' +
+        '<h2 class="scene-title">What if ' + escapeHtml(choice.text) + '?</h2>' +
+        '<div class="gentle-nudge"><strong>' + escapeHtml(choice.nudge) + '</strong> Change the interaction, not just the interface.</div>' +
+        '<label class="field" style="text-align:left;margin-top:24px;"><span>How did your idea change?</span><textarea id="revisedInput" rows="7" placeholder="Describe the enchanted version...">' + escapeHtml(session.whatIf ? session.whatIf.revised : '') + '</textarea></label>' +
+        '<div class="button-row" style="justify-content:center;"><button class="button button-primary" id="saveRevised" type="button">Carry it forward</button></div>' +
+      '</div>', '05 · Reimagine', function () {
+        const input = document.getElementById('revisedInput');
+        input.addEventListener('input', function () { if (!session.whatIf) session.whatIf = Object.assign({}, choice, { revised: '' }); session.whatIf.revised = input.value; markUnsaved(); });
+        document.getElementById('saveRevised').addEventListener('click', function () {
+          if (input.value.trim().length < 20) { showSoftNudge('saveRevised', 'The spell changed. Tell us what changed with it.'); return; }
+          session.whatIf.revised = input.value.trim();
+          session.stage = 'summary';
+          saveWorkspace();
+          renderSummary();
+        });
+        input.focus();
+      }
+    );
+  }
+
+  function renderSummary() {
+    const session = activeSession();
+    transitionTo(
+      '<div class="scene narrow">' +
+        '<p class="scene-kicker">Look back</p>' +
+        '<h2 class="scene-title">What are you carrying forward?</h2>' +
+        '<p class="scene-intro">A useful idea does not need to be finished. It only needs to leave you with something worth investigating.</p>' +
+        '<label class="field" style="margin-top:24px;"><span>What is worth carrying forward?</span><textarea id="reflectionInput" rows="6" placeholder="An interaction principle, a question, a possibility...">' + escapeHtml(session.reflection) + '</textarea></label>' +
+        '<div class="gentle-nudge"><strong>One last thing.</strong> Name the part of the interaction you want to keep thinking about.</div>' +
+        '<div class="button-row"><button class="button button-primary" id="finishButton" type="button">See the journey</button></div>' +
+      '</div>', '06 · Carry forward', function () {
+        const input = document.getElementById('reflectionInput');
+        input.addEventListener('input', function () { session.reflection = input.value; markUnsaved(); renderJourney(); });
+        document.getElementById('finishButton').addEventListener('click', function () {
+          if (input.value.trim().length < 12) { showSoftNudge('finishButton', 'Give yourself one sentence to take away.'); return; }
+          session.reflection = input.value.trim();
+          session.stage = 'complete';
+          saveWorkspace();
+          renderFinal();
+        });
+        input.focus();
+      }
+    );
+  }
+
+  function renderFinal() {
+    transitionTo(
+      '<div class="scene centered narrow">' +
+        '<p class="scene-kicker">Journey complete</p>' +
+        '<h2 class="scene-title">The enchantment is yours now.</h2>' +
+        '<p class="scene-intro" style="margin-inline:auto;">You can keep exploring, return to any saved session, or turn this journey into a note to take with you.</p>' +
+        '<div class="button-row" style="justify-content:center;"><button class="button button-primary" id="finalPrint">Print / Save PDF</button><button class="button button-secondary" id="finalNew">Start another</button></div>' +
+        '<div class="gentle-nudge"><strong>Your journey is saved locally.</strong> Open “Your journey” to see what you did, or export the session as JSON.</div>' +
+      '</div>', 'Complete', function () {
+        document.getElementById('finalPrint').addEventListener('click', printWorkspace);
+        document.getElementById('finalNew').addEventListener('click', newSession);
+      }
+    );
+  }
+
+  function renderByStage() {
+    const stage = activeSession().stage;
+    if (stage === 'variables') renderVariables();
+    else if (stage === 'enchant') renderEnchantReveal();
+    else if (stage === 'select') renderSelect();
+    else if (stage === 'summary') renderSummary();
+    else if (stage === 'complete') renderFinal();
+    else renderStart();
+  }
+
+  function toggleJourney(force) {
+    app.journeyOpen = typeof force === 'boolean' ? force : !app.journeyOpen;
+    els.journeyRail.classList.toggle('is-open', app.journeyOpen);
+    if (app.journeyOpen) renderJourney();
+  }
+
+  function newSession() {
+    const name = window.prompt('Name this journey', 'Untitled enchantment');
+    if (name === null) return;
+    const session = blankSession(name.trim() || 'Untitled enchantment');
+    app.workspace.sessions.push(session);
+    app.workspace.activeId = session.id;
+    saveWorkspace();
+    els.sessionsDialog.close();
+    els.toolsDialog.close();
+    renderByStage();
+  }
+
+  function renameSession(session) {
+    const name = window.prompt('Rename this journey', session.name);
+    if (name === null) return;
+    session.name = name.trim() || 'Untitled enchantment';
+    saveWorkspace();
+    renderJourney();
+    renderSavedSessions();
+  }
+
+  function duplicateSession(session) {
+    const copy = JSON.parse(JSON.stringify(session));
+    copy.id = uid();
+    copy.name = session.name + ' copy';
+    copy.updated = Date.now();
+    app.workspace.sessions.push(copy);
+    app.workspace.activeId = copy.id;
+    saveWorkspace();
+    renderSavedSessions();
+    renderByStage();
+  }
+
+  function deleteSession(session) {
+    if (app.workspace.sessions.length === 1) { window.alert('Keep at least one journey in this workspace.'); return; }
+    if (!window.confirm('Delete “' + session.name + '”?')) return;
+    app.workspace.sessions = app.workspace.sessions.filter(function (item) { return item.id !== session.id; });
+    if (app.workspace.activeId === session.id) app.workspace.activeId = app.workspace.sessions[0].id;
+    saveWorkspace();
+    renderSavedSessions();
+    renderByStage();
+  }
+
+  function renderSavedSessions() {
+    const container = els.savedSessionsList;
+    container.innerHTML = app.workspace.sessions.map(function (session) {
+      return '<div class="saved-session' + (session.id === app.workspace.activeId ? ' is-current' : '') + '">' +
+        '<div><div class="saved-session-name">' + escapeHtml(session.name) + '</div><div class="saved-session-meta">' + session.rounds.length + ' enchantments · updated ' + new Date(session.updated).toLocaleDateString() + '</div></div>' +
+        '<div class="saved-session-actions">' +
+          miniButton('Open', function () { app.workspace.activeId = session.id; saveWorkspace(); els.sessionsDialog.close(); renderByStage(); }) +
+          miniButton('Rename', function () { renameSession(session); }) +
+          miniButton('Duplicate', function () { duplicateSession(session); }) +
+          miniButton('Delete', function () { deleteSession(session); }, 'delete') +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function miniButton(label, handler, extraClass) {
+    const buttonId = 'mini-' + Math.random().toString(36).slice(2, 8);
+    setTimeout(function () {
+      const button = document.getElementById(buttonId);
+      if (button) button.addEventListener('click', handler);
+    }, 0);
+    return '<button class="mini-button ' + (extraClass || '') + '" id="' + buttonId + '" type="button">' + label + '</button>';
+  }
+
+  function exportJson() {
+    saveWorkspace();
+    const blob = new Blob([JSON.stringify(app.workspace, null, 2)], { type: 'application/json' });
+    const href = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = href;
+    link.download = 'enchantment-session.json';
+    link.click();
+    setTimeout(function () { URL.revokeObjectURL(href); }, 0);
+  }
+
+  function importJson() {
+    els.importFileInput.value = '';
+    els.importFileInput.click();
+  }
+
+  function handleImport(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function () {
+      try {
+        const imported = normaliseWorkspace(JSON.parse(reader.result));
+        if (!imported) throw new Error('Invalid workspace');
+        if (!window.confirm('Import this session and replace the journeys currently open?')) return;
+        app.workspace = imported;
+        saveWorkspace();
+        renderByStage();
+        renderJourney();
+      } catch (error) {
+        window.alert('This file does not contain a valid Enchantment session.');
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function buildPrintRecord() {
+    const sessions = app.workspace.sessions;
+    els.printRecord.innerHTML = sessions.map(function (session) {
+      const variables = getVariables(session);
+      return '<article class="print-article">' +
+        '<div class="print-header"><p class="print-label">Enchantment · DDES1150</p><h1>' + escapeHtml(session.name) + '</h1><p class="print-meta">Saved locally · ' + new Date(session.updated).toLocaleString() + '</p></div>' +
+        '<section class="print-section"><p class="print-label">Starting point</p><p><strong>Interaction</strong><br>' + escapeHtml(session.interaction) + '</p><p><strong>Where or when</strong><br>' + escapeHtml(session.context || 'Not specified') + '</p></section>' +
+        '<section class="print-section"><p class="print-label">Things shaping the interaction</p><div class="print-two">' + variables.map(function (v) { return '<div class="print-small"><strong>' + escapeHtml(v.label || 'Variable') + '</strong><br>' + escapeHtml(v.value) + '</div>'; }).join('') + '</div></section>' +
+        '<section class="print-section"><p class="print-label">Enchantment experiments</p>' + session.rounds.map(function (r, index) { return '<div class="print-idea"><strong>' + String(index + 1).padStart(2, '0') + ' · ' + escapeHtml(r.desire.name + ' + ' + r.power.name) + '</strong><p class="print-small">' + escapeHtml(r.idea) + '</p></div>'; }).join('') + '</section>' +
+        (session.selectedRoundId ? '<section class="print-section"><p class="print-label">Selected direction</p><p>' + escapeHtml((session.rounds.find(function (r) { return r.id === session.selectedRoundId; }) || {}).idea || '') + '</p></section>' : '') +
+        (session.whatIf ? '<section class="print-section"><p class="print-label">The disturbance</p><p><strong>What if ' + escapeHtml(session.whatIf.option) + '?</strong></p><p class="print-small">' + escapeHtml(session.whatIf.revised) + '</p></section>' : '') +
+        '<section class="print-section"><p class="print-label">Carrying forward</p><p>' + escapeHtml(session.reflection || '—') + '</p></section>' +
+      '</article>';
+    }).join('');
+  }
+
+  function printWorkspace() {
+    saveWorkspace();
+    buildPrintRecord();
+    window.print();
+  }
+
+  document.querySelector('#journeyButton').addEventListener('click', function () { toggleJourney(); });
+  document.querySelector('#journeyClose').addEventListener('click', function () { toggleJourney(false); });
+  document.querySelector('#toolsButton').addEventListener('click', function () { els.toolsDialog.showModal(); });
+  document.querySelector('#helpButton').addEventListener('click', function () { els.helpDialog.showModal(); });
+  document.querySelector('#sessionsButton').addEventListener('click', function () { els.toolsDialog.close(); renderSavedSessions(); els.sessionsDialog.showModal(); });
+  document.querySelector('#newSessionButton').addEventListener('click', newSession);
+  document.querySelector('#exportButton').addEventListener('click', function () { els.toolsDialog.close(); exportJson(); });
+  document.querySelector('#importButton').addEventListener('click', function () { els.toolsDialog.close(); importJson(); });
+  document.querySelector('#printButton').addEventListener('click', function () { els.toolsDialog.close(); printWorkspace(); });
+  document.querySelector('#dialogNewSession').addEventListener('click', newSession);
+  document.querySelector('#dialogExport').addEventListener('click', exportJson);
+  document.querySelector('#dialogImport').addEventListener('click', importJson);
+  els.importFileInput.addEventListener('change', handleImport);
+  document.querySelectorAll('[data-close]').forEach(function (button) { button.addEventListener('click', function () { document.getElementById(button.dataset.close).close(); }); });
+
+  app.workspace = loadWorkspace() || createWorkspace(blankSession('Untitled enchantment'));
+  saveWorkspace();
+  renderByStage();
+  renderJourney();
+})();
