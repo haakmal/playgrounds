@@ -1,59 +1,138 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Enchantment — a playful interaction ideation playground for DDES1150.">
-  <title>Enchantment — DDES1150</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <main class="app" id="app">
-    <button class="edge-control edge-menu" id="menuButton" type="button" aria-label="Open tools">☰</button>
-    <button class="edge-control edge-book" id="bookButton" type="button" aria-label="Open grimoire">✦ <span>Grimoire</span></button>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Enchantment — a playful interaction ideation playground for DDES1150." />
+    <title>Enchantment — DDES1150</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app" id="app">
+      <button
+        class="edge-control edge-menu"
+        id="menuButton"
+        type="button"
+        aria-label="Open tools">
+        ☰
+      </button>
+      <button
+        class="edge-control edge-book"
+        id="bookButton"
+        type="button"
+        aria-label="Open grimoire">
+        ✦ <span>Grimoire</span>
+      </button>
 
-    <section class="stage-wrap">
-      <div id="stage" class="stage" aria-live="polite"></div>
-    </section>
+      <section class="stage-wrap">
+        <div id="stage" class="stage" aria-live="polite"></div>
+      </section>
 
-    <footer class="prompt-rail" id="promptRail" aria-live="polite">
-      <div class="prompt-copy" id="promptCopy"></div>
-      <div class="prompt-action" id="promptAction"></div>
-    </footer>
-  </main>
+      <footer class="prompt-rail" id="promptRail" aria-live="polite">
+        <div class="prompt-copy" id="promptCopy"></div>
+        <div class="prompt-action" id="promptAction"></div>
+      </footer>
+    </main>
 
-  <aside class="drawer drawer-left" id="toolsDrawer" aria-hidden="true">
-    <div class="drawer-header"><strong>Enchantment</strong><button class="icon-button" id="closeTools" type="button">×</button></div>
-    <div class="drawer-body">
-      <p class="drawer-note">The Seer's table is the activity. These are simply the things you can take with you.</p>
-      <button class="drawer-action" id="renameSession" type="button">Rename session</button>
-      <button class="drawer-action" id="sessionsButton" type="button">My sessions</button>
-      <hr>
-      <button class="drawer-action" id="exportButton" type="button">Export spell book</button>
-      <button class="drawer-action" id="importButton" type="button">Import spell book</button>
-      <button class="drawer-action" id="printButton" type="button">Print / Save PDF</button>
-      <hr>
-      <button class="drawer-action" id="helpButton" type="button">How this works</button>
-      <div class="save-state" id="saveState">Saved locally</div>
+    <aside class="drawer drawer-left" id="toolsDrawer" aria-hidden="true">
+      <div class="drawer-header">
+        <strong>Enchantment</strong
+        ><button class="icon-button" id="closeTools" type="button">×</button>
+      </div>
+      <div class="drawer-body">
+        <p class="drawer-note">
+          The Seer's table is the activity. These are simply the things you can
+          take with you.
+        </p>
+        <button class="drawer-action" id="renameSession" type="button">
+          Rename session
+        </button>
+        <button class="drawer-action" id="sessionsButton" type="button">
+          My sessions
+        </button>
+        <button class="drawer-action" id="exportButton" type="button">
+          Export spell book
+        </button>
+        <button class="drawer-action" id="importButton" type="button">
+          Import spell book
+        </button>
+        <button class="drawer-action" id="printButton" type="button">
+          Print / Save PDF
+        </button>
+        <button class="drawer-action" id="helpButton" type="button">
+          How this works
+        </button>
+        <div class="save-state" id="saveState">Saved locally</div>
+      </div>
+    </aside>
+
+    <aside class="drawer drawer-right" id="bookDrawer" aria-hidden="true">
+      <div class="drawer-header">
+        <strong>Grimoire</strong
+        ><button class="icon-button" id="closeBook" type="button">×</button>
+      </div>
+      <div class="drawer-body" id="bookContent"></div>
+    </aside>
+
+    <div class="modal" id="sessionsModal" aria-hidden="true">
+      <div class="modal-panel">
+        <div class="drawer-header">
+          <strong>My grimoires</strong
+          ><button
+            class="icon-button"
+            data-close-modal="sessionsModal"
+            type="button">
+            ×
+          </button>
+        </div>
+        <div class="modal-body" id="sessionsList"></div>
+        <div class="modal-actions">
+          <button
+            class="button button-primary"
+            id="newSessionButton"
+            type="button">
+            New grimoire
+          </button>
+        </div>
+      </div>
     </div>
-  </aside>
 
-  <aside class="drawer drawer-right" id="bookDrawer" aria-hidden="true">
-    <div class="drawer-header"><strong>Grimoire</strong><button class="icon-button" id="closeBook" type="button">×</button></div>
-    <div class="drawer-body" id="bookContent"></div>
-  </aside>
+    <div class="modal" id="helpModal" aria-hidden="true">
+      <div class="modal-panel">
+        <div class="drawer-header">
+          <strong>How this works</strong
+          ><button
+            class="icon-button"
+            data-close-modal="helpModal"
+            type="button">
+            ×
+          </button>
+        </div>
+        <div class="modal-body prose">
+          <p>
+            You bring an interaction. The Seer gives you strange combinations to
+            think through. You sketch away from the screen, then record what you
+            imagined.
+          </p>
+          <p>
+            Cards are ingredients. The crystal ball brings one of your own
+            contextual details back into the spell. The Ether changes a spell
+            you already made.
+          </p>
+          <p>The Seer never invents your idea for you.</p>
+        </div>
+      </div>
+    </div>
 
-  <div class="modal" id="sessionsModal" aria-hidden="true">
-    <div class="modal-panel"><div class="drawer-header"><strong>My grimoires</strong><button class="icon-button" data-close-modal="sessionsModal" type="button">×</button></div><div class="modal-body" id="sessionsList"></div><div class="modal-actions"><button class="button button-primary" id="newSessionButton" type="button">New grimoire</button></div></div>
-  </div>
+    <input
+      id="importInput"
+      type="file"
+      accept="application/json,.json"
+      hidden />
 
-  <div class="modal" id="helpModal" aria-hidden="true">
-    <div class="modal-panel"><div class="drawer-header"><strong>How this works</strong><button class="icon-button" data-close-modal="helpModal" type="button">×</button></div><div class="modal-body prose"><p>You bring an interaction. The Seer gives you strange combinations to think through. You sketch away from the screen, then record what you imagined.</p><p>Cards are ingredients. The crystal ball brings one of your own contextual details back into the spell. The Ether changes a spell you already made.</p><p>The Seer never invents your idea for you.</p></div></div>
-  </div>
-
-  <input id="importInput" type="file" accept="application/json,.json" hidden>
-
-  <script src="content.js"></script>
-  <script src="app.js"></script>
-</body>
+    <script src="content.js"></script>
+    <script src="app.js"></script>
+  </body>
 </html>
