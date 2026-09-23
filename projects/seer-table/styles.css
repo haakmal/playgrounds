@@ -843,6 +843,19 @@ button {
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
+.drawer-body small {
+  font:
+    700 10px/1.2 Arial,
+    Helvetica,
+    sans-serif;
+  text-transform: uppercase;
+}
+.book-title button {
+  font:
+    700 15px/1.2 Arial,
+    Helvetica,
+    sans-serif;
+}
 .drawer-action:hover {
   text-decoration: underline;
 }

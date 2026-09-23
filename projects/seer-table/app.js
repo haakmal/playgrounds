@@ -89,6 +89,7 @@
       context: "",
       ingredients: [],
       spells: [],
+      tableUnlocked: false,
       created: now(),
       updated: now(),
       status: "active",
@@ -106,6 +107,10 @@
     const sessions = data.sessions.map((raw) => {
       const base = blankSession(raw.name || "The Untitled Grimoire");
       Object.assign(base, raw);
+      base.tableUnlocked = Boolean(
+        raw.tableUnlocked ??
+        (Array.isArray(raw.spells) && raw.spells.length > 0),
+      );
       base.id = raw.id || base.id;
       base.ingredients = Array.isArray(raw.ingredients)
         ? raw.ingredients.map((i) => ({
@@ -320,7 +325,7 @@
         <div class="scene">
           <p class="kicker">Gather your ingredients</p>
           <h2 class="title" style="font-size:clamp(38px,5.8vw,66px)">What matters here?</h2>
-          <p class="subtitle">Pick a few lenses. The Seer will help you fill in what each one changes. You can add your own later.</p>
+          <p class="subtitle">Pick a few lenses. The Seer will help you start but you must fill in what each one changes.</p>
           <div class="ingredient-grid" id="ingredientGrid">${INGREDIENTS.map(
             (item) => `
             <button type="button" class="ingredient-card ${s.ingredients.some((i) => i.type === item.id) ? "is-selected" : ""}" data-ingredient="${esc(item.id)}">
@@ -386,6 +391,12 @@
   function updateIngredientGate() {}
 
   function beginSpell() {
+    const s = activeSession();
+    if (!s) return;
+
+    s.tableUnlocked = true;
+    scheduleSave();
+
     app.currentPair = chooseUnusedPair();
     app.currentIngredientId =
       chooseRandom(activeSession().ingredients)?.id ||
@@ -666,8 +677,13 @@
       <article class="book-card" data-open-spell="${esc(sp.id)}"><h3>${esc(sp.name)}</h3><p>${esc(sp.idea)}</p><div class="book-meta">${esc(sp.desire.name)} + ${esc(sp.power.name)} · ${sp.variations.length} variation${sp.variations.length === 1 ? "" : "s"}</div></article>`,
       )
       .join("");
+    const returnToTable = s.tableUnlocked
+      ? '<button class="drawer-action" id="returnTableFromBook" type="button">Return to the Seer’s table</button>'
+      : "";
     el.bookContent.innerHTML = `
-      <section class="spell-section"><p><button class="drawer-action" id="renameFromBook" type="button">${esc(s.name)}</button></p><button class="drawer-action" id="returnTableFromBook" type="button">Return to the Seer’s table</button></section>
+      <section class="spell-section"><p class="book-title"><button class="drawer-action" id="renameFromBook" type="button">${esc(s.name)}</button></p>
+      ${returnToTable}
+      </section>
       <section class="spell-section"><h3>Your quandary</h3><p>${esc(s.interaction || "Not started yet.")}</p></section>
       <section class="spell-section"><h3>Ingredients</h3><div class="book-ingredients">${s.ingredients.map((i) => `<button type="button" class="book-ingredient" data-edit-ingredient="${esc(i.type)}"><strong>${esc((INGREDIENTS.find((x) => x.id === i.type) || {}).label || i.label)}</strong><span>${esc(i.value || "Add a detail")}</span></button>`).join("") || '<p style="color:var(--muted)">No ingredients yet.</p>'}</div><button class="drawer-action" id="editIngredientsFromBook" type="button">Edit ingredients</button></section>
       <section class="spell-section"><h3>Spells</h3><div class="spellbook-list">${spells || '<p style="color:var(--muted)">Your first spell will appear here.</p>'}</div></section>`;
