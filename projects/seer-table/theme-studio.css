@@ -1,0 +1,16 @@
+/*
+  CLASSROOM / STUDIO THEME
+  This preserves the restrained black, white and warm-grey palette used by
+  the interaction-design teaching tools.
+*/
+body.theme-studio {
+  --bg: #f8f7f3;
+  --paper: #fffefa;
+  --ink: #171717;
+  --muted: #6f6c67;
+  --line: #d5d1c8;
+  --soft: #eeece6;
+  --soft-2: #e5e1d9;
+  --accent: #2d2a25;
+  --warm: #c7b59a;
+}

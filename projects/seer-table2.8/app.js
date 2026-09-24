@@ -44,8 +44,103 @@
         })[ch],
     );
 
-  // Interface terminology is maintained separately in copy.js.
-  const COPY = window.SEERS_TABLE_COPY || {};
+  const COPY = {
+    seer: {
+      toolsTitle: "The Seer’s Table",
+      menuAria: "Open tools",
+      bookLabel: "Grimoire",
+      bookAria: "Open grimoire",
+      rename: "Rename grimoire",
+      sessions: "My grimoires",
+      export: "Export spell book",
+      import: "Import spell book",
+      print: "Print / Save PDF",
+      help: "How this works",
+      quandary: "Quandary",
+      editQuandary: "Edit quandary",
+      set: "set",
+      ingredients: "Ingredients",
+      editIngredients: "Edit ingredients",
+      spells: "Spells",
+      returnTable: "Return to the Seer’s table",
+      seerTable: "The Seer’s table",
+      craft: "Craft the enchantment.",
+      cards: "Cards",
+      crystal: "Crystal ball",
+      yourSpell: "Your spell",
+      desireCard: "Desire",
+      powerCard: "Power",
+      draw: "Draw",
+      read: "Read",
+      craftStep: "Craft",
+      theCards: "the cards",
+      theCrystal: "the crystal",
+      theSpell: "the spell",
+      ether: "The Ether",
+      disturb: "Pull from the Ether",
+      editSpell: "Edit this spell",
+      saveSpell: "Save changes",
+      craftAnother: "Craft another spell",
+      studioMode: "Studio",
+      seerMode: "Seer’s Table",
+      modeHint: "Experience mode",
+      lockedTitle: "The Grimoire is already enchanted",
+      lockedBody: ["Your spells have already been crafted from this quandary. Changing the starting point now would change the meaning of what you have explored.", "For a new direction, begin a new Grimoire. Your current Grimoire will remain safely in your collection."],
+      newSession: "New Grimoire",
+      sessionList: "My grimoires",
+      deleteSession: "Delete this spell book?",
+      keepLocked: "Keep this quandary",
+      newLocked: "Start a new Grimoire",
+    },
+    studio: {
+      toolsTitle: "Interaction Ideation",
+      menuAria: "Open tools",
+      bookLabel: "Ideation record",
+      bookAria: "Open ideation record",
+      rename: "Rename session",
+      sessions: "My sessions",
+      export: "Export ideation record",
+      import: "Import ideation record",
+      print: "Print / Save PDF",
+      help: "How this works",
+      quandary: "Interaction problem",
+      editQuandary: "Edit interaction",
+      set: "set",
+      ingredients: "Contextual factors",
+      editIngredients: "Edit contextual factors",
+      spells: "Concepts",
+      returnTable: "Return to ideation workspace",
+      seerTable: "Ideation workspace",
+      craft: "Develop the interaction.",
+      cards: "Provocations",
+      crystal: "Contextual lens",
+      yourSpell: "Your concept",
+      desireCard: "Human desire",
+      powerCard: "Interaction capability",
+      draw: "Generate",
+      read: "Consider",
+      craftStep: "Describe",
+      theCards: "the provocations",
+      theCrystal: "the context",
+      theSpell: "the concept",
+      ether: "Provocation",
+      disturb: "Apply a What If?",
+      editSpell: "Edit this concept",
+      saveSpell: "Save changes",
+      craftAnother: "Develop another concept",
+      studioMode: "Studio",
+      seerMode: "Seer’s Table",
+      modeHint: "Experience mode",
+      lockedTitle: "This interaction problem is already in use",
+      lockedBody: ["You have already developed concepts from this starting point. Changing it now would make the existing ideation record inconsistent.", "For a different direction, begin a new session. Your current ideation record will remain safely in your collection."],
+      newSession: "New session",
+      sessionList: "My sessions",
+      print: "Print / Save PDF",
+      deleteSession: "Delete this ideation record?",
+      keepLocked: "Keep this interaction problem",
+      newLocked: "Start a new session",
+    },
+  };
 
   function copy(key) {
     const mode = app.workspace?.interfaceMode || "seer";
@@ -93,10 +188,6 @@
     return Date.now();
   }
 
-  // -----------------------------------------------------------------------
-  // Session state and persistence
-  // -----------------------------------------------------------------------
-
   function blankSession(name = "The Untitled Grimoire") {
     return {
       id: uid("session"),
@@ -139,8 +230,6 @@
             type: i.type || "",
             label: i.label || "",
             value: i.value || "",
-            // Older sessions did not store an explicit selection flag.
-            selected: i.selected !== false,
           }))
         : [];
       base.spells = Array.isArray(raw.spells)
@@ -266,26 +355,17 @@
     }
     return pair;
   }
-
-  // -----------------------------------------------------------------------
-  // Experience mode and theme
-  // -----------------------------------------------------------------------
-
-  // Apply the visual theme associated with the current experience mode.
-  // The theme files are loaded by index.html; this function only switches
-  // the body class so the correct variable set is active.
-  function applyTheme() {
-    const body = document.body;
-    if (!body) return;
-
-    const studio = currentMode() === "studio";
-    body.classList.toggle("theme-studio", studio);
-    body.classList.toggle("theme-seer", !studio);
+  function chooseUnusedIngredient() {
+    const session = activeSession();
+    const selected = new Set(
+      session.spells.map((s) => s.ingredient?.id).filter(Boolean),
+    );
+    const available = INGREDIENTS.filter((i) => !selected.has(i.id));
+    return chooseRandom(available.length ? available : INGREDIENTS);
   }
 
   function setMode(mode) {
     app.workspace.interfaceMode = mode === "studio" ? "studio" : "seer";
-    applyTheme();
     scheduleSave();
     updateModeControl();
     refreshCurrentView();
@@ -307,6 +387,7 @@
       toggle.setAttribute("aria-label", `Switch to ${studio ? "Thematic Experience" : "Classroom Experience"}`);
       toggle.classList.toggle("is-studio", studio);
     }
+    // if (modeName) modeName.textContent = studio ? "Classroom Experience" : "Thematic Experience";
     const sessionModalTitle = $("#sessionsModalTitle");
     const newSessionLabel = $("#newSessionButtonLabel");
     const keepLockedLabel = $("#keepLockedLabel");
@@ -444,143 +525,62 @@
 
   function gateQuandary() {}
 
-  // Ingredients are live contextual lenses until the first spell/concept exists.
-  // Once a spell has been created, the current ingredient set becomes part of
-  // that Grimoire's fixed starting context and cannot be changed.
-  // -----------------------------------------------------------------------
-  // Contextual ingredient selection
-  // -----------------------------------------------------------------------
-
   function renderIngredients(openType = null) {
     app.currentStage = "ingredients";
     const s = activeSession();
-    const locked = Boolean(s.quandaryLocked);
     setPrompt(
-      locked
-        ? copy("ingredientsLocked")
-        : modeText(
-            "Choose a few things that shape the interaction. You do not need everything.",
-            "Choose a few contextual factors that matter. You do not need everything.",
-          ),
-      `<button class="button button-primary" id="ingredientsDone">${locked ? (currentMode() === "studio" ? "Return to ideation" : "Return to the Seer") : (currentMode() === "studio" ? "Continue" : "Let the Seer look closer")}</button>`,
+      modeText("Choose a few things that shape the interaction. You do not need everything.", "Choose a few contextual factors that matter. You do not need everything."),
+      `<button class="button button-primary" id="ingredientsDone">${currentMode() === "studio" ? "Continue" : "Let the Seer look closer"}</button>`,
     );
     transition(() => {
       el.stage.innerHTML = `
         <div class="scene">
           <p class="kicker">${currentMode() === "studio" ? "Contextual factors" : "Gather your ingredients"}</p>
           <h2 class="title" style="font-size:clamp(38px,5.8vw,66px)">${currentMode() === "studio" ? "What shapes the interaction?" : "What matters here?"}</h2>
-          <p class="subtitle">${locked ? copy("ingredientsLocked") : (currentMode() === "studio" ? "Pick a few lenses. Briefly note how each one changes the interaction." : "Pick a few lenses. The Seer will help you start but you must fill in what each one changes.")}</p>
-          <div class="ingredient-grid" id="ingredientGrid">${INGREDIENTS.map((item) => {
-            const record = s.ingredients.find((i) => i.type === item.id);
-            const selected = Boolean(record?.selected);
-            return `
-              <article class="ingredient-card ${selected ? "is-selected" : ""} ${locked ? "is-locked" : ""}" data-ingredient="${esc(item.id)}">
-                <button type="button" class="ingredient-toggle" data-ingredient-toggle="${esc(item.id)}" ${locked ? "disabled" : ""} aria-pressed="${selected}">
-                  <strong>${esc(item.label)}</strong>
-                  <small>${esc(item.question)}</small>
-                  <span class="ingredient-state">${selected ? "Selected" : "Available"}</span>
-                </button>
-                ${selected && !locked ? `<button type="button" class="ingredient-edit" data-ingredient-edit="${esc(item.id)}">Edit details</button>` : ""}
-                ${selected && locked ? `<p class="ingredient-locked-note">Set for this Grimoire</p>` : ""}
-              </article>`;
-          }).join("")}</div>
+          <p class="subtitle">${currentMode() === "studio" ? "Pick a few lenses. Briefly note how each one changes the interaction." : "Pick a few lenses. The Seer will help you start but you must fill in what each one changes."}</p>
+          <div class="ingredient-grid" id="ingredientGrid">${INGREDIENTS.map(
+            (item) => `
+            <button type="button" class="ingredient-card ${s.ingredients.some((i) => i.type === item.id) ? "is-selected" : ""}" data-ingredient="${esc(item.id)}">
+              <strong>${esc(item.label)}</strong>
+              <small>${esc(item.question)}</small>
+            </button>`,
+          ).join("")}</div>
           <div id="factorEditor"></div>
         </div>`;
-
-      $$('[data-ingredient-toggle]').forEach((button) => {
-        button.addEventListener("click", () => toggleIngredient(button.dataset.ingredientToggle));
-      });
-      $$('[data-ingredient-edit]').forEach((button) => {
-        button.addEventListener("click", () => editIngredient(button.dataset.ingredientEdit));
-      });
-
-      $("#ingredientsDone")?.addEventListener("click", () => {
-        if (locked) {
-          beginSpell();
-          return;
-        }
-        const selectedIngredients = s.ingredients.filter((i) => i.selected);
-        if (selectedIngredients.length < Number(SETTINGS.minIngredients || 2))
+      $$(".ingredient-card").forEach((card) =>
+  card.addEventListener("click", () =>
+    editIngredient(card.dataset.ingredient),
+  ),
+);
+      $("#ingredientsDone").addEventListener("click", () => {
+        if (s.ingredients.length < Number(SETTINGS.minIngredients || 2))
           return softNudge(
             "ingredientsDone",
-            modeText(
-              "A couple of useful ingredients are enough to begin. Choose at least two.",
-              "Choose at least two contextual factors to begin.",
-            ),
+            modeText("A couple of useful ingredients are enough to begin. Choose at least two.", "Choose at least two contextual factors to begin."),
           );
-        const incomplete = selectedIngredients.find((i) => !i.value.trim());
-        if (incomplete) {
-          app.currentIngredientId = incomplete.id;
-          syncIngredientCards(incomplete.type);
-          return editIngredient(incomplete.type, true);
-        }
         beginSpell();
       });
-
-      const typeToOpen = !locked && openType && s.ingredients.some((i) => i.type === openType && i.selected)
-        ? openType
-        : null;
+      const typeToOpen = openType || s.ingredients[0]?.type;
       if (typeToOpen) editIngredient(typeToOpen, false);
       updateIngredientGate();
     });
-  }
-
-  function toggleIngredient(type) {
-    const item = INGREDIENTS.find((x) => x.id === type);
-    const s = activeSession();
-    if (!item || !s || s.quandaryLocked) return;
-
-    let record = s.ingredients.find((x) => x.type === type);
-    const selectedCount = s.ingredients.filter((i) => i.selected).length;
-
-    if (record?.selected) {
-      // Deselect without deleting the student's saved contextual note.
-      record.selected = false;
-      if (app.currentIngredientId === record.id) {
-        app.currentIngredientId = null;
-        $("#factorEditor").innerHTML = "";
-      }
-    } else {
-      if (selectedCount >= Number(SETTINGS.maxIngredientSelections || 5)) {
-        return softNudge(
-          "ingredientsDone",
-          modeText(
-            "That is enough ingredients for now. Deselect one before choosing another.",
-            "You already have the maximum contextual factors selected. Turn one off before choosing another.",
-          ),
-        );
-      }
-      if (!record) {
-        record = { id: uid("ingredient"), type, label: item.label, value: "", selected: true };
-        s.ingredients.push(record);
-      } else {
-        record.selected = true;
-      }
-      app.currentIngredientId = record.id;
-      scheduleSave();
-      editIngredient(type, true);
-      return;
-    }
-
-    scheduleSave();
-    syncIngredientCards();
-    updateIngredientGate();
-    renderBook();
   }
 
   function editIngredient(type, autofocus = true) {
     const item = INGREDIENTS.find((x) => x.id === type);
     if (!item) return;
     const s = activeSession();
-    if (s.quandaryLocked) return softNudge("ingredientsDone", copy("ingredientsLocked"));
-
     let record = s.ingredients.find((x) => x.type === type);
     if (!record) {
-      return toggleIngredient(type);
+      if (s.ingredients.length >= Number(SETTINGS.maxIngredientSelections || 5))
+        return softNudge(
+          "ingredientsDone",
+          modeText("That is enough ingredients for now. Let the Seer work with them.", "That is enough context for now. Continue when you are ready."),
+        );
+      record = { id: uid("ingredient"), type, label: item.label, value: "" };
+      s.ingredients.push(record);
+      scheduleSave();
     }
-    if (!record.selected) return;
-
-    app.currentIngredientId = record.id;
     const editor = $("#factorEditor");
     editor.innerHTML = `
       <div class="factor-editor">
@@ -588,69 +588,53 @@
         <p>${esc(item.guidance)}</p>
         <label class="field"><span>${currentMode() === "studio" ? "What changes because of this factor?" : "Your interaction"}</span><input id="factorInput" value="${esc(record.value)}" placeholder="${currentMode() === "studio" ? "Describe what changes here..." : "What is true here? Update this if needed."}"></label>
       </div>`;
-    const factorInput = $("#factorInput");
-    factorInput.addEventListener("input", (e) => {
+    $("#factorInput").addEventListener("input", (e) => {
       record.value = e.target.value;
       scheduleSave();
       renderBook();
     });
-    factorInput.addEventListener("blur", () => {
-      // Empty detail means the student has removed this lens. Delay that decision
-      // until blur so temporarily clearing the field does not interrupt typing.
-      if (!record.value.trim()) {
-        record.selected = false;
-        app.currentIngredientId = null;
-        editor.innerHTML = "";
-        syncIngredientCards();
-        updateIngredientGate();
-        scheduleSave();
-        renderBook();
-      }
-    });
     if (autofocus) setTimeout(() => $("#factorInput")?.focus(), 60);
-    syncIngredientCards(type);
+    $$(".ingredient-card").forEach((c) => {
+      const cardType = c.dataset.ingredient;
+      const isSelected = s.ingredients.some((i) => i.type === cardType);
+      const isEditing = cardType === type;
+
+      c.classList.toggle("is-selected", isSelected);
+      c.classList.toggle("is-editing", isEditing);
+    });
     updateIngredientGate();
   }
 
   function syncIngredientCards(editingType = null) {
-    const s = activeSession();
-    if (!s) return;
-    const selectedTypes = new Set(
-      s.ingredients.filter((i) => i.selected).map((i) => i.type),
-    );
-    $$(".ingredient-card").forEach((card) => {
-      const type = card.dataset.ingredient;
-      const selected = selectedTypes.has(type);
-      const toggle = card.querySelector("[data-ingredient-toggle]");
-      card.classList.toggle("is-selected", selected);
-      card.classList.toggle("is-editing", editingType === type);
-      toggle?.setAttribute("aria-pressed", String(selected));
-      toggle?.classList.toggle("is-selected", selected);
-    });
-  }
+  const s = activeSession();
+  if (!s) return;
+
+  const selectedTypes = new Set(s.ingredients.map((i) => i.type));
+
+  $$(".ingredient-card").forEach((card) => {
+    const type = card.dataset.ingredient;
+    card.classList.toggle("is-selected", selectedTypes.has(type));
+    card.classList.toggle("is-editing", editingType === type);
+  });
+}
 
   function updateIngredientGate() {
-    const s = activeSession();
-    if (!s) return;
-    const max = Number(SETTINGS.maxIngredientSelections || 5);
-    const atLimit = s.quandaryLocked || s.ingredients.filter((i) => i.selected).length >= max;
-    $$("[data-ingredient-toggle]").forEach((button) => {
-      const selected = button.getAttribute("aria-pressed") === "true";
-      const unavailable = !s.quandaryLocked && atLimit && !selected;
-      // At-limit cards remain clickable so the existing contextual nudge can explain why.
-      // A locked Grimoire uses genuinely disabled controls because its ingredient set is fixed.
-      button.disabled = Boolean(s.quandaryLocked);
-      button.closest(".ingredient-card")?.classList.toggle("is-at-limit", unavailable);
-      button.closest(".ingredient-card")?.setAttribute(
-        "aria-disabled",
-        String(unavailable || s.quandaryLocked),
-      );
-    });
-  }
+  const s = activeSession();
+  if (!s) return;
 
-  // -----------------------------------------------------------------------
-  // Spell crafting
-  // -----------------------------------------------------------------------
+  const max = Number(SETTINGS.maxIngredientSelections || 5);
+  const atLimit = s.ingredients.length >= max;
+
+  $$(".ingredient-card").forEach((card) => {
+    const selected = card.classList.contains("is-selected");
+
+    card.classList.toggle("is-at-limit", atLimit && !selected);
+    card.setAttribute(
+      "aria-disabled",
+      String(atLimit && !selected),
+    );
+  });
+}
 
   function beginSpell() {
     const s = activeSession();
@@ -660,8 +644,10 @@
     scheduleSave();
 
     app.currentPair = chooseUnusedPair();
-    const selectedIngredients = activeSession().ingredients.filter((i) => i.selected);
-    app.currentIngredientId = chooseRandom(selectedIngredients)?.id || null;
+    app.currentIngredientId =
+      chooseRandom(activeSession().ingredients)?.id ||
+      activeSession().ingredients[0]?.type ||
+      null;
     app.drawnDesire = false;
     app.drawnPower = false;
     app.ballComplete = false;
@@ -676,8 +662,8 @@
     const s = activeSession();
     const pair = app.currentPair;
     const ingredient =
-      s.ingredients.find((i) => i.id === app.currentIngredientId && i.selected) ||
-      s.ingredients.find((i) => i.selected);
+      s.ingredients.find((i) => i.id === app.currentIngredientId) ||
+      s.ingredients[0];
     const ingredientDef = INGREDIENTS.find((i) => i.id === ingredient?.type);
     setPrompt(
       currentMode() === "studio" ? "Start with the provocations, consider the context, then describe the concept." : "The Seer has laid the tools before you. Begin with the cards, then read the crystal ball, then shape your spell.",
@@ -792,8 +778,8 @@
     app.currentStage = "crystal-reading";
     const s = activeSession();
     const ingredient =
-      s.ingredients.find((i) => i.id === app.currentIngredientId && i.selected) ||
-      s.ingredients.find((i) => i.selected);
+      s.ingredients.find((i) => i.id === app.currentIngredientId) ||
+      s.ingredients[0];
     const data =
       INGREDIENTS.find((i) => i.id === ingredient?.type) || INGREDIENTS[0];
     const reading =
@@ -863,8 +849,8 @@
     const name =
       $("#spellName")?.value.trim() || "" || `Spell ${s.spells.length + 1}`;
     const ingredient =
-      s.ingredients.find((i) => i.id === app.currentIngredientId && i.selected) ||
-      s.ingredients.find((i) => i.selected);
+      s.ingredients.find((i) => i.id === app.currentIngredientId) ||
+      s.ingredients[0];
     const spell = {
       id: uid("spell"),
       name,
@@ -922,11 +908,6 @@
     openDrawer("book");
   }
 
-  function lockedIngredientBookItem(ingredient) {
-    const label = (INGREDIENTS.find((x) => x.id === ingredient.type) || {}).label || ingredient.label;
-    return `<button type="button" class="book-ingredient" data-edit-ingredient="${esc(ingredient.type)}"><strong>${esc(label)}</strong><span>${esc(ingredient.value || "Add a detail")}</span></button>`;
-  }
-
   function renderBook() {
     const s = activeSession();
     if (!s) {
@@ -960,8 +941,8 @@
       </section>
       <section class="spell-section">
         <h3>${copy("ingredients")}</h3>
-        <div class="book-ingredients">${s.ingredients.filter((i) => i.selected).map((i) => lockedIngredientBookItem(i)).join("") || '<p style="color:var(--muted)">No factors recorded yet.</p>'}</div>
-        ${s.quandaryLocked ? `<p class="book-help">${copy("ingredientsLocked")}</p>` : `<button class="drawer-action" id="editIngredientsFromBook" type="button">${copy("editIngredients")}</button>`}
+        <div class="book-ingredients">${s.ingredients.map((i) => `<button type="button" class="book-ingredient" data-edit-ingredient="${esc(i.type)}"><strong>${esc((INGREDIENTS.find((x) => x.id === i.type) || {}).label || i.label)}</strong><span>${esc(i.value || (currentMode() === "studio" ? "Add a detail" : "Add a detail"))}</span></button>`).join("") || '<p style="color:var(--muted)">No factors recorded yet.</p>'}</div>
+        <button class="drawer-action" id="editIngredientsFromBook" type="button">${copy("editIngredients")}</button>
       </section>
       <section class="spell-section">
         <h3>${copy("spells")}</h3>
@@ -986,15 +967,13 @@
       closeDrawers();
       renderIngredients();
     });
-    if (!s.quandaryLocked) {
-      $$('[data-edit-ingredient]').forEach((card) =>
-        card.addEventListener("click", () => {
-          const type = card.dataset.editIngredient;
-          closeDrawers();
-          renderIngredients(type);
-        }),
-      );
-    }
+    $$('[data-edit-ingredient]').forEach((card) =>
+      card.addEventListener('click', () => {
+        const type = card.dataset.editIngredient;
+        closeDrawers();
+        renderIngredients(type);
+      }),
+    );
     $$('[data-open-spell]').forEach((card) =>
       card.addEventListener('click', () => openSavedSpell(card.dataset.openSpell)),
     );
@@ -1030,10 +1009,6 @@
       );
     });
   }
-
-  // -----------------------------------------------------------------------
-  // Spell development and Ether variations
-  // -----------------------------------------------------------------------
 
   function findVariation(spell, id) {
     return spell?.variations.find((variation) => variation.id === id) || null;
@@ -1340,7 +1315,6 @@
       const data = normaliseWorkspace(json);
       if (!data) throw new Error("Invalid spell book");
       app.workspace = data;
-      applyTheme();
       save();
       closeDrawers();
       renderWelcome();
@@ -1368,7 +1342,6 @@
       )
       .join("");
     const contextualFactors = s.ingredients
-      .filter((i) => i.selected)
       .map(ingredientLabel)
       .filter(Boolean)
       .join(" · ");
@@ -1389,7 +1362,6 @@
     } catch (_) {
       app.workspace = defaultWorkspace();
     }
-    applyTheme();
     updateModeControl();
     $("#modeToggle")?.addEventListener("click", () => {
       setMode(currentMode() === "studio" ? "seer" : "studio");

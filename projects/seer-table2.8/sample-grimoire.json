@@ -1,0 +1,163 @@
+{
+  "activeId": "session-example-finding-space",
+  "sessions": [
+    {
+      "id": "session-example-finding-space",
+      "name": "The Book of Finding Space",
+      "interaction": "Finding somewhere to sit and work on a busy university campus",
+      "context": "Students moving between classes may need somewhere to work for a short period. A space can be technically available but still unsuitable because of noise, distance, accessibility, or whether someone else is about to leave.",
+      "ingredients": [
+        {
+          "id": "ingredient-example-people",
+          "type": "people",
+          "label": "People",
+          "value": "Students looking individually or with friends; other students already occupying spaces."
+        },
+        {
+          "id": "ingredient-example-time",
+          "type": "time",
+          "label": "Time",
+          "value": "Often only 30–90 minutes between classes. Availability changes quickly around class transitions."
+        },
+        {
+          "id": "ingredient-example-place",
+          "type": "place",
+          "label": "Place",
+          "value": "Libraries, corridors, outdoor areas, studios, cafes, and informal campus spaces all feel different to work in."
+        },
+        {
+          "id": "ingredient-example-information",
+          "type": "information",
+          "label": "Information",
+          "value": "Students can usually tell whether a space is occupied only after reaching it, and they rarely know whether it will become available soon."
+        },
+        {
+          "id": "ingredient-example-habits",
+          "type": "habits",
+          "label": "Habits",
+          "value": "Students often check familiar locations first and wander elsewhere if those spaces are full."
+        }
+      ],
+      "spells": [
+        {
+          "id": "spell-example-breathing-campus",
+          "name": "The Breathing Campus",
+          "desire": {
+            "name": "Omniscience",
+            "description": "The desire to know all."
+          },
+          "power": {
+            "name": "Anticipate",
+            "nudge": "Act before the person needs to ask."
+          },
+          "ingredient": {
+            "id": "ingredient-example-place",
+            "type": "place",
+            "value": "Libraries, corridors, outdoor areas, studios, cafes, and informal campus spaces all feel different to work in."
+          },
+          "idea": "Sketch note: I drew several campus spaces as simple blocks with different breathing marks around them. The marks become faster as a space gets busier and slower as it begins to clear. The idea is that the environment communicates its changing state rather than asking the student to search for a status. The interaction is less about finding an empty seat and more about noticing which place is becoming suitable."
+          ,"variations": [
+            {
+              "id": "variation-example-breathing-no-screen",
+              "ether": {
+                "text": "It has no screen",
+                "nudge": "Change the interaction, not just its interface."
+              },
+              "response": "Sketch variation: the campus communicates changing availability through ambient sound, movement, light, or another environmental quality. The question left open is how to communicate this without creating more noise or distraction.",
+              "created": 1769251200000
+            }
+          ],
+          "created": 1769251200000,
+          "updated": 1769251200000
+        },
+        {
+          "id": "spell-example-migrating-table",
+          "name": "The Migrating Table",
+          "desire": {
+            "name": "Teleportation",
+            "description": "The desire to move effortlessly."
+          },
+          "power": {
+            "name": "Move",
+            "nudge": "Remove effort or change how movement happens."
+          },
+          "ingredient": {
+            "id": "ingredient-example-habits",
+            "type": "habits",
+            "value": "Students often check familiar locations first and wander elsewhere if those spaces are full."
+          },
+          "idea": "Sketch note: I drew a student walking across campus with a series of tables following arrows behind them. The deliberately ridiculous starting point was 'what if the workspace came looking for you?' The useful interaction idea is to reverse the normal search: instead of students looking for somewhere suitable, a suitable workspace responds to the person who needs it."
+          ,"variations": [
+            {
+              "id": "variation-example-migrating-two-people",
+              "ether": {
+                "text": "It only works between two people",
+                "nudge": "What changes when another person becomes part of the interaction?"
+              },
+              "response": "Sketch variation: two students travelling from different parts of campus are matched to a suitable meeting point based on their movement, available time, and the kind of workspace they need. The magical movement becomes a way of reframing how a shared place is found.",
+              "created": 1769337600000
+            }
+          ],
+          "created": 1769337600000,
+          "updated": 1769337600000
+        },
+        {
+          "id": "spell-example-borrowed-seat",
+          "name": "The Borrowed Seat",
+          "desire": {
+            "name": "Telepathy",
+            "description": "The desire for human connection."
+          },
+          "power": {
+            "name": "Reveal",
+            "nudge": "Make something known that was previously hidden."
+          },
+          "ingredient": {
+            "id": "ingredient-example-people",
+            "type": "people",
+            "value": "Students looking individually or with friends; other students already occupying spaces."
+          },
+          "idea": "Sketch note: I drew two people at different sides of a campus map. One student is still working but knows they will leave soon; the other is searching for a seat. A simple line connects them with a note reading 'leaving in five minutes'. The enchantment reveals information that already exists between people but normally stays hidden."
+          ,"variations": [
+            {
+              "id": "variation-example-seat-wrong",
+              "ether": {
+                "text": "It sometimes gets it wrong",
+                "nudge": "What happens when the enchantment misreads the situation?"
+              },
+              "response": "Sketch variation: instead of promising that a particular seat will definitely become available, the interaction communicates a degree of likelihood across an area. The important design question becomes how much certainty the system should imply when plans can change.",
+              "created": 1769424000000
+            }
+          ],
+          "created": 1769424000000,
+          "updated": 1769424000000
+        },
+        {
+          "id": "spell-example-familiar-corner",
+          "name": "The Familiar Corner",
+          "desire": {
+            "name": "Safekeeping",
+            "description": "The desire to protect and be protected."
+          },
+          "power": {
+            "name": "Remember",
+            "nudge": "Hold onto something from an earlier encounter."
+          },
+          "ingredient": {
+            "id": "ingredient-example-habits",
+            "type": "habits",
+            "value": "Students often check familiar locations first and wander elsewhere if those spaces are full."
+          },
+          "idea": "Sketch note: I drew a familiar study corner marked with a small star, then several other campus spaces that share its qualities: quiet, near power, comfortable, usually available in the afternoon. The interaction remembers what kinds of places have previously worked well and helps the student recognise similar spaces elsewhere. I am less convinced by this direction because it risks becoming a recommendation system rather than changing the interaction in a more interesting way."
+          ,"variations": [],
+          "created": 1769510400000,
+          "updated": 1769510400000
+        }
+      ],
+      "tableUnlocked": true,
+      "created": 1769251200000,
+      "updated": 1769510400000,
+      "status": "active"
+    }
+  ]
+}

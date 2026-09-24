@@ -1,0 +1,63 @@
+/*
+  THEMATIC / SEER'S TABLE THEME
+  A warmer, slightly mystical palette distinguishes the creative experience
+  without changing the underlying interface structure.
+*/
+body.theme-seer {
+  --bg: #f4efe7;
+  --paper: #fffaf3;
+  --ink: #35293d;
+  --muted: #756c79;
+  --line: #d6cad7;
+  --soft: #ece4ed;
+  --soft-2: #e3d8e5;
+  --accent: #6c5574;
+  --warm: #b79b72;
+}
+
+body.theme-seer .mode-switch {
+  background: rgba(255, 250, 243, 0.97);
+  border-color: #cbbdce;
+}
+
+body.theme-seer .mode-toggle {
+  background: #8a7391;
+  border-color: #8a7391;
+}
+
+body.theme-seer .mode-toggle-track {
+  background: #8a7391;
+}
+
+body.theme-seer .mode-toggle-knob {
+  border-color: #6c5574;
+}
+
+body.theme-seer .edge-control,
+body.theme-seer .prompt-rail {
+  background: rgba(255, 250, 243, 0.96);
+}
+
+body.theme-seer .seer-mark {
+  border-color: #6c5574;
+}
+
+body.theme-seer .seer-mark::before,
+body.theme-seer .seer-mark::after {
+  border-color: #c4b2c9;
+}
+
+body.theme-seer .button-primary {
+  background: #6c5574;
+  border-color: #6c5574;
+}
+
+body.theme-seer .button-primary:hover {
+  background: #594662;
+  border-color: #594662;
+}
+
+body.theme-seer .spell-card,
+body.theme-seer .ingredient-card.is-selected {
+  border-color: #6c5574;
+}

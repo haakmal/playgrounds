@@ -1,44 +1,29 @@
-# Enchantment
+# The Seer's Table
 
-A short, playful DDES1150 Interaction 1 ideation playground framed as an encounter with a Seer. The student brings an interaction, gathers contextual ingredients, draws a Desire + Power by interacting directly with the cards, consults a crystal ball that returns one of their own contextual details, then records a student-authored spell on the same Seer's table. Saved spells can be disturbed through the Ether and revisited from the Grimoire.
+A DDES1150 Interaction Design playground for fast, student-led creative ideation inspired by David Rose's *Enchanted Objects*.
 
-## Content editing
+## Project structure
 
-Classroom-facing content is deliberately separated into `content.js`. Edit the arrays there; the interaction logic in `app.js` should not need to change.
+- `index.html` — application shell and drawer/modal markup.
+- `app.js` — application logic, session state, rendering and interaction flow.
+- `content.js` — editable ideation content: desires, powers, contextual factors, Ether prompts and crystal-ball readings.
+- `copy.js` — editable thematic/classroom language used by the interface.
+- `styles.css` — shared layout, components and interaction styles.
+- `theme-studio.css` — classroom/studio colour tokens.
+- `theme-seer.css` — thematic colour tokens and small thematic adjustments.
+- `sample-grimoire.json` — example session data for classroom demonstration.
 
-- `desires` — human desire cards.
-- `powers` — interactive power cards and their short nudges.
-- `ingredients` — contextual lenses shown as selectable cards. Each includes a question and guidance that appears when selected.
-- `ether` — What If / disruption statements and their nudges.
-- `ballReadings` — short lines used around the crystal-ball reading.
-- `openingLines` — opening Seer copy.
-- `settings` — minimum response lengths, ingredient limits, and a few activity settings.
+## Ingredient logic
 
-Add, remove or reorder objects freely. IDs on ingredient objects should remain unique.
+Before the first spell/concept is crafted, contextual factors are switchable. Selecting a factor activates it and opens its detail editor. Selecting it again turns it off without deleting its saved detail. When the maximum number of active factors is reached, remaining factors are muted but still clickable so the interface can explain why they are unavailable.
 
-## Session features
+Once the first spell/concept is crafted, the current contextual factors are fixed for that Grimoire/session. Existing spells retain their own contextual-lens snapshot, and students can start a new Grimoire/session when they want a different starting context.
 
-- Multiple named grimoires (session names are treated as the student's spell book title).
-- LocalStorage persistence.
-- Grimoire drawer documenting the student's work in descriptive form.
-- JSON export/import.
-- Print / Save PDF through the browser print dialog.
-- Sessions can be renamed, duplicated and deleted.
+## Experience modes
 
-## Design intent
+The persistent experience switch changes both interface language and colour treatment:
 
-The centre of the viewport belongs to the Seer and the current activity. The bottom edge holds the current instruction and action. The top-left menu contains utilities. The top-right Spell Book contains the student's accumulated work. Cards are the primary editable/selectable objects.
+- **Thematic Experience** — the Seer's Table, Grimoire, spells, Ether and other story-led terminology.
+- **Classroom Experience** — interaction-design terminology such as interaction problem, contextual factors, concepts and ideation workspace.
 
-The application never generates the student's ideas. Prompts and animations are the nudge; the student supplies the ideation.
-
-## Current prototype refinements
-
-The active spell-crafting experience is now a single collective table rather than a sequence of separate card, crystal-ball and capture screens. Cards are directly clickable; the crystal-ball reading retains the drawn cards in view; the idea capture sits beside the reading; and saving a spell updates that same table rather than moving to a separate saved screen. Transitions are intentionally slower and more ambient. The Ether begins automatically when opened, and empty required responses produce a visible prompt-rail nudge rather than relying on disabled controls.
-
-## Current interaction model
-
-A spell is a persistent concept, not a step in a fixed sequence. Students can craft several spells, open any saved spell later, edit its name or description, and apply the Ether repeatedly. Each Ether intervention is stored as a separate variation beneath the original spell.
-
-The `Seer’s Table / Studio` switch is always available in the top edge of the interface. It is stored with the workspace and changes the working vocabulary without moving the student into a separate application. `Seer’s Table` keeps the story-led language; `Studio` uses interaction-design terminology for students who prefer a more direct framing.
-
-The original Desire + Power pairing that created a spell remains fixed, while the student-authored description and name can be edited. The quandary remains locked once the first spell is saved; changing the starting point requires a new Grimoire.
+Both modes use the same underlying activity and session data.
