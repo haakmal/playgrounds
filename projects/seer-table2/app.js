@@ -44,6 +44,98 @@
         })[ch],
     );
 
+  const COPY = {
+    seer: {
+      toolsTitle: "The Seer’s Table",
+      menuAria: "Open tools",
+      bookLabel: "Grimoire",
+      bookAria: "Open grimoire",
+      rename: "Rename grimoire",
+      sessions: "My grimoires",
+      export: "Export spell book",
+      import: "Import spell book",
+      print: "Print / Save PDF",
+      help: "How this works",
+      quandary: "Quandary",
+      editQuandary: "Edit quandary",
+      set: "set",
+      ingredients: "Ingredients",
+      editIngredients: "Edit ingredients",
+      spells: "Spells",
+      returnTable: "Return to the Seer’s table",
+      seerTable: "The Seer’s table",
+      craft: "Craft the enchantment.",
+      cards: "Cards",
+      crystal: "Crystal ball",
+      yourSpell: "Your spell",
+      desireCard: "Desire",
+      powerCard: "Power",
+      draw: "Draw",
+      read: "Read",
+      craftStep: "Craft",
+      theCards: "the cards",
+      theCrystal: "the crystal",
+      theSpell: "the spell",
+      ether: "The Ether",
+      disturb: "Pull from the Ether",
+      editSpell: "Edit this spell",
+      saveSpell: "Save changes",
+      craftAnother: "Craft another spell",
+      studioMode: "Studio",
+      seerMode: "Seer’s Table",
+      modeHint: "Language",
+    },
+    studio: {
+      toolsTitle: "Interaction Ideation",
+      menuAria: "Open tools",
+      bookLabel: "Process record",
+      bookAria: "Open process record",
+      rename: "Rename session",
+      sessions: "My sessions",
+      export: "Export process record",
+      import: "Import process record",
+      print: "Print / Save PDF",
+      help: "How this works",
+      quandary: "Interaction problem",
+      editQuandary: "Edit interaction",
+      set: "set",
+      ingredients: "Contextual factors",
+      editIngredients: "Edit contextual factors",
+      spells: "Concepts",
+      returnTable: "Return to ideation workspace",
+      seerTable: "Ideation workspace",
+      craft: "Develop the interaction.",
+      cards: "Provocations",
+      crystal: "Contextual lens",
+      yourSpell: "Your concept",
+      desireCard: "Human desire",
+      powerCard: "Interaction capability",
+      draw: "Generate",
+      read: "Consider",
+      craftStep: "Describe",
+      theCards: "the provocations",
+      theCrystal: "the context",
+      theSpell: "the concept",
+      ether: "Provocation",
+      disturb: "Apply a What If?",
+      editSpell: "Edit this concept",
+      saveSpell: "Save changes",
+      craftAnother: "Develop another concept",
+      studioMode: "Studio",
+      seerMode: "Seer’s Table",
+      modeHint: "Language",
+    },
+  };
+
+  function copy(key) {
+    const mode = app.workspace?.interfaceMode || "seer";
+    return COPY[mode]?.[key] ?? COPY.seer[key] ?? key;
+  }
+
+  function currentMode() {
+    return app.workspace?.interfaceMode || "seer";
+  }
+
   const el = {
     stage: $("#stage"),
     promptCopy: $("#promptCopy"),
@@ -99,7 +191,7 @@
 
   function defaultWorkspace() {
     const session = blankSession("The Untitled Grimoire");
-    return { activeId: session.id, sessions: [session] };
+    return { activeId: session.id, interfaceMode: "seer", sessions: [session] };
   }
 
   function normaliseWorkspace(data) {
@@ -151,6 +243,7 @@
       activeId: sessions.some((s) => s.id === data.activeId)
         ? data.activeId
         : sessions[0].id,
+      interfaceMode: data.interfaceMode === "studio" ? "studio" : "seer",
       sessions,
     };
   }
@@ -256,18 +349,73 @@
     return chooseRandom(available.length ? available : INGREDIENTS);
   }
 
+  function setMode(mode) {
+    app.workspace.interfaceMode = mode === "studio" ? "studio" : "seer";
+    scheduleSave();
+    updateModeControl();
+    refreshCurrentView();
+  }
+
+  function updateModeControl() {
+    const toggle = $("#modeToggle");
+    const studio = currentMode() === "studio";
+    if (toggle) {
+      toggle.setAttribute("aria-pressed", String(studio));
+      toggle.textContent = studio ? "Studio" : "Seer’s Table";
+      toggle.setAttribute("aria-label", studio ? "Switch to Seer’s Table language" : "Switch to Studio language");
+    }
+    const map = {
+      toolsTitle: ["toolsTitle", "textContent"],
+      bookLabel: ["bookButtonLabel", "textContent"],
+      menuAria: ["menuButton", "aria-label"],
+      bookAria: ["bookButton", "aria-label"],
+      rename: ["renameSession", "textContent"],
+      sessions: ["sessionsButton", "textContent"],
+      export: ["exportButton", "textContent"],
+      import: ["importButton", "textContent"],
+      print: ["printButton", "textContent"],
+      help: ["helpButton", "textContent"],
+    };
+    Object.entries(map).forEach(([key, [id, attr]]) => {
+      const node = $("#" + id);
+      if (!node) return;
+      if (attr.startsWith("aria-")) node.setAttribute(attr, copy(key));
+      else node[attr] = copy(key);
+    });
+    const drawerNotes = $$("[data-drawer-note]");
+    if (drawerNotes[0]) drawerNotes[0].textContent = studio ? "Use the controls below to manage your process record and move between explorations." : "Welcome to the Seer’s Table. Approach with your quandary and explore the possibilities that arise.";
+    if (drawerNotes[1]) drawerNotes[1].textContent = studio ? "The activity uses playful prompts as a creative interlude within interaction design ideation." : "Use the tools below to manage your Grimoire, export your spell book, or learn more about how this works.";
+    const bookHeader = $("#bookDrawerTitle");
+    if (bookHeader) bookHeader.textContent = copy("bookLabel");
+  }
+
+  function refreshCurrentView() {
+    switch (app.currentStage) {
+      case "welcome": renderWelcome(); break;
+      case "quandary": renderQuandary(); break;
+      case "ingredients": renderIngredients(app.currentIngredientId && activeSession()?.ingredients.some(i => i.id === app.currentIngredientId) ? activeSession().ingredients.find(i => i.id === app.currentIngredientId)?.type : null); break;
+      case "spell-table": renderSpellTable(); break;
+      case "crystal-reading": renderSpellTable(); break;
+      case "crafted": if (activeSpell()) renderCraftedSpell(activeSpell()); break;
+      case "spell-detail": if (activeSpell()) openSavedSpell(activeSpell().id); break;
+      case "spell-editor": if (activeSpell()) renderSpellEditor(activeSpell()); break;
+      case "ether": if (activeSpell()) renderEther(); break;
+      default: renderWelcome();
+    }
+  }
+
   function renderWelcome() {
     app.currentStage = "welcome";
     setPrompt(
-      "The table is quiet. Bring something with you.",
-      '<button class="button button-primary" id="approachButton">Approach the table</button>',
+      currentMode() === "studio" ? "Bring an interaction that needs another possibility." : "The table is quiet. Bring something with you.",
+      `<button class="button button-primary" id="approachButton">${currentMode() === "studio" ? "Start ideation" : "Approach the table"}</button>`,
     );
     transition(() => {
       el.stage.innerHTML = `
         <div class="scene">
           <div class="seer-mark" aria-hidden="true">✦</div>
-          <p class="kicker">The Seer</p>
-          <h1 class="title">There is another<br>way to see it.</h1>
+          <p class="kicker">${currentMode() === "studio" ? "Interaction ideation" : "The Seer"}</p>
+          <h1 class="title">${currentMode() === "studio" ? "There is another<br>way to approach it." : "There is another<br>way to see it."}</h1>
           <p class="subtitle">${esc((CONTENT.openingLines || [])[0] || "You have brought an interaction that needs another possibility.")}</p>
         </div>`;
       $("#approachButton").addEventListener("click", renderQuandary);
@@ -278,18 +426,18 @@
     app.currentStage = "quandary";
     const s = activeSession();
     setPrompt(
-      "Tell the Seer what brought you here. No solution required yet.",
-      '<button class="button button-primary" id="quandaryNext">Bring it to the table</button>',
+      currentMode() === "studio" ? "Describe the interaction you want to explore. No solution required yet." : "Tell the Seer what brought you here. No solution required yet.",
+      `<button class="button button-primary" id="quandaryNext">${currentMode() === "studio" ? "Continue" : "Bring it to the table"}</button>`,
     );
     transition(() => {
       el.stage.innerHTML = `
         <div class="scene narrow">
-          <p class="kicker">Bring your quandary</p>
-          <h2 class="title" style="font-size:clamp(40px,6vw,68px)">What interaction<br>needs another possibility?</h2>
+          <p class="kicker">${currentMode() === "studio" ? "Interaction problem" : "Bring your quandary"}</p>
+          <h2 class="title" style="font-size:clamp(40px,6vw,68px)">${currentMode() === "studio" ? "What interaction<br>needs another possibility?" : "What interaction<br>needs another possibility?"}</h2>
           <div class="form-card">
-            <label class="field"><span>Your interaction</span><textarea id="interactionInput" rows="5" placeholder="e.g. Finding an available place to study on campus">${esc(s.interaction)}</textarea></label>
+            <label class="field"><span>${currentMode() === "studio" ? "Interaction" : "Your interaction"}</span><textarea id="interactionInput" rows="5" placeholder="e.g. Finding an available place to study on campus">${esc(s.interaction)}</textarea></label>
             <label class="field"><span>Where or when does it happen? <em>(optional)</em></span><input id="contextInput" value="${esc(s.context)}" placeholder="e.g. Between classes, around lunchtime, in the library"></label>
-            <p class="edit-hint">You can edit this later from the Spell Book.</p>
+            <p class="edit-hint">${currentMode() === "studio" ? "You can edit this while the exploration is still open." : "You can edit this later from the Spell Book."}</p>
           </div>
         </div>`;
       const input = $("#interactionInput"),
@@ -328,8 +476,8 @@
     transition(() => {
       el.stage.innerHTML = `
         <div class="scene">
-          <p class="kicker">Gather your ingredients</p>
-          <h2 class="title" style="font-size:clamp(38px,5.8vw,66px)">What matters here?</h2>
+          <p class="kicker">${currentMode() === "studio" ? "Contextual factors" : "Gather your ingredients"}</p>
+          <h2 class="title" style="font-size:clamp(38px,5.8vw,66px)">${currentMode() === "studio" ? "What shapes the interaction?" : "What matters here?"}</h2>
           <p class="subtitle">Pick a few lenses. The Seer will help you start but you must fill in what each one changes.</p>
           <div class="ingredient-grid" id="ingredientGrid">${INGREDIENTS.map(
             (item) => `
@@ -425,29 +573,29 @@
       s.ingredients[0];
     const ingredientDef = INGREDIENTS.find((i) => i.id === ingredient?.type);
     setPrompt(
-      "The Seer has laid the tools before you. Begin with the cards, then read the crystal ball, then shape your spell.",
+      currentMode() === "studio" ? "Start with the provocations, consider the context, then describe the concept." : "The Seer has laid the tools before you. Begin with the cards, then read the crystal ball, then shape your spell.",
       "",
     );
     transition(() => {
       el.stage.innerHTML = `
         <div class="scene spell-table-scene">
-          <p class="kicker">The Seer’s table</p>
-          <h2 class="table-title">Craft the enchantment.</h2>
+          <p class="kicker">${copy("seerTable")}</p>
+          <h2 class="table-title">${copy("craft")}</h2>
           <div class="spell-steps" aria-label="Spellcraft steps">
-            <div class="spell-step is-active" data-step="1"><span>1</span><strong>Draw</strong><small>the cards</small></div>
-            <div class="spell-step" data-step="2"><span>2</span><strong>Read</strong><small>the crystal</small></div>
-            <div class="spell-step" data-step="3"><span>3</span><strong>Craft</strong><small>the spell</small></div>
+            <div class="spell-step is-active" data-step="1"><span>1</span><strong>${copy("draw")}</strong><small>${copy("theCards")}</small></div>
+            <div class="spell-step" data-step="2"><span>2</span><strong>${copy("read")}</strong><small>${copy("theCrystal")}</small></div>
+            <div class="spell-step" data-step="3"><span>3</span><strong>${copy("craftStep")}</strong><small>${copy("theSpell")}</small></div>
           </div>
           <div class="spell-table">
             <section class="table-panel table-cards" aria-label="Spell cards">
-              <p class="table-label">Cards</p>
+              <p class="table-label">${copy("cards")}</p>
               <div class="draw-stack">
-                <button class="draw-card ${app.drawnDesire ? "is-drawn" : ""}" id="desireCard" type="button" aria-label="Draw desire card">
-                  <span class="card-face-back">Desire</span>
+                <button class="draw-card ${app.drawnDesire ? "is-drawn" : ""}" id="desireCard" type="button" aria-label="${copy("draw")} ${copy("desireCard").toLowerCase()}">
+                  <span class="card-face-back">${copy("desireCard")}</span>
                   <span class="card-face-result"></span>
                 </button>
-                <button class="draw-card ${app.drawnPower ? "is-drawn" : ""}" id="powerCard" type="button" aria-label="Draw power card">
-                  <span class="card-face-back">Power</span>
+                <button class="draw-card ${app.drawnPower ? "is-drawn" : ""}" id="powerCard" type="button" aria-label="${copy("draw")} ${copy("powerCard").toLowerCase()}">
+                  <span class="card-face-back">${copy("powerCard")}</span>
                   <span class="card-face-result"></span>
                 </button>
               </div>
@@ -455,7 +603,7 @@
             </section>
 
             <section class="table-panel table-ball" aria-label="Crystal ball">
-              <p class="table-label">Crystal ball</p>
+              <p class="table-label">${copy("crystal")}</p>
               <div class="ball-shell" id="ballShell">
                 <div class="ball" id="crystalBall">
                   <span class="ball-ring r1"></span><span class="ball-ring r2"></span><span class="ball-ring r3"></span><span class="ball-ring r4"></span>
@@ -466,10 +614,10 @@
             </section>
 
             <section class="table-panel table-craft" aria-label="Spell crafting">
-              <p class="table-label">Your spell</p>
+              <p class="table-label">${copy("yourSpell")}</p>
               <div id="craftPanel" class="craft-panel-empty">
-                <p>The spell will take shape here.</p>
-                <small>Draw both cards and let the Seer look into the crystal ball.</small>
+                <p>${currentMode() === "studio" ? "The concept will take shape here." : "The spell will take shape here."}</p>
+                <small>${currentMode() === "studio" ? "Generate both provocations and consider the contextual lens." : "Draw both cards and let the Seer look into the crystal ball."}</small>
               </div>
             </section>
           </div>
@@ -637,12 +785,13 @@
   }
 
   function renderCraftedSpell(spell) {
+    app.currentStage = "crafted";
     const ingredientDef = INGREDIENTS.find(
       (i) => i.id === spell.ingredient?.type,
     );
     setPrompt(
-      "The spell is now written in your grimoire. You can disturb it or return to the Seer’s table.",
-      '<button class="button button-secondary" id="disturbSpell">Pull from the Ether</button><button class="button button-primary" id="anotherSpell">Return to the Seer’s table</button>',
+      currentMode() === "studio" ? "The concept is now recorded. You can develop it further or return to the ideation workspace." : "The spell is now written in your grimoire. You can disturb it or return to the Seer’s table.",
+      `<button class="button button-secondary" id="openSpellFromCraft">${copy("editSpell")}</button><button class="button button-secondary" id="disturbSpell">${copy("disturb")}</button><button class="button button-primary" id="anotherSpell">${copy("craftAnother")}</button>`,
     );
     const craft = $("#craftPanel");
     if (craft) {
@@ -654,6 +803,7 @@
           <div class="crafted-meta"><strong>${esc(spell.desire.name)} + ${esc(spell.power.name)}</strong><span>through ${esc(ingredientDef?.label || "your context")}</span></div>
         </article>`;
     }
+    $("#openSpellFromCraft").addEventListener("click", () => openSavedSpell(spell.id));
     $("#disturbSpell").addEventListener("click", renderEther);
     $("#anotherSpell").addEventListener("click", beginSpell);
     const stage = $("#craftPanel")?.closest(".spell-table-scene");
@@ -671,30 +821,41 @@
       el.bookContent.innerHTML = "";
       return;
     }
-    const ingredients = s.ingredients
-      .map(
-        (i) =>
-          `<li><strong>${esc((INGREDIENTS.find((x) => x.id === i.type) || {}).label || i.label)}</strong> — ${esc(i.value || "Not described yet")}</li>`,
-      )
-      .join("");
+    const spellCountLabel = s.spells.length === 1 ? (currentMode() === "studio" ? "concept" : "spell") : (currentMode() === "studio" ? "concepts" : "spells");
     const spells = s.spells
       .map(
-        (sp, i) => `
-      <article class="book-card" data-open-spell="${esc(sp.id)}"><h3>${esc(sp.name)}</h3><p>${esc(sp.idea)}</p><div class="book-meta">${esc(sp.desire.name)} + ${esc(sp.power.name)} · ${sp.variations.length} variation${sp.variations.length === 1 ? "" : "s"}</div></article>`,
+        (sp) => `
+      <article class="book-card" data-open-spell="${esc(sp.id)}">
+        <h3>${esc(sp.name)}</h3>
+        <p>${esc(sp.idea)}</p>
+        <div class="book-meta">${esc(sp.desire.name)} + ${esc(sp.power.name)} · ${sp.variations.length} ${sp.variations.length === 1 ? (currentMode() === "studio" ? "variation" : "variation") : (currentMode() === "studio" ? "variations" : "variations")}</div>
+      </article>`,
       )
       .join("");
     const returnToTable = s.tableUnlocked
-      ? '<button class="drawer-action" id="returnTableFromBook" type="button">Return to the Seer’s table</button>'
+      ? `<button class="drawer-action" id="returnTableFromBook" type="button">${copy("returnTable")}</button>`
       : "";
-    const quandaryAction =
-      '<button class="drawer-action" id="editQuandaryFromBook" type="button">Edit quandary</button>';
+    const quandaryAction = `<button class="drawer-action" id="editQuandaryFromBook" type="button">${copy("editQuandary")}</button>`;
     el.bookContent.innerHTML = `
-      <section class="spell-section"><p class="book-title"><button class="drawer-action" id="renameFromBook" type="button">${esc(s.name)}</button></p>
-      ${returnToTable}
+      <section class="spell-section">
+        <p class="book-title"><button class="drawer-action" id="renameFromBook" type="button">${esc(s.name)}</button></p>
+        ${returnToTable}
       </section>
-      <section class="spell-section"><h3>Your quandary${s.quandaryLocked ? ' <small class="book-status">set</small>' : ''}</h3><p>${esc(s.interaction || "Not started yet.")}</p>${quandaryAction}</section>
-      <section class="spell-section"><h3>Ingredients</h3><div class="book-ingredients">${s.ingredients.map((i) => `<button type="button" class="book-ingredient" data-edit-ingredient="${esc(i.type)}"><strong>${esc((INGREDIENTS.find((x) => x.id === i.type) || {}).label || i.label)}</strong><span>${esc(i.value || "Add a detail")}</span></button>`).join("") || '<p style="color:var(--muted)">No ingredients yet.</p>'}</div><button class="drawer-action" id="editIngredientsFromBook" type="button">Edit ingredients</button></section>
-      <section class="spell-section"><h3>Spells</h3><div class="spellbook-list">${spells || '<p style="color:var(--muted)">Your first spell will appear here.</p>'}</div></section>`;
+      <section class="spell-section">
+        <h3>${copy("quandary")}${s.quandaryLocked ? ` <small class="book-status">${copy("set")}</small>` : ""}</h3>
+        <p>${esc(s.interaction || (currentMode() === "studio" ? "Not started yet." : "Not started yet."))}</p>
+        ${quandaryAction}
+      </section>
+      <section class="spell-section">
+        <h3>${copy("ingredients")}</h3>
+        <div class="book-ingredients">${s.ingredients.map((i) => `<button type="button" class="book-ingredient" data-edit-ingredient="${esc(i.type)}"><strong>${esc((INGREDIENTS.find((x) => x.id === i.type) || {}).label || i.label)}</strong><span>${esc(i.value || (currentMode() === "studio" ? "Add a detail" : "Add a detail"))}</span></button>`).join("") || '<p style="color:var(--muted)">No factors recorded yet.</p>'}</div>
+        <button class="drawer-action" id="editIngredientsFromBook" type="button">${copy("editIngredients")}</button>
+      </section>
+      <section class="spell-section">
+        <h3>${copy("spells")}</h3>
+        <div class="spellbook-list">${spells || `<p style="color:var(--muted)">${currentMode() === "studio" ? "Your first concept will appear here." : "Your first spell will appear here."}</p>`}</div>
+        ${s.spells.length ? `<small class="book-help">${s.spells.length} ${spellCountLabel} recorded. Open any one to edit or develop it further.</small>` : ""}
+      </section>`;
     $("#renameFromBook")?.addEventListener("click", renameSession);
     $("#returnTableFromBook")?.addEventListener("click", () => {
       closeDrawers();
@@ -713,17 +874,15 @@
       closeDrawers();
       renderIngredients();
     });
-    $$("[data-edit-ingredient]").forEach((card) =>
-      card.addEventListener("click", () => {
+    $$('[data-edit-ingredient]').forEach((card) =>
+      card.addEventListener('click', () => {
         const type = card.dataset.editIngredient;
         closeDrawers();
         renderIngredients(type);
       }),
     );
-    $$("[data-open-spell]").forEach((card) =>
-      card.addEventListener("click", () =>
-        openSavedSpell(card.dataset.openSpell),
-      ),
+    $$('[data-open-spell]').forEach((card) =>
+      card.addEventListener('click', () => openSavedSpell(card.dataset.openSpell)),
     );
   }
 
@@ -732,18 +891,50 @@
     const spell = s.spells.find((x) => x.id === id);
     if (!spell) return;
     app.currentSpellId = id;
+    app.currentStage = "spell-detail";
     closeDrawers();
     setPrompt(
-      "This spell is still yours to disturb. Return to the Seer whenever you want to craft another.",
-      `<button class="button button-secondary" id="backToBook">Grimoire</button><button class="button button-secondary" id="returnToTableFromSpell">Seer’s table</button><button class="button button-primary" id="disturbSaved">Pull from the Ether</button>`,
+      currentMode() === "studio"
+        ? "This concept can be edited, varied, or left to rest while you work on others."
+        : "This spell is yours to revisit. Edit it, disturb it again, or return to the Seer’s table.",
+      `<button class="button button-secondary" id="backToBook">${copy("bookLabel")}</button><button class="button button-secondary" id="editSavedSpell">${copy("editSpell")}</button><button class="button button-secondary" id="returnToTableFromSpell">${copy("returnTable")}</button><button class="button button-primary" id="disturbSaved">${copy("disturb")}</button>`,
     );
     transition(() => {
-      el.stage.innerHTML = `<div class="scene narrow"><p class="kicker">From the spell book</p><h2 class="title" style="font-size:clamp(40px,6vw,72px)">${esc(spell.name)}</h2><p class="subtitle">${esc(spell.idea)}</p><div class="preview-grid" style="grid-template-columns:1fr;margin-top:28px"><article class="idea-tile is-selected"><small>${esc(spell.desire.name)} + ${esc(spell.power.name)}</small><h3>Original spell</h3><p>${esc(spell.idea)}</p></article>${spell.variations.map((v) => `<article class="idea-tile"><small>Ether</small><h3>${esc(v.ether?.text || "Variation")}</h3><p>${esc(v.response || "No response recorded yet.")}</p></article>`).join("")}</div></div>`;
+      const variations = spell.variations.length
+        ? spell.variations.map((v, i) => `<article class="idea-tile"><small>${currentMode() === "studio" ? "Variation" : "Ether"} ${i + 1}</small><h3>${esc(v.ether?.text || "Variation")}</h3><p>${esc(v.response || "No response recorded yet.")}</p></article>`).join("")
+        : `<p class="edit-hint">${currentMode() === "studio" ? "No variations yet. Apply a What If? when you are ready." : "No variations yet. Pull from the Ether when you are ready."}</p>`;
+      el.stage.innerHTML = `<div class="scene narrow spell-detail-scene"><p class="kicker">${currentMode() === "studio" ? "From the process record" : "From the Grimoire"}</p><h2 class="title" style="font-size:clamp(40px,6vw,72px)">${esc(spell.name)}</h2><div class="spell-detail-grid"><article class="idea-tile is-selected"><small>${esc(spell.desire.name)} + ${esc(spell.power.name)}</small><h3>${currentMode() === "studio" ? "Original concept" : "Original spell"}</h3><p>${esc(spell.idea)}</p><span class="book-meta">${currentMode() === "studio" ? "Contextual lens" : "Through"}: ${esc(ingredientLabel(spell, INGREDIENTS))}</span></article>${variations}</div></div>`;
       $("#backToBook").addEventListener("click", () => openDrawer("book"));
-      $("#returnToTableFromSpell").addEventListener("click", () =>
-        beginSpell(),
-      );
+      $("#editSavedSpell").addEventListener("click", () => renderSpellEditor(spell));
+      $("#returnToTableFromSpell").addEventListener("click", () => beginSpell());
       $("#disturbSaved").addEventListener("click", renderEther);
+    });
+  }
+
+  function ingredientLabel(spell, defs = INGREDIENTS) {
+    const item = defs.find((i) => i.id === spell?.ingredient?.type);
+    return item?.label || spell?.ingredient?.type || "your context";
+  }
+
+  function renderSpellEditor(spell) {
+    app.currentStage = "spell-editor";
+    setPrompt(
+      currentMode() === "studio" ? "Refine your concept without changing the provocation that started it." : "Refine the spell without changing the enchantment that created it.",
+      `<button class="button button-secondary" id="cancelSpellEdit">${currentMode() === "studio" ? "Cancel" : "Return to spell"}</button><button class="button button-primary" id="saveSpellEdit">${copy("saveSpell")}</button>`,
+    );
+    transition(() => {
+      el.stage.innerHTML = `<div class="scene narrow"><p class="kicker">${currentMode() === "studio" ? "Edit concept" : "Edit spell"}</p><h2 class="title" style="font-size:clamp(40px,6vw,68px)">${esc(spell.name)}</h2><div class="form-card"><label class="field"><span>${currentMode() === "studio" ? "Concept name" : "Spell name"}</span><input id="editSpellName" value="${esc(spell.name)}"></label><label class="field"><span>${currentMode() === "studio" ? "Concept description" : "Spell description"}</span><textarea id="editSpellIdea" rows="8">${esc(spell.idea)}</textarea></label><div class="craft-context"><div class="craft-combination"><span>${esc(spell.desire.name)}</span><b>+</b><span>${esc(spell.power.name)}</span></div><div class="craft-lens"><span>${currentMode() === "studio" ? "Contextual lens" : "Seen through"}</span><strong>${esc(ingredientLabel(spell))}</strong></div></div></div></div>`;
+      $("#cancelSpellEdit").addEventListener("click", () => openSavedSpell(spell.id));
+      $("#saveSpellEdit").addEventListener("click", () => {
+        const name = $("#editSpellName")?.value.trim();
+        const idea = $("#editSpellIdea")?.value.trim();
+        if (!canContinue(idea, SETTINGS.minIdeaLength || 20)) return softNudge("saveSpellEdit", currentMode() === "studio" ? "Give the concept a little more shape before saving." : "Give the spell a little more shape before saving.");
+        spell.name = name || spell.name;
+        spell.idea = idea;
+        spell.updated = now();
+        scheduleSave();
+        openSavedSpell(spell.id);
+      });
     });
   }
 
@@ -1022,6 +1213,8 @@
     } catch (_) {
       app.workspace = defaultWorkspace();
     }
+    updateModeControl();
+    $("#modeToggle").addEventListener("click", () => setMode(currentMode() === "studio" ? "seer" : "studio"));
     $("#menuButton").addEventListener("click", () => openDrawer("tools"));
     $("#bookButton").addEventListener("click", () => openDrawer("book"));
     $("#closeTools").addEventListener("click", closeDrawers);

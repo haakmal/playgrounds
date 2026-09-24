@@ -19,11 +19,19 @@
         ☰
       </button>
       <button
+        class="edge-control edge-mode"
+        id="modeToggle"
+        type="button"
+        aria-pressed="false"
+        aria-label="Switch to Studio language">
+        Seer’s Table
+      </button>
+      <button
         class="edge-control edge-book"
         id="bookButton"
         type="button"
         aria-label="Open grimoire">
-        ✦ <span>Grimoire</span>
+        ✦ <span id="bookButtonLabel">Grimoire</span>
       </button>
 
       <section class="stage-wrap">
@@ -42,13 +50,11 @@
         ><button class="icon-button" id="closeTools" type="button">×</button>
       </div>
       <div class="drawer-body">
-        <p class="drawer-note">
-          Welcome to the Seer's Table! Approach with your quandry and explore
-          the possibilities and transformations that arise.
+        <p class="drawer-note" data-drawer-note>
+          Welcome to the Seer's Table. Approach with your quandary and explore the possibilities that arise.
         </p>
-        <p class="drawer-note">
-          Use the tools below to manage your grimoire, export your spell book,
-          or learn more about how this interaction works.
+        <p class="drawer-note" data-drawer-note>
+          Use the tools below to manage your Grimoire, export your spell book, or learn more about how this works.
         </p>
         <button class="drawer-action" id="renameSession" type="button">
           Rename session
@@ -74,7 +80,7 @@
 
     <aside class="drawer drawer-right" id="bookDrawer" aria-hidden="true">
       <div class="drawer-header">
-        <strong>Grimoire</strong
+        <strong id="bookDrawerTitle">Grimoire</strong
         ><button class="icon-button" id="closeBook" type="button">×</button>
       </div>
       <div class="drawer-body" id="bookContent"></div>

@@ -1896,3 +1896,39 @@ button {
     font-size: 16px;
   }
 }
+
+/* v2.5: persistent language switch */
+.edge-mode {
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 118px;
+  padding: 0 14px;
+  background: rgba(255, 254, 250, 0.96);
+}
+.edge-mode:hover {
+  transform: translateX(-50%) translateY(-1px);
+}
+.edge-mode[aria-pressed="true"] {
+  background: var(--soft);
+}
+.book-help {
+  display: block;
+  margin-top: 10px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+.spell-detail-grid {
+  display: grid;
+  gap: 14px;
+  margin-top: 26px;
+}
+@media (max-width: 680px) {
+  .edge-mode {
+    left: 50%;
+    min-width: 104px;
+    padding-inline: 10px;
+  }
+  .edge-book span {
+    display: none;
+  }
+}
