@@ -34,3 +34,11 @@ The application never generates the student's ideas. Prompts and animations are 
 ## Current prototype refinements
 
 The active spell-crafting experience is now a single collective table rather than a sequence of separate card, crystal-ball and capture screens. Cards are directly clickable; the crystal-ball reading retains the drawn cards in view; the idea capture sits beside the reading; and saving a spell updates that same table rather than moving to a separate saved screen. Transitions are intentionally slower and more ambient. The Ether begins automatically when opened, and empty required responses produce a visible prompt-rail nudge rather than relying on disabled controls.
+
+## Current interaction model
+
+A spell is a persistent concept, not a step in a fixed sequence. Students can craft several spells, open any saved spell later, edit its name or description, and apply the Ether repeatedly. Each Ether intervention is stored as a separate variation beneath the original spell.
+
+The `Seer’s Table / Studio` switch is always available in the top edge of the interface. It is stored with the workspace and changes the working vocabulary without moving the student into a separate application. `Seer’s Table` keeps the story-led language; `Studio` uses interaction-design terminology for students who prefer a more direct framing.
+
+The original Desire + Power pairing that created a spell remains fixed, while the student-authored description and name can be edited. The quandary remains locked once the first spell is saved; changing the starting point requires a new Grimoire.

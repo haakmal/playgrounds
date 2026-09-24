@@ -18,12 +18,32 @@
         aria-label="Open tools">
         ☰
       </button>
+      <div
+        class="mode-switch"
+        id="modeSwitch"
+        role="group"
+        aria-label="Experience mode">
+        <span class="mode-switch-label">EXPERIENCE</span>
+        <span class="mode-name" id="modeName">Thematic Experience</span>
+        <button
+          class="mode-toggle"
+          id="modeToggle"
+          type="button"
+          role="switch"
+          aria-checked="false"
+          aria-label="Switch between Thematic Experience and Classroom Experience">
+          <span class="mode-toggle-track" aria-hidden="true"
+            ><span class="mode-toggle-knob"></span
+          ></span>
+        </button>
+        <span class="mode-name mode-name-alt">Classroom Experience</span>
+      </div>
       <button
         class="edge-control edge-book"
         id="bookButton"
         type="button"
         aria-label="Open grimoire">
-        ✦ <span>Grimoire</span>
+        ✦ <span id="bookButtonLabel">Grimoire</span>
       </button>
 
       <section class="stage-wrap">
@@ -42,13 +62,13 @@
         ><button class="icon-button" id="closeTools" type="button">×</button>
       </div>
       <div class="drawer-body">
-        <p class="drawer-note">
-          Welcome to the Seer's Table! Approach with your quandry and explore
-          the possibilities and transformations that arise.
+        <p class="drawer-note" data-drawer-note>
+          Welcome to the Seer's Table. Approach with your quandary and explore
+          the possibilities that arise.
         </p>
-        <p class="drawer-note">
-          Use the tools below to manage your grimoire, export your spell book,
-          or learn more about how this interaction works.
+        <p class="drawer-note" data-drawer-note>
+          Use the tools below to manage your Grimoire, export your spell book,
+          or learn more about how this works.
         </p>
         <button class="drawer-action" id="renameSession" type="button">
           Rename session
@@ -74,7 +94,7 @@
 
     <aside class="drawer drawer-right" id="bookDrawer" aria-hidden="true">
       <div class="drawer-header">
-        <strong>Grimoire</strong
+        <strong id="bookDrawerTitle">Grimoire</strong
         ><button class="icon-button" id="closeBook" type="button">×</button>
       </div>
       <div class="drawer-body" id="bookContent"></div>
@@ -83,7 +103,7 @@
     <div class="modal" id="sessionsModal" aria-hidden="true">
       <div class="modal-panel">
         <div class="drawer-header">
-          <strong>My grimoires</strong
+          <strong id="sessionsModalTitle">My grimoires</strong
           ><button
             class="icon-button"
             data-close-modal="sessionsModal"
@@ -97,7 +117,7 @@
             class="button button-primary"
             id="newSessionButton"
             type="button">
-            New grimoire
+            <span id="newSessionButtonLabel">New grimoire</span>
           </button>
         </div>
       </div>
@@ -106,7 +126,9 @@
     <div class="modal" id="quandaryLockedModal" aria-hidden="true">
       <div class="modal-panel">
         <div class="drawer-header">
-          <strong>The Grimoire is already enchanted</strong>
+          <strong id="quandaryLockedTitle"
+            >The Grimoire is already enchanted</strong
+          >
           <button
             class="icon-button"
             data-close-modal="quandaryLockedModal"
@@ -115,28 +137,30 @@
           </button>
         </div>
         <div class="modal-body prose">
-          <p>
-            Your spells have already been crafted from this quandary. Changing
-            the starting point now would change the meaning of what you have
-            explored.
-          </p>
-          <p>
-            For a new direction, begin a new Grimoire. Your current Grimoire
-            will remain safely in your collection.
-          </p>
+          <div id="quandaryLockedCopy">
+            <p>
+              Your spells have already been crafted from this quandary. Changing
+              the starting point now would change the meaning of what you have
+              explored.
+            </p>
+            <p>
+              For a new direction, begin a new Grimoire. Your current Grimoire
+              will remain safely in your collection.
+            </p>
+          </div>
         </div>
         <div class="modal-actions">
           <button
             class="button button-secondary"
             data-close-modal="quandaryLockedModal"
             type="button">
-            Keep this quandary
+            <span id="keepLockedLabel">Keep this quandary</span>
           </button>
           <button
             class="button button-primary"
             id="newGrimoireFromLocked"
             type="button">
-            Start a new Grimoire
+            <span id="newLockedLabel">Start a new Grimoire</span>
           </button>
         </div>
       </div>
@@ -145,7 +169,7 @@
     <div class="modal" id="helpModal" aria-hidden="true">
       <div class="modal-panel">
         <div class="drawer-header">
-          <strong>How this works</strong
+          <strong id="helpModalTitle">How this works</strong
           ><button
             class="icon-button"
             data-close-modal="helpModal"
@@ -153,7 +177,7 @@
             ×
           </button>
         </div>
-        <div class="modal-body prose">
+        <div class="modal-body prose" id="helpModalBody">
           <p>
             This is an experimental tool for exploring creative possibilities
             following David Rose's Enchanted Objects approach. You bring an
