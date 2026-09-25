@@ -8,6 +8,36 @@ This is a sandbox-style GitHub repo intended for an assortment of curious (mostl
 - Providing tools for my students (and anyone curious)
 - Documenting small prototypes
 
+## Current playgrounds
+
+<!-- PROJECTS:START -->
+
+| Project | Description | Status |
+|---|---|---|
+| [The Seer's Table](https://play.hakmal.com/projects/seer-table/) | A playful ideation guide to support designing for enchanted objects. | WIP |
+| [Systems Insight Lab](https://play.hakmal.com/projects/systems-insight-lab/) | A systems mapping tool for collecting and analysing threads of information. | WIP |
+| [Contextual Modelling Companion](https://play.hakmal.com/projects/contextual-modeller/) | A reference guide for helping students map research to contextual design models | Published |
+| [Interaction Mapper](https://play.hakmal.com/projects/interaction-map) | A simple tool for mapping interactions against human and system behaviours. | Published |
+| [Heuristic Examination](https://play.hakmal.com/projects/ui-forensics/) | A UI forensics tool for learning heuristic evaluation. | Published |
+| [Interactive Prototyping Companion](https://play.hakmal.com/projects/prototyping-companion/) | A tool for creating and testing interactive prototypes aimed as companion tool for my students. | Published |
+| [Usability Reporting](https://play.hakmal.com/projects/usability-reporting/) | A toolkit for usability reporting shared with my students. | Published |
+| [Accessibility Audit](https://play.hakmal.com/projects/accessibility-audit/) | An accessibility audit tool for evaluating interactions. | Published |
+| [Interaction Context Map](https://play.hakmal.com/projects/interaction-context-map/) | A digital version of the Interaction Context Mapping tool provided to my students, good for understanding how people, technology, and contexts relate to each other to form an interaction. | WIP |
+| [Blindspots](https://hakmal.com/) | A play-based card system for finding hidden biases in the design process | Published |
+| [Dice Generator](https://play.hakmal.com/projects/dice-generator/) | A simple tool to generate custom dice. | WIP |
+| [Interaction Constraints](https://play.hakmal.com/projects/constraints/) | A handy constraint card deck for interaction design. | Published |
+| [My Pantry](https://play.hakmal.com/projects/my-pantry/) | [Work in progress] A simple pantry management app using client-side JS and Supabase. | WIP |
+| [Script Gallery](https://play.hakmal.com/projects/script-gallery/) | A collection of scripts that I couldn't find a place for but wanted to share. | Published |
+| [Provocator 9000](https://play.hakmal.com/projects/provocator/) | An interactive AI scenario provocation generator, that can yield positive and negative outputs for a given scenario/idea/concept. | WIP |
+| [The (Provoked) Thing From The Future](https://play.hakmal.com/projects/future-thing/) | A handy generator for The Thing From The Future for ideation and critique aimed at AI-guided future provocations. | Published |
+| [MTG Calculator](https://haakmal.github.io/mtg-calculator/) | A Magic the Gathering attack calculator | WIP |
+| [EmojiDice](https://play.hakmal.com/projects/emojidice/) | A storydice variant using emojis, good for brainstorming. | Published |
+| [Design Research Methods](https://play.hakmal.com/projects/design-methods/) | A visual guide for understanding when to use design research methods along the Design Double Diamond. | WIP |
+| [Design by Play](https://thesis.hakmal.com/) | A thesis on using Object-Oriented Ontology to playfully design for the Internet of Things | Published |
+| [RAIL](https://play.hakmal.com/projects/rail/) | An exploration into responsible AI licensing futures made using Twine. | Published |
+
+<!-- PROJECTS:END -->
+
 ## How to navigate this repo
 
 You would only be asking this if you wanted to clone the repo which is fine I suppose 🤷‍♂️, please give credit where you can 😄. This repository uses custom and minimal Jekyll to display projects over a single homepage. Each project is independent and works out of individual folders so if you would like to unpack them feel free to!
