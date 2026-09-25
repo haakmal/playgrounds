@@ -5,7 +5,11 @@ on:
     paths:
       - "_data/projects/**"
       - "scripts/update-readme-projects.rb"
-    workflow_dispatch:
+  workflow_dispatch:
+
+concurrency:
+  group: update-readme-projects
+  cancel-in-progress: true
 
 permissions:
   contents: write
