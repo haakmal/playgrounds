@@ -36,7 +36,7 @@ header {
   font-weight: 700;
 }
 .stage h1 {
-  font-size: clamp(48px, 8vw, 102px);
+  font-size: clamp(32px, 8vw, 72px);
   line-height: 0.83;
   letter-spacing: -0.08em;
   margin: 16px 0 22px;
@@ -72,7 +72,7 @@ header {
   grid-template-columns: minmax(0, 1fr) 300px;
   gap: 32px;
   align-items: end;
-  margin: 78px 0 28px;
+  margin: 28px 0 28px;
   padding-bottom: 24px;
   border-bottom: 1px solid var(--ink);
 }
@@ -198,7 +198,7 @@ label {
   background: transparent;
   padding: 7px 0;
   font: inherit;
-  font-size: 23px;
+  font-size: 18px;
   letter-spacing: -0.04em;
   outline: 0;
 }

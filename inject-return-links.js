@@ -30,7 +30,8 @@ const returnLinkHTML = `
 	  fontSize: "14px",
 	  opacity: 0.7,
 	  borderRadius: "6px",
-	  textDecoration: "none"
+	  textDecoration: "none",
+    fontFamily: "Helvetica,Arial, sans-serif"
 	});
 	link.onmouseover = () => (link.style.opacity = "1");
 	link.onmouseout = () => (link.style.opacity = "0.7");
