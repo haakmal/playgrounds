@@ -14,7 +14,7 @@ This is a sandbox-style GitHub repo intended for an assortment of curious (mostl
 
 | Project | Description | Status |
 |---|---|---|
-| [The Seer's Table](https://play.hakmal.com/projects/seer-table/) | A playful ideation guide to support designing for enchanted objects. | WIP |
+| [The Seer's Table](https://play.hakmal.com/projects/seer-table/) | A playful ideation guide to support designing for enchanted objects. | Published |
 | [Systems Insight Lab](https://play.hakmal.com/projects/systems-insight-lab/) | A systems mapping tool for collecting and analysing threads of information. | WIP |
 | [Interaction Mapper](https://play.hakmal.com/projects/interaction-map) | A simple tool for mapping interactions against human and system behaviours. | Published |
 | [Contextual Modelling Companion](https://play.hakmal.com/projects/contextual-modeller/) | A reference guide for helping students map research to contextual design models | Published |
