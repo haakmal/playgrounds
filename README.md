@@ -14,6 +14,7 @@ This is a sandbox-style GitHub repo intended for an assortment of curious (mostl
 
 | Project | Description | Status |
 |---|---|---|
+| [Interaction Principles Mapper](https://play.hakmal.com/projects/principles-mapper) | A tool for mapping scenarios against Norman's interaction principles. | WIP |
 | [Design Shuffler](https://play.hakmal.com/projects/design-shuffler) | A tool for shuffling design contexts and factors to explore new design possibilities. | WIP |
 | [The Seer's Table](https://play.hakmal.com/projects/seer-table/) | A playful ideation guide to support designing for enchanted objects. | Published |
 | [Systems Insight Lab](https://play.hakmal.com/projects/systems-insight-lab/) | A systems mapping tool for collecting and analysing threads of information. | WIP |
