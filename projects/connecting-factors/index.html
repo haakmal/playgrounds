@@ -9,4 +9,40 @@
   <section class="history-section"><div class="section-heading"><span class="section-index">02</span><div><h2>Shuffle history</h2><p>Keep combinations that are useful to revisit.</p></div></div><div id="history" class="history-list"><p class="empty">No shuffles saved yet.</p></div></section>
 </main>
 <dialog id="helpDialog"><div class="dialog-header"><div><p class="eyebrow">HOW TO USE THIS INTERFACE</p><h2>Using the shuffler</h2></div><button class="close" id="closeHelp">×</button></div><div class="dialog-content"><p>Start with the broad conditions of your current design. Lock the conditions you want to keep. Then shuffle the remaining conditions and discuss what the new combination makes possible.</p><p>A result is not a solution. It is a focused possibility to compare, question, or make physical.</p></div></dialog>
-<script src="app.js"></script></body></html>
+<script src="app.js"></script>
+<!-- BEGIN RETURN LINK -->
+<script>
+// inject-home-link.js
+(function () {
+	// Inject Font Awesome stylesheet
+	const fa = document.createElement("link");
+	fa.rel = "stylesheet";
+	fa.href = "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css";
+	fa.crossOrigin = "anonymous";
+	document.head.appendChild(fa);
+	
+	// Create the back link
+	const link = document.createElement("a");
+	link.href = "/";
+	link.innerHTML = '← Back to Playgrounds <i class="fab fa-github"><i>';
+	Object.assign(link.style, {
+	  position: "fixed",
+	  bottom: "20px",
+	  right: "20px",
+	  background: "#000",
+	  color: "#fff",
+	  padding: "8px 12px",
+	  zIndex: 1000,
+	  fontSize: "14px",
+	  opacity: 0.7,
+	  borderRadius: "6px",
+	  textDecoration: "none"
+	});
+	link.onmouseover = () => (link.style.opacity = "1");
+	link.onmouseout = () => (link.style.opacity = "0.7");
+	document.body.appendChild(link);
+})();
+</script>
+<!-- END RETURN LINK -->
+
+</body></html>
