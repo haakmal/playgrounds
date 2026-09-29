@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Design Shuffler</title><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="styles-fix.css"></head>
+<body>
+<header class="app-header"><div><p class="eyebrow">INTERACTION STREAM · TOOLKIT</p><h1>Design Shuffler</h1></div><nav><button id="helpButton" class="tool-button" aria-label="How to use this interface">?</button></nav></header>
+<main class="app-shell">
+  <section class="intro-panel"><div><p class="eyebrow">A CONVERSATION TOOL</p><h2>Change the conditions, not the solution.</h2><label class="title-field"><span>Design or interaction title</span><input id="title" placeholder="e.g. Finding a room on campus"></label></div><button id="shuffleAll" class="button primary">Shuffle all</button></section>
+  <section class="shuffler-section"><div class="section-heading"><span class="section-index">01</span><div><h2>Shuffle the conditions</h2><p>Use broad terms. Lock what matters, then shuffle the rest.</p></div></div><div id="factors" class="factor-grid"></div><div class="shuffle-controls"><button id="shuffleUnlocked" class="button primary">Shuffle unlocked</button><button id="changeOne" class="button secondary">Change one factor</button><button id="reset" class="text-button">Reset to current</button></div><div class="result-prompt" id="prompt">Use the shuffled combination as a prompt for discussion, comparison, or physical exploration.</div></section>
+  <section class="history-section"><div class="section-heading"><span class="section-index">02</span><div><h2>Shuffle history</h2><p>Keep combinations that are useful to revisit.</p></div></div><div id="history" class="history-list"><p class="empty">No shuffles saved yet.</p></div></section>
+</main>
+<dialog id="helpDialog"><div class="dialog-header"><div><p class="eyebrow">HOW TO USE THIS INTERFACE</p><h2>Using the shuffler</h2></div><button class="close" id="closeHelp">×</button></div><div class="dialog-content"><p>Start with the broad conditions of your current design. Lock the conditions you want to keep. Then shuffle the remaining conditions and discuss what the new combination makes possible.</p><p>A result is not a solution. It is a focused possibility to compare, question, or make physical.</p></div></dialog>
+<script src="app.js"></script></body></html>

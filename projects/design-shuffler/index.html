@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Design Shuffler</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="stage">
+      <header>
+        <div>
+          <div class="eyebrow">A TOOL FOR PRODUCTIVE UNCERTAINTY</div>
+          <h1>Design <i>Shuffler</i></h1>
+          <p>Change the conditions, not the solution.</p>
+        </div>
+        <button id="help" class="round-button">?</button>
+      </header>
+      <section class="intro">
+        <label>What are you exploring?<input id="title" placeholder="Name the interaction or project" /></label>
+        <div class="intro-note">Lock what matters. Shuffle what does not. Notice what the new combination makes possible.</div>
+      </section>
+      <section class="shuffle-zone">
+        <div class="zone-top">
+          <span class="counter" id="counter">SHUFFLE 00</span><span class="status" id="status">Ready when you are</span>
+        </div>
+        <div id="cards" class="cards"></div>
+        <div class="actions">
+          <button id="shuffle" class="shuffle-button"><span>Shuffle conditions</span><b>↻</b></button
+          ><button id="one" class="small-button">Change one</button><button id="reset" class="small-button">Reset</button>
+        </div>
+        <div class="prompt">Use this combination as a prompt for discussion, comparison, or physical exploration.</div>
+      </section>
+      <section class="history">
+        <button id="historyToggle" class="history-toggle"><span>Shuffle history</span><span id="historyCount">0</span><b>⌄</b></button>
+        <div id="historyList" class="history-list"><p>No saved shuffles yet.</p></div>
+      </section>
+    </main>
+    <dialog id="dialog">
+      <div class="dialog-top"><span>ABOUT THE SHUFFLER</span><button id="close">×</button></div>
+      <div class="dialog-body">
+        <h2>Change the conditions, not the solution.</h2>
+        <p>
+          Set broad terms for your current design. Lock any condition you want to keep, then shuffle the rest. The result is not an answer;
+          it is a focused possibility to discuss, compare, or make physical.
+        </p>
+      </div>
+    </dialog>
+    <script src="app.js"></script>
+    <script src="description-enhancement.js"></script>
+  </body>
+</html>

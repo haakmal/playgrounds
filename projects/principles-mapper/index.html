@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Interaction Principles</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles-overrides.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="header-copy">
+        <p class="eyebrow">Interaction Stream · Toolkit</p>
+        <h1>Interaction Principles</h1>
+        <p class="header-subtitle">
+          Locate and describe how an interaction communicates, responds, guides,
+          and limits action.
+        </p>
+        <div class="project-line">
+          <span>Map</span
+          ><strong id="activeMapName">Untitled interaction</strong><span>·</span
+          ><span id="saveStatus">Saved locally</span>
+        </div>
+      </div>
+      <nav class="toolbar" aria-label="Interaction principles tools">
+        <button class="tool-button" id="mapToolsButton">Map tools</button
+        ><button
+          class="tool-button help-trigger"
+          id="helpButton"
+          aria-label="How to use this interface">
+          ?
+        </button>
+      </nav>
+    </header>
+    <main class="app-shell">
+      <section class="notice-panel">
+        <div>
+          <p class="eyebrow">Working locally</p>
+          <h2>Your maps live in this browser.</h2>
+          <p>
+            Browser data can be cleared or lost. Save and export often,
+            especially when moving between devices.
+          </p>
+        </div>
+        <button class="button button-primary" id="topPrintButton">
+          Print / Save PDF
+        </button>
+      </section>
+      <section class="setup-section">
+        <div class="section-heading">
+          <div class="section-index">01</div>
+          <div>
+            <h2>Set up the interaction</h2>
+            <p>
+              Keep the focus on an interaction, object, service, or environment.
+            </p>
+          </div>
+        </div>
+        <div class="form-grid">
+          <label class="field"><span>Interaction title</span>
+            <input
+              id="interactionTitle"
+              type="text"
+              placeholder="e.g. Entering a busy train station" /></label></label>
+              <label class="field select-field">
+                <span>Interaction type</span>
+                <select id="interactionType">
+                  <option value="Digital">Digital</option>
+                  <option value="Physical">Physical</option>
+                  <option value="Hybrid">Hybrid</option>
+                </select>
+              </label>
+              <label class="field field-wide">
+                <span>Scenario or context</span><textarea
+              id="context"
+              rows="3"
+              placeholder="Where, when, and under what circumstances does this happen?"></textarea>
+        </div>
+      </section>
+      <section class="map-section">
+        <div class="section-heading">
+          <div class="section-index">02</div>
+          <div>
+            <h2>Map the principles</h2>
+            <p>
+              Add one row for each useful observation. A location can have more
+              than one principle, and a principle can appear more than once.
+            </p>
+          </div>
+        </div>
+        <div
+          class="map-tabs"
+          id="mapTabs"
+          role="tablist"
+          aria-label="Saved principle maps"></div>
+        <div class="map-tab-actions">
+          <button class="button button-secondary" id="addMapButton">
+            + New map</button
+          ><button class="button button-secondary" id="duplicateButton">
+            Duplicate current map
+          </button>
+        </div>
+        <div
+          class="map-scroll"
+          tabindex="0"
+          aria-label="Scrollable principles map">
+          <table class="interaction-table">
+            <thead>
+              <tr>
+                <th class="location-column">Location</th>
+                <th class="principle-column">Principle</th>
+                <th class="description-column">Description</th>
+                <th class="change-column">
+                  Change note <small>optional</small>
+                </th>
+              </tr>
+            </thead>
+            <tbody id="mapRows"></tbody>
+          </table>
+        </div>
+        <button class="add-row-button" id="addRowButton">
+          + Add observation
+        </button>
+      </section>
+      <section class="notes-section">
+        <div class="section-heading">
+          <div class="section-index">03</div>
+          <div>
+            <h2>Working notes</h2>
+            <p>
+              Use this space for loose observations, questions, or ideas to
+              return to later.
+            </p>
+          </div>
+        </div>
+        <textarea
+          id="notes"
+          class="notes-area"
+          rows="6"
+          placeholder="Your notes..."></textarea>
+      </section>
+      <section class="end-panel">
+        <p>
+          <strong>Save and export often.</strong> The current working session is
+          stored only in this browser.
+        </p>
+        <button class="button button-primary" id="bottomPrintButton">
+          Print / Save PDF
+        </button>
+      </section>
+    </main>
+    <section class="print-only" id="printMaps"></section>
+    <dialog id="mapToolsDialog" class="tool-dialog">
+      <div class="dialog-header">
+        <div>
+          <p class="eyebrow">MAP TOOLS</p>
+          <h2>Manage your maps</h2>
+        </div>
+        <button class="icon-button" data-close-dialog="mapToolsDialog">
+          ×
+        </button>
+      </div>
+      <div class="dialog-content">
+        <p class="dialog-intro">
+          Open, save, duplicate, or export the maps in this browser session.
+        </p>
+        <button class="tool-card" id="myMapsButton">
+          <strong>My maps</strong
+          ><span
+            >Open saved maps, rename, duplicate, or delete them.</span
+          ></button
+        ><button class="tool-card" id="newMapToolButton">
+          <strong>New map</strong
+          ><span>Start a separate principles map.</span></button
+        ><button class="tool-card" id="exportJsonButton">
+          <strong>Export JSON</strong
+          ><span>Save a portable copy of this working session.</span></button
+        ><button class="tool-card" id="importJsonButton">
+          <strong>Import JSON</strong
+          ><span
+            >Restore a working session exported from this tool.</span
+          ></button
+        ><button class="tool-card" id="printToolButton">
+          <strong>Print / Save PDF</strong
+          ><span>Export every saved map using the print layout.</span>
+        </button>
+        <p class="dialog-warning">
+          <strong>Stored locally.</strong> Export JSON regularly when moving
+          between devices.
+        </p>
+      </div>
+    </dialog>
+    <dialog id="myMapsDialog" class="tool-dialog">
+      <div class="dialog-header">
+        <div>
+          <p class="eyebrow">WORKSPACE</p>
+          <h2>My maps</h2>
+        </div>
+        <button class="icon-button" data-close-dialog="myMapsDialog">×</button>
+      </div>
+      <div class="dialog-content">
+        <div id="savedMapsList" class="saved-maps-list"></div>
+        <div class="dialog-actions">
+          <button class="button button-secondary" id="dialogNewMapButton">
+            New map</button
+          ><button class="button button-secondary" id="dialogExportJsonButton">
+            Export JSON</button
+          ><button class="button button-secondary" id="dialogImportJsonButton">
+            Import JSON
+          </button>
+        </div>
+      </div>
+    </dialog>
+    <dialog id="helpDialog" class="help-dialog">
+      <div class="dialog-header">
+        <div>
+          <p class="eyebrow">HOW TO USE THIS INTERFACE</p>
+          <h2>Using the Principles Map</h2>
+        </div>
+        <button class="icon-button" data-close-dialog="helpDialog">×</button>
+      </div>
+      <div class="dialog-content">
+        <p>
+          Start with a location: a screen, control, object, transition, room, or
+          relationship between physical and digital parts. Choose the principle
+          that helps you notice something there, then describe what you observe.
+        </p>
+        <dl class="help-list">
+          <div>
+            <dt>Visibility</dt>
+            <dd>What can the person perceive about the system or object?</dd>
+          </div>
+          <div>
+            <dt>Feedback</dt>
+            <dd>How does it respond to the person’s action?</dd>
+          </div>
+          <div>
+            <dt>Affordance</dt>
+            <dd>
+              What action does it appear possible to take? Add one or more
+              signifiers when useful.
+            </dd>
+          </div>
+          <div>
+            <dt>Mapping</dt>
+            <dd>How does the control relate to its outcome?</dd>
+          </div>
+          <div>
+            <dt>Constraints</dt>
+            <dd>What actions are limited, prevented, or guided?</dd>
+          </div>
+          <div>
+            <dt>Consistency</dt>
+            <dd>Does it behave like similar things elsewhere?</dd>
+          </div>
+        </dl>
+      </div>
+    </dialog>
+    <input
+      id="importFileInput"
+      type="file"
+      accept="application/json,.json"
+      hidden />
+    <script src="app.js"></script>
+  </body>
+</html>
