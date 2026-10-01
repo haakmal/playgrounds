@@ -1,0 +1,147 @@
+{
+  "activeId": "map-observed-platform",
+  "maps": [
+    {
+      "id": "map-observed-platform",
+      "name": "Observed · Finding the correct platform",
+      "context": "A student is travelling to an unfamiliar campus for a class. They arrive at a busy station with a paper notebook, a phone, platform signs, timetable boards, announcements, and other passengers around them.",
+      "task": "Work out which platform and train to use, then move towards the correct platform with enough confidence to continue.",
+      "notes": "This map treats the station as a system made up of physical space, signs, timetable information, announcements, staff, and other people. It is not only a digital interaction. Several entries remain uncertain because the observer cannot directly know what the person is thinking or what happens inside the transport system. These uncertainties become questions for further research.",
+      "rows": [
+        {
+          "doing": "The student stops near the station entrance and takes out a paper notebook.",
+          "knowing": "They appear to be checking the class time and destination written in the notebook. It is unclear whether they remember the route or are reading it for the first time.",
+          "feeling": "Possibly cautious or uncertain; they pause rather than continuing directly into the station.",
+          "input": "The station environment receives the person through their movement and position near the entrance. The notebook provides information back to the person rather than receiving input in a conventional digital sense.",
+          "process": "Unclear. The person may be matching a remembered route with the information in the notebook.",
+          "output": "The notebook presents a handwritten destination and time. The station presents signs, sounds, people, and timetable information."
+        },
+        {
+          "doing": "The student looks at the large departure board, then looks back at the notebook.",
+          "knowing": "They need to understand whether the destination, departure time, and platform information refer to the same train.",
+          "feeling": "Focused, but not fully confident. Their repeated glances suggest that the information is being compared rather than immediately understood.",
+          "input": "The person directs their attention towards the board and visually scans the rows of information.",
+          "process": "The station information system updates departures and organises them by time, destination, and platform. The exact update process is not visible.",
+          "output": "The board displays a destination and platform number. It does not explain the route or show whether the student has interpreted the information correctly."
+        },
+        {
+          "doing": "The student walks towards a platform, then slows down and looks at a smaller sign near the stairs.",
+          "knowing": "They need to know whether the platform number applies to the direction they need, not only where the platform physically is.",
+          "feeling": "Uncertain. The change from walking quickly to slowing down is observable, but the reason for the pause is not confirmed.",
+          "input": "The person moves through the station and looks towards the sign. The sign is part of the physical environment rather than a separate screen.",
+          "process": "Unclear. The person may be using the sign to confirm direction, or they may have noticed a contradiction between two pieces of information.",
+          "output": "The sign shows an arrow, platform number, and destination. The visual hierarchy between these pieces of information is not immediately obvious from the observer's position."
+        },
+        {
+          "doing": "The student asks another passenger which platform leads to the destination.",
+          "knowing": "They have decided that the available environmental information is not sufficient to proceed confidently.",
+          "feeling": "Relieved after receiving a response, although this is inferred from their change in pace rather than directly stated.",
+          "input": "The student uses a spoken question. Another person receives and interprets the question.",
+          "process": "The other passenger recalls, interprets, or checks their own knowledge of the station and provides a response.",
+          "output": "The student receives spoken guidance. The reliability of the information is not guaranteed and cannot be confirmed from this observation alone."
+        },
+        {
+          "doing": "The student walks towards the indicated platform while keeping the notebook open in one hand.",
+          "knowing": "They now have a working route, but may still need to confirm that the arriving train is the correct one.",
+          "feeling": "More assured, but still monitoring the environment.",
+          "input": "The person continues moving through the station while visually checking signs and the notebook.",
+          "process": "The station continues to provide changing information through signs, movement, announcements, and the presence of trains.",
+          "output": "The platform, track, timetable, and nearby passengers become available as further sources of confirmation."
+        }
+      ],
+      "updated": 1790821414000
+    },
+    {
+      "id": "map-observed-train-change",
+      "name": "Observed · Responding to a platform change",
+      "context": "The student is waiting on a platform with their notebook open. An announcement is made and the information on the platform board changes. The station is crowded and the announcement is partly masked by background noise.",
+      "task": "Understand whether the planned train is still available and decide what to do after the platform information changes.",
+      "notes": "This map shows that system behaviour can be distributed across infrastructure, staff, sound, printed information, moving vehicles, and other people. Some system processes are deliberately marked as unknown. Students should not fill these gaps with invented technical explanations.",
+      "rows": [
+        {
+          "doing": "The student reads the notebook while waiting near the platform sign.",
+          "knowing": "They are using the notebook as an external memory aid for the destination and class time.",
+          "feeling": "Patient or settled at first; there is no visible sign of urgency.",
+          "input": "The notebook contains handwritten information created earlier by the student.",
+          "process": "The student compares the written plan with the current time and the station information.",
+          "output": "The notebook provides a stable reference, while the station provides changing information."
+        },
+        {
+          "doing": "The student looks up when an announcement begins.",
+          "knowing": "They need to know whether the announcement relates to their train or another service.",
+          "feeling": "Alert, but the response is difficult to interpret because the announcement is not fully audible.",
+          "input": "The station's announcement system receives a message from an unknown source or operator.",
+          "process": "Unclear. The message may be entered by staff, triggered by a timetable event, or produced through a combination of systems.",
+          "output": "A spoken announcement is broadcast through the station. Parts of the message are difficult to hear."
+        },
+        {
+          "doing": "The student walks closer to the platform display and scans the updated information.",
+          "knowing": "They need to determine whether the platform, departure time, or destination has changed.",
+          "feeling": "Uncertain and hurried; they begin looking around at what other passengers are doing.",
+          "input": "The display system receives updated service information.",
+          "process": "The transport system changes the information shown on the display. The reason for the change is not visible.",
+          "output": "The platform display shows a different platform number, but the relationship to the previous information is not explained."
+        },
+        {
+          "doing": "The student closes the notebook, checks the movement of the crowd, and starts walking with other passengers.",
+          "knowing": "They infer that following the crowd is safer than remaining on the current platform, but they have not independently confirmed the change.",
+          "feeling": "Reassured by the group movement, though still dependent on an assumption.",
+          "input": "The student uses other passengers' movement as social information about what is happening.",
+          "process": "Unclear. The crowd may be responding to the same announcement, to staff direction, or to information unavailable to the observer.",
+          "output": "The group movement provides an informal signal that influences the student's decision."
+        },
+        {
+          "doing": "The student reaches the new platform and checks the arriving train before boarding.",
+          "knowing": "They need to confirm the train destination using the train display, announcement, or another passenger before entering.",
+          "feeling": "Cautiously confident; they have reached a decision point rather than a confirmed outcome.",
+          "input": "The train arrives and presents physical and visual information through its destination display, doors, sounds, and movement.",
+          "process": "The train's internal route and destination logic are not visible to the passenger.",
+          "output": "The train provides a destination display and audible or physical signals, but it remains unclear which source the student trusts most."
+        }
+      ],
+      "updated": 1790821414000
+    },
+    {
+      "id": "map-concept-clear-change",
+      "name": "Conceptualised · Making a platform change clear",
+      "context": "A proposed interaction model for a station that needs to communicate a platform change across the physical environment. It combines visual signs, announcements, staff or operator input, and the passenger's paper travel note.",
+      "task": "Help a passenger recognise that their planned train has changed platform, understand where to go, and confirm that they are now in the correct place.",
+      "notes": "This is a conceptualised map, not an observed result. It makes several assumptions about how the station might coordinate its information. Those assumptions would need to be prototyped, checked with staff, and tested with passengers.",
+      "rows": [
+        {
+          "doing": "The passenger checks the paper notebook against the platform display.",
+          "knowing": "They need to know the original plan before they can recognise that something has changed.",
+          "feeling": "Oriented because the notebook and display provide two reference points.",
+          "input": "The passenger looks at the written destination, time, and platform information.",
+          "process": "The station compares the current service state with the information previously displayed.",
+          "output": "The display clearly marks the original platform as changed and presents the new platform beside it."
+        },
+        {
+          "doing": "The passenger pauses and reads the change message.",
+          "knowing": "They need to understand what changed, why they need to move, and which direction to take.",
+          "feeling": "Alert but not alarmed because the message explains the change rather than only replacing the old number.",
+          "input": "The station receives an authorised platform-change update.",
+          "process": "The update is distributed across the departure display, platform sign, and announcement system.",
+          "output": "The same change is communicated visually and audibly using matching platform numbers and destination information."
+        },
+        {
+          "doing": "The passenger follows a temporary arrow and moves towards the new platform.",
+          "knowing": "They need to know that the arrow is temporary, trustworthy, and connected to their train.",
+          "feeling": "More confident because the route is visible in the physical environment.",
+          "input": "The passenger moves through the station and follows the temporary sign.",
+          "process": "The station environment directs movement through signs, barriers, staff positioning, and spatial cues.",
+          "output": "Temporary signs repeat the destination and new platform at decision points along the route."
+        },
+        {
+          "doing": "The passenger arrives at the new platform and checks the train display before boarding.",
+          "knowing": "They need to know that the train now shown is the same service that was previously planned.",
+          "feeling": "Reassured when the destination, service time, and platform information align.",
+          "input": "The arriving train presents its destination and service information.",
+          "process": "Assumed: the train and station information are synchronised, but this would need to be verified in testing.",
+          "output": "The passenger receives a final confirmation through the train display, platform sign, and announcement."
+        }
+      ],
+      "updated": 1790821414000
+    }
+  ]
+}
