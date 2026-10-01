@@ -1,0 +1,131 @@
+{
+  "activeId": "map-observed-library-loan",
+  "maps": [
+    {
+      "id": "map-observed-library-loan",
+      "name": "Observed · Borrowing a library book",
+      "context": "A student uses a self-checkout kiosk in a busy university library between classes. Other people are waiting nearby and the library is moderately noisy.",
+      "task": "Borrow a selected book and leave with confirmation that the loan has been recorded.",
+      "notes": "This is an observed interaction map. The person appeared comfortable with the general task, but the moment after scanning was important because they looked at the screen and waited for confirmation before removing the book.",
+      "rows": [
+        {
+          "doing": "The student places the book on the marked area of the kiosk.",
+          "knowing": "They need to know where the book should be placed and whether the kiosk is ready.",
+          "feeling": "Confident enough to begin; they have used a similar kiosk before.",
+          "input": "The kiosk detects the book or its RFID tag.",
+          "process": "The system reads the item and checks whether it can be borrowed.",
+          "output": "The screen changes from the welcome state and displays the book title."
+        },
+        {
+          "doing": "The student looks at the screen, then places their library card on the reader.",
+          "knowing": "They understand that their account must be identified before the loan can be completed.",
+          "feeling": "Focused; they briefly look at the queue behind them.",
+          "input": "The card reader detects the library card.",
+          "process": "The system matches the card to the student account and checks borrowing permissions.",
+          "output": "The screen shows the student name and a continue or complete-loan option."
+        },
+        {
+          "doing": "The student presses the complete-loan button.",
+          "knowing": "They need to know that this action will finish the transaction rather than start another one.",
+          "feeling": "Slightly uncertain; they pause after pressing the button.",
+          "input": "The kiosk receives a touch on the complete-loan control.",
+          "process": "The system records the loan and updates the account record.",
+          "output": "A short confirmation message appears, but the change is subtle and the kiosk does not make a sound."
+        },
+        {
+          "doing": "The student looks closely at the screen, then removes the book.",
+          "knowing": "They need to confirm that the book has been recorded before leaving.",
+          "feeling": "Reassured after reading the confirmation; still aware of the people waiting.",
+          "input": "The book is removed from the kiosk area.",
+          "process": "The system ends the current transaction and returns to its ready state.",
+          "output": "The kiosk returns to the welcome screen. The student leaves with the book."
+        }
+      ],
+      "updated": 1790821414000
+    },
+    {
+      "id": "map-observed-library-error",
+      "name": "Observed · Book does not scan",
+      "context": "The same library self-checkout kiosk is used during a busy period. The student has selected a book whose tag does not scan on the first attempt.",
+      "task": "Borrow the book despite an interrupted scan and understand what to do next.",
+      "notes": "This map focuses on a breakdown within the larger borrowing scenario. Notice the repeated action and the gap between what the system is doing and what the person can understand. The exact internal process is inferred and would need further investigation.",
+      "rows": [
+        {
+          "doing": "The student places the book on the reading area.",
+          "knowing": "They expect the title and borrowing information to appear automatically.",
+          "feeling": "Neutral and expectant.",
+          "input": "The kiosk attempts to detect the book tag.",
+          "process": "The first reading attempt does not return a usable item record.",
+          "output": "The screen remains unchanged for several seconds."
+        },
+        {
+          "doing": "The student moves the book and places it down again.",
+          "knowing": "They infer that the first attempt may not have worked, but they are not sure why.",
+          "feeling": "Uncertain; they glance towards the library desk.",
+          "input": "The kiosk attempts to read the tag again.",
+          "process": "The system repeats the reading process.",
+          "output": "A small loading indicator appears, but there is no clear explanation."
+        },
+        {
+          "doing": "The student lifts the book and turns it over before trying again.",
+          "knowing": "They are testing their own assumption that the position of the book may matter.",
+          "feeling": "Frustrated and increasingly self-conscious because another person is waiting.",
+          "input": "The system detects another attempted scan.",
+          "process": "The kiosk either fails again or takes longer to process the item.",
+          "output": "An error message finally appears with a small instruction to ask for help."
+        },
+        {
+          "doing": "The student takes the book to the library desk.",
+          "knowing": "They now know that the kiosk cannot resolve the problem without staff assistance.",
+          "feeling": "Relieved to have a clear next step, but inconvenienced.",
+          "input": "The student presents the book and explains the failed scan to staff.",
+          "process": "A staff member checks the item and completes or repairs the loan process.",
+          "output": "The staff member provides confirmation that the book can be borrowed."
+        }
+      ],
+      "updated": 1790821414000
+    },
+    {
+      "id": "map-concept-library-confirmation",
+      "name": "Conceptualised · Clear loan confirmation",
+      "context": "A proposed refinement of the library self-checkout interaction, informed by the observed moments where confirmation was subtle and failed scans were difficult to interpret.",
+      "task": "Borrow a book and understand immediately whether the loan has succeeded or needs attention.",
+      "notes": "This is a conceptualised interaction, not an observed result. It proposes clearer feedback for prototyping and testing. The design should be tested with real users before any claim is made about improvement.",
+      "rows": [
+        {
+          "doing": "The student places the book on the marked reading area.",
+          "knowing": "They need to know that the kiosk is ready and that the book has been detected.",
+          "feeling": "Confident and oriented.",
+          "input": "The kiosk detects the book tag.",
+          "process": "The system reads the item and checks its borrowing status.",
+          "output": "The book title appears with a clear visual state showing that it has been detected."
+        },
+        {
+          "doing": "The student places their library card on the reader.",
+          "knowing": "They need to understand that the card is being read and what information is required next.",
+          "feeling": "Assured because the kiosk provides an immediate response.",
+          "input": "The card reader detects the library card.",
+          "process": "The system checks the account and borrowing permissions.",
+          "output": "The kiosk gives a short sound and displays a clear instruction to complete the loan."
+        },
+        {
+          "doing": "The student presses the complete-loan button.",
+          "knowing": "They need to know that the loan is being processed and when it is complete.",
+          "feeling": "Calm because the system communicates its current state.",
+          "input": "The kiosk receives the completion command.",
+          "process": "The system records the loan and updates the account.",
+          "output": "A prominent confirmation state appears with the book title and a clear completion message."
+        },
+        {
+          "doing": "The student removes the book after the completion state appears.",
+          "knowing": "They know the book is ready to take and the transaction has finished.",
+          "feeling": "Confident and able to leave without checking again.",
+          "input": "The book is removed from the reading area.",
+          "process": "The kiosk closes the transaction and resets for the next person.",
+          "output": "The completion state remains visible briefly before the welcome screen returns."
+        }
+      ],
+      "updated": 1790821414000
+    }
+  ]
+}
