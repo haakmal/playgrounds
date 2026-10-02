@@ -279,7 +279,7 @@ textarea::placeholder {
 }
 .map-tab:hover {
     background: var(--line);
-    color: var(--blue-ink);
+    color: var(--black);
 }
 .map-tab.is-active {
     margin-bottom: -1px;
