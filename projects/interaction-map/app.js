@@ -13,6 +13,7 @@
   const saveStatus = document.querySelector('#saveStatus');
   const activeMapName = document.querySelector('#activeMapName');
   const printMaps = document.querySelector('#printMaps');
+  const examplesDialog = document.querySelector('#examplesDialog');
   const mapToolsDialog = document.querySelector('#mapToolsDialog');
   const myMapsDialog = document.querySelector('#myMapsDialog');
   const helpDialog = document.querySelector('#helpDialog');
@@ -274,6 +275,36 @@
     reader.readAsText(file);
   }
 
+  async function loadExample(url) {
+  try {
+    const response = await fetch(url, { cache: 'no-store' });
+
+    if (!response.ok) {
+      throw new Error('Example could not be loaded');
+    }
+
+    const example = normaliseWorkspace(await response.json());
+
+    if (!example) {
+      throw new Error('Example has an invalid format');
+    }
+
+    if (!window.confirm('Load this example and replace the maps currently open?')) {
+      return;
+    }
+
+    workspace = example;
+    render();
+    saveWorkspace();
+    examplesDialog.close();
+
+  } catch (error) {
+    window.alert(
+      'This example could not be loaded. Make sure the JSON file is in the same folder as the tool.'
+    );
+  }
+}
+
   function printWorkspace() {
     saveWorkspace();
     renderPrintMaps();
@@ -289,6 +320,16 @@
   document.querySelector('#addMapButton').addEventListener('click', newMap);
   document.querySelector('#duplicateButton').addEventListener('click', function () { duplicateMap(); });
   document.querySelector('#mapToolsButton').addEventListener('click', function () { mapToolsDialog.showModal(); });
+  document.querySelector('#examplesButton').addEventListener('click', function () {
+  examplesDialog.showModal();
+});
+
+document.querySelectorAll('[data-example-url]').forEach(function (link) {
+  link.addEventListener('click', function (event) {
+    event.preventDefault();
+    loadExample(link.dataset.exampleUrl);
+  });
+});
   document.querySelector('#myMapsButton').addEventListener('click', function () { mapToolsDialog.close(); renderSavedMaps(); myMapsDialog.showModal(); });
   document.querySelector('#newMapToolButton').addEventListener('click', function () { mapToolsDialog.close(); newMap(); });
   document.querySelector('#dialogNewMapButton').addEventListener('click', function () { myMapsDialog.close(); newMap(); });

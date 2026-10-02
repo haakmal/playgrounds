@@ -26211,6 +26211,7 @@
     </script>
 
     
+
 <!-- BEGIN RETURN LINK -->
 <script>
 // inject-home-link.js
@@ -26225,6 +26226,7 @@
 	// Create the back link
 	const link = document.createElement("a");
 	link.href = "/";
+  	link.className = "print-remove";
 	link.innerHTML = '← Back to Playgrounds <i class="fab fa-github"><i>';
 	Object.assign(link.style, {
 	  position: "fixed",
@@ -26237,7 +26239,8 @@
 	  fontSize: "14px",
 	  opacity: 0.7,
 	  borderRadius: "6px",
-	  textDecoration: "none"
+	  textDecoration: "none",
+    fontFamily: "Helvetica,Arial, sans-serif"
 	});
 	link.onmouseover = () => (link.style.opacity = "1");
 	link.onmouseout = () => (link.style.opacity = "0.7");
