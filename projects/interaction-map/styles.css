@@ -279,7 +279,7 @@ textarea::placeholder {
 }
 .map-tab:hover {
     background: var(--line);
-    color: var(--blue-ink);
+    color: var(--black);
 }
 .map-tab.is-active {
     margin-bottom: -1px;
@@ -594,6 +594,11 @@ dialog::backdrop {
     display: none;
 }
 
+.example-link {
+    color: var(--black);
+    text-decoration: none;
+}
+
 @media (max-width: 720px) {
     .app-header,
     .app-shell {
@@ -728,6 +733,9 @@ dialog::backdrop {
         margin-bottom: 4px;
         font-size: 9px;
         text-transform: uppercase;
+    }
+    .print-remove {
+        display: none;
     }
     @page {
         size: A4 landscape;

@@ -13,6 +13,7 @@
   const saveStatus = document.querySelector('#saveStatus');
   const activeMapName = document.querySelector('#activeMapName');
   const printMaps = document.querySelector('#printMaps');
+  const examplesDialog = document.querySelector('#examplesDialog');
   const mapToolsDialog = document.querySelector('#mapToolsDialog');
   const myMapsDialog = document.querySelector('#myMapsDialog');
   const helpDialog = document.querySelector('#helpDialog');
@@ -236,7 +237,7 @@
       const rows = map.rows.map(function (row, index) {
         return '<tr><td>' + String(index + 1).padStart(2, '0') + '</td><td>' + escapeHtml(row.doing) + '</td><td>' + escapeHtml(row.knowing) + '</td><td>' + escapeHtml(row.feeling) + '</td><td>' + escapeHtml(row.input) + '</td><td>' + escapeHtml(row.process) + '</td><td>' + escapeHtml(row.output) + '</td></tr>';
       }).join('');
-      return '<article class="print-map"><p class="eyebrow">Interaction Map ' + String(mapIndex + 1).padStart(2, '0') + '</p><h2>' + escapeHtml(map.name) + '</h2><p class="print-meta">DDES1150 Interaction 1 · Saved locally</p><div class="print-context"><div><strong>Scenario or context</strong><p>' + escapeHtml(map.context) + '</p></div><div><strong>Person trying to do</strong><p>' + escapeHtml(map.task) + '</p></div></div><table class="print-table"><thead><tr><th>Moment</th><th class="human-print">Doing</th><th class="human-print">Knowing</th><th class="human-print">Feeling</th><th class="system-print">Input</th><th class="system-print">Process</th><th class="system-print">Output</th></tr></thead><tbody>' + rows + '</tbody></table><div class="print-notes"><strong>Working notes</strong>' + escapeHtml(map.notes) + '</div></article>';
+      return '<article class="print-map"><p class="eyebrow">Interaction Map ' + String(mapIndex + 1).padStart(2, '0') + '</p><h2>' + escapeHtml(map.name) + '</h2><div class="print-context"><div><strong>Scenario or context</strong><p>' + escapeHtml(map.context) + '</p></div><div><strong>Person trying to do</strong><p>' + escapeHtml(map.task) + '</p></div></div><table class="print-table"><thead><tr><th>Moment</th><th class="human-print">Doing</th><th class="human-print">Knowing</th><th class="human-print">Feeling</th><th class="system-print">Input</th><th class="system-print">Process</th><th class="system-print">Output</th></tr></thead><tbody>' + rows + '</tbody></table><div class="print-notes"><strong>Working notes</strong>' + escapeHtml(map.notes) + '</div></article>';
     }).join('');
   }
 
@@ -274,6 +275,36 @@
     reader.readAsText(file);
   }
 
+  async function loadExample(url) {
+  try {
+    const response = await fetch(url, { cache: 'no-store' });
+
+    if (!response.ok) {
+      throw new Error('Example could not be loaded');
+    }
+
+    const example = normaliseWorkspace(await response.json());
+
+    if (!example) {
+      throw new Error('Example has an invalid format');
+    }
+
+    if (!window.confirm('Load this example and replace the maps currently open?')) {
+      return;
+    }
+
+    workspace = example;
+    render();
+    saveWorkspace();
+    examplesDialog.close();
+
+  } catch (error) {
+    window.alert(
+      'This example could not be loaded. Make sure the JSON file is in the same folder as the tool.'
+    );
+  }
+}
+
   function printWorkspace() {
     saveWorkspace();
     renderPrintMaps();
@@ -289,6 +320,16 @@
   document.querySelector('#addMapButton').addEventListener('click', newMap);
   document.querySelector('#duplicateButton').addEventListener('click', function () { duplicateMap(); });
   document.querySelector('#mapToolsButton').addEventListener('click', function () { mapToolsDialog.showModal(); });
+  document.querySelector('#examplesButton').addEventListener('click', function () {
+  examplesDialog.showModal();
+});
+
+document.querySelectorAll('[data-example-url]').forEach(function (link) {
+  link.addEventListener('click', function (event) {
+    event.preventDefault();
+    loadExample(link.dataset.exampleUrl);
+  });
+});
   document.querySelector('#myMapsButton').addEventListener('click', function () { mapToolsDialog.close(); renderSavedMaps(); myMapsDialog.showModal(); });
   document.querySelector('#newMapToolButton').addEventListener('click', function () { mapToolsDialog.close(); newMap(); });
   document.querySelector('#dialogNewMapButton').addEventListener('click', function () { myMapsDialog.close(); newMap(); });
