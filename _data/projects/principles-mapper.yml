@@ -3,7 +3,7 @@ description: "A tool for mapping scenarios against Norman's interaction principl
 credits: "Haider Akmal"
 url: "/projects/principles-mapper"
 date: 2026-09-29
-wip: true
+wip: false
 categories:
   - tools
   - teaching
