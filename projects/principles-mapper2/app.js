@@ -46,15 +46,9 @@
     let m = blankMap();
     return { activeId: m.id, maps: [m] };
   }
-  async function loadExample(url) {
+  function loadExample(url) {
     try {
-      const response = await fetch(url, { cache: "no-store" });
-
-      if (!response.ok) {
-        throw new Error("Example could not be loaded");
-      }
-
-      const example = normaliseWorkspace(await response.json());
+      const example = normalise(window.PRINCIPLES_EXAMPLES[url]);
 
       if (!example) {
         throw new Error("Example has an invalid format");
@@ -64,12 +58,12 @@
         return;
       }
 
-      workspace = example;
+      w = example;
       render();
-      saveWorkspace();
+      save();
       examplesDialog.close();
     } catch (error) {
-      window.alert("This example could not be loaded. Make sure the JSON file is in the same folder as the tool.");
+      window.alert("This example could not be loaded.");
     }
   }
   function normalise(x) {

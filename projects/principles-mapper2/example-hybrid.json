@@ -1,0 +1,84 @@
+{
+  "activeId": "map-museum-guide",
+  "maps": [
+    {
+      "id": "map-museum-guide",
+      "name": "Using a hybrid museum guide",
+      "context": "A visitor enters a museum exhibition and uses a handheld guide device alongside physical labels, room signage, and a projected map.",
+      "type": "Hybrid",
+      "notes": "This example includes physical, digital, spatial, and social parts of one interaction. Observed mappings describe what a visitor did during a walkthrough. Conceptualised mappings identify relationships that could be explored through a physical or Wizard-of-Oz prototype.",
+      "rows": [
+        {
+          "location": "Handheld guide device",
+          "principle": "Affordance",
+          "description": "Observed: The visitor picks up the device and holds it toward an artwork because its shape, screen, and camera opening suggest that it can be used to look at objects.",
+          "change": "",
+          "signifiers": [
+            "Camera opening at the front",
+            "Screen showing an artwork frame",
+            "Physical grip and carrying shape",
+            "Instruction label near the display"
+          ],
+          "mode": "Observed"
+        },
+        {
+          "location": "Device pointed at artwork",
+          "principle": "Mapping",
+          "description": "Observed: The visitor understands that aiming the device at an artwork should reveal information about that specific artwork.",
+          "change": "",
+          "signifiers": ["Artwork outline on the device screen", "Alignment between device frame and artwork"],
+          "mode": "Observed"
+        },
+        {
+          "location": "Device and artwork response",
+          "principle": "Feedback",
+          "description": "Observed: A short vibration and a change on the screen indicate that the artwork has been recognised.",
+          "change": "",
+          "signifiers": ["Haptic pulse", "Screen transition", "Recognition tone"],
+          "mode": "Observed"
+        },
+        {
+          "location": "Physical room signage and projected map",
+          "principle": "Visibility",
+          "description": "Observed: The visitor can see the exhibition title and room number on the wall, while the projected map shows the larger route through the exhibition.",
+          "change": "",
+          "signifiers": ["Large room number", "Projected route line", "Directional arrow at the doorway"],
+          "mode": "Observed"
+        },
+        {
+          "location": "Device route suggestion",
+          "principle": "Consistency",
+          "description": "Conceptualised: The device, projected map, and physical signs should use the same room names and directional language so the visitor can transfer understanding between them.",
+          "change": "Prototype the same route using paper signs, a hand-drawn map, and a simulated device screen.",
+          "signifiers": ["Matching room names", "Matching arrow style", "Shared colour or symbol system"],
+          "mode": "Conceptualised"
+        },
+        {
+          "location": "Audio guide interaction",
+          "principle": "Constraints",
+          "description": "Conceptualised: The guide should limit the amount of audio information available while the visitor is moving, because too many choices may compete with attention to the physical exhibition.",
+          "change": "Test a simplified audio state that offers one recommended action at a time.",
+          "signifiers": ["Single prominent next action", "Pause control", "Visible indication of audio length"],
+          "mode": "Conceptualised"
+        },
+        {
+          "location": "Visitor asks a staff member for help",
+          "principle": "Visibility",
+          "description": "Conceptualised: The system should make it clear when the visitor can stop using the device and ask a person for assistance rather than treating the digital guide as the only route.",
+          "change": "Explore a visible help point or staff prompt within the guide experience.",
+          "signifiers": ["Help icon on the device", "Visible staff location on the projected map", "Physical help sign"],
+          "mode": "Conceptualised"
+        },
+        {
+          "location": "End of exhibition route",
+          "principle": "Feedback",
+          "description": "Conceptualised: A final physical and digital confirmation could help the visitor understand that the route is complete and show where they can return the device.",
+          "change": "Prototype a combined end state using a projected message, device screen, and return station sign.",
+          "signifiers": ["Completion message", "Return station marker", "Change in device sound or vibration"],
+          "mode": "Conceptualised"
+        }
+      ],
+      "updated": 1760000000000
+    }
+  ]
+}

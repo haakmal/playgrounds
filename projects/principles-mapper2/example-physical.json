@@ -1,0 +1,75 @@
+{
+  "activeId": "map-community-noticeboard",
+  "maps": [
+    {
+      "id": "map-community-noticeboard",
+      "name": "Using a community noticeboard",
+      "context": "A resident uses a physical noticeboard at a neighbourhood centre to find a local event and leave information for other people.",
+      "type": "Physical",
+      "notes": "Observed mappings describe a short walkthrough using a paper prototype. Conceptualised mappings suggest aspects that could be explored through rearranging the board and observing how people interact with it.",
+      "rows": [
+        {
+          "location": "Noticeboard surface",
+          "principle": "Affordance",
+          "description": "Observed: The large framed board, visible papers, and open push-pin area suggest that people can read, add, and rearrange notices.",
+          "change": "",
+          "signifiers": [
+            "Open cork surface",
+            "Visible paper notices",
+            "Push-pins stored in a small tray",
+            "Heading reading: Community notices"
+          ],
+          "mode": "Observed"
+        },
+        {
+          "location": "Notice categories",
+          "principle": "Visibility",
+          "description": "Observed: Coloured headings make the categories visible from a short distance, but the meaning of each colour is not immediately clear to a new visitor.",
+          "change": "Pair each colour with a plain-language category label and a simple symbol.",
+          "signifiers": [
+            "Coloured section headings",
+            "Large category labels"
+          ],
+          "mode": "Observed"
+        },
+        {
+          "location": "Adding a notice",
+          "principle": "Constraints",
+          "description": "Conceptualised: A small set of available pins and a limited writing area could guide people toward shorter, more readable notices.",
+          "change": "Test a notice template with a clear title, date, location, and contact area.",
+          "signifiers": [
+            "Pre-printed notice template",
+            "Marked writing areas",
+            "Limited pin tray"
+          ],
+          "mode": "Conceptualised"
+        },
+        {
+          "location": "Removing an old notice",
+          "principle": "Mapping",
+          "description": "Conceptualised: A dated notice and a marked review area could communicate how a person should remove or update information without needing staff assistance.",
+          "change": "Prototype a visible review date and a dedicated area for notices awaiting removal.",
+          "signifiers": [
+            "Review date field",
+            "Area labelled: Remove or update",
+            "Different colour pin"
+          ],
+          "mode": "Conceptualised"
+        },
+        {
+          "location": "Shared noticeboard layout",
+          "principle": "Consistency",
+          "description": "Conceptualised: If every notice uses the same title position, date format, and category mark, people can scan the board more easily.",
+          "change": "Create three notice templates and compare how quickly people find relevant information.",
+          "signifiers": [
+            "Repeated title position",
+            "Repeated date format",
+            "Shared category mark"
+          ],
+          "mode": "Conceptualised"
+        }
+      ],
+      "updated": 1760000000000
+    }
+  ]
+}

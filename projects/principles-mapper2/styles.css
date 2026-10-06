@@ -326,7 +326,8 @@ textarea::placeholder {
   line-height: 1;
   padding: 2px 3px;
 }
-.map-tab-close:hover {
+.map-tab-close:hover,
+.signifier-row button:hover {
   background: var(--red);
   color: var(--red-ink);
 }
@@ -457,6 +458,10 @@ select.principle {
   background: var(--white);
   padding: 4px 6px;
   font-size: 11px;
+}
+.mini-add:hover {
+  border-color: var(--black);
+  background: var(--light);
 }
 .row-delete {
   margin: 5px 8px 0;
@@ -653,11 +658,12 @@ dialog::backdrop {
 }
 
 .map-scroll {
-  overflow: visible;
+  overflow-x: auto;
+  overflow-y: visible;
 }
 
 .interaction-table {
-  width: 100%;
+  min-width: 1040px;
   border-collapse: collapse;
   border-spacing: 0;
 }
@@ -723,6 +729,8 @@ dialog::backdrop {
 
   .map-scroll {
     overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
   }
 
   .interaction-table {
