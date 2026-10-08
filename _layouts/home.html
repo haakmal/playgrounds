@@ -8,8 +8,7 @@
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css"
-      crossorigin="anonymous"
-    />
+      crossorigin="anonymous" />
   </head>
 
   <body>
@@ -27,91 +26,42 @@
             <h2 id="projects-heading">Projects</h2>
 
             <div class="project-controls">
-              <div
-                class="control-group"
-                role="group"
-                aria-label="Filter projects by category"
-              >
+              <div class="control-group" role="group" aria-label="Filter projects by category">
                 <span class="control-label">Category</span>
-                <button
-                  type="button"
-                  class="filter-button is-active"
-                  data-category="all"
-                  aria-pressed="true"
-                >
-                  All
-                </button>
-                <button
-                  type="button"
-                  class="filter-button"
-                  data-category="tools"
-                  aria-pressed="false"
-                >
-                  Tools
-                </button>
-                <button
-                  type="button"
-                  class="filter-button"
-                  data-category="play"
-                  aria-pressed="false"
-                >
-                  Play
-                </button>
-                <button
-                  type="button"
-                  class="filter-button"
-                  data-category="teaching"
-                  aria-pressed="false"
-                >
-                  Teaching
-                </button>
+                <button type="button" class="filter-button is-active" data-category="all" aria-pressed="true">All</button>
+                <button type="button" class="filter-button" data-category="tools" aria-pressed="false">Tools</button>
+                <button type="button" class="filter-button" data-category="play" aria-pressed="false">Play</button>
+                <button type="button" class="filter-button" data-category="teaching" aria-pressed="false">Teaching</button>
               </div>
 
-              <div
-                class="control-group"
-                role="group"
-                aria-label="Sort projects by date"
-              >
+              <div class="control-group" role="group" aria-label="Sort projects by date">
                 <span class="control-label">Sort</span>
-                <button
-                  type="button"
-                  class="sort-button is-active"
-                  data-sort="newest"
-                  aria-pressed="true"
-                >
-                  Newest
-                </button>
-                <button
-                  type="button"
-                  class="sort-button"
-                  data-sort="oldest"
-                  aria-pressed="false"
-                >
-                  Oldest
-                </button>
+                <button type="button" class="sort-button is-active" data-sort="newest" aria-pressed="true">Newest</button>
+                <button type="button" class="sort-button" data-sort="oldest" aria-pressed="false">Oldest</button>
+              </div>
+
+              <div class="control-group wip-control">
+                <label>
+                  <input type="checkbox" id="show-wip" />
+                  Show work in progress
+                </label>
               </div>
             </div>
           </div>
 
           <div class="project-grid" id="project-grid">
-            {% for project in site.data.projects %} {% assign info = project[1]
-            %} {% assign categories = info.categories | default: empty %} {%
-            assign categories_string = categories | join: ' ' %}
+            {% for project in site.data.projects %} {% assign info = project[1] %} {% assign categories = info.categories | default: empty
+            %} {% assign categories_string = categories | join: ' ' %}
 
             <article
               class="project-card {% if info.wip %} is-wip{% endif %}"
               data-title="{{ info.title | escape }}"
               data-date="{{ info.date | default: '' }}"
               data-categories="{{ categories_string | downcase | escape }}"
-            >
+              data-wip="{{ info.wip | default: false }}">
               {% if info.external %}
               <h3>
-                <a
-                  href="{{ info.url }}"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  >{{ info.title }}</a
-                >
+                <a href="{{ info.url }}" target="_blank" rel="noopener noreferrer">{{ info.title }}</a>
                 <span aria-hidden="true">↗</span>
               </h3>
               {% else %}
@@ -126,9 +76,7 @@
 
               <div class="project-meta">
                 {% if info.date %}
-                <time datetime="{{ info.date }}"
-                  >{{ info.date | date: "%Y" }}</time
-                >
+                <time datetime="{{ info.date }}">{{ info.date | date: "%Y" }}</time>
                 {% endif %} {% if info.credits %}
                 <small>{{ info.credits }}</small>
                 {% endif %}
@@ -137,26 +85,22 @@
               {% if categories != empty %}
               <div class="project-categories" aria-label="Categories">
                 {% for category in categories %}
-                <span>{{ category }}</span>{% unless forloop.last %} · {%
-                endunless %} {% endfor %}
+                <span>{{ category }}</span>{% unless forloop.last %} · {% endunless %} {% endfor %}
               </div>
               {% endif %}
             </article>
             {% endfor %}
           </div>
 
-          <p class="no-results" id="no-results" hidden>
-            No projects match this category.
-          </p>
+          <p class="no-results" id="no-results" hidden>No projects match this category.</p>
         </section>
       </main>
 
       <footer>
         <div class="footer-left">
           <p>
-            <a href="{{ site.baseurl }}/LICENSE" target="_blank"
-              >Attribution-NonCommercial-ShareAlike 4.0 International</a
-            ><br />&copy; {{ site.time | date: "%Y" }} {{ site.author }}
+            <a href="{{ site.baseurl }}/LICENSE" target="_blank">Attribution-NonCommercial-ShareAlike 4.0 International</a><br />&copy; {{
+            site.time | date: "%Y" }} {{ site.author }}
           </p>
         </div>
 
@@ -175,12 +119,9 @@
       document.addEventListener("DOMContentLoaded", function () {
         const grid = document.getElementById("project-grid");
         const cards = Array.from(grid.querySelectorAll(".project-card"));
-        const categoryButtons = Array.from(
-          document.querySelectorAll(".filter-button"),
-        );
-        const sortButtons = Array.from(
-          document.querySelectorAll(".sort-button"),
-        );
+        const showWip = document.getElementById("show-wip");
+        const categoryButtons = Array.from(document.querySelectorAll(".filter-button"));
+        const sortButtons = Array.from(document.querySelectorAll(".sort-button"));
         const noResults = document.getElementById("no-results");
 
         let activeCategory = "all";
@@ -202,15 +143,15 @@
           });
         }
 
-        function renderProjects() {
-          const visibleCards = cards.filter(function (card) {
-            if (activeCategory === "all") return true;
-            return card.dataset.categories
-              .split(/\s+/)
-              .includes(activeCategory);
+        function getSortedCards() {
+          const categoryCards = cards.filter(function (card) {
+            return (
+              activeCategory === "all" ||
+              card.dataset.categories.split(/\s+/).includes(activeCategory)
+            );
           });
 
-          const sortedCards = visibleCards.slice().sort(function (a, b) {
+          return categoryCards.sort(function (a, b) {
             const dateA = getTimestamp(a);
             const dateB = getTimestamp(b);
 
@@ -218,29 +159,77 @@
             if (dateA !== null && dateB === null) return -1;
 
             if (dateA !== dateB) {
-              return activeSort === "newest" ? dateB - dateA : dateA - dateB;
+              return activeSort === "newest"
+                ? dateB - dateA
+                : dateA - dateB;
             }
 
             return a.dataset.title.localeCompare(b.dataset.title);
           });
+        }
 
-          cards.forEach(function (card) {
-            card.hidden = true;
+        function renderProjects(animateWip = false) {
+          const sortedCards = getSortedCards();
+          const visibleCards = sortedCards.filter(function (card) {
+            return showWip.checked || card.dataset.wip !== "true";
           });
 
           sortedCards.forEach(function (card) {
-            card.hidden = false;
             grid.appendChild(card);
           });
 
-          noResults.hidden = sortedCards.length > 0;
+          cards.forEach(function (card) {
+            card.hidden = !visibleCards.includes(card);
+            card.classList.remove("is-filtering-out", "is-appearing");
+          });
+
+          if (animateWip && showWip.checked) {
+            visibleCards.forEach(function (card) {
+              if (!card.classList.contains("is-wip")) return;
+
+              requestAnimationFrame(function () {
+                requestAnimationFrame(function () {
+                  card.classList.add("is-appearing");
+                });
+              });
+            });
+          }
+
+          noResults.hidden = visibleCards.length > 0;
         }
+
+        function hideWipWithTransition() {
+          const visibleWipCards = cards.filter(function (card) {
+            return !card.hidden && card.classList.contains("is-wip");
+          });
+
+          if (!visibleWipCards.length) {
+            renderProjects(false);
+            return;
+          }
+
+          visibleWipCards.forEach(function (card) {
+            card.classList.remove("is-appearing");
+            card.classList.add("is-filtering-out");
+          });
+
+          window.setTimeout(function () {
+            visibleWipCards.forEach(function (card) {
+              card.classList.remove("is-filtering-out");
+              card.hidden = true;
+            });
+
+            renderProjects(false);
+          }, WIP_EXIT_DURATION);
+        }
+
+        const WIP_EXIT_DURATION = 180;
 
         categoryButtons.forEach(function (button) {
           button.addEventListener("click", function () {
             activeCategory = button.dataset.category;
             updateButtons(categoryButtons, activeCategory, "category");
-            renderProjects();
+            renderProjects(false);
           });
         });
 
@@ -248,8 +237,16 @@
           button.addEventListener("click", function () {
             activeSort = button.dataset.sort;
             updateButtons(sortButtons, activeSort, "sort");
-            renderProjects();
+            renderProjects(false);
           });
+        });
+
+        showWip.addEventListener("change", function () {
+          if (showWip.checked) {
+            renderProjects(true);
+          } else {
+            hideWipWithTransition();
+          }
         });
 
         renderProjects();

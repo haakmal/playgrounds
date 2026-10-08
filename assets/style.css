@@ -162,6 +162,23 @@ h3 {
   color: #fff;
 }
 
+.wip-control label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+
+  color: #666;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.wip-control input {
+  margin: 0;
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+}
+
 /* Project grid */
 
 .project-grid {
@@ -213,16 +230,11 @@ h3 {
 
   background:
     linear-gradient(#fff, #fff) padding-box,
-    repeating-linear-gradient(
-        135deg,
-        #333 0,
-        #333 6px,
-        #f5d547 6px,
-        #f5d547 12px
-      )
-      border-box;
+    repeating-linear-gradient(135deg, #333 0, #333 6px, #f5d547 6px, #f5d547 12px) border-box;
 
-  background-position: 0, 0;
+  background-position:
+    0 0,
+    0 0;
   background-repeat: no-repeat, repeat;
 }
 
@@ -260,6 +272,53 @@ h3 {
   line-height: 1.4;
   text-transform: uppercase;
   letter-spacing: 0.06em;
+}
+
+/* WIP transitions */
+
+.project-card.is-wip.is-filtering-out {
+  animation: wip-fade-out 180ms ease-out forwards !important;
+  pointer-events: none;
+}
+
+.project-card.is-wip.is-appearing {
+  animation: wip-arrive 320ms ease-out both;
+}
+
+@keyframes wip-fade-out {
+  from {
+    opacity: 1;
+    transform: scale(1.01) rotate(0.5deg);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(0.96) rotate(-1deg);
+  }
+}
+
+@keyframes wip-arrive {
+  0% {
+    opacity: 0;
+    transform: scale(0.96) rotate(-1deg);
+  }
+
+  60% {
+    opacity: 1;
+    transform: scale(1.01) rotate(0.5deg);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-card.is-wip.is-filtering-out,
+  .project-card.is-wip.is-appearing {
+    animation: none;
+  }
 }
 
 /* Project metadata */
@@ -365,12 +424,7 @@ body::before {
 
   background-size: 200% 100%;
 
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    #000 0%,
-    #000 25%,
-    transparent 100%
-  );
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 25%, transparent 100%);
   mask-image: linear-gradient(to bottom, #000 0%, #000 25%, transparent 100%);
 
   animation: playground-rainbow 30s linear infinite;
