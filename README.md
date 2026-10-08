@@ -14,6 +14,7 @@ This is a sandbox-style GitHub repo intended for an assortment of curious (mostl
 
 | Project | Description | Status |
 |---|---|---|
+| [Cardboard](https://play.hakmal.com/projects/cardboard/) | A handy card deck maker for drafting, shuffling, and revealing card-based activities. | WIP |
 | [Interaction Principles Mapper](https://play.hakmal.com/projects/principles-mapper) | A tool for mapping scenarios against Norman's interaction principles. | Published |
 | [Design Shuffler](https://play.hakmal.com/projects/design-shuffler) | A tool for shuffling design contexts and factors to explore new design possibilities. | WIP |
 | [The Seer's Table](https://play.hakmal.com/projects/seer-table/) | A playful ideation guide to support designing for enchanted objects. | Published |
