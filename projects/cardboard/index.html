@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cardboard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand"><h1>Cardboard</h1><span>Local card toolkit</span></div>
+    <div class="header-tools">
+      <span id="saveStatus" class="save-status">Saved locally</span>
+      <button id="sessionButton" class="button">Session</button>
+      <button id="helpButton" class="button icon-button" aria-label="How to use Cardboard">?</button>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <nav class="mode-switch" aria-label="Cardboard modes">
+      <button class="mode-button is-active" data-mode="build">Build</button>
+      <button class="mode-button" data-mode="play">Play</button>
+    </nav>
+
+    <section id="buildMode" class="mode-panel">
+      <div class="mode-intro">
+        <div><p class="eyebrow">BUILD MODE</p><h2>Make the cards you want to draw.</h2><p>Add cards to a deck, then leave anything out of play by marking it inactive.</p></div>
+        <button id="newDeckButton" class="button button-dark">+ New deck</button>
+      </div>
+      <div class="build-layout">
+        <section class="builder-column">
+          <div class="panel card-builder">
+            <div class="panel-heading"><div><p class="eyebrow">CARD BUILDER</p><h3 id="builderHeading">Add a card</h3></div><span id="editingDeckLabel" class="muted"></span></div>
+            <form id="cardForm">
+              <input id="cardId" type="hidden">
+              <label>Card name<input id="cardName" required placeholder="e.g. What is changing?"></label>
+              <label>Description <span class="optional">optional</span><textarea id="cardDescription" rows="5" placeholder="Add context, instructions, or a prompt."></textarea></label>
+              <div class="form-row"><label>Category <span class="optional">optional</span><input id="cardCategory" placeholder="e.g. Observation"></label><label>Color <span class="optional">optional</span><input id="cardColor" type="color" value="#d9d9d9"></label></div>
+              <label class="check-row"><input id="cardActive" type="checkbox" checked><span>Active — include this card when playing</span></label>
+              <div class="form-actions"><button class="button button-dark" type="submit" id="saveCardButton">Add card</button><button class="button" type="button" id="cancelEditButton" hidden>Cancel edit</button></div>
+            </form>
+          </div>
+        </section>
+        <aside class="deck-panel panel">
+          <div class="panel-heading"><h3>Decks</h3><span id="deckCount">0</span></div>
+          <div id="deckList" class="deck-list"></div>
+          <div class="card-list-heading"><div><p class="eyebrow">CARDS IN DECK</p><h3 id="currentDeckName">Untitled deck</h3></div><span id="cardCount" class="muted"></span></div><div id="cardList" class="card-list"></div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="playMode" class="mode-panel" hidden>
+      <div class="play-layout">
+        <section class="play-controls panel"><div><p class="eyebrow">PLAY CONTROLS</p><h2>Draw from a working set.</h2><p>Only active cards appear here. Draws are removed until you reset the deck.</p></div><label class="play-deck-select">Deck<select id="playDeckSelect"></select></label><div class="control-count"><strong id="remainingCount">0</strong><span>active cards remaining</span></div><div class="play-actions"><button id="drawButton" class="button button-dark">Draw</button><button id="shuffleButton" class="button" disabled>Shuffle remaining</button><button id="resetPlayButton" class="text-button">Reset</button></div></section>
+        <section class="play-area panel"><div class="play-meta"><span id="playDeckName">Untitled deck</span><span>PLAY AREA</span></div><div id="drawnCard" class="drawn-grid"><div class="empty-card"><p class="eyebrow">READY</p><h2>Draw a card to begin.</h2><p>Your drawn cards will appear here.</p></div></div></section>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="sessionDialog" class="dialog"><div class="dialog-header"><div><p class="eyebrow">SESSION</p><h2>Manage Cardboard</h2></div><button class="close-button" data-close="sessionDialog">×</button></div><div class="dialog-content"><label>Session name<input id="sessionName" placeholder="Untitled session"></label><div class="dialog-grid"><button id="newSessionButton" class="tool-card"><strong>New session</strong><span>Start with one blank deck.</span></button><button id="exportButton" class="tool-card"><strong>Export JSON</strong><span>Save a portable copy of this session.</span></button><button id="importButton" class="tool-card"><strong>Import JSON</strong><span>Replace this session with an exported copy.</span></button></div><p class="dialog-note">Your work is saved in this browser. Export before moving to another device.</p></div></dialog>
+  <dialog id="helpDialog" class="dialog"><div class="dialog-header"><div><p class="eyebrow">ABOUT CARDBOARD</p><h2>Build a set. Draw what comes next.</h2></div><button class="close-button" data-close="helpDialog">×</button></div><div class="dialog-content"><p>Build one or more sets of cards, mark cards inactive when you want to keep them out of play, then switch to Play mode to draw from the active cards.</p><p>Drawn cards stay out of the available pool until you reset the deck. Cardboard stores the current session only in this browser.</p></div></dialog>
+  <input id="importFile" type="file" accept="application/json,.json" hidden>
+  <script src="app.js"></script>
+</body>
+</html>
