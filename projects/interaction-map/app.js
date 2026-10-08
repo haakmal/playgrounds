@@ -252,6 +252,9 @@
   }
 
   function importJson() {
+    // Ensure the example overlay cannot remain open while the file chooser opens.
+    if (examplesDialog.open) examplesDialog.close();
+    if (mapToolsDialog.open) mapToolsDialog.close();
     importFileInput.value = '';
     importFileInput.click();
   }
