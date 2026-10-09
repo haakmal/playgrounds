@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Groupings</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="mark">+</span>
+        <div>
+          <h1>Groupings</h1>
+          <p class="kicker">QUICKLY MAKE GROUPS AND ASSIGNMENTS</p>
+        </div>
+      </div>
+      <button class="text-button" id="clearAll">Clear all</button>
+    </header>
+    <main class="layout">
+      <section class="workspace">
+        <div class="setup panel">
+          <div class="panel-heading">
+            <div>
+              <p class="kicker">01 / ROSTER</p>
+              <h3>Add names</h3>
+            </div>
+            <span class="count" id="nameCount">0 names</span>
+          </div>
+          <textarea id="namesInput" placeholder="Enter one name per line…"></textarea>
+          <div class="input-footer">
+            <span>One name per line</span><button class="small-button" id="sampleButton">Use sample names</button>
+          </div>
+        </div>
+        <div class="setup panel">
+          <div class="panel-heading">
+            <div>
+              <p class="kicker">02 / ARRANGEMENT</p>
+              <h3>Choose a format</h3>
+            </div>
+          </div>
+          <div class="mode-switch">
+            <button class="mode-button active" data-mode="groups">Groups</button
+            ><button class="mode-button" data-mode="assignments">Assignments</button>
+          </div>
+          <div id="groupsControls">
+            <div class="subheading"><span>How many per group?</span><output id="sizeOutput">2</output></div>
+            <div class="stepper">
+              <button id="decrease">−</button><input id="groupSize" type="range" min="2" max="8" value="2" /><button id="increase">
+                +
+              </button>
+            </div>
+            <div class="range-labels"><span>2</span><span>8</span></div>
+          </div>
+          <div id="assignmentControls" hidden>
+            <div class="subheading"><span>Reviewers per person</span><output id="reviewerOutput">1</output></div>
+            <div class="stepper">
+              <button id="reviewerDecrease">−</button><input id="reviewerSize" type="range" min="1" max="5" value="1" /><button
+                id="reviewerIncrease">
+                +
+              </button>
+            </div>
+            <div class="range-labels"><span>1</span><span>5</span></div>
+          </div>
+          <p class="helper" id="groupSummary">Add names to get started.</p>
+        </div>
+        <div class="actions">
+          <button class="primary-button" id="generate">Generate groups <span>↗</span></button
+          ><button class="secondary-button" id="shuffle">Shuffle order</button>
+        </div>
+      </section>
+      <section class="results">
+        <div class="results-heading">
+          <div>
+            <p class="kicker">03 / RESULT</p>
+            <h2 id="resultTitle">Your groups</h2>
+          </div>
+          <div class="result-meta" id="resultMeta">No groups yet</div>
+        </div>
+        <div id="groups" class="groups empty">
+          <div class="empty-state">
+            <span class="empty-icon">○</span>
+            <p>Results will appear here.</p>
+            <small>Add names above, then generate an arrangement.</small>
+          </div>
+        </div>
+      </section>
+      <footer>
+        <span>Groupings are created locally in your browser.</span><button class="text-button" id="printButton">Print result</button>
+      </footer>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>

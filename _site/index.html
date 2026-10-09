@@ -124,7 +124,7 @@ Eduardo Sandoval
             <article
               class="project-card  is-wip"
               data-title="Cardboard"
-              data-date="2026-10-08"
+              data-date="2026-10-09"
               data-categories="tools teaching"
               data-wip="true">
               
@@ -139,7 +139,7 @@ Eduardo Sandoval
 
               <div class="project-meta">
                 
-                <time datetime="2026-10-08">2026</time>
+                <time datetime="2026-10-09">2026</time>
                  
                 <small>Haider Akmal</small>
                 
@@ -382,6 +382,38 @@ originally by Stuart Candy and Jeff Watson
                 <span>tools</span> ·  
                 <span>teaching</span> ·  
                 <span>research</span> 
+              </div>
+              
+            </article>
+               
+
+            <article
+              class="project-card "
+              data-title="Groupings Tool"
+              data-date="2026-10-09"
+              data-categories="tools teaching"
+              data-wip="false">
+              
+              <h3>
+                <a href="/projects/groupings/">Groupings Tool</a>
+              </h3>
+               
+
+              <p>A handy tool for creating and managing assigned groups.</p>
+
+              <div class="project-meta">
+                
+                <time datetime="2026-10-09">2026</time>
+                 
+                <small>Haider Akmal</small>
+                
+              </div>
+
+              
+              <div class="project-categories" aria-label="Categories">
+                
+                <span>tools</span> ·  
+                <span>teaching</span> 
               </div>
               
             </article>
@@ -943,6 +975,13 @@ Joseph Lindley
               requestAnimationFrame(function () {
                 requestAnimationFrame(function () {
                   card.classList.add("is-appearing");
+
+                  card.addEventListener("animationend", function handler(event) {
+                    if (event.animationName !== "wip-arrive") return;
+
+                    card.classList.remove("is-appearing");
+                    card.removeEventListener("animationend", handler);
+                  });
                 });
               });
             });

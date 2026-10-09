@@ -190,6 +190,13 @@
               requestAnimationFrame(function () {
                 requestAnimationFrame(function () {
                   card.classList.add("is-appearing");
+
+                  card.addEventListener("animationend", function handler(event) {
+                    if (event.animationName !== "wip-arrive") return;
+
+                    card.classList.remove("is-appearing");
+                    card.removeEventListener("animationend", handler);
+                  });
                 });
               });
             });
