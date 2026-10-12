@@ -26,6 +26,7 @@ window.SEERS_TABLE_COPY = {
     craft: "Craft the enchantment.",
     cards: "Cards",
     crystal: "Crystal ball",
+    crystalPrompt: "Look at your spell through this detail from the world you brought with you.",
     yourSpell: "Your spell",
     desireCard: "Desire",
     powerCard: "Power",
@@ -46,14 +47,14 @@ window.SEERS_TABLE_COPY = {
     lockedTitle: "The Grimoire is already enchanted",
     lockedBody: [
       "Your spells have already been crafted from this quandary. Changing the starting point now would change the meaning of what you have explored.",
-      "For a new direction, begin a new Grimoire. Your current Grimoire will remain safely in your collection."
+      "For a new direction, begin a new Grimoire. Your current Grimoire will remain safely in your collection.",
     ],
     newSession: "New Grimoire",
     sessionList: "My grimoires",
     deleteSession: "Delete this spell book?",
     keepLocked: "Keep this quandary",
     newLocked: "Start a new Grimoire",
-    ingredientsLocked: "The ingredients are set for this Grimoire. Begin a new Grimoire to change them."
+    ingredientsLocked: "The ingredients are set for this Grimoire. Begin a new Grimoire to change them.",
   },
   studio: {
     toolsTitle: "Interaction Ideation",
@@ -76,6 +77,7 @@ window.SEERS_TABLE_COPY = {
     seerTable: "Ideation workspace",
     craft: "Develop the interaction.",
     cards: "Provocations",
+    crystalPrompt: "Consider how this contextual factor might shape your concept.",
     crystal: "Contextual lens",
     yourSpell: "Your concept",
     desireCard: "Human desire",
@@ -97,7 +99,7 @@ window.SEERS_TABLE_COPY = {
     lockedTitle: "This interaction problem is already in use",
     lockedBody: [
       "You have already developed concepts from this starting point. Changing it now would make the existing ideation record inconsistent.",
-      "For a different direction, begin a new session. Your current ideation record will remain safely in your collection."
+      "For a different direction, begin a new session. Your current ideation record will remain safely in your collection.",
     ],
     newSession: "New session",
     sessionList: "My sessions",
@@ -105,6 +107,6 @@ window.SEERS_TABLE_COPY = {
     deleteSession: "Delete this ideation record?",
     keepLocked: "Keep this interaction problem",
     newLocked: "Start a new session",
-    ingredientsLocked: "The contextual factors are set for this session. Begin a new session to change them."
-  }
+    ingredientsLocked: "The contextual factors are set for this session. Begin a new session to change them.",
+  },
 };

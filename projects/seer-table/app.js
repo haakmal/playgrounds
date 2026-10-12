@@ -8,7 +8,7 @@
   const POWERS = CONTENT.powers || [];
   const INGREDIENTS = CONTENT.ingredients || [];
   const ETHER = CONTENT.ether || [];
-  const BALL_READINGS = CONTENT.ballReadings || [];
+  //const BALL_READINGS = CONTENT.ballReadings || [];
 
   const app = {
     workspace: null,
@@ -29,8 +29,7 @@
   };
 
   const $ = (selector, root = document) => root.querySelector(selector);
-  const $$ = (selector, root = document) =>
-    Array.from(root.querySelectorAll(selector));
+  const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
   const esc = (value) =>
     String(value ?? "").replace(
       /[&<>"']/g,
@@ -71,19 +70,10 @@
   };
 
   function uid(prefix = "ench") {
-    return (
-      prefix +
-      "-" +
-      Date.now().toString(36) +
-      "-" +
-      Math.random().toString(36).slice(2, 8)
-    );
+    return prefix + "-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 8);
   }
   function activeSession() {
-    return (
-      app.workspace.sessions.find((s) => s.id === app.workspace.activeId) ||
-      app.workspace.sessions[0]
-    );
+    return app.workspace.sessions.find((s) => s.id === app.workspace.activeId) || app.workspace.sessions[0];
   }
   function activeSpell() {
     const s = activeSession();
@@ -119,19 +109,12 @@
   }
 
   function normaliseWorkspace(data) {
-    if (!data || !Array.isArray(data.sessions) || !data.sessions.length)
-      return null;
+    if (!data || !Array.isArray(data.sessions) || !data.sessions.length) return null;
     const sessions = data.sessions.map((raw) => {
       const base = blankSession(raw.name || "The Untitled Grimoire");
       Object.assign(base, raw);
-      base.tableUnlocked = Boolean(
-        raw.tableUnlocked ??
-        (Array.isArray(raw.spells) && raw.spells.length > 0),
-      );
-      base.quandaryLocked = Boolean(
-        raw.quandaryLocked ??
-        (Array.isArray(raw.spells) && raw.spells.length > 0),
-      );
+      base.tableUnlocked = Boolean(raw.tableUnlocked ?? (Array.isArray(raw.spells) && raw.spells.length > 0));
+      base.quandaryLocked = Boolean(raw.quandaryLocked ?? (Array.isArray(raw.spells) && raw.spells.length > 0));
       base.id = raw.id || base.id;
       base.ingredients = Array.isArray(raw.ingredients)
         ? raw.ingredients.map((i) => ({
@@ -166,9 +149,7 @@
       return base;
     });
     return {
-      activeId: sessions.some((s) => s.id === data.activeId)
-        ? data.activeId
-        : sessions[0].id,
+      activeId: sessions.some((s) => s.id === data.activeId) ? data.activeId : sessions[0].id,
       interfaceMode: data.interfaceMode === "studio" ? "studio" : "seer",
       sessions,
     };
@@ -252,9 +233,7 @@
   }
   function chooseUnusedPair() {
     const session = activeSession();
-    const used = new Set(
-      session.spells.map((s) => `${s.desire?.name}|${s.power?.name}`),
-    );
+    const used = new Set(session.spells.map((s) => `${s.desire?.name}|${s.power?.name}`));
     let pair = null;
     for (let i = 0; i < 40; i++) {
       const desire = chooseRandom(DESIRES),
@@ -297,10 +276,7 @@
     // const modeName = $("#modeName");
     const studio = currentMode() === "studio";
     if (switcher) {
-      switcher.setAttribute(
-        "aria-label",
-        `Experience mode. Current mode: ${studio ? "Classroom Experience" : "Thematic Experience"}.`
-      );
+      switcher.setAttribute("aria-label", `Experience mode. Current mode: ${studio ? "Classroom Experience" : "Thematic Experience"}.`);
     }
     if (toggle) {
       toggle.setAttribute("aria-checked", String(studio));
@@ -334,7 +310,7 @@
       if (attr.startsWith("aria-")) node.setAttribute(attr, copy(key));
       else node[attr] = copy(key);
     });
-    const drawerNotes = $$('[data-drawer-note]');
+    const drawerNotes = $$("[data-drawer-note]");
     if (drawerNotes[0]) {
       drawerNotes[0].textContent = studio
         ? "Use the controls below to manage your ideation record and move between explorations."
@@ -357,24 +333,48 @@
     const helpBody = $("#helpModalBody");
     if (helpTitle) helpTitle.textContent = currentMode() === "studio" ? "How this works" : "How this works";
     if (helpBody) {
-      helpBody.innerHTML = currentMode() === "studio"
-        ? `<p>This is a playful ideation tool for DDES1150 Interaction Design. Bring an interaction problem, choose contextual factors, explore combinations of human desires and interaction capabilities, then describe the concepts you imagine.</p><p>Use the contextual lens and What If? provocations to develop variations. The tool never invents your concept for you; the thinking, sketching and decisions remain yours.</p>`
-        : `<p>This is an experimental tool for exploring creative possibilities following David Rose's Enchanted Objects approach. You bring an interaction you would like to enchant. The Seer gives you strange combinations to think through. You sketch away from the screen, then record what you imagined.</p><p>Cards are ingredients in this space. You will look into the crystal ball to bring one of your own contextual details back into the spell. The Ether changes a spell you already made, allowing you to explore possibilities.</p><p>The Seer never invents your idea for you. Use it as an aid to your own ideation and creativity.</p>`;
+      helpBody.innerHTML =
+        currentMode() === "studio"
+          ? `<p>This is a playful ideation tool for DDES1150 Interaction Design. Bring an interaction problem, choose contextual factors, explore combinations of human desires and interaction capabilities, then describe the concepts you imagine.</p><p>Use the contextual lens and What If? provocations to develop variations. The tool never invents your concept for you; the thinking, sketching and decisions remain yours.</p>`
+          : `<p>This is an experimental tool for exploring creative possibilities following David Rose's Enchanted Objects approach. You bring an interaction you would like to enchant. The Seer gives you strange combinations to think through. You sketch away from the screen, then record what you imagined.</p><p>Cards are ingredients in this space. You will look into the crystal ball to bring one of your own contextual details back into the spell. The Ether changes a spell you already made, allowing you to explore possibilities.</p><p>The Seer never invents your idea for you. Use it as an aid to your own ideation and creativity.</p>`;
     }
   }
 
   function refreshCurrentView() {
     switch (app.currentStage) {
-      case "welcome": renderWelcome(); break;
-      case "quandary": renderQuandary(); break;
-      case "ingredients": renderIngredients(app.currentIngredientId && activeSession()?.ingredients.some(i => i.id === app.currentIngredientId) ? activeSession().ingredients.find(i => i.id === app.currentIngredientId)?.type : null); break;
-      case "spell-table": renderSpellTable(); break;
-      case "crystal-reading": renderSpellTable(); break;
-      case "crafted": if (activeSpell()) renderCraftedSpell(activeSpell()); break;
-      case "spell-detail": if (activeSpell()) openSavedSpell(activeSpell().id); break;
-      case "spell-editor": if (activeSpell()) renderSpellEditor(activeSpell()); break;
-      case "ether": if (activeSpell()) renderEther(); break;
-      default: renderWelcome();
+      case "welcome":
+        renderWelcome();
+        break;
+      case "quandary":
+        renderQuandary();
+        break;
+      case "ingredients":
+        renderIngredients(
+          app.currentIngredientId && activeSession()?.ingredients.some((i) => i.id === app.currentIngredientId)
+            ? activeSession().ingredients.find((i) => i.id === app.currentIngredientId)?.type
+            : null,
+        );
+        break;
+      case "spell-table":
+        renderSpellTable();
+        break;
+      case "crystal-reading":
+        renderSpellTable();
+        break;
+      case "crafted":
+        if (activeSpell()) renderCraftedSpell(activeSpell());
+        break;
+      case "spell-detail":
+        if (activeSpell()) openSavedSpell(activeSpell().id);
+        break;
+      case "spell-editor":
+        if (activeSpell()) renderSpellEditor(activeSpell());
+        break;
+      case "ether":
+        if (activeSpell()) renderEther();
+        break;
+      default:
+        renderWelcome();
     }
   }
 
@@ -404,7 +404,10 @@
     app.currentStage = "quandary";
     const s = activeSession();
     setPrompt(
-      modeText("Tell the Seer what brought you here. No solution required yet.", "Describe the interaction you want to explore. No solution required yet."),
+      modeText(
+        "Tell the Seer what brought you here. No solution required yet.",
+        "Describe the interaction you want to explore. No solution required yet.",
+      ),
       `<button class="button button-primary" id="quandaryNext">${currentMode() === "studio" ? "Continue" : "Bring it to the table"}</button>`,
     );
     transition(() => {
@@ -462,14 +465,14 @@
             "Choose a few things that shape the interaction. You do not need everything.",
             "Choose a few contextual factors that matter. You do not need everything.",
           ),
-      `<button class="button button-primary" id="ingredientsDone">${locked ? (currentMode() === "studio" ? "Return to ideation" : "Return to the Seer") : (currentMode() === "studio" ? "Continue" : "Let the Seer look closer")}</button>`,
+      `<button class="button button-primary" id="ingredientsDone">${locked ? (currentMode() === "studio" ? "Return to ideation" : "Return to the Seer") : currentMode() === "studio" ? "Continue" : "Let the Seer look closer"}</button>`,
     );
     transition(() => {
       el.stage.innerHTML = `
         <div class="scene">
           <p class="kicker">${currentMode() === "studio" ? "Contextual factors" : "Gather your ingredients"}</p>
           <h2 class="title" style="font-size:clamp(38px,5.8vw,66px)">${currentMode() === "studio" ? "What shapes the interaction?" : "What matters here?"}</h2>
-          <p class="subtitle">${locked ? copy("ingredientsLocked") : (currentMode() === "studio" ? "Pick a few lenses. Briefly note how each one changes the interaction." : "Pick a few lenses. The Seer will help you start but you must fill in what each one changes.")}</p>
+          <p class="subtitle">${locked ? copy("ingredientsLocked") : currentMode() === "studio" ? "Pick a few lenses. Briefly note how each one changes the interaction." : "Pick a few lenses. The Seer will help you start but you must fill in what each one changes."}</p>
           <div class="ingredient-grid" id="ingredientGrid">${INGREDIENTS.map((item) => {
             const record = s.ingredients.find((i) => i.type === item.id);
             const selected = Boolean(record?.selected);
@@ -487,10 +490,10 @@
           <div id="factorEditor"></div>
         </div>`;
 
-      $$('[data-ingredient-toggle]').forEach((button) => {
+      $$("[data-ingredient-toggle]").forEach((button) => {
         button.addEventListener("click", () => toggleIngredient(button.dataset.ingredientToggle));
       });
-      $$('[data-ingredient-edit]').forEach((button) => {
+      $$("[data-ingredient-edit]").forEach((button) => {
         button.addEventListener("click", () => editIngredient(button.dataset.ingredientEdit));
       });
 
@@ -517,9 +520,7 @@
         beginSpell();
       });
 
-      const typeToOpen = !locked && openType && s.ingredients.some((i) => i.type === openType && i.selected)
-        ? openType
-        : null;
+      const typeToOpen = !locked && openType && s.ingredients.some((i) => i.type === openType && i.selected) ? openType : null;
       if (typeToOpen) editIngredient(typeToOpen, false);
       updateIngredientGate();
     });
@@ -615,9 +616,7 @@
   function syncIngredientCards(editingType = null) {
     const s = activeSession();
     if (!s) return;
-    const selectedTypes = new Set(
-      s.ingredients.filter((i) => i.selected).map((i) => i.type),
-    );
+    const selectedTypes = new Set(s.ingredients.filter((i) => i.selected).map((i) => i.type));
     $$(".ingredient-card").forEach((card) => {
       const type = card.dataset.ingredient;
       const selected = selectedTypes.has(type);
@@ -641,10 +640,7 @@
       // A locked Grimoire uses genuinely disabled controls because its ingredient set is fixed.
       button.disabled = Boolean(s.quandaryLocked);
       button.closest(".ingredient-card")?.classList.toggle("is-at-limit", unavailable);
-      button.closest(".ingredient-card")?.setAttribute(
-        "aria-disabled",
-        String(unavailable || s.quandaryLocked),
-      );
+      button.closest(".ingredient-card")?.setAttribute("aria-disabled", String(unavailable || s.quandaryLocked));
     });
   }
 
@@ -675,12 +671,12 @@
     app.currentStage = "spell-table";
     const s = activeSession();
     const pair = app.currentPair;
-    const ingredient =
-      s.ingredients.find((i) => i.id === app.currentIngredientId && i.selected) ||
-      s.ingredients.find((i) => i.selected);
+    const ingredient = s.ingredients.find((i) => i.id === app.currentIngredientId && i.selected) || s.ingredients.find((i) => i.selected);
     const ingredientDef = INGREDIENTS.find((i) => i.id === ingredient?.type);
     setPrompt(
-      currentMode() === "studio" ? "Start with the provocations, consider the context, then describe the concept." : "The Seer has laid the tools before you. Begin with the cards, then read the crystal ball, then shape your spell.",
+      currentMode() === "studio"
+        ? "Start with the provocations, consider the context, then describe the concept."
+        : "The Seer has laid the tools before you. Begin with the cards, then read the crystal ball, then shape your spell.",
       "",
     );
     transition(() => {
@@ -734,8 +730,7 @@
       updateSpellSteps();
       if (app.drawnDesire) revealCardVisual("desire");
       if (app.drawnPower) revealCardVisual("power");
-      if (app.drawnDesire && app.drawnPower && !app.ballComplete)
-        startCrystalReading();
+      if (app.drawnDesire && app.drawnPower && !app.ballComplete) startCrystalReading();
     });
   }
 
@@ -757,8 +752,7 @@
       revealCardVisual(type);
       updateSpellSteps();
       button.classList.remove("is-flipping");
-      if (app.drawnDesire && app.drawnPower)
-        setTimeout(startCrystalReading, 520);
+      if (app.drawnDesire && app.drawnPower) setTimeout(startCrystalReading, 520);
       else setPrompt("One card has spoken. Draw the other.", "");
     }, 820);
   }
@@ -791,14 +785,11 @@
     if (app.ballComplete) return;
     app.currentStage = "crystal-reading";
     const s = activeSession();
-    const ingredient =
-      s.ingredients.find((i) => i.id === app.currentIngredientId && i.selected) ||
-      s.ingredients.find((i) => i.selected);
-    const data =
-      INGREDIENTS.find((i) => i.id === ingredient?.type) || INGREDIENTS[0];
-    const reading =
-      BALL_READINGS[app.ballIndex++ % Math.max(BALL_READINGS.length, 1)] ||
-      "Look at the interaction through this lens.";
+    const ingredient = s.ingredients.find((i) => i.id === app.currentIngredientId && i.selected) || s.ingredients.find((i) => i.selected);
+    const data = INGREDIENTS.find((i) => i.id === ingredient?.type) || INGREDIENTS[0];
+    const reading = copy("crystalPrompt");
+    //BALL_READINGS[app.ballIndex++ % Math.max(BALL_READINGS.length, 1)] ||
+    //"Look at the interaction through this lens.";
     const ball = $("#crystalBall");
     const core = $("#ballCore");
     const read = $("#ballReading");
@@ -806,7 +797,10 @@
     if (!ball || !core || !read || !craft) return;
 
     setPrompt(
-      modeText("The cards have met. The Seer is looking for something from the world you brought in.", "The provocations are set. Use the contextual lens to shape the concept."),
+      modeText(
+        "The cards have met. The Seer is looking for something from the world you brought in.",
+        "The provocations are set. Use the contextual lens to shape the concept.",
+      ),
       "",
     );
     $(".table-ball")?.classList.add("is-active-reading");
@@ -844,7 +838,10 @@
       updateSpellSteps();
       $(".table-ball")?.classList.remove("is-active-reading");
       setPrompt(
-        modeText("The crystal ball has found its lens. Now give the spell a form of your own.", "The contextual lens is set. Now give the concept a form of your own."),
+        modeText(
+          "The crystal ball has found its lens. Now give the spell a form of your own.",
+          "The contextual lens is set. Now give the concept a form of your own.",
+        ),
         `<button class="button button-primary" id="saveSpell">${currentMode() === "studio" ? "Save concept" : "Place the spell in the Grimoire"}</button>`,
       );
       $("#ideaInput")?.focus();
@@ -857,14 +854,14 @@
     if (!canContinue(text, SETTINGS.minIdeaLength || 20))
       return softNudge(
         "saveSpell",
-        modeText("The Seer is waiting for the idea itself. Give the interaction a little more shape.", "The concept needs a little more shape before it can be saved."),
+        modeText(
+          "The Seer is waiting for the idea itself. Give the interaction a little more shape.",
+          "The concept needs a little more shape before it can be saved.",
+        ),
       );
     const s = activeSession();
-    const name =
-      $("#spellName")?.value.trim() || "" || `Spell ${s.spells.length + 1}`;
-    const ingredient =
-      s.ingredients.find((i) => i.id === app.currentIngredientId && i.selected) ||
-      s.ingredients.find((i) => i.selected);
+    const name = $("#spellName")?.value.trim() || "" || `Spell ${s.spells.length + 1}`;
+    const ingredient = s.ingredients.find((i) => i.id === app.currentIngredientId && i.selected) || s.ingredients.find((i) => i.selected);
     const spell = {
       id: uid("spell"),
       name,
@@ -893,11 +890,11 @@
 
   function renderCraftedSpell(spell) {
     app.currentStage = "crafted";
-    const ingredientDef = INGREDIENTS.find(
-      (i) => i.id === spell.ingredient?.type,
-    );
+    const ingredientDef = INGREDIENTS.find((i) => i.id === spell.ingredient?.type);
     setPrompt(
-      currentMode() === "studio" ? "The concept is now recorded. You can develop it further or return to the ideation workspace." : "The spell is now written in your grimoire. You can disturb it or return to the Seer’s table.",
+      currentMode() === "studio"
+        ? "The concept is now recorded. You can develop it further or return to the ideation workspace."
+        : "The spell is now written in your grimoire. You can disturb it or return to the Seer’s table.",
       `<button class="button button-secondary" id="openSpellFromCraft">${copy("editSpell")}</button><button class="button button-secondary" id="disturbSpell">${copy("disturb")}</button><button class="button button-primary" id="anotherSpell">${copy("craftAnother")}</button>`,
     );
     const craft = $("#craftPanel");
@@ -933,14 +930,15 @@
       el.bookContent.innerHTML = "";
       return;
     }
-    const spellCountLabel = s.spells.length === 1 ? (currentMode() === "studio" ? "concept" : "spell") : (currentMode() === "studio" ? "concepts" : "spells");
+    const spellCountLabel =
+      s.spells.length === 1 ? (currentMode() === "studio" ? "concept" : "spell") : currentMode() === "studio" ? "concepts" : "spells";
     const spells = s.spells
       .map(
         (sp) => `
       <article class="book-card" data-open-spell="${esc(sp.id)}">
         <h3>${esc(sp.name)}</h3>
         <p>${esc(sp.idea)}</p>
-        <div class="book-meta">${esc(sp.desire.name)} + ${esc(sp.power.name)} · ${sp.variations.length} ${sp.variations.length === 1 ? (currentMode() === "studio" ? "variation" : "variation") : (currentMode() === "studio" ? "variations" : "variations")}</div>
+        <div class="book-meta">${esc(sp.desire.name)} + ${esc(sp.power.name)} · ${sp.variations.length} ${sp.variations.length === 1 ? (currentMode() === "studio" ? "variation" : "variation") : currentMode() === "studio" ? "variations" : "variations"}</div>
       </article>`,
       )
       .join("");
@@ -960,7 +958,12 @@
       </section>
       <section class="spell-section">
         <h3>${copy("ingredients")}</h3>
-        <div class="book-ingredients">${s.ingredients.filter((i) => i.selected).map((i) => lockedIngredientBookItem(i)).join("") || '<p style="color:var(--muted)">No factors recorded yet.</p>'}</div>
+        <div class="book-ingredients">${
+          s.ingredients
+            .filter((i) => i.selected)
+            .map((i) => lockedIngredientBookItem(i))
+            .join("") || '<p style="color:var(--muted)">No factors recorded yet.</p>'
+        }</div>
         ${s.quandaryLocked ? `<p class="book-help">${copy("ingredientsLocked")}</p>` : `<button class="drawer-action" id="editIngredientsFromBook" type="button">${copy("editIngredients")}</button>`}
       </section>
       <section class="spell-section">
@@ -987,7 +990,7 @@
       renderIngredients();
     });
     if (!s.quandaryLocked) {
-      $$('[data-edit-ingredient]').forEach((card) =>
+      $$("[data-edit-ingredient]").forEach((card) =>
         card.addEventListener("click", () => {
           const type = card.dataset.editIngredient;
           closeDrawers();
@@ -995,9 +998,7 @@
         }),
       );
     }
-    $$('[data-open-spell]').forEach((card) =>
-      card.addEventListener('click', () => openSavedSpell(card.dataset.openSpell)),
-    );
+    $$("[data-open-spell]").forEach((card) => card.addEventListener("click", () => openSavedSpell(card.dataset.openSpell)));
   }
 
   function openSavedSpell(id) {
@@ -1022,10 +1023,10 @@
       $("#editSavedSpell").addEventListener("click", () => renderSpellEditor(spell));
       $("#returnToTableFromSpell").addEventListener("click", () => beginSpell());
       $("#disturbSaved").addEventListener("click", renderEther);
-      $$('[data-edit-variation]').forEach((button) =>
+      $$("[data-edit-variation]").forEach((button) =>
         button.addEventListener("click", () => renderVariationEditor(spell.id, button.dataset.editVariation)),
       );
-      $$('[data-delete-variation]').forEach((button) =>
+      $$("[data-delete-variation]").forEach((button) =>
         button.addEventListener("click", () => removeVariation(spell.id, button.dataset.deleteVariation)),
       );
     });
@@ -1047,7 +1048,10 @@
     app.currentSpellId = spell.id;
     app.currentStage = "variation-editor";
     setPrompt(
-      modeText("Give this variation another form, then return it to the spell.", "Refine this variation without changing the original concept."),
+      modeText(
+        "Give this variation another form, then return it to the spell.",
+        "Refine this variation without changing the original concept.",
+      ),
       `<button class="button button-secondary" id="cancelVariationEdit">${currentMode() === "studio" ? "Cancel" : "Return to spell"}</button><button class="button button-primary" id="saveVariationEdit">Save variation</button>`,
     );
     transition(() => {
@@ -1056,7 +1060,13 @@
       $("#saveVariationEdit").addEventListener("click", () => {
         const response = $("#editVariationResponse")?.value.trim() || "";
         if (!canContinue(response, SETTINGS.minIdeaLength || 20)) {
-          return softNudge("saveVariationEdit", modeText("Give the variation enough shape that you can recognise it later.", "Give the variation enough detail that its change is clear."));
+          return softNudge(
+            "saveVariationEdit",
+            modeText(
+              "Give the variation enough shape that you can recognise it later.",
+              "Give the variation enough detail that its change is clear.",
+            ),
+          );
         }
         variation.response = response;
         variation.updated = now();
@@ -1073,9 +1083,10 @@
     if (!spell) return;
     const variation = findVariation(spell, variationId);
     if (!variation) return;
-    const prompt = currentMode() === "studio"
-      ? "Remove this variation from the concept? This cannot be undone."
-      : "Let this variation fade from the grimoire? This cannot be undone.";
+    const prompt =
+      currentMode() === "studio"
+        ? "Remove this variation from the concept? This cannot be undone."
+        : "Let this variation fade from the grimoire? This cannot be undone.";
     if (!window.confirm(prompt)) return;
     spell.variations = spell.variations.filter((item) => item.id !== variationId);
     spell.updated = now();
@@ -1091,7 +1102,9 @@
   function renderSpellEditor(spell) {
     app.currentStage = "spell-editor";
     setPrompt(
-      currentMode() === "studio" ? "Refine your concept without changing the provocation that started it." : "Refine the spell without changing the enchantment that created it.",
+      currentMode() === "studio"
+        ? "Refine your concept without changing the provocation that started it."
+        : "Refine the spell without changing the enchantment that created it.",
       `<button class="button button-secondary" id="cancelSpellEdit">${currentMode() === "studio" ? "Cancel" : "Return to spell"}</button><button class="button button-primary" id="saveSpellEdit">${copy("saveSpell")}</button>`,
     );
     transition(() => {
@@ -1100,7 +1113,13 @@
       $("#saveSpellEdit").addEventListener("click", () => {
         const name = $("#editSpellName")?.value.trim();
         const idea = $("#editSpellIdea")?.value.trim();
-        if (!canContinue(idea, SETTINGS.minIdeaLength || 20)) return softNudge("saveSpellEdit", currentMode() === "studio" ? "Give the concept a little more shape before saving." : "Give the spell a little more shape before saving.");
+        if (!canContinue(idea, SETTINGS.minIdeaLength || 20))
+          return softNudge(
+            "saveSpellEdit",
+            currentMode() === "studio"
+              ? "Give the concept a little more shape before saving."
+              : "Give the spell a little more shape before saving.",
+          );
         spell.name = name || spell.name;
         spell.idea = idea;
         spell.updated = now();
@@ -1115,7 +1134,10 @@
     if (!spell) return;
     app.currentStage = "ether";
     setPrompt(
-      modeText("The Ether is stirring around this spell. Watch for what changes.", "A What If? provocation is about to disturb this concept."),
+      modeText(
+        "The Ether is stirring around this spell. Watch for what changes.",
+        "A What If? provocation is about to disturb this concept.",
+      ),
       "",
     );
     transition(() => {
@@ -1162,7 +1184,10 @@
     const line = $("#etherLine");
     if (line) line.classList.add("is-quiet");
     setPrompt(
-      modeText("The Ether has altered one condition. Follow that change and give the variation a form.", "The What If? has altered one condition. Follow that change and describe the variation."),
+      modeText(
+        "The Ether has altered one condition. Follow that change and give the variation a form.",
+        "The What If? has altered one condition. Follow that change and describe the variation.",
+      ),
       '<button class="button button-primary" id="saveVariation">Write the variation</button>',
     );
     const capture = document.createElement("div");
@@ -1180,7 +1205,10 @@
     if (!canContinue(text, SETTINGS.minIdeaLength || 20))
       return softNudge(
         "saveVariation",
-        modeText("The Ether changed the spell. Give the variation enough shape that you can recognise it later.", "The provocation changed the concept. Give the variation enough shape that you can recognise it later."),
+        modeText(
+          "The Ether changed the spell. Give the variation enough shape that you can recognise it later.",
+          "The provocation changed the concept. Give the variation enough shape that you can recognise it later.",
+        ),
       );
     const spell = activeSpell();
     spell.variations.push({
@@ -1198,7 +1226,10 @@
   function renderVariationSaved(spell) {
     const last = spell.variations.at(-1);
     setPrompt(
-      modeText("The variation is written in the grimoire. You can disturb this spell again, return to the book, or return to the Seer’s table.", "The variation is saved. You can apply another provocation, return to the ideation record, or continue ideating."),
+      modeText(
+        "The variation is written in the grimoire. You can disturb this spell again, return to the book, or return to the Seer’s table.",
+        "The variation is saved. You can apply another provocation, return to the ideation record, or continue ideating.",
+      ),
       `<button class="button button-secondary" id="bookAfterVariation">${copy("bookLabel")}</button><button class="button button-secondary" id="againAfterVariation">${copy("disturb")}</button><button class="button button-primary" id="tableAfterVariation">${copy("returnTable")}</button>`,
     );
     const wrap = $(".ether-wrap");
@@ -1206,9 +1237,7 @@
     const capture = $(".ether-capture");
     if (capture)
       capture.innerHTML = `<div class="variation-saved"><span class="crafted-badge">${currentMode() === "studio" ? "Variation saved" : "Variation written"}</span><h3>${esc(last.ether.text)}</h3><p>${esc(last.response)}</p></div>`;
-    $("#bookAfterVariation").addEventListener("click", () =>
-      openDrawer("book"),
-    );
+    $("#bookAfterVariation").addEventListener("click", () => openDrawer("book"));
     $("#againAfterVariation").addEventListener("click", renderEther);
     $("#tableAfterVariation").addEventListener("click", beginSpell);
     renderBook();
@@ -1220,9 +1249,7 @@
 
   function softNudge(buttonId, message) {
     const button = document.getElementById(buttonId);
-    const field = button?.closest(".prompt-rail")
-      ? null
-      : document.querySelector(".field input:focus, .field textarea:focus");
+    const field = button?.closest(".prompt-rail") ? null : document.querySelector(".field input:focus, .field textarea:focus");
     setPromptFeedback(message);
     button?.classList.add("is-jiggling");
     setTimeout(() => button?.classList.remove("is-jiggling"), 420);
@@ -1270,7 +1297,7 @@
     el.sessionsList.innerHTML = app.workspace.sessions
       .map(
         (s) =>
-          `<div class="session-row"><div><strong>${esc(s.name)}</strong><small>${s.spells.length} ${currentMode() === "studio" ? (s.spells.length === 1 ? "concept" : "concepts") : (s.spells.length === 1 ? "spell" : "spells")}</small></div><div class="session-actions"><button data-open-session="${esc(s.id)}">Open</button><button data-duplicate-session="${esc(s.id)}">Duplicate</button><button data-delete-session="${esc(s.id)}">Delete</button></div></div>`,
+          `<div class="session-row"><div><strong>${esc(s.name)}</strong><small>${s.spells.length} ${currentMode() === "studio" ? (s.spells.length === 1 ? "concept" : "concepts") : s.spells.length === 1 ? "spell" : "spells"}</small></div><div class="session-actions"><button data-open-session="${esc(s.id)}">Open</button><button data-duplicate-session="${esc(s.id)}">Duplicate</button><button data-delete-session="${esc(s.id)}">Delete</button></div></div>`,
       )
       .join("");
     $$("[data-open-session]").forEach((b) =>
@@ -1283,9 +1310,7 @@
     );
     $$("[data-duplicate-session]").forEach((b) =>
       b.addEventListener("click", () => {
-        const source = app.workspace.sessions.find(
-          (x) => x.id === b.dataset.duplicateSession,
-        );
+        const source = app.workspace.sessions.find((x) => x.id === b.dataset.duplicateSession);
         const copy = JSON.parse(JSON.stringify(source));
         copy.id = uid("session");
         copy.name = source.name + " — copy";
@@ -1303,13 +1328,8 @@
       b.addEventListener("click", () => {
         if (app.workspace.sessions.length === 1) return;
         if (!confirm(copy("deleteSession"))) return;
-        app.workspace.sessions = app.workspace.sessions.filter(
-          (x) => x.id !== b.dataset.deleteSession,
-        );
-        if (
-          !app.workspace.sessions.some((x) => x.id === app.workspace.activeId)
-        )
-          app.workspace.activeId = app.workspace.sessions[0].id;
+        app.workspace.sessions = app.workspace.sessions.filter((x) => x.id !== b.dataset.deleteSession);
+        if (!app.workspace.sessions.some((x) => x.id === app.workspace.activeId)) app.workspace.activeId = app.workspace.sessions[0].id;
         save();
         renderSessions();
         renderWelcome();
@@ -1345,17 +1365,18 @@
       closeDrawers();
       renderWelcome();
     } catch (_) {
-      alert(currentMode() === "studio" ? "That file does not look like a compatible interaction ideation record." : "That file does not look like an Enchantment spell book.");
+      alert(
+        currentMode() === "studio"
+          ? "That file does not look like a compatible interaction ideation record."
+          : "That file does not look like an Enchantment spell book.",
+      );
     }
     e.target.value = "";
   });
 
   function printRecord() {
     const s = activeSession();
-    const ingredientLabel = (item) =>
-      (INGREDIENTS.find((x) => x.id === item?.type) || {}).label ||
-      item?.label ||
-      "";
+    const ingredientLabel = (item) => (INGREDIENTS.find((x) => x.id === item?.type) || {}).label || item?.label || "";
     const rows = s.spells
       .map(
         (sp, i) => `<article>
@@ -1383,9 +1404,7 @@
 
   function init() {
     try {
-      app.workspace =
-        normaliseWorkspace(JSON.parse(localStorage.getItem(STORAGE_KEY))) ||
-        defaultWorkspace();
+      app.workspace = normaliseWorkspace(JSON.parse(localStorage.getItem(STORAGE_KEY))) || defaultWorkspace();
     } catch (_) {
       app.workspace = defaultWorkspace();
     }
@@ -1413,9 +1432,7 @@
     });
     $("#newSessionButton").addEventListener("click", createNewGrimoire);
     $("#newGrimoireFromLocked").addEventListener("click", createNewGrimoire);
-    $$("[data-close-modal]").forEach((b) =>
-      b.addEventListener("click", () => closeModal(b.dataset.closeModal)),
-    );
+    $$("[data-close-modal]").forEach((b) => b.addEventListener("click", () => closeModal(b.dataset.closeModal)));
     $$(".modal").forEach((m) =>
       m.addEventListener("click", (e) => {
         if (e.target === m) closeModal(m.id);
