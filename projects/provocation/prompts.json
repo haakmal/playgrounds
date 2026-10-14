@@ -1,0 +1,49 @@
+{
+  "modes": [
+    {
+      "id": "thinking",
+      "label": "Thinking",
+      "cards": [
+        {"title":"Design for Breakdowns","body":"Observe the opportunity in front of you and intentionally design how it would go wrong.","note":"Focus on errors, misunderstandings, misuse, and opportunities of abandonment."},
+        {"title":"Make It Strange","body":"Take a familiar assumption and make it unfamiliar. What changes when the obvious rule, role, scale, or sequence is inverted?","note":"Push past the first clever answer."},
+        {"title":"Borrow From Elsewhere","body":"Find a useful pattern in another place, discipline, culture, or living system. Translate its logic into the opportunity in front of you.","note":"Explain what you are borrowing and why."}
+      ]
+    },
+    {
+      "id": "doing",
+      "label": "Doing",
+      "cards": [
+        {"title":"Make a Rough Version","body":"Turn the thought into something you can see, hear, touch, or walk through in the next ten minutes.","note":"It can be incomplete, awkward, or made from whatever is nearby."},
+        {"title":"Act It Out","body":"Put the idea into motion. Show what happens before, during, and after the moment you are exploring.","note":"Use bodies, objects, words, or a simple sequence."},
+        {"title":"Remove a Resource","body":"Try to make the idea without one resource, feature, habit, or permission that currently feels essential.","note":"Let the constraint produce a new direction."}
+      ]
+    },
+    {
+      "id": "noticing",
+      "label": "Noticing",
+      "cards": [
+        {"title":"Look at the Edge","body":"Focus on the person, condition, or context furthest from the assumed centre. What does it reveal?","note":"Treat the edge as a source of insight, not an exception."},
+        {"title":"Find the Friction","body":"Notice where effort, confusion, waiting, silence, or repetition gathers. What might that friction be telling you?","note":"Stay with the detail before jumping to a solution."},
+        {"title":"Listen for the Unsaid","body":"What is being assumed, avoided, normalised, or left unspoken in this situation?","note":"Write down the quiet signal that usually gets missed."}
+      ]
+    },
+    {
+      "id": "challenging",
+      "label": "Challenging",
+      "cards": [
+        {"title":"Argue the Opposite","body":"Make the strongest case for the opposite of your current direction. What becomes visible when you reverse your position?","note":"You do not have to agree with the argument."},
+        {"title":"Design for Misuse","body":"Imagine the idea is misunderstood, repurposed, or used in an unintended way. What happens next?","note":"Look for risks, opportunities, and unexpected dignity."},
+        {"title":"Stress the System","body":"Push the idea until it meets its limits: more people, less time, higher stakes, or a different setting.","note":"Notice what breaks and what proves resilient."}
+      ]
+    },
+    {
+      "id": "imagining",
+      "label": "Imagining",
+      "cards": [
+        {"title":"Jump Ten Years","body":"Imagine this opportunity has become ordinary ten years from now. What does a normal day look and feel like?","note":"Describe one small detail that makes the future believable."},
+        {"title":"Change the Scale","body":"Explore the same opportunity at a radically different scale: tiny enough to hold, or large enough to reshape a system.","note":"Make one intimate version and one systemic version."},
+        {"title":"What If It Were a Ritual?","body":"Imagine the idea as a repeated ritual rather than a one-off intervention. What would people do, and what would it mean?","note":"Consider rhythm, roles, symbols, and belonging."}
+      ]
+    }
+  ]
+}
