@@ -1,25 +1,41 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Possibility Engine</title><link rel="stylesheet" href="styles.css"></head>
-<body class="intro-pending">
-  <section id="intro" class="intro-screen" aria-label="Welcome">
-    <div class="intro-field" aria-hidden="true"></div>
-    <div class="intro-copy"><p id="introEyebrow" class="eyebrow"></p><h1><span id="introTitle"></span><br><em id="introEmphasis"></em></h1><p id="introDescription"></p></div>
-  </section>
-  <main class="machine" aria-live="polite">
-    <div class="machine-top"><span class="eyebrow">POSSIBILITY ENGINE</span></div>
-    <section id="display" class="display">
-      <p class="eyebrow">TRY A DIFFERENT ANGLE</p>
-      <h1 id="promptTitle">Design for Breakdowns</h1>
-      <p id="promptBody"></p>
-      <p id="promptNote" class="note"></p>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Possibility Engine</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="intro-pending">
+    <section id="intro" class="intro-screen" aria-label="Welcome">
+      <div class="intro-field" aria-hidden="true"></div>
+      <div class="intro-copy">
+        <p id="introEyebrow" class="eyebrow"></p>
+        <h1><span id="introTitle"></span><br /><em id="introEmphasis"></em></h1>
+        <p id="introDescription"></p>
+      </div>
     </section>
-    <div class="controls">
-      <label class="mode-panel" for="modeSelect"><span class="eyebrow">PROMPT MODE</span><select id="modeSelect" aria-label="Prompt mode"></select></label>
-      <button id="spinButton" class="spin-button"><span class="spin-core"><b>Spin</b><em>for another angle</em></span><span class="spin-arrow">↗</span></button>
-      <div class="status-panel"><span class="status"><i></i><span id="statusLabel">READY TO SHIFT PERSPECTIVE</span></span></div>
-    </div>
-    <p class="help">There is no right answer. Use the prompt as a way into a sketch, a scenario, a conversation, or a question.</p>
-  </main>
-  <script src="app.js"></script>
-</body></html>
+    <main class="machine" aria-live="polite">
+      <div class="machine-top"><span class="eyebrow">POSSIBILITY ENGINE</span></div>
+      <section id="display" class="display">
+        <p class="eyebrow">TRY A DIFFERENT ANGLE</p>
+        <h1 id="promptTitle">Design for Breakdowns</h1>
+        <p id="promptBody"></p>
+        <p id="promptNote" class="note"></p>
+      </section>
+      <div class="controls">
+        <label class="mode-panel" for="modeSelect"
+          ><span class="eyebrow">PROMPT MODE</span
+          ><select id="modeSelect" aria-label="Prompt mode"></select
+        ></label>
+        <button id="spinButton" class="spin-button">
+          <span class="spin-core"
+            ><b>Spin</b><small class="spin-status"><i></i><span id="statusLabel">Ready to shift perspective</span></small></span
+          ><span class="spin-arrow">↗</span>
+        </button>
+      </div>
+      <p class="help">There is no right answer. Use the prompt as a way into a sketch, a scenario, a conversation, or a question.</p>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>
