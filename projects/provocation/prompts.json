@@ -1,49 +1,91 @@
 {
+  "name": "Possibility Engine",
+  "version": 1,
   "modes": [
-    {
-      "id": "thinking",
-      "label": "Thinking",
-      "cards": [
-        {"title":"Design for Breakdowns","body":"Observe the opportunity in front of you and intentionally design how it would go wrong.","note":"Focus on errors, misunderstandings, misuse, and opportunities of abandonment."},
-        {"title":"Make It Strange","body":"Take a familiar assumption and make it unfamiliar. What changes when the obvious rule, role, scale, or sequence is inverted?","note":"Push past the first clever answer."},
-        {"title":"Borrow From Elsewhere","body":"Find a useful pattern in another place, discipline, culture, or living system. Translate its logic into the opportunity in front of you.","note":"Explain what you are borrowing and why."}
-      ]
-    },
-    {
-      "id": "doing",
-      "label": "Doing",
-      "cards": [
-        {"title":"Make a Rough Version","body":"Turn the thought into something you can see, hear, touch, or walk through in the next ten minutes.","note":"It can be incomplete, awkward, or made from whatever is nearby."},
-        {"title":"Act It Out","body":"Put the idea into motion. Show what happens before, during, and after the moment you are exploring.","note":"Use bodies, objects, words, or a simple sequence."},
-        {"title":"Remove a Resource","body":"Try to make the idea without one resource, feature, habit, or permission that currently feels essential.","note":"Let the constraint produce a new direction."}
-      ]
-    },
-    {
-      "id": "noticing",
-      "label": "Noticing",
-      "cards": [
-        {"title":"Look at the Edge","body":"Focus on the person, condition, or context furthest from the assumed centre. What does it reveal?","note":"Treat the edge as a source of insight, not an exception."},
-        {"title":"Find the Friction","body":"Notice where effort, confusion, waiting, silence, or repetition gathers. What might that friction be telling you?","note":"Stay with the detail before jumping to a solution."},
-        {"title":"Listen for the Unsaid","body":"What is being assumed, avoided, normalised, or left unspoken in this situation?","note":"Write down the quiet signal that usually gets missed."}
-      ]
-    },
-    {
-      "id": "challenging",
-      "label": "Challenging",
-      "cards": [
-        {"title":"Argue the Opposite","body":"Make the strongest case for the opposite of your current direction. What becomes visible when you reverse your position?","note":"You do not have to agree with the argument."},
-        {"title":"Design for Misuse","body":"Imagine the idea is misunderstood, repurposed, or used in an unintended way. What happens next?","note":"Look for risks, opportunities, and unexpected dignity."},
-        {"title":"Stress the System","body":"Push the idea until it meets its limits: more people, less time, higher stakes, or a different setting.","note":"Notice what breaks and what proves resilient."}
-      ]
-    },
-    {
-      "id": "imagining",
-      "label": "Imagining",
-      "cards": [
-        {"title":"Jump Ten Years","body":"Imagine this opportunity has become ordinary ten years from now. What does a normal day look and feel like?","note":"Describe one small detail that makes the future believable."},
-        {"title":"Change the Scale","body":"Explore the same opportunity at a radically different scale: tiny enough to hold, or large enough to reshape a system.","note":"Make one intimate version and one systemic version."},
-        {"title":"What If It Were a Ritual?","body":"Imagine the idea as a repeated ritual rather than a one-off intervention. What would people do, and what would it mean?","note":"Consider rhythm, roles, symbols, and belonging."}
-      ]
-    }
+    {"id":"thinking","label":"Thinking","cards":[
+      {"title":"Design for Breakdowns","body":"Intentionally design how the idea could go wrong. Focus on errors, misunderstandings, misuse, and abandonment."},
+      {"title":"Make It Strange","body":"Invert a familiar assumption, role, rule, or sequence. What becomes possible when the obvious version is removed?"},
+      {"title":"Borrow From Elsewhere","body":"Find a useful pattern in another discipline, culture, system, or living thing. Translate its logic into this situation."},
+      {"title":"Argue the Opposite","body":"Make the strongest case for the opposite of your current direction. What does this reveal?"},
+      {"title":"Change the Scale","body":"Explore the opportunity at a radically different size: tiny enough to hold or large enough to reshape a system."},
+      {"title":"Think in Relationships","body":"Focus less on individual objects and more on the relationships between people, places, tools, and events."},
+      {"title":"Remove the Obvious","body":"Take away the feature, behaviour, resource, or assumption that currently feels most essential."},
+      {"title":"Follow the Consequence","body":"Imagine your current idea becomes successful. What second- and third-order effects follow?"},
+      {"title":"Find the Hidden Rule","body":"Identify an unspoken rule shaping the situation. What happens when you challenge, reverse, or expose it?"},
+      {"title":"Switch the Subject","body":"Reconsider the situation from the perspective of someone or something usually treated as secondary."},
+      {"title":"Look for the Tension","body":"Find two values, needs, or desires that appear to conflict. What might emerge by designing for both?"},
+      {"title":"Start With the Feeling","body":"Begin with a desired emotional state rather than a function or feature. What would create that feeling?"},
+      {"title":"Make It Temporary","body":"Imagine the idea only exists for one day, one hour, or one interaction. What changes?"},
+      {"title":"Find the Metaphor","body":"Describe the opportunity as a physical object, landscape, ritual, creature, or weather system. What does the metaphor suggest?"},
+      {"title":"Ask What Is Missing","body":"Look at the current situation and identify the absence, silence, gap, or unrepresented experience."}
+    ]},
+    {"id":"doing","label":"Doing","cards":[
+      {"title":"Make a Rough Version","body":"Turn the thought into something visible, audible, tangible, or walkable in ten minutes."},
+      {"title":"Act It Out","body":"Perform what happens before, during, and after the moment you are exploring."},
+      {"title":"Build With Constraints","body":"Make a version using only the materials, time, tools, or people immediately available."},
+      {"title":"Show the First Five Minutes","body":"Prototype only the beginning. What does someone encounter, do, notice, or feel first?"},
+      {"title":"Make Two Bad Versions","body":"Create two deliberately flawed versions. Notice what each bad version teaches you."},
+      {"title":"Sequence the Experience","body":"Arrange the idea as a series of moments. What must happen first, next, and last?"},
+      {"title":"Prototype the Exception","body":"Make a version for an unusual, difficult, or unexpected situation."},
+      {"title":"Make It Without Explaining","body":"Express the idea through a sketch, gesture, object, or sequence without using explanatory language."},
+      {"title":"Swap the Materials","body":"Build the idea using an unexpected material or medium. What does the material make you notice?"},
+      {"title":"Design the Handoff","body":"Prototype what happens when responsibility, information, or an object moves from one person to another."},
+      {"title":"Make the Invisible Visible","body":"Create a model of something usually hidden: waiting, uncertainty, trust, effort, memory, or decision-making."},
+      {"title":"Try It Backwards","body":"Perform or prototype the experience in reverse order. What does the reversal reveal?"},
+      {"title":"Create a Rule","body":"Invent one simple rule that shapes the activity or experience. See what it enables and prevents."},
+      {"title":"Make It Social","body":"Turn the idea into something that requires interaction between at least two people."},
+      {"title":"Prototype the Ending","body":"Start with the final moment. What does completion, departure, recovery, or continuation look like?"}
+    ]},
+    {"id":"noticing","label":"Noticing","cards":[
+      {"title":"Look at the Edge","body":"Focus on the person, condition, or context furthest from the assumed centre."},
+      {"title":"Find the Friction","body":"Notice where effort, confusion, waiting, silence, or repetition gathers."},
+      {"title":"Listen for the Unsaid","body":"Identify what is assumed, avoided, normalised, or left unspoken."},
+      {"title":"Follow the Attention","body":"Observe what people look at, ignore, return to, or struggle to find."},
+      {"title":"Notice the Workaround","body":"Find where people invent their own solutions. What does the workaround reveal?"},
+      {"title":"Track the Energy","body":"Notice when energy rises, drops, concentrates, or disperses across the situation."},
+      {"title":"Look for the Threshold","body":"Find the moment where someone enters, exits, commits, hesitates, or changes their mind."},
+      {"title":"Observe the Waiting","body":"Pay attention to what happens during pauses, delays, queues, and moments of uncertainty."},
+      {"title":"Find the Ritual","body":"Identify a repeated behaviour that gives the situation rhythm, meaning, or belonging."},
+      {"title":"Notice What Gets Counted","body":"What is measured, recorded, rewarded, or prioritised? What remains invisible?"},
+      {"title":"Map the Dependencies","body":"Notice what relies on what, and where one small change creates a larger effect."},
+      {"title":"Look for the Mismatch","body":"Find where the stated intention differs from the lived experience."},
+      {"title":"Observe the Boundary","body":"Identify who or what is included, excluded, protected, delayed, or asked to adapt."},
+      {"title":"Follow the Object","body":"Choose one object, message, or piece of information and trace its journey."},
+      {"title":"Notice the Mood","body":"Describe the atmosphere of the situation without explaining its cause. What shapes that mood?"}
+    ]},
+    {"id":"challenging","label":"Challenging","cards":[
+      {"title":"Design for Misuse","body":"Imagine the idea is misunderstood, repurposed, or used in an unintended way."},
+      {"title":"Stress the System","body":"Push the idea until it meets its limits: more people, less time, higher stakes, or a new setting."},
+      {"title":"Remove a Resource","body":"Take away a tool, feature, habit, permission, or material that currently feels essential."},
+      {"title":"Make It Uncomfortable","body":"Introduce a productive discomfort. What might people need to confront, question, or renegotiate?"},
+      {"title":"Design for Rejection","body":"Imagine someone refuses, ignores, or abandons the idea. How does the experience respond?"},
+      {"title":"Question the Beneficiary","body":"Ask who benefits most from the current direction and who might carry the cost."},
+      {"title":"Make It Too Much","body":"Exaggerate the idea until it becomes excessive. What useful quality becomes visible?"},
+      {"title":"Make It Too Little","body":"Reduce the idea to its smallest possible expression. What remains essential?"},
+      {"title":"Expose the Trade-Off","body":"Identify what the idea improves and what it might worsen."},
+      {"title":"Design for Conflict","body":"Imagine people with incompatible needs using the same system or experience."},
+      {"title":"Reverse the Priority","body":"Take the least important consideration and make it the main design priority."},
+      {"title":"Test the Assumption","body":"Name the assumption your idea depends on most. What happens if it is false?"},
+      {"title":"Design for Recovery","body":"Focus on what happens after a mistake, failure, misunderstanding, or breakdown."},
+      {"title":"Give It to the Opponent","body":"Imagine the idea is designed by someone who strongly disagrees with your current values."},
+      {"title":"Ask Who Pays","body":"Consider who contributes time, effort, attention, risk, money, or emotional labour."}
+    ]},
+    {"id":"imagining","label":"Imagining","cards":[
+      {"title":"Jump Ten Years","body":"Imagine the opportunity has become ordinary ten years from now. What does a normal day look like?"},
+      {"title":"What If It Were a Ritual?","body":"Imagine the idea as something repeated over time. What would it mean to participate?"},
+      {"title":"Imagine the Ideal Version","body":"Remove practical limitations temporarily. What would the most generous version of this opportunity offer?"},
+      {"title":"Imagine the Opposite Future","body":"Picture a future where the current problem has intensified rather than improved."},
+      {"title":"Give It a Character","body":"Imagine the idea has a personality, voice, habits, and preferences. How would it behave?"},
+      {"title":"Change the World Around It","body":"Keep the idea but alter the surrounding society, technology, climate, culture, or economy."},
+      {"title":"Imagine It as a Place","body":"What kind of place would this idea create? Describe its layout, atmosphere, boundaries, and inhabitants."},
+      {"title":"Start With a Memory","body":"Imagine someone looking back on this experience years later. What do they remember?"},
+      {"title":"Make It Mythic","body":"Turn the opportunity into a myth, fable, legend, or origin story. What deeper meaning appears?"},
+      {"title":"Imagine It Belongs to Everyone","body":"What would change if the idea were collectively owned, shaped, and maintained?"},
+      {"title":"Imagine It Belongs to No One","body":"What happens when responsibility is distributed, ambiguous, or absent?"},
+      {"title":"Create an Alternate Normal","body":"Imagine a world where the current assumptions have never existed. What would feel ordinary there?"},
+      {"title":"Design the Unlikely Guest","body":"Imagine an unexpected person, species, object, or force entering the situation."},
+      {"title":"Imagine the Quiet Version","body":"Remove spectacle, urgency, and performance. What remains when the idea becomes quiet and everyday?"},
+      {"title":"Write the Future Artifact","body":"Imagine finding an object, instruction, message, or photograph from the future that embodies this possibility."}
+    ]}
   ]
 }
