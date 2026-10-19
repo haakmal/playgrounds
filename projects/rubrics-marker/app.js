@@ -290,13 +290,12 @@ function renderMarking() {
     const options = item.querySelector('.band-options');
     BANDS.forEach(band => {
       const option = document.createElement('label');
-      option.className = 'band-option';
+      option.className = `band-option band-${band.key.toLowerCase()}`;
       option.innerHTML = `
         <input type="radio" name="band-${criterion.id}" value="${band.key}" ${selected === band.key ? 'checked' : ''}>
         <span>
           <strong class="band-code">${escapeHtml(band.short)}</strong>
           <span class="band-midpoint">${band.midpoint}</span>
-          ${['NONE','PERFECT'].includes(band.key) ? `<small class="band-long">${escapeHtml(band.label)}</small>` : ''}
         </span>
       `;
       option.querySelector('input').addEventListener('change', () => {
@@ -314,6 +313,7 @@ function renderMarking() {
 }
 
 function renderBandReference() {
+  if (!els.bandReference) return;
   els.bandReference.innerHTML = BANDS.map(b => `
     <div class="reference-band">
       <strong>${escapeHtml(b.label)}</strong>
@@ -448,12 +448,15 @@ function statsOf(values) {
   const sd = Math.sqrt(values.reduce((sum,x) => sum+(x-mean)**2, 0)/n);
   return { mean, median, sd };
 }
+function gradeColor(g) { return {FL:'#b54444',PS:'#bc911d',CR:'#2e8060',DN:'#336eb9',HD:'#7852a8'}[g] || '#333'; }
 function renderAnalytics() {
   const a = currentAssignment();
   updateWorkspaceHeading();
   const complete = completedStudents();
   const marks = complete.map(s => calculateStudent(s, a));
   const n = marks.length;
+  document.querySelector('#gradedCount').textContent = String(n);
+  document.querySelector('#pendingCount').textContent = String(a.students.length - n);
   const {mean,median,sd} = n ? statsOf(marks) : {mean:0,median:0,sd:0};
   statsGrid.innerHTML = [
     ['Marked', `${n} / ${a.students.length}`],
@@ -465,7 +468,7 @@ function renderAnalytics() {
   curveBtn.classList.toggle('is-current', analyticsView === 'curve');
   analyticsNote.textContent = n ? `Based on ${n} fully marked ${n === 1 ? 'student' : 'students'}. ${a.students.length-n} incomplete ${a.students.length-n === 1 ? 'record is' : 'records are'} excluded. ${analyticsView === 'curve' ? 'The curve is a normal-distribution reference fitted to this cohort, not a grading target.' : 'Bars show observed marks in 10-point intervals.'}` : 'No completed rubrics yet. Each criterion must have a selected band, and rubric weightings must total 100%.';
   const grades = ['FL','PS','CR','DN','HD'];
-  gradeCounts.innerHTML = grades.map(g => `<span><strong>${g}</strong> ${marks.filter(m => gradeForMark(m) === g).length}</span>`).join('');
+  gradeCounts.innerHTML = grades.map(g => `<span class="grade-count grade-${g.toLowerCase()}"><strong>${g}</strong> ${marks.filter(m => gradeForMark(m) === g).length}</span>`).join('');
   if (!n) { analyticsChart.innerHTML = '<div class="empty-state">Complete a student rubric to see the mark distribution.</div>'; return; }
   const bins = Array(10).fill(0);
   for (const mark of marks) bins[Math.min(9, Math.floor(mark/10))]++;
@@ -475,11 +478,13 @@ function renderAnalytics() {
   const y = v => T+chartH-(v/maxY)*chartH;
   let lines = '';
   for (let k=0;k<=4;k++) { const v=maxY*k/4; const py=y(v); lines += `<line x1="${L}" x2="${W-R}" y1="${py}" y2="${py}" stroke="#ddd"/><text x="${L-8}" y="${py+4}" text-anchor="end" font-size="11" fill="#666">${formatMark(v)}</text>`; }
-  let bars = bins.map((v,i) => { const x=L+i*chartW/10+3; const bw=chartW/10-6; return `<rect x="${x}" y="${y(v)}" width="${bw}" height="${Math.max(0,T+chartH-y(v))}" fill="#333"/><title>${i*10}–${i===9 ? 100 : i*10+9}: ${v} students</title>`; }).join('');
+  let bars = bins.map((v,i) => { const x=L+i*chartW/10+3; const bw=chartW/10-6; return `<rect x="${x}" y="${y(v)}" width="${bw}" height="${Math.max(0,T+chartH-y(v))}" fill="${gradeColor(gradeForMark(i*10+5))}"/><title>${i*10}–${i===9 ? 100 : i*10+9}: ${v} students</title>`; }).join('');
   let curve = '';
   if (analyticsView === 'curve' && sd > 0) {
-    const points = Array.from({length:201},(_,i) => { const x=i/2; return `${L+x/100*chartW},${y(normal(x))}`; }).join(' ');
-    curve = `<polyline points="${points}" fill="none" stroke="#111" stroke-width="3" stroke-dasharray="7 4"/>`;
+    for (const [start,end,grade] of [[0,50,'FL'],[50,65,'PS'],[65,75,'CR'],[75,85,'DN'],[85,100,'HD']]) {
+      const points = Array.from({length:(end-start)*2+1},(_,i) => { const x=start+i/2; return `${L+x/100*chartW},${y(normal(x))}`; }).join(' ');
+      curve += `<polyline points="${points}" fill="none" stroke="${gradeColor(grade)}" stroke-width="3" stroke-dasharray="7 4"/>`;
+    }
   }
   const labels = Array.from({length:11},(_,i)=> `<text x="${L+i*chartW/10}" y="${H-12}" text-anchor="middle" font-size="12" fill="#666">${i*10}</text>`).join('');
   analyticsChart.innerHTML = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" aria-label="Marks distribution chart">${lines}${bars}${curve}${labels}<line x1="${L}" x2="${W-R}" y1="${T+chartH}" y2="${T+chartH}" stroke="#111"/></svg>`;

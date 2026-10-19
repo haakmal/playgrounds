@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Moodle Rubric Marker</title><link href="style.css" rel="stylesheet"/></head><body>
-<header class="app-header print-remove"><div><p class="eyebrow">Assessment utility / local workspace</p><h1>Moodle Rubric Marker</h1></div><div class="header-actions"><button id="importBtn" type="button">Import JSON</button><button id="exportBtn" type="button">Export JSON</button><button id="sampleBtn" type="button">Load sample data</button><button id="printBtn" type="button">Print student record</button><input type="file" id="importFile" accept=".json,application/json" hidden aria-label="Select marking JSON file"/><button class="danger" id="resetBtn" type="button">Start fresh</button></div></header>
+<header class="app-header print-remove"><div><p class="eyebrow">Assessment utility / local workspace</p><h1>Moodle Rubric Marker</h1></div><div class="header-actions"><div class="marking-progress" id="markingProgress" aria-live="polite"><span><strong id="gradedCount">0</strong> graded</span><span><strong id="pendingCount">0</strong> in progress</span></div><button id="importBtn" type="button">Import JSON</button><button id="exportBtn" type="button">Export JSON</button><button id="sampleBtn" type="button">Load sample data</button><button id="printBtn" type="button">Print student record</button><input type="file" id="importFile" accept=".json,application/json" hidden aria-label="Select marking JSON file"/><button class="danger" id="resetBtn" type="button">Start fresh</button></div></header>
 <div class="setup-region"><details class="configuration-drawer print-remove"><summary>Assessment setup and rubric criteria</summary><div class="config-body"><section class="panel setup-panel print-remove">
 <div class="section-heading">
 <div>
@@ -38,14 +38,6 @@
 <div class="criteria-list" id="criteriaList"></div>
 <button id="addCriterionBtn" type="button">Add criterion</button>
 <p class="warning" hidden="" id="criteriaWarning">Criterion weightings must total 100% before marking.</p>
-</section><section class="panel reference-panel print-remove">
-<div class="section-heading">
-<div>
-<p class="eyebrow">Reference</p>
-<h2>Moodle rubric mid-points</h2>
-</div>
-</div>
-<div class="band-reference" id="bandReference"></div>
 </section></div></details></div><main class="app-shell"><aside aria-label="Student marking list" class="roster-column print-remove"><div class="column-label">01 / Student roster</div><section class="panel print-remove">
 <div class="section-heading">
 <div>
@@ -100,8 +92,6 @@
 <div><span>ID</span><strong id="printStudentId">—</strong></div>
 </div>
 <div class="marking-criteria" id="markingCriteria"></div>
-<div class="calculation-note">
-          Moodle midpoint calculation: criterion weighting × selected band midpoint.
-        </div>
+
 </div>
 </section><section class="panel analytics-panel print-remove"><div class="section-heading"><div><p class="eyebrow">03 / Cohort overview</p><h2>Assessment analytics</h2></div><div class="chart-controls"><button class="is-current" id="distributionBtn" type="button">Distribution</button><button id="curveBtn" type="button">Curve</button></div></div><div class="stats-grid" id="statsGrid"></div><p class="section-note" id="analyticsNote"></p><div aria-label="Distribution of students' final marks" class="analytics-chart" id="analyticsChart" role="img"></div><div class="grade-counts" id="gradeCounts"></div></section></div></main><template id="criterionTemplate"><div class="criterion-row"><label class="criterion-title-field"><span>Criterion title</span><input class="criterion-title" placeholder="Criterion title" type="text"/></label><label class="criterion-weight-field"><span>Weight %</span><input class="criterion-weight" max="100" min="0" step="1" type="number" value="0"/></label><button aria-label="Remove criterion" class="icon-button remove-criterion" type="button">×</button></div></template><script src="app.js"></script></body></html>
