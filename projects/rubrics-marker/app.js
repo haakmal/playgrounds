@@ -23,9 +23,9 @@ function createAssignment(name = 'Assignment 1') {
   return {
     id: uid(),
     name,
+    weight: 100,
     criteria: structuredClone(DEFAULT_CRITERIA).map(c => ({ ...c, id: uid() })),
-    students: [],
-    selectedStudentId: null
+    marks: {}
   };
 }
 
@@ -33,6 +33,8 @@ function defaultState() {
   const assignment = createAssignment();
   return {
     className: '',
+    students: [],
+    selectedStudentId: null,
     assignments: [assignment],
     selectedAssignmentId: assignment.id
   };
@@ -46,12 +48,54 @@ function loadState() {
     if (!raw) return defaultState();
     const parsed = JSON.parse(raw);
     if (!parsed.assignments?.length) return defaultState();
-    return parsed;
+    return migrateState(parsed);
   } catch {
     return defaultState();
   }
 }
 
+// Convert legacy assignment-owned rosters to a shared class roster.
+function migrateState(data) {
+  if (Array.isArray(data.students) && data.assignments.every(a => a.marks && !Array.isArray(a.students))) return data;
+  const students = [];
+  const identity = new Map();
+  const ids = new Set();
+  let selectedStudentId = null;
+  for (const a of data.assignments) {
+    const marks = {};
+    for (const st of (a.students || [])) {
+      const key = st.studentId?.trim() ? `id:${st.studentId.trim().toLowerCase()}` : `name:${(st.name || '').trim().toLowerCase()}`;
+      let id = identity.get(key);
+      if (!id) {
+        id = ids.has(st.id) ? uid() : st.id || uid();
+        identity.set(key, id); ids.add(id);
+        students.push({id, name:st.name || '', studentId:st.studentId || ''});
+      }
+      marks[id] = {...(st.marks || {})};
+      if (a.id === data.selectedAssignmentId && a.selectedStudentId === st.id) selectedStudentId = id;
+    }
+    a.marks = marks;
+    delete a.students;
+    delete a.selectedStudentId;
+    if (!Number.isFinite(a.weight)) a.weight = data.assignments.length === 1 ? 100 : Math.round(100 / data.assignments.length * 100) / 100;
+  }
+  data.students = students;
+  data.selectedStudentId = selectedStudentId || students[0]?.id || null;
+  return data;
+}
+function studentMarks(student, assignment = currentAssignment()) {
+  return assignment.marks?.[student.id] || {};
+}
+function isComplete(student, assignment = currentAssignment()) {
+  return assignment.criteria.length > 0 && Math.abs(totalWeight(assignment)-100)<0.000001 &&
+    assignment.criteria.every(c => bandByKey(studentMarks(student,assignment)[c.id]));
+}
+function overallStudent(student) {
+  const ready = state.assignments.length && state.assignments.every(a => isComplete(student,a));
+  const total = state.assignments.reduce((n,a) => n+(Number(a.weight)||0)*calculateStudent(student,a)/100,0);
+  return {ready: !!ready && Math.abs(totalAssessmentWeight()-100)<0.000001, mark:Math.round(total*100)/100};
+}
+function totalAssessmentWeight() {return state.assignments.reduce((n,a)=>n+(Number(a.weight)||0),0);}
 function saveState() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -70,7 +114,7 @@ function currentAssignment() {
 
 function currentStudent() {
   const assignment = currentAssignment();
-  return assignment.students.find(s => s.id === assignment.selectedStudentId) || null;
+  return state.students.find(s => s.id === state.selectedStudentId) || null;
 }
 
 function totalWeight(assignment = currentAssignment()) {
@@ -83,7 +127,7 @@ function bandByKey(key) {
 
 function calculateStudent(student, assignment = currentAssignment()) {
   const total = assignment.criteria.reduce((sum, criterion) => {
-    const key = student.marks?.[criterion.id];
+    const key = studentMarks(student,assignment)[criterion.id];
     const band = bandByKey(key);
     if (!band) return sum;
     return sum + (band.midpoint * (Number(criterion.weight) || 0) / 100);
@@ -146,11 +190,16 @@ function render() {
   ).join('');
 
   els.deleteAssignmentBtn.disabled = state.assignments.length <= 1;
+  const printSelect = document.querySelector('#printScope');
+  const priorScope = printSelect.value;
+  printSelect.innerHTML = `<option value="current">Current assessment</option><option value="all">Class summary (all assessments)</option>` + state.assignments.map(a=>`<option value="${a.id}">${escapeHtml(a.name)}</option>`).join('');
+  if ([...printSelect.options].some(option => option.value === priorScope)) printSelect.value = priorScope;
 
   renderCriteria();
   renderStudents();
   renderMarking();
   renderBandReference();
+  renderAssessmentWeightStatus();
 }
 
 function renderCriteria() {
@@ -182,9 +231,7 @@ function renderCriteria() {
 
     remove.addEventListener('click', () => {
       assignment.criteria = assignment.criteria.filter(c => c.id !== criterion.id);
-      assignment.students.forEach(student => {
-        if (student.marks) delete student.marks[criterion.id];
-      });
+      Object.values(assignment.marks).forEach(marks => {delete marks[criterion.id];});
       saveState();
       render();
     });
@@ -206,16 +253,16 @@ function renderStudents() {
   const assignment = currentAssignment();
   els.studentTableBody.innerHTML = '';
 
-  if (!assignment.students.length) {
+  if (!state.students.length) {
     els.studentTableBody.innerHTML = `<tr><td colspan="5" class="section-note">No students added yet.</td></tr>`;
     return;
   }
 
-  assignment.students.forEach(student => {
-    const completed = assignment.criteria.length && totalWeight(assignment) === 100 && assignment.criteria.every(c => bandByKey(student.marks?.[c.id]));
+  state.students.forEach(student => {
+    const completed = isComplete(student,assignment);
     const mark = completed ? calculateStudent(student, assignment) : null;
     const row = document.createElement('tr');
-    if (student.id === assignment.selectedStudentId) row.classList.add('active');
+    if (student.id === state.selectedStudentId) row.classList.add('active');
     row.innerHTML = `
       <td>${escapeHtml(student.name || 'Unnamed student')}</td>
       <td>${escapeHtml(student.studentId || '—')}</td>
@@ -226,7 +273,7 @@ function renderStudents() {
 
     row.addEventListener('click', e => {
       if (e.target.closest('.remove-student')) return;
-      assignment.selectedStudentId = student.id;
+      state.selectedStudentId = student.id;
       saveState();
       renderStudents();
       renderMarking();
@@ -234,8 +281,9 @@ function renderStudents() {
 
     row.querySelector('.remove-student').addEventListener('click', e => {
       e.stopPropagation();
-      assignment.students = assignment.students.filter(s => s.id !== student.id);
-      if (assignment.selectedStudentId === student.id) assignment.selectedStudentId = assignment.students[0]?.id || null;
+      state.students = state.students.filter(s => s.id !== student.id);
+      state.assignments.forEach(a => delete a.marks[student.id]);
+      if (state.selectedStudentId === student.id) state.selectedStudentId = state.students[0]?.id || null;
       saveState();
       renderStudents();
       renderMarking();
@@ -258,7 +306,7 @@ function renderMarking() {
     return;
   }
 
-  const completed = assignment.criteria.length && totalWeight(assignment) === 100 && assignment.criteria.every(c => bandByKey(student.marks?.[c.id]));
+  const completed = isComplete(student,assignment);
   const mark = calculateStudent(student, assignment);
   els.markingTitle.textContent = student.name || student.studentId || 'Selected student';
   els.markingEmpty.hidden = true;
@@ -270,9 +318,10 @@ function renderMarking() {
   els.printStudent.textContent = student.name || '—';
   els.printStudentId.textContent = student.studentId || '—';
 
+  renderPriorMarks(student);
   els.markingCriteria.innerHTML = '';
   assignment.criteria.forEach(criterion => {
-    const selected = student.marks?.[criterion.id] || '';
+    const selected = studentMarks(student,assignment)[criterion.id] || '';
     const selectedBand = bandByKey(selected);
     const contribution = selectedBand ? selectedBand.midpoint * (Number(criterion.weight) || 0) / 100 : 0;
 
@@ -299,8 +348,8 @@ function renderMarking() {
         </span>
       `;
       option.querySelector('input').addEventListener('change', () => {
-        student.marks ||= {};
-        student.marks[criterion.id] = band.key;
+        assignment.marks[student.id] ||= {};
+        assignment.marks[student.id][criterion.id] = band.key;
         saveState();
         renderStudents();
         renderMarking();
@@ -351,6 +400,7 @@ els.assignmentSelect.addEventListener('change', () => {
 
 els.newAssignmentBtn.addEventListener('click', () => {
   const assignment = createAssignment(`Assignment ${state.assignments.length + 1}`);
+  assignment.weight = Math.max(0,Math.round((100-totalAssessmentWeight())*100)/100);
   state.assignments.push(assignment);
   state.selectedAssignmentId = assignment.id;
   saveState();
@@ -362,7 +412,7 @@ els.newAssignmentBtn.addEventListener('click', () => {
 els.deleteAssignmentBtn.addEventListener('click', () => {
   if (state.assignments.length <= 1) return;
   const assignment = currentAssignment();
-  if (!confirm(`Delete “${assignment.name || 'Untitled assignment'}” and all of its student records?`)) return;
+  if (!confirm(`Delete “${assignment.name || 'Untitled assignment'}” and its marks? Class students will be retained.`)) return;
   state.assignments = state.assignments.filter(a => a.id !== assignment.id);
   state.selectedAssignmentId = state.assignments[0].id;
   saveState();
@@ -389,9 +439,10 @@ function addStudent() {
   }
 
   const assignment = currentAssignment();
-  const student = { id: uid(), name, studentId, marks: {} };
-  assignment.students.push(student);
-  assignment.selectedStudentId = student.id;
+  if (studentId && state.students.some(s => s.studentId.toLowerCase() === studentId.toLowerCase())) {alert('This student ID is already in the class roster.'); return;}
+  const student = { id: uid(), name, studentId };
+  state.students.push(student);
+  state.selectedStudentId = student.id;
   els.studentName.value = '';
   els.studentId.value = '';
   saveState();
@@ -400,10 +451,7 @@ function addStudent() {
   els.studentName.focus();
 }
 
-els.printBtn.addEventListener('click', () => {
-  renderCohortPrint();
-  window.print();
-});
+document.querySelector('#printBtn').addEventListener('click', () => {renderCohortPrint();window.print();});
 
 els.resetBtn.addEventListener('click', () => {
   if (!confirm('Start fresh? This will clear all locally saved classes, assignments, students and marks in this browser.')) return;
@@ -435,7 +483,7 @@ function updateWorkspaceHeading() {
 function completedStudents() {
   const assignment = currentAssignment();
   if (!assignment.criteria.length || Math.abs(totalWeight(assignment) - 100) > 0.000001) return [];
-  return assignment.students.filter(s => assignment.criteria.every(c => BANDS.some(b => b.key === s.marks?.[c.id])));
+  return state.students.filter(s => isComplete(s,assignment));
 }
 function statsOf(values) {
   const n = values.length;
@@ -450,20 +498,22 @@ function renderAnalytics() {
   const a = currentAssignment();
   updateWorkspaceHeading();
   const complete = completedStudents();
-  const marks = complete.map(s => calculateStudent(s, a));
+  const isOverall = analyticsScope() === 'overall';
+  const candidates = isOverall ? state.students.filter(s=>overallStudent(s).ready) : complete;
+  const marks = candidates.map(s=>isOverall ? overallStudent(s).mark : calculateStudent(s,a));
   const n = marks.length;
-  document.querySelector('#gradedCount').textContent = String(n);
-  document.querySelector('#pendingCount').textContent = String(a.students.length - n);
+  document.querySelector('#gradedCount').textContent = String(complete.length);
+  document.querySelector('#pendingCount').textContent = String(state.students.length - complete.length);
   const {mean,median,sd} = n ? statsOf(marks) : {mean:0,median:0,sd:0};
   statsGrid.innerHTML = [
-    ['Marked', `${n} / ${a.students.length}`],
+    ['Marked', `${n} / ${state.students.length}`],
     ['Mean', n ? formatMark(mean) : '—'],
     ['Median', n ? formatMark(median) : '—'],
     ['Std. deviation', n ? formatMark(sd) : '—']
   ].map(([label,value]) => `<div class="stat"><strong>${value}</strong><span>${label}</span></div>`).join('');
   distributionBtn.classList.toggle('is-current', analyticsView === 'distribution');
   curveBtn.classList.toggle('is-current', analyticsView === 'curve');
-  analyticsNote.textContent = n ? `Based on ${n} fully marked ${n === 1 ? 'student' : 'students'}. ${a.students.length-n} incomplete ${a.students.length-n === 1 ? 'record is' : 'records are'} excluded. ${analyticsView === 'curve' ? 'The curve is a normal-distribution reference fitted to this cohort, not a grading target.' : 'Bars show observed marks in 10-point intervals.'}` : 'No completed rubrics yet. Each criterion must have a selected band, and rubric weightings must total 100%.';
+  analyticsNote.textContent = n ? `Based on ${n} ${isOverall ? 'fully graded class' : 'fully marked'} ${n === 1 ? 'student' : 'students'}. ${state.students.length-n} incomplete ${state.students.length-n === 1 ? 'record is' : 'records are'} excluded. ${analyticsView === 'curve' ? 'The curve is a normal-distribution reference fitted to this cohort, not a grading target.' : 'Bars show observed marks in 10-point intervals.'}` : 'No completed rubrics yet. Each criterion must have a selected band, and rubric weightings must total 100%.';
   const grades = ['FL','PS','CR','DN','HD'];
   gradeCounts.innerHTML = grades.map(g => `<span class="grade-count grade-${g.toLowerCase()}"><strong>${g}</strong> ${marks.filter(m => gradeForMark(m) === g).length}</span>`).join('');
   if (!n) { analyticsChart.innerHTML = '<div class="empty-state">Complete a student rubric to see the mark distribution.</div>'; return; }
@@ -488,6 +538,7 @@ function renderAnalytics() {
 }
 distributionBtn.addEventListener('click', () => { analyticsView='distribution'; renderAnalytics(); });
 curveBtn.addEventListener('click', () => { analyticsView='curve'; renderAnalytics(); });
+document.querySelector('#analyticsScope').addEventListener('change',renderAnalytics);
 // Keep statistics in sync with all existing marking and roster operations.
 const baseRenderStudents = renderStudents;
 renderStudents = function () { baseRenderStudents(); renderAnalytics(); };
@@ -504,40 +555,35 @@ render();
 
 // Portable backups: v1 data envelope. Import replaces current local workspace only after validation and confirmation.
 function validateImportedState(data) {
-  if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('Expected an object.');
-  const payload = data.format === 'moodle-rubric-marker' ? data.data : data;
-  if (!payload || typeof payload !== 'object' || typeof payload.className !== 'string' || !Array.isArray(payload.assignments) || !payload.assignments.length || payload.assignments.length > 100) {
-    throw new Error('Missing class name or valid assignments.');
+  const payload = data?.format === 'moodle-rubric-marker' ? data.data : data;
+  if (!payload || typeof payload.className !== 'string' || !Array.isArray(payload.assignments) || !payload.assignments.length || payload.assignments.length > 100) throw new Error('Invalid class or assignments.');
+  const upgraded = structuredClone(payload);
+  if (!Array.isArray(upgraded.students)) migrateState(upgraded);
+  if (!Array.isArray(upgraded.students) || upgraded.students.length > 10000) throw new Error('Invalid class roster.');
+  const ids = new Set();
+  for (const st of upgraded.students) {
+    if (!st || typeof st.id !== 'string' || !st.id || ids.has(st.id) || typeof st.name !== 'string' || typeof st.studentId !== 'string') throw new Error('Invalid student.');
+    ids.add(st.id);
   }
-  const usedAssignments = new Set();
-  for (const a of payload.assignments) {
-    if (!a || typeof a.id !== 'string' || !a.id || usedAssignments.has(a.id) || typeof a.name !== 'string' || !Array.isArray(a.criteria) || !Array.isArray(a.students) || a.criteria.length > 100 || a.students.length > 10000) throw new Error('Invalid assignment structure.');
-    usedAssignments.add(a.id);
-    const criterionIds = new Set();
+  const assignmentIds = new Set();
+  for (const a of upgraded.assignments) {
+    if (!a || typeof a.id !== 'string' || assignmentIds.has(a.id) || typeof a.name !== 'string' || !Array.isArray(a.criteria) || a.criteria.length > 100 || !a.marks || typeof a.marks !== 'object' || Array.isArray(a.marks)) throw new Error('Invalid assignment.');
+    assignmentIds.add(a.id);
+    if (a.weight === undefined) a.weight = upgraded.assignments.length === 1 ? 100 : 0;
+    if (!Number.isFinite(a.weight) || a.weight < 0 || a.weight > 100) throw new Error('Invalid assessment weighting.');
+    const cids = new Set();
     for (const c of a.criteria) {
-      if (!c || typeof c.id !== 'string' || !c.id || criterionIds.has(c.id) || typeof c.title !== 'string' || !Number.isFinite(c.weight) || c.weight < 0 || c.weight > 100) throw new Error('Invalid rubric criterion.');
-      criterionIds.add(c.id);
+      if (!c || typeof c.id !== 'string' || cids.has(c.id) || typeof c.title !== 'string' || !Number.isFinite(c.weight) || c.weight < 0 || c.weight > 100) throw new Error('Invalid criterion.');
+      cids.add(c.id);
     }
-    const studentIds = new Set();
-    for (const st of a.students) {
-      if (!st || typeof st.id !== 'string' || !st.id || studentIds.has(st.id) || typeof st.name !== 'string' || typeof st.studentId !== 'string' || !st.marks || typeof st.marks !== 'object' || Array.isArray(st.marks)) throw new Error('Invalid student record.');
-      studentIds.add(st.id);
-      for (const [id, band] of Object.entries(st.marks)) {
-        if (!criterionIds.has(id) || !bandByKey(band)) throw new Error('Unrecognised criterion or Moodle band.');
-      }
+    for (const [id, marks] of Object.entries(a.marks)) {
+      if (!ids.has(id) || !marks || typeof marks !== 'object' || Array.isArray(marks)) throw new Error('Invalid mark record.');
+      for (const [cid,band] of Object.entries(marks)) if (!cids.has(cid) || !bandByKey(band)) throw new Error('Invalid band selection.');
     }
   }
-  if (!usedAssignments.has(payload.selectedAssignmentId)) throw new Error('Selected assignment does not exist.');
-  return {
-    className: payload.className,
-    assignments: payload.assignments.map(a => ({
-      id: a.id, name: a.name,
-      criteria: a.criteria.map(c => ({ id: c.id, title: c.title, weight: c.weight })),
-      students: a.students.map(st => ({ id: st.id, name: st.name, studentId: st.studentId, marks: { ...st.marks } })),
-      selectedStudentId: a.students.some(st => st.id === a.selectedStudentId) ? a.selectedStudentId : null
-    })),
-    selectedAssignmentId: payload.selectedAssignmentId
-  };
+  if (!assignmentIds.has(upgraded.selectedAssignmentId)) upgraded.selectedAssignmentId = upgraded.assignments[0].id;
+  if (!ids.has(upgraded.selectedStudentId)) upgraded.selectedStudentId = upgraded.students[0]?.id || null;
+  return upgraded;
 }
 function downloadJSON(name, payload) {
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
@@ -555,7 +601,7 @@ function cleanFilename(name) {
 }
 document.querySelector('#exportBtn').addEventListener('click', () => {
   downloadJSON(`moodle-marker-${cleanFilename(state.className)}.json`, {
-    format: 'moodle-rubric-marker', version: 1, exportedAt: new Date().toISOString(), data: state
+    format: 'moodle-rubric-marker', version: 2, exportedAt: new Date().toISOString(), data: state
   });
 });
 const importFile = document.querySelector('#importFile');
@@ -566,7 +612,7 @@ importFile.addEventListener('change', async () => {
   try {
     if (file.size > 10 * 1024 * 1024) throw new Error('File exceeds the 10 MB import limit.');
     const imported = validateImportedState(JSON.parse(await file.text()));
-    const students = imported.assignments.reduce((n, a) => n + a.students.length, 0);
+    const students = imported.assignments.reduce((n, a) => n + state.students.length, 0);
     if (!confirm(`Import ${imported.assignments.length} assignment(s) and ${students} student record(s)? This will replace the current local workspace. Export your existing data first if you wish to keep it.`)) return;
     state = imported;
     saveState();
@@ -576,47 +622,60 @@ importFile.addEventListener('change', async () => {
   }
 });
 
-// Row/grid is a reversible presentation choice, independent of marking data.
-const LAYOUT_KEY = 'moodleRubricMarker.layout';
-let rubricLayout = localStorage.getItem(LAYOUT_KEY) === 'grid' ? 'grid' : 'rows';
-function applyRubricLayout() {
-  document.querySelector('#markingCriteria').classList.toggle('layout-rows', rubricLayout === 'rows');
-  document.querySelector('#markingCriteria').classList.toggle('layout-grid', rubricLayout === 'grid');
-  for (const [key, id] of [['rows','rowLayoutBtn'],['grid','gridLayoutBtn']]) {
-    const btn = document.getElementById(id);
-    btn.classList.toggle('is-current',rubricLayout === key);
-    btn.setAttribute('aria-pressed', String(rubricLayout === key));
-  }
-}
-for (const [key,id] of [['rows','rowLayoutBtn'],['grid','gridLayoutBtn']]) {
-  document.getElementById(id).addEventListener('click', () => {
-    rubricLayout = key;
-    try { localStorage.setItem(LAYOUT_KEY, key); } catch {};
-    applyRubricLayout();
-  });
-}
-applyRubricLayout();
+// Rows are the only rubric presentation.
+document.querySelector('#markingCriteria').classList.add('layout-rows');
 
+function renderAssessmentWeightStatus() {
+  const input=document.querySelector('#assessmentWeight');
+  if (document.activeElement !== input) input.value=currentAssignment().weight ?? 0;
+  document.querySelector('#assessmentWeightTotal').textContent=`${formatMark(totalAssessmentWeight())} / 100%`;
+  document.querySelector('#assessmentWeightTotal').classList.toggle('invalid',Math.abs(totalAssessmentWeight()-100)>.000001);
+}
+document.querySelector('#assessmentWeight').addEventListener('input',e=>{
+  currentAssignment().weight=Math.max(0,Math.min(100,Number(e.target.value)||0));
+  saveState();renderAssessmentWeightStatus();renderStudents();renderMarking();
+});
+function renderPriorMarks(student) {
+  const current=currentAssignment();
+  const items=state.assignments.filter(a=>a.id!==current.id).map(a=>{
+    const done=isComplete(student,a);
+    const score=done ? calculateStudent(student,a) : null;
+    return `<span class="prior-mark"><strong>${escapeHtml(a.name)}</strong> ${done ? `${formatMark(score)} (${gradeForMark(score)})` : 'In progress'} <small> · ${formatMark(Number(a.weight)||0)}%</small></span>`;
+  });
+  const total=overallStudent(student);
+  document.querySelector('#priorMarks').innerHTML=items.length ? `<div class="prior-title">Other assessments</div>${items.join('')}${total.ready ? `<div class="prior-total">Class result <strong>${formatMark(total.mark)} / 100 · ${gradeForMark(total.mark)}</strong></div>` : ''}` : '';
+}
+function analyticsScope() {return document.querySelector('#analyticsScope').value;}
 // Print a complete register for the active assignment, including incomplete students.
 // No student records are omitted, and partial results are never presented as final grades.
 function renderCohortPrint() {
-  const assignment = currentAssignment();
-  const criteria = assignment.criteria;
-  const complete = new Set(completedStudents().map(s => s.id));
-  const el = document.getElementById('cohortPrint');
-  const rows = assignment.students.map((s, index) => {
-    const done = complete.has(s.id);
-    const result = done ? calculateStudent(s, assignment) : null;
-    const cells = criteria.map(c => {
-      const band = bandByKey(s.marks?.[c.id]);
-      if (!band) return '<td class="print-unmarked">—</td>';
-      const score = band.midpoint * Number(c.weight) / 100;
-      const label = band.key === 'NONE' ? '0' : band.key === 'PERFECT' ? '100' : band.key;
-      return `<td><strong>${label}</strong><small>${band.midpoint} × ${formatMark(Number(c.weight))}% = ${formatMark(score)}</small></td>`;
+  const scope=document.querySelector('#printScope').value;
+  const all=scope==='all';
+  const selected=scope==='current' ? [currentAssignment()] : state.assignments.filter(a=>a.id===scope);
+  const assignments=all ? state.assignments : (selected.length ? selected : [currentAssignment()]);
+  const el=document.getElementById('cohortPrint');
+  const heading=`<h1>${all?'Class marking register':'Assessment marking register'}</h1><p>${escapeHtml(state.className || 'Unnamed class')} · ${state.students.length} students · Printed ${new Date().toLocaleString('en-AU')}</p>`;
+  if (all) {
+    const rows=state.students.map((st,i)=>{
+      const parts=assignments.map(a=>{
+        const ready=isComplete(st,a),score=ready?calculateStudent(st,a):null;
+        return `<td>${ready?`${formatMark(score)} (${gradeForMark(score)})`:'In progress'}</td><td>${ready?formatMark(score*a.weight/100):'—'}</td>`;
+      }).join('');
+      const result=overallStudent(st);
+      return `<tr><td>${i+1}</td><td>${escapeHtml(st.name||'—')}</td><td>${escapeHtml(st.studentId||'—')}</td>${parts}<td><strong>${result.ready?formatMark(result.mark):'—'}</strong></td><td>${result.ready?gradeForMark(result.mark):'In progress'}</td></tr>`;
     }).join('');
-    return `<tr><td>${index+1}</td><td>${escapeHtml(s.name || '—')}</td><td>${escapeHtml(s.studentId || '—')}</td>${cells}<td class="numeric"><strong>${done ? formatMark(result) : '—'}</strong></td><td>${done ? gradeForMark(result) : 'In progress'}</td></tr>`;
-  }).join('');
-  el.innerHTML = `<div class="print-register-heading"><h1>Assessment marking register</h1><p>${escapeHtml(state.className || 'Unnamed class')} / ${escapeHtml(assignment.name || 'Untitled assignment')}</p><p>${assignment.students.length} students · ${complete.size} graded · ${assignment.students.length - complete.size} in progress · Printed ${new Date().toLocaleString('en-AU')}</p></div>
-    <table class="print-register-table"><thead><tr><th>#</th><th>Student</th><th>ID</th>${criteria.map((c,i)=> `<th><span>C${i+1}: ${escapeHtml(c.title || 'Criterion')}</span><small>Weight ${formatMark(Number(c.weight))}%</small></th>`).join('')}<th>Final /100</th><th>Grade</th></tr></thead><tbody>${rows || `<tr><td colspan="${criteria.length+5}">No students recorded.</td></tr>`}</tbody></table><p class="print-footnote">Criterion cells show selected Moodle midpoint × criterion weighting = contribution to final mark. Incomplete records have no final grade. Moodle midpoints: 0, FL 30, PS 60, CR 70, DN 80, HD 90, Perfect 100.</p>`;
+    el.innerHTML=`<div class="print-register-heading">${heading}<p>Assessment weights: ${formatMark(totalAssessmentWeight())}/100%</p></div><table class="print-register-table"><thead><tr><th rowspan="2">#</th><th rowspan="2">Student</th><th rowspan="2">ID</th>${assignments.map(a=>`<th colspan="2">${escapeHtml(a.name)} (${formatMark(a.weight)}%)</th>`).join('')}<th rowspan="2">Overall /100</th><th rowspan="2">Grade</th></tr><tr>${assignments.map(()=>'<th>Mark /100</th><th>Weighted</th>').join('')}</tr></thead><tbody>${rows}</tbody></table><p class="print-footnote">Overall results require all assessment rubrics to be completed and assessment weights to total 100%. No hurdle requirements are applied.</p>`;
+  } else {
+    const a=assignments[0], criteria=a.criteria;
+    const rows=state.students.map((st,i)=>{
+      const ready=isComplete(st,a),score=ready?calculateStudent(st,a):null;
+      const cells=criteria.map(c=>{
+        const band=bandByKey(studentMarks(st,a)[c.id]);
+        return band?`<td><strong>${band.key==='NONE'?'0':band.key==='PERFECT'?'100':band.key}</strong><small>${formatMark(band.midpoint*c.weight/100)} marks</small></td>`:'<td>—</td>';
+      }).join('');
+      return `<tr><td>${i+1}</td><td>${escapeHtml(st.name||'—')}</td><td>${escapeHtml(st.studentId||'—')}</td>${cells}<td><strong>${ready?formatMark(score):'—'}</strong></td><td>${ready?gradeForMark(score):'In progress'}</td></tr>`;
+    }).join('');
+    el.innerHTML=`<div class="print-register-heading">${heading}<p>${escapeHtml(a.name)} · Assessment weighting ${formatMark(a.weight)}% of class total · ${state.students.filter(st=>isComplete(st,a)).length} graded</p></div><table class="print-register-table"><thead><tr><th>#</th><th>Student</th><th>ID</th>${criteria.map((c,i)=>`<th>C${i+1}: ${escapeHtml(c.title)}<small>${formatMark(c.weight)}% of assessment</small></th>`).join('')}<th>Mark /100</th><th>Grade</th></tr></thead><tbody>${rows}</tbody></table><p class="print-footnote">Criterion cells show the selected Moodle band and weighted contribution. Incomplete rubrics have no final mark. Midpoints: 0, FL 30, PS 60, CR 70, DN 80, HD 90, Perfect 100.</p>`;
+  }
 }
 window.addEventListener('beforeprint', renderCohortPrint);
