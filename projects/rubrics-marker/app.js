@@ -401,10 +401,7 @@ function addStudent() {
 }
 
 els.printBtn.addEventListener('click', () => {
-  if (!currentStudent()) {
-    alert('Select a student before printing a record.');
-    return;
-  }
+  renderCohortPrint();
   window.print();
 });
 
@@ -448,7 +445,7 @@ function statsOf(values) {
   const sd = Math.sqrt(values.reduce((sum,x) => sum+(x-mean)**2, 0)/n);
   return { mean, median, sd };
 }
-function gradeColor(g) { return {FL:'#b54444',PS:'#bc911d',CR:'#2e8060',DN:'#336eb9',HD:'#7852a8'}[g] || '#333'; }
+function gradeColor(g) { return {FL:'#f2c9c9',PS:'#f6e8b9',CR:'#cdebdc',DN:'#cddff6',HD:'#e1d3f4'}[g] || '#dddddd'; }
 function renderAnalytics() {
   const a = currentAssignment();
   updateWorkspaceHeading();
@@ -578,14 +575,48 @@ importFile.addEventListener('change', async () => {
     alert(`Import failed: ${error.message}\n\nYour current workspace has not been changed.`);
   }
 });
-const EMBEDDED_SAMPLE = {"format":"moodle-rubric-marker","version":1,"data":{"className":"DDES2150 / Interaction Design 2 — Sample class","assignments":[{"id":"sample-assignment-1","name":"AT2 / Contextual Design Project","criteria":[{"id":"sample-c1","title":"Research and contextual understanding","weight":30},{"id":"sample-c2","title":"Design rationale and development","weight":30},{"id":"sample-c3","title":"Prototype and interaction quality","weight":25},{"id":"sample-c4","title":"Reflection and communication","weight":15}],"students":[{"id":"sample-st-01","name":"Alex Chen","studentId":"z5200001","marks":{"sample-c1":"CR","sample-c2":"CR","sample-c3":"CR","sample-c4":"DN"}},{"id":"sample-st-02","name":"Priya Shah","studentId":"z5200002","marks":{"sample-c1":"HD","sample-c2":"PERFECT","sample-c3":"HD","sample-c4":"HD"}},{"id":"sample-st-03","name":"Jordan Lee","studentId":"z5200003","marks":{"sample-c1":"PERFECT","sample-c2":"DN","sample-c3":"HD","sample-c4":"DN"}},{"id":"sample-st-04","name":"Maya Patel","studentId":"z5200004","marks":{"sample-c1":"CR","sample-c2":"CR","sample-c3":"CR","sample-c4":"CR"}},{"id":"sample-st-05","name":"Sam Taylor","studentId":"z5200005","marks":{"sample-c1":"CR","sample-c2":"CR","sample-c3":"FL","sample-c4":"FL"}},{"id":"sample-st-06","name":"Olivia Nguyen","studentId":"z5200006","marks":{"sample-c1":"CR","sample-c2":"DN","sample-c3":"DN","sample-c4":"DN"}},{"id":"sample-st-07","name":"Kai Thompson","studentId":"z5200007","marks":{"sample-c1":"FL","sample-c2":"FL","sample-c3":"FL","sample-c4":"PS"}},{"id":"sample-st-08","name":"Amira Hassan","studentId":"z5200008","marks":{"sample-c1":"CR","sample-c2":"CR","sample-c3":"DN","sample-c4":"DN"}},{"id":"sample-st-09","name":"Charlie Wilson","studentId":"z5200009","marks":{"sample-c1":"FL","sample-c2":"FL","sample-c3":"PS","sample-c4":"NONE"}},{"id":"sample-st-10","name":"Isabella Wong","studentId":"z5200010","marks":{"sample-c1":"DN","sample-c2":"DN","sample-c3":"CR","sample-c4":"DN"}},{"id":"sample-st-11","name":"Noah Martin","studentId":"z5200011","marks":{"sample-c1":"PS","sample-c2":"PS","sample-c3":"CR","sample-c4":"PS"}},{"id":"sample-st-12","name":"Sofia Garcia","studentId":"z5200012","marks":{"sample-c1":"DN","sample-c2":"DN","sample-c3":"DN","sample-c4":"CR"}},{"id":"sample-st-13","name":"Ethan Park","studentId":"z5200013","marks":{"sample-c1":"NONE","sample-c2":"FL","sample-c3":"FL","sample-c4":"FL"}},{"id":"sample-st-14","name":"Zara Ali","studentId":"z5200014","marks":{"sample-c1":"CR","sample-c2":"DN","sample-c3":"PS","sample-c4":"PS"}},{"id":"sample-st-15","name":"Luca Rossi","studentId":"z5200015","marks":{"sample-c1":"DN","sample-c2":"DN","sample-c3":"DN","sample-c4":"CR"}},{"id":"sample-st-16","name":"Grace Kim","studentId":"z5200016","marks":{"sample-c1":"CR","sample-c2":"DN","sample-c3":"DN","sample-c4":"CR"}},{"id":"sample-st-17","name":"Avery Brown","studentId":"z5200017","marks":{"sample-c1":"DN","sample-c2":"HD","sample-c3":"CR","sample-c4":"DN"}},{"id":"sample-st-18","name":"Elijah Davis","studentId":"z5200018","marks":{"sample-c1":"PS","sample-c2":"PS","sample-c3":"PS","sample-c4":"PS"}},{"id":"sample-st-19","name":"Mia Robinson","studentId":"z5200019","marks":{"sample-c1":"FL","sample-c2":"PS","sample-c3":"FL","sample-c4":"FL"}},{"id":"sample-st-20","name":"Harper Singh","studentId":"z5200020","marks":{"sample-c1":"CR","sample-c2":"DN","sample-c3":"CR","sample-c4":"CR"}},{"id":"sample-st-21","name":"Leo Johnson","studentId":"z5200021","marks":{"sample-c1":"CR","sample-c2":"DN","sample-c3":"HD","sample-c4":"DN"}},{"id":"sample-st-22","name":"Aisha Rahman","studentId":"z5200022","marks":{"sample-c1":"PS","sample-c2":"PS","sample-c3":"PS","sample-c4":"PS"}},{"id":"sample-st-23","name":"Oscar Miller","studentId":"z5200023","marks":{"sample-c1":"FL","sample-c2":"PS","sample-c3":"PS","sample-c4":"PS"}},{"id":"sample-st-24","name":"Ruby Evans","studentId":"z5200024","marks":{"sample-c1":"PS","sample-c2":"FL","sample-c3":"PS","sample-c4":"PS"}},{"id":"sample-st-25","name":"Daniel Cooper","studentId":"z5200025","marks":{"sample-c1":"CR","sample-c2":"DN","sample-c3":"HD","sample-c4":"DN"}},{"id":"sample-st-26","name":"Chloe Lim","studentId":"z5200026","marks":{"sample-c1":"DN","sample-c2":"DN","sample-c3":"DN","sample-c4":"DN"}},{"id":"sample-st-27","name":"Riley Morgan","studentId":"z5200027","marks":{"sample-c1":"CR","sample-c2":"DN","sample-c3":"HD","sample-c4":"DN"}},{"id":"sample-st-28","name":"Hannah Scott","studentId":"z5200028","marks":{"sample-c1":"HD","sample-c2":"HD","sample-c3":"DN","sample-c4":"DN"}},{"id":"sample-st-29","name":"Aria Thomas","studentId":"z5200029","marks":{"sample-c1":"CR","sample-c2":"CR","sample-c3":"HD"}},{"id":"sample-st-30","name":"Finn Walker","studentId":"z5200030","marks":{"sample-c1":"DN","sample-c2":"DN","sample-c3":"DN"}}],"selectedStudentId":"sample-st-01"}],"selectedAssignmentId":"sample-assignment-1"}};
-document.querySelector('#sampleBtn').addEventListener('click', async () => {
-  if (!confirm('Load the sample class with populated rubric marks? This will replace the current local workspace. Export your existing data first if needed.')) return;
-  try {
-    state = validateImportedState(EMBEDDED_SAMPLE);
-    saveState();
-    render();
-  } catch (error) {
-    alert(`Unable to load sample: ${error.message}`);
+
+// Row/grid is a reversible presentation choice, independent of marking data.
+const LAYOUT_KEY = 'moodleRubricMarker.layout';
+let rubricLayout = localStorage.getItem(LAYOUT_KEY) === 'grid' ? 'grid' : 'rows';
+function applyRubricLayout() {
+  document.querySelector('#markingCriteria').classList.toggle('layout-rows', rubricLayout === 'rows');
+  document.querySelector('#markingCriteria').classList.toggle('layout-grid', rubricLayout === 'grid');
+  for (const [key, id] of [['rows','rowLayoutBtn'],['grid','gridLayoutBtn']]) {
+    const btn = document.getElementById(id);
+    btn.classList.toggle('is-current',rubricLayout === key);
+    btn.setAttribute('aria-pressed', String(rubricLayout === key));
   }
-});
+}
+for (const [key,id] of [['rows','rowLayoutBtn'],['grid','gridLayoutBtn']]) {
+  document.getElementById(id).addEventListener('click', () => {
+    rubricLayout = key;
+    try { localStorage.setItem(LAYOUT_KEY, key); } catch {};
+    applyRubricLayout();
+  });
+}
+applyRubricLayout();
+
+// Print a complete register for the active assignment, including incomplete students.
+// No student records are omitted, and partial results are never presented as final grades.
+function renderCohortPrint() {
+  const assignment = currentAssignment();
+  const criteria = assignment.criteria;
+  const complete = new Set(completedStudents().map(s => s.id));
+  const el = document.getElementById('cohortPrint');
+  const rows = assignment.students.map((s, index) => {
+    const done = complete.has(s.id);
+    const result = done ? calculateStudent(s, assignment) : null;
+    const cells = criteria.map(c => {
+      const band = bandByKey(s.marks?.[c.id]);
+      if (!band) return '<td class="print-unmarked">—</td>';
+      const score = band.midpoint * Number(c.weight) / 100;
+      const label = band.key === 'NONE' ? '0' : band.key === 'PERFECT' ? '100' : band.key;
+      return `<td><strong>${label}</strong><small>${band.midpoint} × ${formatMark(Number(c.weight))}% = ${formatMark(score)}</small></td>`;
+    }).join('');
+    return `<tr><td>${index+1}</td><td>${escapeHtml(s.name || '—')}</td><td>${escapeHtml(s.studentId || '—')}</td>${cells}<td class="numeric"><strong>${done ? formatMark(result) : '—'}</strong></td><td>${done ? gradeForMark(result) : 'In progress'}</td></tr>`;
+  }).join('');
+  el.innerHTML = `<div class="print-register-heading"><h1>Assessment marking register</h1><p>${escapeHtml(state.className || 'Unnamed class')} / ${escapeHtml(assignment.name || 'Untitled assignment')}</p><p>${assignment.students.length} students · ${complete.size} graded · ${assignment.students.length - complete.size} in progress · Printed ${new Date().toLocaleString('en-AU')}</p></div>
+    <table class="print-register-table"><thead><tr><th>#</th><th>Student</th><th>ID</th>${criteria.map((c,i)=> `<th><span>C${i+1}: ${escapeHtml(c.title || 'Criterion')}</span><small>Weight ${formatMark(Number(c.weight))}%</small></th>`).join('')}<th>Final /100</th><th>Grade</th></tr></thead><tbody>${rows || `<tr><td colspan="${criteria.length+5}">No students recorded.</td></tr>`}</tbody></table><p class="print-footnote">Criterion cells show selected Moodle midpoint × criterion weighting = contribution to final mark. Incomplete records have no final grade. Moodle midpoints: 0, FL 30, PS 60, CR 70, DN 80, HD 90, Perfect 100.</p>`;
+}
+window.addEventListener('beforeprint', renderCohortPrint);
