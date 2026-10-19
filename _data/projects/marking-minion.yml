@@ -1,0 +1,9 @@
+title: "Marking Minion"
+description: "A lightweight, local-first marking calculator for Moodle-style assessment rubrics."
+credits: "Haider Akmal"
+url: "/projects/marking-minion/"
+date: 2026-10-20
+wip: false
+categories:
+  - tools
+  - teaching
