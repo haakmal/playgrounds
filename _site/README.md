@@ -14,6 +14,7 @@ This is a sandbox-style GitHub repo intended for an assortment of curious (mostl
 
 | Project | Description | Status |
 |---|---|---|
+| [Possibility Engine](https://play.hakmal.com/projects/possibility-engine/) | An engine for idea disruption and exploring new perspectives and possibilities. | Published |
 | [Groupings Tool](https://play.hakmal.com/projects/groupings/) | A handy tool for creating and managing assigned groups. | Published |
 | [Cardboard](https://play.hakmal.com/projects/cardboard/) | A handy card deck maker for drafting, shuffling, and revealing card-based activities. | WIP |
 | [Interaction Principles Mapper](https://play.hakmal.com/projects/principles-mapper) | A tool for mapping scenarios against Norman's interaction principles. | Published |

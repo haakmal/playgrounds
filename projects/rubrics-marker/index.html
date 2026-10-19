@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Moodle Rubric Marker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="app-header print-remove">
+    <div>
+      <p class="eyebrow">Assessment utility</p>
+      <h1>Moodle Rubric Marker</h1>
+    </div>
+    <div class="header-actions">
+      <button id="printBtn" type="button">Print record</button>
+      <button id="resetBtn" class="danger" type="button">Start fresh</button>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <section class="panel setup-panel print-remove">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Setup</p>
+          <h2>Class and assessment</h2>
+        </div>
+        <p class="section-note">Everything is saved automatically in this browser.</p>
+      </div>
+
+      <div class="form-grid two-col">
+        <label>
+          <span>Class name</span>
+          <input id="className" type="text" placeholder="e.g. DDES2150 Interaction Design 2">
+        </label>
+        <label>
+          <span>Assignment name</span>
+          <input id="assignmentName" type="text" placeholder="e.g. AT2 Contextual Design Project">
+        </label>
+      </div>
+
+      <div class="assignment-toolbar">
+        <label class="grow">
+          <span>Saved assignments</span>
+          <select id="assignmentSelect"></select>
+        </label>
+        <button id="newAssignmentBtn" type="button">New assignment</button>
+        <button id="deleteAssignmentBtn" type="button">Delete assignment</button>
+      </div>
+    </section>
+
+    <section class="panel print-remove">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Rubric</p>
+          <h2>Criteria</h2>
+        </div>
+        <div class="weight-total" id="weightTotal">0 / 100%</div>
+      </div>
+
+      <div id="criteriaList" class="criteria-list"></div>
+      <button id="addCriterionBtn" type="button">Add criterion</button>
+      <p id="criteriaWarning" class="warning" hidden>Criterion weightings must total 100% before marking.</p>
+    </section>
+
+    <section class="panel print-remove">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Students</p>
+          <h2>Marking list</h2>
+        </div>
+      </div>
+
+      <div class="student-entry-grid">
+        <label>
+          <span>Student name</span>
+          <input id="studentName" type="text" placeholder="Student name">
+        </label>
+        <label>
+          <span>Student ID</span>
+          <input id="studentId" type="text" placeholder="zID or other identifier">
+        </label>
+        <button id="addStudentBtn" type="button">Add student</button>
+      </div>
+
+      <div class="student-table-wrap">
+        <table class="student-table">
+          <thead>
+            <tr>
+              <th>Student</th>
+              <th>ID</th>
+              <th>Mark</th>
+              <th>Grade</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="studentTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel marking-panel">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Mark</p>
+          <h2 id="markingTitle">Select a student</h2>
+        </div>
+        <div class="overall-result" aria-live="polite">
+          <span class="overall-mark" id="overallMark">—</span>
+          <span class="overall-grade" id="overallGrade">—</span>
+        </div>
+      </div>
+
+      <div id="markingEmpty" class="empty-state">
+        Add or select a student to begin marking.
+      </div>
+
+      <div id="markingContent" hidden>
+        <div class="print-record-meta">
+          <div><span>Class</span><strong id="printClass">—</strong></div>
+          <div><span>Assignment</span><strong id="printAssignment">—</strong></div>
+          <div><span>Student</span><strong id="printStudent">—</strong></div>
+          <div><span>ID</span><strong id="printStudentId">—</strong></div>
+        </div>
+
+        <div id="markingCriteria" class="marking-criteria"></div>
+
+        <div class="calculation-note">
+          Moodle midpoint calculation: criterion weighting × selected band midpoint.
+        </div>
+      </div>
+    </section>
+
+    <section class="panel reference-panel print-remove">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Reference</p>
+          <h2>Moodle rubric mid-points</h2>
+        </div>
+      </div>
+      <div class="band-reference" id="bandReference"></div>
+    </section>
+  </main>
+
+  <template id="criterionTemplate">
+    <div class="criterion-row">
+      <label class="criterion-title-field">
+        <span>Criterion title</span>
+        <input class="criterion-title" type="text" placeholder="Criterion title">
+      </label>
+      <label class="criterion-weight-field">
+        <span>Weight %</span>
+        <input class="criterion-weight" type="number" min="0" max="100" step="1" value="0">
+      </label>
+      <button class="icon-button remove-criterion" type="button" aria-label="Remove criterion">×</button>
+    </div>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
