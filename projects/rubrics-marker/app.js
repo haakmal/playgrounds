@@ -679,3 +679,113 @@ function renderCohortPrint() {
   }
 }
 window.addEventListener('beforeprint', renderCohortPrint);
+
+
+// v8 navigation: keep one class roster across assignments.
+function stepNavigation(kind, delta) {
+  const list = kind === 'assessment' ? state.assignments : state.students;
+  const key = kind === 'assessment' ? 'selectedAssignmentId' : 'selectedStudentId';
+  if (!list.length) return;
+  const index = list.findIndex(item => item.id === state[key]);
+  const next = index + delta;
+  if (next < 0 || next >= list.length) return;
+  state[key] = list[next].id;
+  saveState();
+  render();
+}
+function updateNavigation() {
+  for (const [kind, list, key, label] of [
+    ['Assessment', state.assignments, 'selectedAssignmentId', 'Assessment'],
+    ['Student', state.students, 'selectedStudentId', 'Student']
+  ]) {
+    const index = list.findIndex(item => item.id === state[key]);
+    document.querySelector(`#prev${kind}`).disabled = index <= 0;
+    document.querySelector(`#next${kind}`).disabled = index < 0 || index >= list.length - 1;
+    document.querySelector(`#${kind.toLowerCase()}Position`).textContent = index < 0 ? `0 / ${list.length}` : `${index + 1} / ${list.length}`;
+  }
+}
+for (const [id,kind,direction] of [
+  ['prevAssessment','assessment',-1],['nextAssessment','assessment',1],
+  ['prevStudent','student',-1],['nextStudent','student',1]
+]) document.getElementById(id).addEventListener('click', () => stepNavigation(kind, direction));
+const v8Render = render;
+render = function() { v8Render(); updateNavigation(); };
+const v8RenderStudents = renderStudents;
+renderStudents = function() { v8RenderStudents(); updateNavigation(); };
+const v8RenderMarking = renderMarking;
+renderMarking = function() { v8RenderMarking(); updateNavigation(); };
+
+// RFC 4180-style parser: quotes, escaped quotes, commas and embedded newlines.
+function parseRosterCSV(text) {
+  const rows = [];
+  let row = [], value = '', quoted = false;
+  text = text.replace(/^\uFEFF/, '');
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    if (quoted) {
+      if (char === '"' && text[i+1] === '"') { value += '"'; i++; }
+      else if (char === '"') quoted = false;
+      else value += char;
+    } else if (char === '"' && !value) quoted = true;
+    else if (char === ',') { row.push(value); value = ''; }
+    else if (char === '\n' || char === '\r') {
+      if (char === '\r' && text[i+1] === '\n') i++;
+      row.push(value); value = '';
+      if (row.some(cell => cell.trim())) rows.push(row);
+      row = [];
+    } else value += char;
+  }
+  if (quoted) throw new Error('CSV has an unclosed quoted field.');
+  row.push(value);
+  if (row.some(cell => cell.trim())) rows.push(row);
+  if (!rows.length) throw new Error('The CSV is empty.');
+  const normalise = header => header.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+  const headers = rows.shift().map(normalise);
+  const first = headers.indexOf('firstname'), last = headers.indexOf('lastname');
+  const username = headers.indexOf('username');
+  const email = headers.indexOf('emailaddress'), group = headers.indexOf('groups');
+  if (first === -1 || last === -1 || username === -1)
+    throw new Error('Required Moodle columns: First name, Last name, Username.');
+  const records = rows.map((fields, index) => {
+    const name = [fields[first], fields[last]].map(v => (v || '').trim()).filter(Boolean).join(' ');
+    const studentId = (fields[username] || '').trim();
+    if (!studentId) throw new Error(`Row ${index+2} has no Username. Import cancelled.`);
+    return { name, studentId, email: email === -1 ? '' : (fields[email] || '').trim(), group: group === -1 ? '' : (fields[group] || '').trim() };
+  });
+  if (!records.length) throw new Error('There are no student rows in the CSV.');
+  return records;
+}
+const rosterCsvFile = document.querySelector('#rosterCsvFile');
+document.querySelector('#importRosterBtn').addEventListener('click', () => {
+  rosterCsvFile.value = '';
+  rosterCsvFile.click();
+});
+rosterCsvFile.addEventListener('change', async () => {
+  const file = rosterCsvFile.files?.[0];
+  if (!file) return;
+  try {
+    if (file.size > 5 * 1024 * 1024) throw new Error('CSV exceeds 5 MB.');
+    const records = parseRosterCSV(await file.text());
+    const known = new Set(state.students.map(s => s.studentId.trim().toLowerCase()).filter(Boolean));
+    const additions = [], seen = new Set();
+    let skipped = 0;
+    for (const record of records) {
+      const id = record.studentId.toLowerCase();
+      if (known.has(id) || seen.has(id)) { skipped++; continue; }
+      seen.add(id);
+      additions.push({ id: uid(), ...record });
+    }
+    if (!additions.length) {
+      document.querySelector('#rosterImportStatus').textContent = `No new students — ${skipped} existing or duplicate IDs skipped.`;
+      return;
+    }
+    if (!confirm(`Add ${additions.length} student(s) to the class roster? ${skipped} duplicate/existing ID(s) will be skipped. Existing students and marks will not be changed.`)) return;
+    state.students.push(...additions);
+    if (!state.selectedStudentId) state.selectedStudentId = additions[0].id;
+    saveState(); render();
+    document.querySelector('#rosterImportStatus').textContent = `Added ${additions.length} students; skipped ${skipped} duplicate IDs.`;
+  } catch (error) {
+    alert(`Roster import failed: ${error.message}\n\nNo changes were made.`);
+  }
+});
+updateNavigation();

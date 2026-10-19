@@ -56,7 +56,7 @@
 </label>
 <button id="addStudentBtn" type="button">Add student</button>
 </div>
-<div class="student-table-wrap">
+<div class="roster-import print-remove"><button id="importRosterBtn" type="button">Import Moodle roster (CSV)</button><input id="rosterCsvFile" type="file" accept=".csv,text/csv,text/plain" hidden aria-label="Choose Moodle roster CSV"><span id="rosterImportStatus" role="status" aria-live="polite">Add students from a Moodle class export.</span></div><div class="student-table-wrap">
 <table class="student-table">
 <thead>
 <tr>
@@ -71,7 +71,7 @@
 </table>
 </div>
 </section></aside><div class="workspace-column"><div class="workspace-intro print-remove"><div><p class="eyebrow">02 / Marking workspace</p><h2 id="workspaceAssessment">Assignment 1</h2><p class="section-note" id="workspaceClass"></p></div><span class="autosave-label" id="saveStatus">Saved locally in this browser</span></div><section class="panel marking-panel">
-<div class="section-heading">
+<div class="mark-navigation print-remove"><div class="nav-group"><span class="nav-label">Assessment</span><button type="button" id="prevAssessment" aria-label="Previous assessment" title="Previous assessment">←</button><span class="nav-position" id="assessmentPosition"></span><button type="button" id="nextAssessment" aria-label="Next assessment" title="Next assessment">→</button></div><div class="nav-group"><span class="nav-label">Student</span><button type="button" id="prevStudent" aria-label="Previous student" title="Previous student">←</button><span class="nav-position" id="studentPosition"></span><button type="button" id="nextStudent" aria-label="Next student" title="Next student">→</button></div></div><div class="section-heading">
 <div>
 <p class="eyebrow">Mark</p>
 <h2 id="markingTitle">Select a student</h2>

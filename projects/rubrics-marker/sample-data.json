@@ -234,139 +234,148 @@
         ],
         "marks": {
           "sample-st-01": {
-            "sample-at2-c1": "FL",
-            "sample-at2-c2": "CR",
-            "sample-at2-c3": "PERFECT"
+            "sample-at2-c1": "DN",
+            "sample-at2-c2": "PS",
+            "sample-at2-c3": "HD"
           },
           "sample-st-02": {
-            "sample-at2-c1": "FL",
-            "sample-at2-c2": "CR",
-            "sample-at2-c3": "PERFECT"
+            "sample-at2-c1": "HD",
+            "sample-at2-c2": "PERFECT",
+            "sample-at2-c3": "HD"
           },
           "sample-st-03": {
-            "sample-at2-c1": "FL",
-            "sample-at2-c2": "CR",
-            "sample-at2-c3": "PERFECT"
+            "sample-at2-c1": "DN",
+            "sample-at2-c2": "DN",
+            "sample-at2-c3": "PS"
           },
           "sample-st-04": {
-            "sample-at2-c1": "FL",
-            "sample-at2-c2": "CR",
-            "sample-at2-c3": "PERFECT"
+            "sample-at2-c1": "HD",
+            "sample-at2-c2": "DN",
+            "sample-at2-c3": "CR"
           },
           "sample-st-05": {
-            "sample-at2-c1": "FL",
-            "sample-at2-c2": "CR",
-            "sample-at2-c3": "PERFECT"
+            "sample-at2-c1": "CR",
+            "sample-at2-c2": "PS",
+            "sample-at2-c3": "HD"
           },
           "sample-st-06": {
-            "sample-at2-c1": "FL",
+            "sample-at2-c1": "CR",
             "sample-at2-c2": "CR",
-            "sample-at2-c3": "PERFECT"
+            "sample-at2-c3": "DN"
           },
           "sample-st-07": {
-            "sample-at2-c1": "FL",
-            "sample-at2-c2": "CR",
-            "sample-at2-c3": "PERFECT"
+            "sample-at2-c1": "HD",
+            "sample-at2-c2": "PERFECT",
+            "sample-at2-c3": "HD"
           },
           "sample-st-08": {
-            "sample-at2-c1": "FL",
-            "sample-at2-c2": "CR",
-            "sample-at2-c3": "PERFECT"
+            "sample-at2-c1": "HD",
+            "sample-at2-c2": "DN",
+            "sample-at2-c3": "NONE"
           },
           "sample-st-09": {
-            "sample-at2-c1": "FL",
-            "sample-at2-c2": "CR",
-            "sample-at2-c3": "PERFECT"
+            "sample-at2-c1": "CR"
           },
           "sample-st-10": {
-            "sample-at2-c1": "FL",
-            "sample-at2-c2": "CR",
-            "sample-at2-c3": "PERFECT"
+            "sample-at2-c1": "CR",
+            "sample-at2-c2": "PS",
+            "sample-at2-c3": "FL"
           },
           "sample-st-11": {
-            "sample-at2-c1": "FL",
-            "sample-at2-c2": "CR",
-            "sample-at2-c3": "PERFECT"
+            "sample-at2-c1": "DN",
+            "sample-at2-c2": "HD",
+            "sample-at2-c3": "DN"
           },
           "sample-st-12": {
-            "sample-at2-c1": "FL",
-            "sample-at2-c2": "CR",
-            "sample-at2-c3": "PERFECT"
+            "sample-at2-c1": "CR",
+            "sample-at2-c2": "PS",
+            "sample-at2-c3": "CR"
           },
           "sample-st-13": {
             "sample-at2-c1": "FL",
-            "sample-at2-c2": "CR",
-            "sample-at2-c3": "PERFECT"
+            "sample-at2-c2": "PS",
+            "sample-at2-c3": "FL"
           },
           "sample-st-14": {
-            "sample-at2-c1": "FL",
-            "sample-at2-c2": "CR",
-            "sample-at2-c3": "PERFECT"
+            "sample-at2-c1": "HD",
+            "sample-at2-c2": "HD",
+            "sample-at2-c3": "CR"
           },
           "sample-st-15": {
-            "sample-at2-c1": "FL",
-            "sample-at2-c2": "CR",
-            "sample-at2-c3": "PERFECT"
+            "sample-at2-c1": "HD",
+            "sample-at2-c2": "PERFECT",
+            "sample-at2-c3": "PS"
           },
           "sample-st-16": {
-            "sample-at2-c1": "FL",
+            "sample-at2-c1": "DN",
             "sample-at2-c2": "CR",
-            "sample-at2-c3": "PERFECT"
+            "sample-at2-c3": "DN"
           },
           "sample-st-17": {
-            "sample-at2-c1": "FL",
-            "sample-at2-c2": "CR",
-            "sample-at2-c3": "PERFECT"
+            "sample-at2-c1": "HD",
+            "sample-at2-c2": "HD",
+            "sample-at2-c3": "HD"
           },
           "sample-st-18": {
             "sample-at2-c1": "FL",
-            "sample-at2-c2": "CR",
-            "sample-at2-c3": "PERFECT"
+            "sample-at2-c2": "PS",
+            "sample-at2-c3": "FL"
           },
           "sample-st-19": {
-            "sample-at2-c1": "FL",
-            "sample-at2-c2": "CR",
-            "sample-at2-c3": "PERFECT"
+            "sample-at2-c1": "HD",
+            "sample-at2-c2": "PERFECT",
+            "sample-at2-c3": "DN"
           },
           "sample-st-20": {
-            "sample-at2-c1": "FL",
+            "sample-at2-c1": "CR",
             "sample-at2-c2": "CR",
-            "sample-at2-c3": "PERFECT"
+            "sample-at2-c3": "DN"
           },
           "sample-st-21": {
-            "sample-at2-c1": "FL",
-            "sample-at2-c2": "CR",
-            "sample-at2-c3": "PERFECT"
+            "sample-at2-c1": "DN",
+            "sample-at2-c2": "PERFECT",
+            "sample-at2-c3": "CR"
           },
           "sample-st-22": {
-            "sample-at2-c1": "FL",
-            "sample-at2-c2": "CR",
-            "sample-at2-c3": "PERFECT"
+            "sample-at2-c1": "DN",
+            "sample-at2-c2": "DN",
+            "sample-at2-c3": "HD"
           },
           "sample-st-23": {
-            "sample-at2-c1": "FL",
-            "sample-at2-c2": "CR",
-            "sample-at2-c3": "PERFECT"
+            "sample-at2-c1": "CR",
+            "sample-at2-c2": "DN",
+            "sample-at2-c3": "DN"
           },
-          "sample-st-24": {
-            "sample-at2-c1": "FL",
-            "sample-at2-c2": "CR",
-            "sample-at2-c3": "PERFECT"
-          },
+          "sample-st-24": {},
           "sample-st-25": {
             "sample-at2-c1": "FL",
-            "sample-at2-c2": "CR",
-            "sample-at2-c3": "PERFECT"
+            "sample-at2-c2": "HD",
+            "sample-at2-c3": "DN"
           },
           "sample-st-26": {
-            "sample-at2-c1": "FL",
-            "sample-at2-c2": "CR",
-            "sample-at2-c3": "PERFECT"
+            "sample-at2-c1": "HD",
+            "sample-at2-c2": "DN",
+            "sample-at2-c3": "PS"
           },
           "sample-st-27": {
-            "sample-at2-c1": "FL",
-            "sample-at2-c2": "CR",
+            "sample-at2-c1": "DN",
+            "sample-at2-c2": "FL",
+            "sample-at2-c3": "PS"
+          },
+          "sample-st-28": {
+            "sample-at2-c1": "CR",
+            "sample-at2-c2": "DN",
             "sample-at2-c3": "PERFECT"
+          },
+          "sample-st-29": {
+            "sample-at2-c1": "CR",
+            "sample-at2-c2": "PS",
+            "sample-at2-c3": "FL"
+          },
+          "sample-st-30": {
+            "sample-at2-c1": "PS",
+            "sample-at2-c2": "HD",
+            "sample-at2-c3": "CR"
           }
         }
       }
