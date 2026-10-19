@@ -53,7 +53,15 @@ function loadState() {
 }
 
 function saveState() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const status = document.querySelector('#saveStatus');
+    if (status) status.textContent = 'Saved locally in this browser';
+  } catch (error) {
+    const status = document.querySelector('#saveStatus');
+    if (status) status.textContent = 'Unable to save — export your data';
+    console.error('Local storage save failed:', error);
+  }
 }
 
 function currentAssignment() {
@@ -204,14 +212,15 @@ function renderStudents() {
   }
 
   assignment.students.forEach(student => {
-    const mark = calculateStudent(student, assignment);
+    const completed = assignment.criteria.length && totalWeight(assignment) === 100 && assignment.criteria.every(c => bandByKey(student.marks?.[c.id]));
+    const mark = completed ? calculateStudent(student, assignment) : null;
     const row = document.createElement('tr');
     if (student.id === assignment.selectedStudentId) row.classList.add('active');
     row.innerHTML = `
       <td>${escapeHtml(student.name || 'Unnamed student')}</td>
       <td>${escapeHtml(student.studentId || '—')}</td>
-      <td class="numeric">${formatMark(mark)}</td>
-      <td>${gradeForMark(mark)}</td>
+      <td class="numeric">${mark === null ? "—" : formatMark(mark)}</td>
+      <td>${mark === null ? "In progress" : gradeForMark(mark)}</td>
       <td><div class="row-actions"><button type="button" class="select-student">Mark</button><button type="button" class="remove-student">Remove</button></div></td>
     `;
 
@@ -249,12 +258,13 @@ function renderMarking() {
     return;
   }
 
+  const completed = assignment.criteria.length && totalWeight(assignment) === 100 && assignment.criteria.every(c => bandByKey(student.marks?.[c.id]));
   const mark = calculateStudent(student, assignment);
   els.markingTitle.textContent = student.name || student.studentId || 'Selected student';
   els.markingEmpty.hidden = true;
   els.markingContent.hidden = false;
-  els.overallMark.textContent = formatMark(mark);
-  els.overallGrade.textContent = gradeForMark(mark);
+  els.overallMark.textContent = completed ? formatMark(mark) : '—';
+  els.overallGrade.textContent = completed ? gradeForMark(mark) : 'In progress';
   els.printClass.textContent = state.className || '—';
   els.printAssignment.textContent = assignment.name || '—';
   els.printStudent.textContent = student.name || '—';
@@ -488,3 +498,89 @@ render();
 const configurationDrawer = document.querySelector('.configuration-drawer');
 if (!state.className || !currentAssignment().name || totalWeight() !== 100) configurationDrawer.open = true;
 render();
+
+
+// Portable backups: v1 data envelope. Import replaces current local workspace only after validation and confirmation.
+function validateImportedState(data) {
+  if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('Expected an object.');
+  const payload = data.format === 'moodle-rubric-marker' ? data.data : data;
+  if (!payload || typeof payload !== 'object' || typeof payload.className !== 'string' || !Array.isArray(payload.assignments) || !payload.assignments.length || payload.assignments.length > 100) {
+    throw new Error('Missing class name or valid assignments.');
+  }
+  const usedAssignments = new Set();
+  for (const a of payload.assignments) {
+    if (!a || typeof a.id !== 'string' || !a.id || usedAssignments.has(a.id) || typeof a.name !== 'string' || !Array.isArray(a.criteria) || !Array.isArray(a.students) || a.criteria.length > 100 || a.students.length > 10000) throw new Error('Invalid assignment structure.');
+    usedAssignments.add(a.id);
+    const criterionIds = new Set();
+    for (const c of a.criteria) {
+      if (!c || typeof c.id !== 'string' || !c.id || criterionIds.has(c.id) || typeof c.title !== 'string' || !Number.isFinite(c.weight) || c.weight < 0 || c.weight > 100) throw new Error('Invalid rubric criterion.');
+      criterionIds.add(c.id);
+    }
+    const studentIds = new Set();
+    for (const st of a.students) {
+      if (!st || typeof st.id !== 'string' || !st.id || studentIds.has(st.id) || typeof st.name !== 'string' || typeof st.studentId !== 'string' || !st.marks || typeof st.marks !== 'object' || Array.isArray(st.marks)) throw new Error('Invalid student record.');
+      studentIds.add(st.id);
+      for (const [id, band] of Object.entries(st.marks)) {
+        if (!criterionIds.has(id) || !bandByKey(band)) throw new Error('Unrecognised criterion or Moodle band.');
+      }
+    }
+  }
+  if (!usedAssignments.has(payload.selectedAssignmentId)) throw new Error('Selected assignment does not exist.');
+  return {
+    className: payload.className,
+    assignments: payload.assignments.map(a => ({
+      id: a.id, name: a.name,
+      criteria: a.criteria.map(c => ({ id: c.id, title: c.title, weight: c.weight })),
+      students: a.students.map(st => ({ id: st.id, name: st.name, studentId: st.studentId, marks: { ...st.marks } })),
+      selectedStudentId: a.students.some(st => st.id === a.selectedStudentId) ? a.selectedStudentId : null
+    })),
+    selectedAssignmentId: payload.selectedAssignmentId
+  };
+}
+function downloadJSON(name, payload) {
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = name;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+function cleanFilename(name) {
+  return String(name || 'class').trim().toLowerCase().replace(/[^a-z0-9_-]+/g, '-').replace(/^-|-$/g, '').slice(0, 55) || 'class';
+}
+document.querySelector('#exportBtn').addEventListener('click', () => {
+  downloadJSON(`moodle-marker-${cleanFilename(state.className)}.json`, {
+    format: 'moodle-rubric-marker', version: 1, exportedAt: new Date().toISOString(), data: state
+  });
+});
+const importFile = document.querySelector('#importFile');
+document.querySelector('#importBtn').addEventListener('click', () => { importFile.value = ''; importFile.click(); });
+importFile.addEventListener('change', async () => {
+  const file = importFile.files?.[0];
+  if (!file) return;
+  try {
+    if (file.size > 10 * 1024 * 1024) throw new Error('File exceeds the 10 MB import limit.');
+    const imported = validateImportedState(JSON.parse(await file.text()));
+    const students = imported.assignments.reduce((n, a) => n + a.students.length, 0);
+    if (!confirm(`Import ${imported.assignments.length} assignment(s) and ${students} student record(s)? This will replace the current local workspace. Export your existing data first if you wish to keep it.`)) return;
+    state = imported;
+    saveState();
+    render();
+  } catch (error) {
+    alert(`Import failed: ${error.message}\n\nYour current workspace has not been changed.`);
+  }
+});
+const EMBEDDED_SAMPLE = {"format":"moodle-rubric-marker","version":1,"data":{"className":"DDES2150 / Interaction Design 2 — Sample class","assignments":[{"id":"sample-assignment-1","name":"AT2 / Contextual Design Project","criteria":[{"id":"sample-c1","title":"Research and contextual understanding","weight":30},{"id":"sample-c2","title":"Design rationale and development","weight":30},{"id":"sample-c3","title":"Prototype and interaction quality","weight":25},{"id":"sample-c4","title":"Reflection and communication","weight":15}],"students":[{"id":"sample-st-01","name":"Alex Chen","studentId":"z5200001","marks":{"sample-c1":"CR","sample-c2":"CR","sample-c3":"CR","sample-c4":"DN"}},{"id":"sample-st-02","name":"Priya Shah","studentId":"z5200002","marks":{"sample-c1":"HD","sample-c2":"PERFECT","sample-c3":"HD","sample-c4":"HD"}},{"id":"sample-st-03","name":"Jordan Lee","studentId":"z5200003","marks":{"sample-c1":"PERFECT","sample-c2":"DN","sample-c3":"HD","sample-c4":"DN"}},{"id":"sample-st-04","name":"Maya Patel","studentId":"z5200004","marks":{"sample-c1":"CR","sample-c2":"CR","sample-c3":"CR","sample-c4":"CR"}},{"id":"sample-st-05","name":"Sam Taylor","studentId":"z5200005","marks":{"sample-c1":"CR","sample-c2":"CR","sample-c3":"FL","sample-c4":"FL"}},{"id":"sample-st-06","name":"Olivia Nguyen","studentId":"z5200006","marks":{"sample-c1":"CR","sample-c2":"DN","sample-c3":"DN","sample-c4":"DN"}},{"id":"sample-st-07","name":"Kai Thompson","studentId":"z5200007","marks":{"sample-c1":"FL","sample-c2":"FL","sample-c3":"FL","sample-c4":"PS"}},{"id":"sample-st-08","name":"Amira Hassan","studentId":"z5200008","marks":{"sample-c1":"CR","sample-c2":"CR","sample-c3":"DN","sample-c4":"DN"}},{"id":"sample-st-09","name":"Charlie Wilson","studentId":"z5200009","marks":{"sample-c1":"FL","sample-c2":"FL","sample-c3":"PS","sample-c4":"NONE"}},{"id":"sample-st-10","name":"Isabella Wong","studentId":"z5200010","marks":{"sample-c1":"DN","sample-c2":"DN","sample-c3":"CR","sample-c4":"DN"}},{"id":"sample-st-11","name":"Noah Martin","studentId":"z5200011","marks":{"sample-c1":"PS","sample-c2":"PS","sample-c3":"CR","sample-c4":"PS"}},{"id":"sample-st-12","name":"Sofia Garcia","studentId":"z5200012","marks":{"sample-c1":"DN","sample-c2":"DN","sample-c3":"DN","sample-c4":"CR"}},{"id":"sample-st-13","name":"Ethan Park","studentId":"z5200013","marks":{"sample-c1":"NONE","sample-c2":"FL","sample-c3":"FL","sample-c4":"FL"}},{"id":"sample-st-14","name":"Zara Ali","studentId":"z5200014","marks":{"sample-c1":"CR","sample-c2":"DN","sample-c3":"PS","sample-c4":"PS"}},{"id":"sample-st-15","name":"Luca Rossi","studentId":"z5200015","marks":{"sample-c1":"DN","sample-c2":"DN","sample-c3":"DN","sample-c4":"CR"}},{"id":"sample-st-16","name":"Grace Kim","studentId":"z5200016","marks":{"sample-c1":"CR","sample-c2":"DN","sample-c3":"DN","sample-c4":"CR"}},{"id":"sample-st-17","name":"Avery Brown","studentId":"z5200017","marks":{"sample-c1":"DN","sample-c2":"HD","sample-c3":"CR","sample-c4":"DN"}},{"id":"sample-st-18","name":"Elijah Davis","studentId":"z5200018","marks":{"sample-c1":"PS","sample-c2":"PS","sample-c3":"PS","sample-c4":"PS"}},{"id":"sample-st-19","name":"Mia Robinson","studentId":"z5200019","marks":{"sample-c1":"FL","sample-c2":"PS","sample-c3":"FL","sample-c4":"FL"}},{"id":"sample-st-20","name":"Harper Singh","studentId":"z5200020","marks":{"sample-c1":"CR","sample-c2":"DN","sample-c3":"CR","sample-c4":"CR"}},{"id":"sample-st-21","name":"Leo Johnson","studentId":"z5200021","marks":{"sample-c1":"CR","sample-c2":"DN","sample-c3":"HD","sample-c4":"DN"}},{"id":"sample-st-22","name":"Aisha Rahman","studentId":"z5200022","marks":{"sample-c1":"PS","sample-c2":"PS","sample-c3":"PS","sample-c4":"PS"}},{"id":"sample-st-23","name":"Oscar Miller","studentId":"z5200023","marks":{"sample-c1":"FL","sample-c2":"PS","sample-c3":"PS","sample-c4":"PS"}},{"id":"sample-st-24","name":"Ruby Evans","studentId":"z5200024","marks":{"sample-c1":"PS","sample-c2":"FL","sample-c3":"PS","sample-c4":"PS"}},{"id":"sample-st-25","name":"Daniel Cooper","studentId":"z5200025","marks":{"sample-c1":"CR","sample-c2":"DN","sample-c3":"HD","sample-c4":"DN"}},{"id":"sample-st-26","name":"Chloe Lim","studentId":"z5200026","marks":{"sample-c1":"DN","sample-c2":"DN","sample-c3":"DN","sample-c4":"DN"}},{"id":"sample-st-27","name":"Riley Morgan","studentId":"z5200027","marks":{"sample-c1":"CR","sample-c2":"DN","sample-c3":"HD","sample-c4":"DN"}},{"id":"sample-st-28","name":"Hannah Scott","studentId":"z5200028","marks":{"sample-c1":"HD","sample-c2":"HD","sample-c3":"DN","sample-c4":"DN"}},{"id":"sample-st-29","name":"Aria Thomas","studentId":"z5200029","marks":{"sample-c1":"CR","sample-c2":"CR","sample-c3":"HD"}},{"id":"sample-st-30","name":"Finn Walker","studentId":"z5200030","marks":{"sample-c1":"DN","sample-c2":"DN","sample-c3":"DN"}}],"selectedStudentId":"sample-st-01"}],"selectedAssignmentId":"sample-assignment-1"}};
+document.querySelector('#sampleBtn').addEventListener('click', async () => {
+  if (!confirm('Load the sample class with populated rubric marks? This will replace the current local workspace. Export your existing data first if needed.')) return;
+  try {
+    state = validateImportedState(EMBEDDED_SAMPLE);
+    saveState();
+    render();
+  } catch (error) {
+    alert(`Unable to load sample: ${error.message}`);
+  }
+});

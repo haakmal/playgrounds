@@ -335,3 +335,68 @@ h2 { margin-bottom: 0; font-size: 1.2rem; }
   .config-body .reference-band { flex-direction:row; border-right:0; border-bottom:1px solid var(--line); }
 }
 @media print { .configuration-drawer, .roster-column { display:none !important; } }
+
+
+/* v4 — edge-to-edge editorial marking workspace */
+:root { --max: none; }
+.app-header { padding: 18px 28px; }
+.app-shell { width: 100%; margin: 0; padding: 18px 24px 44px; display:grid; grid-template-columns: minmax(330px, 37%) minmax(0,1fr); align-items:start; gap:18px; }
+.setup-region { width:100%; padding:16px 24px 0; }
+.setup-region .configuration-drawer { width:100%; }
+.setup-region .configuration-drawer > summary { padding:13px 18px; }
+.setup-region .config-body { grid-template-columns:minmax(270px,1fr) minmax(330px,1.2fr) minmax(280px,1fr); gap:12px; padding:12px; align-items:start; }
+.setup-region .config-body .panel { min-width:0; height:100%; }
+.setup-region .config-body .assignment-toolbar { grid-template-columns:minmax(0,1fr) auto auto; }
+.setup-region .config-body .band-reference { grid-template-columns:1fr; }
+.setup-region .config-body .reference-band { flex-direction:row; min-height:0; align-items:center; border-right:0; border-bottom:1px solid var(--line); padding:7px 9px; }
+.setup-region .config-body .reference-band:last-child { border-bottom:0; }
+.roster-column { min-width:0; }
+.roster-column .panel, .workspace-column .panel { padding:20px; }
+.roster-column .student-table-wrap { max-height:calc(100vh - 325px); min-height:240px; }
+.workspace-column { display:grid; gap:14px; min-width:0; }
+.workspace-column .analytics-panel { display:block; }
+.workspace-column .analytics-panel .section-heading { flex-wrap:wrap; align-items:center; }
+.workspace-column .stats-grid { grid-template-columns:repeat(4,minmax(0,1fr)); }
+.workspace-column .stat:nth-child(2) { border-right:1px solid var(--line); }
+.workspace-column .stat:nth-child(-n+2) { border-bottom:0; }
+.workspace-column .stat:last-child { border-right:0; }
+.workspace-column .analytics-chart { min-height:150px; }
+.header-actions { align-items:center; }
+.header-actions button { min-height:36px; padding:0 11px; }
+@media (max-width:1320px) {
+  .setup-region .config-body { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .setup-region .config-body .reference-panel { grid-column:1/-1; }
+  .setup-region .config-body .band-reference { grid-template-columns:repeat(7,minmax(0,1fr)); }
+  .setup-region .config-body .reference-band { flex-direction:column; align-items:start; border-right:1px solid var(--line); border-bottom:0; }
+  .setup-region .config-body .reference-band:last-child { border-right:0; }
+}
+@media (max-width:980px) {
+  .app-shell { grid-template-columns:minmax(275px,38%) minmax(0,1fr); padding:16px; gap:12px; }
+  .setup-region { padding:12px 16px 0; }
+  .roster-column .panel, .workspace-column .panel { padding:14px; }
+  .setup-region .config-body .assignment-toolbar { grid-template-columns:1fr; }
+  .band-option span { min-height:60px; }
+  .workspace-column .stats-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .workspace-column .stat:nth-child(2) { border-right:0; }
+  .workspace-column .stat:nth-child(-n+2) { border-bottom:1px solid var(--line); }
+}
+@media (max-width:760px) {
+  .app-header { padding:16px; }
+  .app-shell { grid-template-columns:1fr; }
+  .roster-column .student-table-wrap { min-height:0; max-height:340px; }
+  .setup-region .config-body { grid-template-columns:1fr; }
+  .setup-region .config-body .reference-panel { grid-column:auto; }
+}
+@media (max-width:520px) {
+  .setup-region .config-body .band-reference { grid-template-columns:1fr; }
+  .setup-region .config-body .reference-band { flex-direction:row; border-right:0; border-bottom:1px solid var(--line); }
+  .roster-column .student-entry-grid { grid-template-columns:1fr; }
+  .roster-column .student-entry-grid button { grid-column:auto; }
+}
+@media print {
+  .setup-region, .roster-column, .workspace-column .analytics-panel { display:none !important; }
+  .app-shell { display:block; padding:0; margin:0; width:100%; }
+  .workspace-column { display:block; }
+  .workspace-column .marking-panel { border:0; padding:0; }
+  .band-options { grid-template-columns:repeat(7,minmax(0,1fr)); }
+}

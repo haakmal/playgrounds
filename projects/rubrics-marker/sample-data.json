@@ -1,0 +1,367 @@
+{
+  "format": "moodle-rubric-marker",
+  "version": 1,
+  "data": {
+    "className": "DDES2150 / Interaction Design 2 — Sample class",
+    "assignments": [
+      {
+        "id": "sample-assignment-1",
+        "name": "AT2 / Contextual Design Project",
+        "criteria": [
+          {
+            "id": "sample-c1",
+            "title": "Research and contextual understanding",
+            "weight": 30
+          },
+          {
+            "id": "sample-c2",
+            "title": "Design rationale and development",
+            "weight": 30
+          },
+          {
+            "id": "sample-c3",
+            "title": "Prototype and interaction quality",
+            "weight": 25
+          },
+          {
+            "id": "sample-c4",
+            "title": "Reflection and communication",
+            "weight": 15
+          }
+        ],
+        "students": [
+          {
+            "id": "sample-st-01",
+            "name": "Alex Chen",
+            "studentId": "z5200001",
+            "marks": {
+              "sample-c1": "CR",
+              "sample-c2": "CR",
+              "sample-c3": "CR",
+              "sample-c4": "DN"
+            }
+          },
+          {
+            "id": "sample-st-02",
+            "name": "Priya Shah",
+            "studentId": "z5200002",
+            "marks": {
+              "sample-c1": "HD",
+              "sample-c2": "PERFECT",
+              "sample-c3": "HD",
+              "sample-c4": "HD"
+            }
+          },
+          {
+            "id": "sample-st-03",
+            "name": "Jordan Lee",
+            "studentId": "z5200003",
+            "marks": {
+              "sample-c1": "PERFECT",
+              "sample-c2": "DN",
+              "sample-c3": "HD",
+              "sample-c4": "DN"
+            }
+          },
+          {
+            "id": "sample-st-04",
+            "name": "Maya Patel",
+            "studentId": "z5200004",
+            "marks": {
+              "sample-c1": "CR",
+              "sample-c2": "CR",
+              "sample-c3": "CR",
+              "sample-c4": "CR"
+            }
+          },
+          {
+            "id": "sample-st-05",
+            "name": "Sam Taylor",
+            "studentId": "z5200005",
+            "marks": {
+              "sample-c1": "CR",
+              "sample-c2": "CR",
+              "sample-c3": "FL",
+              "sample-c4": "FL"
+            }
+          },
+          {
+            "id": "sample-st-06",
+            "name": "Olivia Nguyen",
+            "studentId": "z5200006",
+            "marks": {
+              "sample-c1": "CR",
+              "sample-c2": "DN",
+              "sample-c3": "DN",
+              "sample-c4": "DN"
+            }
+          },
+          {
+            "id": "sample-st-07",
+            "name": "Kai Thompson",
+            "studentId": "z5200007",
+            "marks": {
+              "sample-c1": "FL",
+              "sample-c2": "FL",
+              "sample-c3": "FL",
+              "sample-c4": "PS"
+            }
+          },
+          {
+            "id": "sample-st-08",
+            "name": "Amira Hassan",
+            "studentId": "z5200008",
+            "marks": {
+              "sample-c1": "CR",
+              "sample-c2": "CR",
+              "sample-c3": "DN",
+              "sample-c4": "DN"
+            }
+          },
+          {
+            "id": "sample-st-09",
+            "name": "Charlie Wilson",
+            "studentId": "z5200009",
+            "marks": {
+              "sample-c1": "FL",
+              "sample-c2": "FL",
+              "sample-c3": "PS",
+              "sample-c4": "NONE"
+            }
+          },
+          {
+            "id": "sample-st-10",
+            "name": "Isabella Wong",
+            "studentId": "z5200010",
+            "marks": {
+              "sample-c1": "DN",
+              "sample-c2": "DN",
+              "sample-c3": "CR",
+              "sample-c4": "DN"
+            }
+          },
+          {
+            "id": "sample-st-11",
+            "name": "Noah Martin",
+            "studentId": "z5200011",
+            "marks": {
+              "sample-c1": "PS",
+              "sample-c2": "PS",
+              "sample-c3": "CR",
+              "sample-c4": "PS"
+            }
+          },
+          {
+            "id": "sample-st-12",
+            "name": "Sofia Garcia",
+            "studentId": "z5200012",
+            "marks": {
+              "sample-c1": "DN",
+              "sample-c2": "DN",
+              "sample-c3": "DN",
+              "sample-c4": "CR"
+            }
+          },
+          {
+            "id": "sample-st-13",
+            "name": "Ethan Park",
+            "studentId": "z5200013",
+            "marks": {
+              "sample-c1": "NONE",
+              "sample-c2": "FL",
+              "sample-c3": "FL",
+              "sample-c4": "FL"
+            }
+          },
+          {
+            "id": "sample-st-14",
+            "name": "Zara Ali",
+            "studentId": "z5200014",
+            "marks": {
+              "sample-c1": "CR",
+              "sample-c2": "DN",
+              "sample-c3": "PS",
+              "sample-c4": "PS"
+            }
+          },
+          {
+            "id": "sample-st-15",
+            "name": "Luca Rossi",
+            "studentId": "z5200015",
+            "marks": {
+              "sample-c1": "DN",
+              "sample-c2": "DN",
+              "sample-c3": "DN",
+              "sample-c4": "CR"
+            }
+          },
+          {
+            "id": "sample-st-16",
+            "name": "Grace Kim",
+            "studentId": "z5200016",
+            "marks": {
+              "sample-c1": "CR",
+              "sample-c2": "DN",
+              "sample-c3": "DN",
+              "sample-c4": "CR"
+            }
+          },
+          {
+            "id": "sample-st-17",
+            "name": "Avery Brown",
+            "studentId": "z5200017",
+            "marks": {
+              "sample-c1": "DN",
+              "sample-c2": "HD",
+              "sample-c3": "CR",
+              "sample-c4": "DN"
+            }
+          },
+          {
+            "id": "sample-st-18",
+            "name": "Elijah Davis",
+            "studentId": "z5200018",
+            "marks": {
+              "sample-c1": "PS",
+              "sample-c2": "PS",
+              "sample-c3": "PS",
+              "sample-c4": "PS"
+            }
+          },
+          {
+            "id": "sample-st-19",
+            "name": "Mia Robinson",
+            "studentId": "z5200019",
+            "marks": {
+              "sample-c1": "FL",
+              "sample-c2": "PS",
+              "sample-c3": "FL",
+              "sample-c4": "FL"
+            }
+          },
+          {
+            "id": "sample-st-20",
+            "name": "Harper Singh",
+            "studentId": "z5200020",
+            "marks": {
+              "sample-c1": "CR",
+              "sample-c2": "DN",
+              "sample-c3": "CR",
+              "sample-c4": "CR"
+            }
+          },
+          {
+            "id": "sample-st-21",
+            "name": "Leo Johnson",
+            "studentId": "z5200021",
+            "marks": {
+              "sample-c1": "CR",
+              "sample-c2": "DN",
+              "sample-c3": "HD",
+              "sample-c4": "DN"
+            }
+          },
+          {
+            "id": "sample-st-22",
+            "name": "Aisha Rahman",
+            "studentId": "z5200022",
+            "marks": {
+              "sample-c1": "PS",
+              "sample-c2": "PS",
+              "sample-c3": "PS",
+              "sample-c4": "PS"
+            }
+          },
+          {
+            "id": "sample-st-23",
+            "name": "Oscar Miller",
+            "studentId": "z5200023",
+            "marks": {
+              "sample-c1": "FL",
+              "sample-c2": "PS",
+              "sample-c3": "PS",
+              "sample-c4": "PS"
+            }
+          },
+          {
+            "id": "sample-st-24",
+            "name": "Ruby Evans",
+            "studentId": "z5200024",
+            "marks": {
+              "sample-c1": "PS",
+              "sample-c2": "FL",
+              "sample-c3": "PS",
+              "sample-c4": "PS"
+            }
+          },
+          {
+            "id": "sample-st-25",
+            "name": "Daniel Cooper",
+            "studentId": "z5200025",
+            "marks": {
+              "sample-c1": "CR",
+              "sample-c2": "DN",
+              "sample-c3": "HD",
+              "sample-c4": "DN"
+            }
+          },
+          {
+            "id": "sample-st-26",
+            "name": "Chloe Lim",
+            "studentId": "z5200026",
+            "marks": {
+              "sample-c1": "DN",
+              "sample-c2": "DN",
+              "sample-c3": "DN",
+              "sample-c4": "DN"
+            }
+          },
+          {
+            "id": "sample-st-27",
+            "name": "Riley Morgan",
+            "studentId": "z5200027",
+            "marks": {
+              "sample-c1": "CR",
+              "sample-c2": "DN",
+              "sample-c3": "HD",
+              "sample-c4": "DN"
+            }
+          },
+          {
+            "id": "sample-st-28",
+            "name": "Hannah Scott",
+            "studentId": "z5200028",
+            "marks": {
+              "sample-c1": "HD",
+              "sample-c2": "HD",
+              "sample-c3": "DN",
+              "sample-c4": "DN"
+            }
+          },
+          {
+            "id": "sample-st-29",
+            "name": "Aria Thomas",
+            "studentId": "z5200029",
+            "marks": {
+              "sample-c1": "CR",
+              "sample-c2": "CR",
+              "sample-c3": "HD"
+            }
+          },
+          {
+            "id": "sample-st-30",
+            "name": "Finn Walker",
+            "studentId": "z5200030",
+            "marks": {
+              "sample-c1": "DN",
+              "sample-c2": "DN",
+              "sample-c3": "DN"
+            }
+          }
+        ],
+        "selectedStudentId": "sample-st-01"
+      }
+    ],
+    "selectedAssignmentId": "sample-assignment-1"
+  }
+}
