@@ -65,12 +65,12 @@ Combined results are calculated once the required assessment marks are available
 
 ## Importing a Moodle student roster
 
-Marking Minion supports CSV files using Moodle's student roster structure:
+Marking Minion supports CSV files using Moodle's student roster structure for easy import:
 
 | First name | Last name | Username | Email address    | Groups           |
 | ---------- | --------- | -------- | ---------------- | ---------------- |
-| John       | Doe       | z000001  | john@example.com | Thursday [10061] |
-| Jane       | Smith     | z000002  | jane@example.com | Thursday [10061] |
+| John       | Doe       | z000001  | john@example.com | Thursday [12345] |
+| Jane       | Smith     | z000002  | jane@example.com | Thursday [12345] |
 
 The importer combines first and last names into a student name and uses the Moodle username as the student identifier.
 
