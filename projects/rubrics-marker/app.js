@@ -406,3 +406,85 @@ els.resetBtn.addEventListener('click', () => {
 });
 
 render();
+
+// Cohort analytics deliberately exclude incomplete rubrics.
+let analyticsView = 'distribution';
+const statsGrid = document.querySelector('#statsGrid');
+const analyticsChart = document.querySelector('#analyticsChart');
+const analyticsNote = document.querySelector('#analyticsNote');
+const gradeCounts = document.querySelector('#gradeCounts');
+const distributionBtn = document.querySelector('#distributionBtn');
+const curveBtn = document.querySelector('#curveBtn');
+const baseRender = render;
+render = function () {
+  baseRender();
+  updateWorkspaceHeading();
+  renderAnalytics();
+};
+function updateWorkspaceHeading() {
+  document.querySelector('#workspaceAssessment').textContent = currentAssignment().name || 'Untitled assignment';
+  document.querySelector('#workspaceClass').textContent = state.className || 'Class not named';
+}
+function completedStudents() {
+  const assignment = currentAssignment();
+  if (!assignment.criteria.length || Math.abs(totalWeight(assignment) - 100) > 0.000001) return [];
+  return assignment.students.filter(s => assignment.criteria.every(c => BANDS.some(b => b.key === s.marks?.[c.id])));
+}
+function statsOf(values) {
+  const n = values.length;
+  const mean = values.reduce((a,b) => a+b, 0) / n;
+  const sorted = [...values].sort((a,b) => a-b);
+  const median = n % 2 ? sorted[(n-1)/2] : (sorted[n/2-1]+sorted[n/2])/2;
+  const sd = Math.sqrt(values.reduce((sum,x) => sum+(x-mean)**2, 0)/n);
+  return { mean, median, sd };
+}
+function renderAnalytics() {
+  const a = currentAssignment();
+  updateWorkspaceHeading();
+  const complete = completedStudents();
+  const marks = complete.map(s => calculateStudent(s, a));
+  const n = marks.length;
+  const {mean,median,sd} = n ? statsOf(marks) : {mean:0,median:0,sd:0};
+  statsGrid.innerHTML = [
+    ['Marked', `${n} / ${a.students.length}`],
+    ['Mean', n ? formatMark(mean) : '—'],
+    ['Median', n ? formatMark(median) : '—'],
+    ['Std. deviation', n ? formatMark(sd) : '—']
+  ].map(([label,value]) => `<div class="stat"><strong>${value}</strong><span>${label}</span></div>`).join('');
+  distributionBtn.classList.toggle('is-current', analyticsView === 'distribution');
+  curveBtn.classList.toggle('is-current', analyticsView === 'curve');
+  analyticsNote.textContent = n ? `Based on ${n} fully marked ${n === 1 ? 'student' : 'students'}. ${a.students.length-n} incomplete ${a.students.length-n === 1 ? 'record is' : 'records are'} excluded. ${analyticsView === 'curve' ? 'The curve is a normal-distribution reference fitted to this cohort, not a grading target.' : 'Bars show observed marks in 10-point intervals.'}` : 'No completed rubrics yet. Each criterion must have a selected band, and rubric weightings must total 100%.';
+  const grades = ['FL','PS','CR','DN','HD'];
+  gradeCounts.innerHTML = grades.map(g => `<span><strong>${g}</strong> ${marks.filter(m => gradeForMark(m) === g).length}</span>`).join('');
+  if (!n) { analyticsChart.innerHTML = '<div class="empty-state">Complete a student rubric to see the mark distribution.</div>'; return; }
+  const bins = Array(10).fill(0);
+  for (const mark of marks) bins[Math.min(9, Math.floor(mark/10))]++;
+  const W=800,H=265,L=40,R=16,T=14,B=36, chartW=W-L-R, chartH=H-T-B;
+  const normal = (x) => sd > 0 ? Math.exp(-.5*((x-mean)/sd)**2)/(sd*Math.sqrt(2*Math.PI))*n*10 : 0;
+  const maxY = Math.max(1,...bins, ...(analyticsView === 'curve' && sd > 0 ? Array.from({length:101},(_,i)=>normal(i)) : []));
+  const y = v => T+chartH-(v/maxY)*chartH;
+  let lines = '';
+  for (let k=0;k<=4;k++) { const v=maxY*k/4; const py=y(v); lines += `<line x1="${L}" x2="${W-R}" y1="${py}" y2="${py}" stroke="#ddd"/><text x="${L-8}" y="${py+4}" text-anchor="end" font-size="11" fill="#666">${formatMark(v)}</text>`; }
+  let bars = bins.map((v,i) => { const x=L+i*chartW/10+3; const bw=chartW/10-6; return `<rect x="${x}" y="${y(v)}" width="${bw}" height="${Math.max(0,T+chartH-y(v))}" fill="#333"/><title>${i*10}–${i===9 ? 100 : i*10+9}: ${v} students</title>`; }).join('');
+  let curve = '';
+  if (analyticsView === 'curve' && sd > 0) {
+    const points = Array.from({length:201},(_,i) => { const x=i/2; return `${L+x/100*chartW},${y(normal(x))}`; }).join(' ');
+    curve = `<polyline points="${points}" fill="none" stroke="#111" stroke-width="3" stroke-dasharray="7 4"/>`;
+  }
+  const labels = Array.from({length:11},(_,i)=> `<text x="${L+i*chartW/10}" y="${H-12}" text-anchor="middle" font-size="12" fill="#666">${i*10}</text>`).join('');
+  analyticsChart.innerHTML = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" aria-label="Marks distribution chart">${lines}${bars}${curve}${labels}<line x1="${L}" x2="${W-R}" y1="${T+chartH}" y2="${T+chartH}" stroke="#111"/></svg>`;
+}
+distributionBtn.addEventListener('click', () => { analyticsView='distribution'; renderAnalytics(); });
+curveBtn.addEventListener('click', () => { analyticsView='curve'; renderAnalytics(); });
+// Keep statistics in sync with all existing marking and roster operations.
+const baseRenderStudents = renderStudents;
+renderStudents = function () { baseRenderStudents(); renderAnalytics(); };
+const baseRenderWeightStatus = renderWeightStatus;
+renderWeightStatus = function () { baseRenderWeightStatus(); renderAnalytics(); };
+const baseRenderMarking = renderMarking;
+renderMarking = function () { baseRenderMarking(); updateWorkspaceHeading(); };
+render();
+// Expose setup on first use; keep it folded for established marking sessions.
+const configurationDrawer = document.querySelector('.configuration-drawer');
+if (!state.className || !currentAssignment().name || totalWeight() !== 100) configurationDrawer.open = true;
+render();

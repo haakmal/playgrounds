@@ -246,3 +246,92 @@ h2 { margin-bottom: 0; font-size: 1.2rem; }
   .band-option input:checked + span { background: #000 !important; color: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .calculation-note { margin-top: 12px; }
 }
+
+/* Two-zone marking workspace */
+:root { --max: 1600px; }
+.app-header { padding: 18px max(24px, calc((100vw - var(--max)) / 2)); align-items:center; }
+.app-header h1 { font-size: 1.55rem; }
+.app-shell { grid-template-columns: minmax(300px, 345px) minmax(0, 1fr); align-items:start; gap:18px; }
+.setup-column, .workspace-column { display:grid; gap:14px; min-width:0; }
+.column-label { font-size:.7rem; font-weight:800; text-transform:uppercase; letter-spacing:.12em; color:var(--muted); padding: 4px 2px 0; }
+.setup-column .panel { padding:16px; }
+.setup-column .section-heading { display:block; }
+.setup-column .section-note { margin-top:6px; font-size:.79rem; }
+.setup-column .two-col, .setup-column .assignment-toolbar { grid-template-columns: minmax(0,1fr); }
+.setup-column .assignment-toolbar { gap:8px; }
+.setup-column .criterion-row { grid-template-columns: minmax(0,1fr) 75px 32px; padding:7px; gap:5px; }
+.setup-column .criterion-row input { min-width:0; }
+.setup-column .icon-button { width:32px; }
+.setup-column .band-reference { grid-template-columns: 1fr; }
+.setup-column .reference-band { flex-direction:row; align-items:center; border-right:0; border-bottom:1px solid var(--line); min-height:0; padding:7px; gap:8px; }
+.setup-column .reference-band:last-child { border-bottom:0; }
+.setup-column .reference-band strong { font-size:.76rem; }
+.setup-column .reference-band span { font-size:.95rem; }
+.workspace-intro { display:flex; align-items:end; justify-content:space-between; gap:16px; padding: 3px 2px 0; }
+.workspace-intro h2 { font-size:1.55rem; letter-spacing:-.03em; margin:0 0 3px; }
+.autosave-label { color:var(--muted); font-size:.78rem; white-space:nowrap; }
+.workspace-column .panel { padding:22px; }
+.workspace-column .marking-panel { border-color:#111; }
+.workspace-column .marking-panel .section-heading { margin-bottom:18px; }
+.workspace-column .student-entry-grid { grid-template-columns: minmax(0,1fr) minmax(0,.7fr) auto; }
+.workspace-column .student-table-wrap { max-height:340px; overflow:auto; }
+.workspace-column .student-table th { position:sticky; top:0; background:#fff; z-index:1; }
+.band-option:focus-within { outline:2px solid #111; outline-offset:-2px; z-index:1; }
+.band-option span { min-height:64px; }
+.analytics-panel .chart-controls { display:flex; gap:0; }
+.chart-controls button { min-height:34px; padding:0 12px; }
+.chart-controls button + button { border-left:0; }
+.chart-controls .is-current { color:#fff; background:#111; }
+.stats-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); border:1px solid var(--line); margin-bottom:16px; }
+.stat { padding:12px; border-right:1px solid var(--line); min-width:0; }
+.stat:last-child { border-right:0; }
+.stat strong { display:block; font-size:1.65rem; letter-spacing:-.04em; font-variant-numeric:tabular-nums; }
+.stat span { color:var(--muted); font-size:.75rem; text-transform:uppercase; font-weight:700; letter-spacing:.05em; }
+.analytics-chart { margin-top:14px; width:100%; min-height:220px; }
+.analytics-chart svg { width:100%; height:auto; display:block; }
+.grade-counts { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+.grade-counts span { border:1px solid var(--line); padding:6px 10px; font-size:.82rem; }
+@media (max-width:1000px) { .app-shell { grid-template-columns:260px minmax(0,1fr); } .workspace-column .student-entry-grid { grid-template-columns: 1fr 1fr; } .student-entry-grid button { grid-column:1/-1; } .band-options { grid-template-columns:repeat(7,minmax(0,1fr)); } .band-option { border-right:1px solid var(--line); border-bottom:0; } .band-option span { flex-direction:column; justify-content:center; text-align:center; } .marking-item-head { grid-template-columns:1fr auto; } .marking-item-score { grid-column:1/-1; } }
+@media (max-width:740px) { .app-shell { grid-template-columns:1fr; } .setup-column { display:block; } .setup-column .setup-panel, .setup-column .criteria-panel, .setup-column .reference-panel { margin-bottom:10px; } .setup-column .band-reference { grid-template-columns:repeat(7,minmax(0,1fr)); } .setup-column .reference-band { display:flex; flex-direction:column; align-items:start; border-right:1px solid var(--line); border-bottom:0; } .workspace-intro { align-items:start; flex-direction:column; } .stats-grid { grid-template-columns:repeat(2,1fr); } .stat:nth-child(2) { border-right:0; } .stat:nth-child(-n+2) { border-bottom:1px solid var(--line); } .band-options { grid-template-columns:repeat(7,minmax(0,1fr)); } }
+@media (max-width:520px) { .band-options { grid-template-columns:repeat(4,minmax(0,1fr)); } .band-option { border-bottom:1px solid var(--line); } .workspace-column .panel { padding:14px; } .workspace-column .student-entry-grid { grid-template-columns:1fr; } .workspace-column .student-entry-grid button { grid-column:auto; } .setup-column .band-reference { grid-template-columns:1fr; } .setup-column .reference-band { flex-direction:row; border-right:0; border-bottom:1px solid var(--line); } .section-heading { align-items:start; } .analytics-panel .section-heading { flex-wrap:wrap; } }
+@media print { .app-shell { display:block; } .workspace-column { display:block; } .workspace-intro, .analytics-panel, .student-table-wrap { display:none !important; } .workspace-column .marking-panel { border:0; padding:0; } }
+
+/* Roster-first layout: persistent student navigation on the left. */
+.app-shell { grid-template-columns:minmax(320px, 420px) minmax(0,1fr); align-items:start; }
+.roster-column { min-width:0; display:grid; gap:14px; }
+.roster-column .panel { padding:16px; }
+.roster-column .student-entry-grid { grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:8px; }
+.roster-column .student-entry-grid button { grid-column:1/-1; }
+.roster-column .student-table-wrap { max-height:min(54vh,650px); overflow:auto; }
+.roster-column .student-table th { position:sticky; top:0; z-index:1; background:#fff; }
+.roster-column .student-table th, .roster-column .student-table td { padding:9px 6px; }
+.roster-column .row-actions button { padding:0 6px; }
+.roster-column .analytics-panel .section-heading { flex-wrap:wrap; align-items:start; }
+.roster-column .stats-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.roster-column .stat:nth-child(2) { border-right:0; }
+.roster-column .stat:nth-child(-n+2) { border-bottom:1px solid var(--line); }
+.configuration-drawer { border:1px solid var(--line-strong); background:#fff; }
+.configuration-drawer > summary { cursor:pointer; font-size:.95rem; font-weight:750; padding:16px 20px; list-style-position:inside; }
+.configuration-drawer > summary:hover { background:var(--hover); }
+.configuration-drawer[open] > summary { border-bottom:1px solid var(--line); }
+.config-body { display:grid; gap:12px; padding:12px; }
+.config-body .panel { padding:16px; }
+.config-body .reference-panel .band-reference { grid-template-columns:repeat(7,minmax(0,1fr)); }
+.config-body .reference-band { flex-direction:column; align-items:start; border-bottom:0; border-right:1px solid var(--line); }
+.config-body .reference-band:last-child { border-right:0; }
+@media (max-width:1100px) {
+  .app-shell { grid-template-columns:minmax(280px,340px) minmax(0,1fr); }
+  .config-body .reference-panel .band-reference { grid-template-columns:1fr; }
+  .config-body .reference-band { flex-direction:row; border-right:0; border-bottom:1px solid var(--line); }
+}
+@media (max-width:740px) {
+  .app-shell { grid-template-columns:1fr; }
+  .roster-column .student-table-wrap { max-height:320px; }
+  .config-body .reference-panel .band-reference { grid-template-columns:repeat(7,minmax(0,1fr)); }
+  .config-body .reference-band { flex-direction:column; border-bottom:0; border-right:1px solid var(--line); }
+}
+@media (max-width:520px) {
+  .config-body .reference-panel .band-reference { grid-template-columns:1fr; }
+  .config-body .reference-band { flex-direction:row; border-right:0; border-bottom:1px solid var(--line); }
+}
+@media print { .configuration-drawer, .roster-column { display:none !important; } }
