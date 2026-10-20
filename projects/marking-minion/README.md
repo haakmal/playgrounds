@@ -83,8 +83,12 @@ The pencil beside a student's final assessment mark allows tutors to enter an ov
 > [!NOTE]
 > An asterisk (`*`) beside a mark indicates that the assessment mark was entered manually. This distinction is also carried into the student roster and printed registers so be mindful when sharing results anywhere. The asterisk signals an override, not an additional penalty or grade adjustment.
 
+### Late Submissions
+
 > [!IMPORTANT]
-> This tool does not calculate late penalties on purpose. It is a companion tool to make marking easier rather than relying on Moodle's clunky interface. We still have to go in and update it there and that is where late penalties can be applied. Use this tool only for reference and own records. Moodle should always be the final calculation source.
+> This tool does not calculate late penalties on purpose. It is a companion tool to make marking easier rather than relying on Moodle's clunky interface. We still have to go in and update it there and that is where late penalties can be applied formally. Use this tool only for reference and own records. Moodle should always be the final calculation source.
+
+Late submissions are for guidance only and aimed at instances where there may be submissions across platforms (e.g. Moodle and Padlet). To observe the latest submission timestamp, graders can input the deadline in the setup for an assessment and check against submission time where necessary.
 
 ## Assessment analytics
 
