@@ -1,4 +1,17 @@
 :root {
+  /* Shared interface scale — tune here for future adjustments. */
+  --ui-text: .875rem;
+  --ui-text-small: .78rem;
+  --ui-label-text: .73rem;
+  --ui-roster-text: .875rem;
+  --ui-heading: clamp(1.1rem, 1rem + .32vw, 1.3rem);
+  --ui-title: clamp(1.5rem, 1.35rem + .55vw, 1.95rem);
+  --ui-control-height: 36px;
+  --ui-icon-size: 30px;
+  --ui-padding-x: 10px;
+  --ui-panel-padding: clamp(13px, 1.4vw, 20px);
+  --ui-gap: 10px;
+
   --bg: #f5f5f5;
   --panel: #ffffff;
   --ink: #111111;
@@ -738,38 +751,51 @@ button.danger:not(#resetBtn):not(:disabled):hover,
   .result-value-stack .manual-mark-editor input { font-size:1.65rem; }
 }
 
-/* v1.3 responsive workspace refinement — append after existing screen rules. */
+
+/* Unified screen sizing: fields, buttons, labels and roster share one scale. */
 @media screen {
+  body { font-size: var(--ui-text); }
   .app-header, .app-shell, .setup-region { min-width: 0; }
-  .app-header { gap: clamp(8px, 1.3vw, 20px); padding: clamp(12px, 1.5vw, 18px) clamp(12px, 2vw, 28px); flex-wrap: wrap; }
-  .app-header h1 { font-size: clamp(1.15rem, 1.8vw, 1.55rem); line-height: 1.15; }
-  .header-actions { gap: 6px; min-width: 0; }
-  .header-actions button { font-size: clamp(.7rem, .85vw, .83rem); padding-inline: 9px; }
-  .app-shell { grid-template-columns: minmax(0, 35%) minmax(0, 1fr); gap: clamp(10px, 1.5vw, 18px); padding-inline: clamp(12px, 1.8vw, 24px); }
+  .app-header { gap: var(--ui-gap); padding: 16px clamp(14px, 2vw, 28px); flex-wrap: wrap; }
+  .app-header h1 { font-size: var(--ui-title); line-height: 1.16; }
+  .app-shell { grid-template-columns: minmax(0, 35%) minmax(0, 1fr); gap: clamp(12px, 1.4vw, 18px); padding-inline: clamp(12px, 1.8vw, 24px); }
   .roster-column, .workspace-column, .roster-column .panel, .workspace-column .panel { min-width: 0; }
-  .roster-column .panel, .workspace-column .panel { padding: clamp(12px, 1.3vw, 20px); }
-  .section-heading { min-width: 0; gap: 10px; }
-  .section-heading h2, .workspace-intro h2 { font-size: clamp(.98rem, 1.15vw, 1.25rem); line-height: 1.2; overflow-wrap: anywhere; }
-  .section-note, .autosave-label { font-size: clamp(.72rem, .82vw, .86rem); }
+  .roster-column .panel, .workspace-column .panel { padding: var(--ui-panel-padding); }
+  .section-heading { min-width: 0; gap: var(--ui-gap); }
+  .section-heading h2, .workspace-intro h2 { font-size: var(--ui-heading); line-height: 1.2; overflow-wrap: anywhere; }
+  .section-note, .autosave-label { font-size: var(--ui-text-small); }
+  button, input, select { font-size: var(--ui-text); }
+  button, input, select { min-height: var(--ui-control-height); }
+  button { padding-inline: var(--ui-padding-x); }
+  input, select { padding: 6px var(--ui-padding-x); }
+  .header-actions { gap: 6px; min-width: 0; }
+  .header-actions button { font-size: var(--ui-text-small); min-height: var(--ui-control-height); padding-inline: var(--ui-padding-x); }
+  .student-entry-grid { grid-template-columns: minmax(0, 1fr) minmax(0, .8fr) auto; gap: 8px; }
+  .student-entry-grid > * { min-width: 0; }
+  .student-entry-grid button { white-space: nowrap; }
+  label > span, .print-record-meta span { font-size: var(--ui-label-text); }
   .roster-column .student-table { width: 100%; table-layout: fixed; }
-  .roster-column .student-table th, .roster-column .student-table td { padding: 9px 5px; vertical-align: top; font-size: clamp(.72rem, .8vw, .88rem); }
-  .roster-column .student-table th { font-size: clamp(.62rem, .7vw, .72rem); letter-spacing: .025em; overflow-wrap: anywhere; }
-  .roster-column .student-table td:first-child { white-space: normal; overflow-wrap: anywhere; word-break: normal; line-height: 1.35; font-weight: 400; }
+  .roster-column .student-table th, .roster-column .student-table td { padding: 9px 6px; vertical-align: top; }
+  .roster-column .student-table td { font-size: var(--ui-roster-text); line-height: 1.4; overflow-wrap: anywhere; }
+  .roster-column .student-table th { font-size: var(--ui-label-text); letter-spacing: .025em; overflow-wrap: anywhere; }
+  .roster-column .student-table td:first-child { white-space: normal; word-break: normal; font-weight: 400; }
   .roster-column .student-table th:first-child, .roster-column .student-table td:first-child { width: 36%; text-align: left; }
   .roster-column .student-table th:nth-child(2), .roster-column .student-table td:nth-child(2) { width: 24%; }
   .roster-column .student-table th:nth-child(3), .roster-column .student-table td:nth-child(3) { width: 15%; }
   .roster-column .student-table th:nth-child(4), .roster-column .student-table td:nth-child(4) { width: 13%; }
   .roster-column .student-table th:nth-child(5), .roster-column .student-table td:nth-child(5) { width: 12%; }
-  .roster-column .student-table td { overflow-wrap: anywhere; }
-  .roster-column .row-actions button { width: 28px; min-width: 28px; padding: 0; }
-  .workspace-column .marking-panel > .section-heading #markingTitle { font-size: clamp(1rem, 1.35vw, 1.25rem); line-height: 1.2; }
+  .roster-column .row-actions button, .row-actions .remove-student { width: var(--ui-icon-size); min-width: var(--ui-icon-size); min-height: var(--ui-icon-size); padding: 0; }
+  .workspace-column .marking-panel > .section-heading #markingTitle { font-size: var(--ui-heading); line-height: 1.2; }
   .marking-criteria.layout-rows .marking-item { grid-template-columns: minmax(125px, 1fr) minmax(0, 2.2fr); }
-  .marking-criteria.layout-rows .marking-item-title { font-size: clamp(.72rem, .83vw, .82rem); }
+  .marking-criteria.layout-rows .marking-item-title { font-size: var(--ui-text-small); }
   .marking-criteria.layout-rows .band-option > span { min-width: 0; }
-  .marking-criteria.layout-rows .band-code { font-size: clamp(.62rem, .72vw, .72rem); }
-  .stats-grid .stat strong { font-size: clamp(1.15rem, 1.5vw, 1.65rem); }
+  .marking-criteria.layout-rows .band-code { font-size: var(--ui-label-text); }
+  .nav-group button { width: var(--ui-icon-size); min-height: var(--ui-icon-size); padding: 0; }
+  .print-controls, .print-controls #printBtn, .print-controls .print-select-label select { min-height: var(--ui-control-height); }
+  .print-controls .print-select-label select, .print-controls #printBtn { font-size: var(--ui-text-small); }
+  .stats-grid .stat strong { font-size: clamp(1.2rem, 1.1rem + .45vw, 1.65rem); }
 }
-/* At half-desktop widths, prioritise usable rubric controls over cramped columns. */
+/* Half-window use: prevent overly narrow rubric cells without shrinking all text. */
 @media screen and (max-width: 1120px) {
   .app-shell { grid-template-columns: minmax(0, 1fr); }
   .roster-column .student-table-wrap { max-height: 280px; min-height: 0; }
@@ -780,9 +806,10 @@ button.danger:not(#resetBtn):not(:disabled):hover,
   .roster-column .student-table th:nth-child(5), .roster-column .student-table td:nth-child(5) { width: 12%; }
   .setup-region .config-body { grid-template-columns: minmax(0,1fr); }
   .setup-region .config-body > * { min-width: 0; grid-column: auto; }
-  .workspace-column .marking-panel > .section-heading #markingTitle { font-size: 1.1rem; }
 }
-@media screen and (max-width: 620px) {
+@media screen and (max-width: 680px) {
+  .student-entry-grid { grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
+  .student-entry-grid button { grid-column: 1 / -1; }
   .marking-criteria.layout-rows .marking-item { grid-template-columns: 1fr; }
   .marking-criteria.layout-rows .marking-item-head { border-right: 0; border-bottom: 1px solid var(--line); }
   .marking-criteria.layout-rows .band-option > span { min-height: 43px; padding: 4px 1px; }
