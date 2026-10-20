@@ -15,7 +15,7 @@
       <div>
         <div class="app-brand">
           <h1>Marking Minion</h1>
-          <span class="version-label" aria-label="Version 1.3">v1.3</span>
+          <span class="version-label" aria-label="Version 1.3">v1.4</span>
         </div>
       </div>
       <div class="header-actions">
@@ -79,6 +79,12 @@
                 ><span>Assessment weight (% of class grade)</span
                 ><input id="assessmentWeight" type="number" min="0" max="100" step="1" value="100" /></label
               ><span id="assessmentWeightTotal" class="weight-total">100 / 100%</span>
+            </div>
+            <div class="assessment-deadline-field">
+              <label
+                ><span>Submission deadline</span
+                ><input type="datetime-local" id="lateDeadline" aria-label="Assessment submission deadline" /></label
+              ><span class="section-note">Shared by all students in this assessment.</span>
             </div>
           </section>
           <section class="panel criteria-panel print-remove">
@@ -220,6 +226,20 @@
             </div>
             <div id="priorMarks" class="prior-marks"></div>
             <div class="marking-criteria layout-rows" id="markingCriteria"></div>
+            <section class="late-panel print-remove" aria-labelledby="lateHeading">
+              <div class="late-panel-heading">
+                <h3 id="lateHeading">Submission timing</h3>
+                <span id="lateResult" class="late-result" role="status" aria-live="polite">—</span>
+              </div>
+              <div class="late-fields">
+                <div class="late-deadline-reference"><span>Deadline</span><strong id="lateDeadlineDisplay">Not set</strong></div>
+                <label
+                  ><span>Student submission</span
+                  ><input type="datetime-local" id="lateSubmitted" aria-label="Student submission date and time"
+                /></label>
+              </div>
+              <p class="late-hint">Timing reference only. No late penalty is applied to marks.</p>
+            </section>
           </div>
         </section>
         <section class="panel analytics-panel print-remove">
@@ -254,43 +274,42 @@
       </div></template
     >
     <script src="app.js"></script>
-  
-<!-- BEGIN RETURN LINK -->
-<script>
-// inject-home-link.js
-(function () {
-	// Inject Font Awesome stylesheet
-	const fa = document.createElement("link");
-	fa.rel = "stylesheet";
-	fa.href = "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css";
-	fa.crossOrigin = "anonymous";
-	document.head.appendChild(fa);
-	
-	// Create the back link
-	const link = document.createElement("a");
-	link.href = "/";
-  	link.className = "print-remove";
-	link.innerHTML = '← Back to Playgrounds <i class="fab fa-github"><i>';
-	Object.assign(link.style, {
-	  position: "fixed",
-	  bottom: "20px",
-	  right: "20px",
-	  background: "#000",
-	  color: "#fff",
-	  padding: "8px 12px",
-	  zIndex: 1000,
-	  fontSize: "14px",
-	  opacity: 0.7,
-	  borderRadius: "6px",
-	  textDecoration: "none",
-    fontFamily: "Helvetica,Arial, sans-serif"
-	});
-	link.onmouseover = () => (link.style.opacity = "1");
-	link.onmouseout = () => (link.style.opacity = "0.7");
-	document.body.appendChild(link);
-})();
-</script>
-<!-- END RETURN LINK -->
 
-</body>
+    <!-- BEGIN RETURN LINK -->
+    <script>
+      // inject-home-link.js
+      (function () {
+        // Inject Font Awesome stylesheet
+        const fa = document.createElement("link");
+        fa.rel = "stylesheet";
+        fa.href = "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css";
+        fa.crossOrigin = "anonymous";
+        document.head.appendChild(fa);
+
+        // Create the back link
+        const link = document.createElement("a");
+        link.href = "/";
+        link.className = "print-remove";
+        link.innerHTML = '← Back to Playgrounds <i class="fab fa-github"><i>';
+        Object.assign(link.style, {
+          position: "fixed",
+          bottom: "20px",
+          right: "20px",
+          background: "#000",
+          color: "#fff",
+          padding: "8px 12px",
+          zIndex: 1000,
+          fontSize: "14px",
+          opacity: 0.7,
+          borderRadius: "6px",
+          textDecoration: "none",
+          fontFamily: "Helvetica,Arial, sans-serif",
+        });
+        link.onmouseover = () => (link.style.opacity = "1");
+        link.onmouseout = () => (link.style.opacity = "0.7");
+        document.body.appendChild(link);
+      })();
+    </script>
+    <!-- END RETURN LINK -->
+  </body>
 </html>

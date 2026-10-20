@@ -197,6 +197,7 @@ function render() {
 
   els.className.value = state.className || '';
   els.assignmentName.value = assignment.name || '';
+  document.getElementById('lateDeadlineDisplay').textContent = assignment.deadline && validLocalDateTime(assignment.deadline) ? new Date(assignment.deadline).toLocaleString('en-AU', {dateStyle:'medium',timeStyle:'short'}) : 'Not set';
 
   els.assignmentSelect.innerHTML = state.assignments.map(a =>
     `<option value="${a.id}" ${a.id === assignment.id ? 'selected' : ''}>${escapeHtml(a.name || 'Untitled assessment')}</option>`
@@ -297,7 +298,7 @@ function renderStudents() {
       const studentLabel = student.name || student.studentId || 'this student';
       if (!confirm(`Remove “${studentLabel}” from the class roster? This will permanently delete their marks and manual overrides across all assessments. Export your session first if you need a backup.`)) return;
       state.students = state.students.filter(s => s.id !== student.id);
-      state.assignments.forEach(a => {delete a.marks[student.id]; if (a.overrides) delete a.overrides[student.id];});
+      state.assignments.forEach(a => {delete a.marks[student.id]; if (a.overrides) delete a.overrides[student.id]; if (a.submissions) delete a.submissions[student.id];});
       if (state.selectedStudentId === student.id) state.selectedStudentId = state.students[0]?.id || null;
       saveState();
       renderStudents();
@@ -343,6 +344,7 @@ function renderMarking() {
   els.printStudentId.textContent = student.studentId || '—';
 
   renderPriorMarks(student);
+  renderLateness(student, assignment);
   els.markingCriteria.innerHTML = '';
   assignment.criteria.forEach(criterion => {
     const selected = studentMarks(student,assignment)[criterion.id] || '';
@@ -605,6 +607,13 @@ function validateImportedState(data) {
   for (const a of upgraded.assignments) {
     if (!a || typeof a.id !== 'string' || assignmentIds.has(a.id) || typeof a.name !== 'string' || !Array.isArray(a.criteria) || a.criteria.length > 100 || !a.marks || typeof a.marks !== 'object' || Array.isArray(a.marks)) throw new Error('Invalid assessment.');
     assignmentIds.add(a.id);
+    if (a.deadline !== undefined && (typeof a.deadline !== 'string' || !validLocalDateTime(a.deadline))) throw new Error('Invalid assessment deadline.');
+    if (a.submissions !== undefined) {
+      if (!a.submissions || typeof a.submissions !== 'object' || Array.isArray(a.submissions)) throw new Error('Invalid submission times.');
+      for (const [sid, value] of Object.entries(a.submissions)) {
+        if (!ids.has(sid) || typeof value !== 'string' || !validLocalDateTime(value)) throw new Error('Invalid student submission time.');
+      }
+    }
     if (a.overrides !== undefined) {
       if (!a.overrides || typeof a.overrides !== 'object' || Array.isArray(a.overrides)) throw new Error('Invalid overrides.');
       for (const [studentId,mark] of Object.entries(a.overrides)) {
@@ -766,6 +775,48 @@ const PRINT_ADVISORY = '<p class="marking-advisory print-marking-advisory"><stro
 
 // Print a complete register for the active assessment, including incomplete students.
 // No student records are omitted, and partial results are never presented as final grades.
+// Submission timing is informational and never enters mark calculations.
+function validLocalDateTime(value) {
+  if (value === '') return true;
+  if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value)) return false;
+  const date = new Date(value);
+  if (!Number.isFinite(date.getTime())) return false;
+  const two = n => String(n).padStart(2, '0');
+  return `${date.getFullYear()}-${two(date.getMonth()+1)}-${two(date.getDate())}T${two(date.getHours())}:${two(date.getMinutes())}` === value;
+}
+function latenessText(student, assignment) {
+  const deadline = assignment.deadline || '';
+  const submitted = assignment.submissions?.[student.id] || '';
+  if (!deadline || !submitted || !validLocalDateTime(deadline) || !validLocalDateTime(submitted)) return '—';
+  const minutes = Math.max(0, Math.ceil((new Date(submitted) - new Date(deadline)) / 60000));
+  if (!minutes) return 'On time';
+  const hours = Math.floor(minutes / 60);
+  const remainder = minutes % 60;
+  return `Late ${hours ? `${hours}h ` : ''}${remainder ? `${remainder}m` : (hours ? '' : '0m')}`.trim();
+}
+function renderLateness(student, assignment) {
+  document.getElementById('lateDeadline').value = validLocalDateTime(assignment.deadline || '') ? (assignment.deadline || '') : '';
+  const submitted = assignment.submissions?.[student.id] || '';
+  document.getElementById('lateSubmitted').value = validLocalDateTime(submitted) ? submitted : '';
+  document.getElementById('lateResult').textContent = latenessText(student, assignment);
+}
+for (const [field, shared] of [['lateDeadline', true], ['lateSubmitted', false]]) {
+  document.getElementById(field).addEventListener('change', event => {
+    const student = currentStudent(), assignment = currentAssignment();
+    if (!assignment || (!shared && !student)) return;
+    const value = event.target.value;
+    if (!validLocalDateTime(value)) return;
+    if (shared) assignment.deadline = value;
+    else {
+      assignment.submissions ||= {};
+      if (value) assignment.submissions[student.id] = value;
+      else delete assignment.submissions[student.id];
+    }
+    saveState();
+    if (student) renderLateness(student, assignment);
+    if (shared) render();
+  });
+}
 function renderCohortPrint() {
   const scope=document.querySelector('#printScope').value;
   const all=scope==='all';
@@ -777,7 +828,7 @@ function renderCohortPrint() {
     const rows=state.students.map((st,i)=>{
       const parts=assignments.map(a=>{
         const ready=isComplete(st,a),score=ready?calculateStudent(st,a):null;
-        return `<td>${ready?`${annotatedMark(score,hasOverride(st,a))} (${gradeForMark(score)})`:'In progress'}</td><td>${ready?formatMark(score*a.weight/100):'—'}</td>`;
+        return `<td>${ready?`${annotatedMark(score,hasOverride(st,a))} (${gradeForMark(score)})`:'In progress'}${latenessText(st,a)!=='—'?`<small class="print-late">${escapeHtml(latenessText(st,a))}</small>`:''}</td><td>${ready?formatMark(score*a.weight/100):'—'}</td>`;
       }).join('');
       const result=overallStudent(st);
       return `<tr><td>${i+1}</td><td>${escapeHtml(st.name||'—')}</td><td>${escapeHtml(st.studentId||'—')}</td>${parts}<td><strong>${result.ready?annotatedMark(result.mark,assignments.some(a=>hasOverride(st,a))):'—'}</strong></td><td>${result.ready?gradeForMark(result.mark)+(assignments.some(a=>hasOverride(st,a))?'*':''):'In progress'}</td></tr>`;
@@ -791,7 +842,7 @@ function renderCohortPrint() {
         const band=bandByKey(studentMarks(st,a)[c.id]);
         return band?`<td><strong>${band.key==='NONE'?'0':band.key==='PERFECT'?'100':band.key}</strong><small>${formatMark(band.midpoint*c.weight/100)} marks</small></td>`:'<td>—</td>';
       }).join('');
-      return `<tr><td>${i+1}</td><td>${escapeHtml(st.name||'—')}</td><td>${escapeHtml(st.studentId||'—')}</td>${cells}<td><strong>${ready?annotatedMark(score,hasOverride(st,a)):'—'}</strong></td><td>${ready?gradeForMark(score)+(hasOverride(st,a)?'*':''):'In progress'}</td></tr>`;
+      return `<tr><td>${i+1}</td><td>${escapeHtml(st.name||'—')}</td><td>${escapeHtml(st.studentId||'—')}</td>${cells}<td><strong>${ready?annotatedMark(score,hasOverride(st,a)):'—'}</strong></td><td>${ready?gradeForMark(score)+(hasOverride(st,a)?'*':''):'In progress'}${latenessText(st,a)!=='—'?`<small class="print-late">${escapeHtml(latenessText(st,a))}</small>`:''}</td></tr>`;
     }).join('');
     el.innerHTML=`<div class="print-register-heading">${heading}<p>${escapeHtml(a.name)} · Assessment weighting ${formatMark(a.weight)}% of class total · ${state.students.filter(st=>isComplete(st,a)).length} graded</p></div><table class="print-register-table"><thead><tr><th>#</th><th>Student</th><th>ID</th>${criteria.map((c,i)=>`<th>C${i+1}: ${escapeHtml(c.title)}<small>${formatMark(c.weight)}% of assessment</small></th>`).join('')}<th>Mark /100</th><th>Grade</th></tr></thead><tbody>${rows}</tbody></table><p class="print-footnote">Criterion cells show the selected Moodle band and weighted contribution. * identifies a manually overridden final assessment mark; retained rubric selections are shown for reference only and do not determine that mark. Incomplete rubrics without an override have no final mark. Midpoints: 0, FL 30, PS 60, CR 70, DN 80, HD 90, Perfect 100.</p>`;
   }

@@ -820,3 +820,27 @@ button.danger:not(#resetBtn):not(:disabled):hover,
   .print-controls .print-select-label select { min-width: 0; max-width: 140px; }
   .result-value-stack { width: 90px; }
 }
+
+/* Submission timing: compact, neutral and separate from rubric calculation. */
+.late-panel { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line, #ddd); }
+.late-panel-heading { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 9px; }
+.late-panel h3 { margin: 0; font-size: var(--ui-text, .875rem); font-weight: 600; }
+.late-result { font-size: var(--ui-text-small, .78rem); font-weight: 600; }
+.late-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.late-fields label { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.late-fields label span { font-size: var(--ui-label-text, .73rem); }
+.late-fields input { width: 100%; min-width: 0; box-sizing: border-box; }
+.late-hint { margin: 8px 0 0; color: #666; font-size: var(--ui-text-small, .78rem); }
+.print-late { display: block; margin-top: 3px; font-size: 8pt; font-weight: 400; color: #555; white-space: nowrap; }
+@media screen and (max-width: 520px) { .late-fields { grid-template-columns: 1fr; } }
+@media print { .late-panel { display: none !important; } .print-late { color: #555; } }
+
+/* Assessment-wide deadline is configured once; student submission remains per record. */
+.assessment-deadline-field {display:flex; align-items:end; gap:12px; flex-wrap:wrap; margin-top:12px;}
+.assessment-deadline-field label {display:flex; flex-direction:column; gap:4px; min-width:min(100%,250px);}
+.assessment-deadline-field input {min-width:0; width:100%; box-sizing:border-box;}
+.assessment-deadline-field .section-note {margin:0 0 8px;}
+.late-deadline-reference {display:flex; flex-direction:column; justify-content:center; gap:4px; min-width:0;}
+.late-deadline-reference span {font-size:var(--ui-label-text,.73rem);}
+.late-deadline-reference strong {font-size:var(--ui-text-small,.78rem); font-weight:500;}
+@media screen and (max-width:520px) {.assessment-deadline-field label {width:100%;}}
