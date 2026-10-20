@@ -847,7 +847,7 @@ function cleanFilename(name) {
   );
 }
 document.querySelector("#exportBtn").addEventListener("click", () => {
-  downloadJSON(`moodle-marker-${cleanFilename(state.className)}.json`, {
+  downloadJSON(`marking-minion-${cleanFilename(state.className)}.json`, {
     format: "moodle-rubric-marker",
     version: 2,
     exportedAt: new Date().toISOString(),
