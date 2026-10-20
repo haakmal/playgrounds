@@ -268,7 +268,7 @@ function renderStudents() {
       <td>${escapeHtml(student.studentId || '—')}</td>
       <td class="numeric">${mark === null ? "—" : formatMark(mark)}</td>
       <td>${mark === null ? "In progress" : gradeForMark(mark)}</td>
-      <td><div class="row-actions"><button type="button" class="select-student">Mark</button><button type="button" class="remove-student danger" aria-label="Remove student" title="Remove student">×</button></div></td>
+      <td><div class="row-actions"><button type="button" class="remove-student danger" aria-label="Remove student" title="Remove student">×</button></div></td>
     `;
 
     row.addEventListener('click', e => {
@@ -646,6 +646,8 @@ function renderPriorMarks(student) {
   document.querySelector('#priorMarks').innerHTML=items.length ? `<div class="prior-title">Other assessments</div>${items.join('')}${total.ready ? `<div class="prior-total">Class result <strong>${formatMark(total.mark)} / 100 · ${gradeForMark(total.mark)}</strong></div>` : ''}` : '';
 }
 function analyticsScope() {return document.querySelector('#analyticsScope').value;}
+const PRINT_ADVISORY = '<p class="marking-advisory print-marking-advisory"><strong>Marking advisory:</strong> All marks and grades calculated by Marking Minion are indicative only. Tutors and course convenors should refer to Moodle as the authoritative source for final marking calculations and grades.</p>';
+
 // Print a complete register for the active assessment, including incomplete students.
 // No student records are omitted, and partial results are never presented as final grades.
 function renderCohortPrint() {
@@ -654,7 +656,7 @@ function renderCohortPrint() {
   const selected=scope==='current' ? [currentAssignment()] : state.assignments.filter(a=>a.id===scope);
   const assignments=all ? state.assignments : (selected.length ? selected : [currentAssignment()]);
   const el=document.getElementById('cohortPrint');
-  const heading=`<h1>${all?'Class marking register':'Assessment marking register'}</h1><p>${escapeHtml(state.className || 'Unnamed class')} · ${state.students.length} students · Printed ${new Date().toLocaleString('en-AU')}</p>`;
+  const heading=`<h1>${all?'Class marking register':'Assessment marking register'}</h1><p>${escapeHtml(state.className || 'Unnamed class')} · ${state.students.length} students · Printed ${new Date().toLocaleString('en-AU')}</p>${PRINT_ADVISORY}`;
   if (all) {
     const rows=state.students.map((st,i)=>{
       const parts=assignments.map(a=>{
