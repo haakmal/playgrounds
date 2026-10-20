@@ -844,3 +844,35 @@ button.danger:not(#resetBtn):not(:disabled):hover,
 .late-deadline-reference span {font-size:var(--ui-label-text,.73rem);}
 .late-deadline-reference strong {font-size:var(--ui-text-small,.78rem); font-weight:500;}
 @media screen and (max-width:520px) {.assessment-deadline-field label {width:100%;}}
+
+
+/* v1.5: compact, searchable roster and optional analytics */
+@media screen {
+  .roster-column .student-table th.roster-grade-heading {
+    white-space: nowrap;
+    overflow-wrap: normal;
+    word-break: keep-all;
+    letter-spacing: 0;
+  }
+  .roster-import { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .roster-search { flex: 1 1 150px; min-width: 0; margin: 0; }
+  .roster-search input { width: 100%; min-width: 0; height: var(--ui-control-height, 36px); box-sizing: border-box; font-size: var(--ui-text, .875rem); }
+  .roster-import #importRosterBtn { flex: 0 0 auto; white-space: nowrap; height: var(--ui-control-height, 36px); }
+  .roster-import #rosterImportStatus { flex-basis: 100%; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+  .analytics-panel { padding: 0 !important; overflow: hidden; }
+  .analytics-toggle { cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: var(--ui-panel-padding, 16px); }
+  .analytics-toggle::-webkit-details-marker { display: none; }
+  .analytics-toggle-copy { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .analytics-toggle-copy .eyebrow { margin: 0; }
+  .analytics-toggle-copy strong { font-size: var(--ui-heading, 1.15rem); font-weight: 600; }
+  .analytics-toggle-indicator { width: 8px; height: 8px; border-right: 1px solid currentColor; border-bottom: 1px solid currentColor; transform: rotate(45deg); flex: 0 0 8px; margin-right: 4px; }
+  .analytics-panel[open] .analytics-toggle-indicator { transform: rotate(225deg); }
+  .analytics-toggle:hover { background: #f5f5f5; }
+  .analytics-toggle:focus-visible { outline: 2px solid #444; outline-offset: -3px; }
+  .analytics-body { padding: 0 var(--ui-panel-padding, 16px) var(--ui-panel-padding, 16px); }
+  .analytics-body > .section-heading { justify-content: flex-end; margin: 0 0 12px; }
+  @media (max-width: 550px) {
+    .roster-import #importRosterBtn { max-width: 100%; }
+  }
+}

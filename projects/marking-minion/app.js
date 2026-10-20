@@ -272,7 +272,11 @@ function renderStudents() {
     return;
   }
 
+  const query = document.querySelector('#rosterSearch')?.value.trim() || '';
+  let visibleStudents = 0;
   state.students.forEach(student => {
+    if (query && !studentMatchesQuery(student, query)) return;
+    visibleStudents++;
     const completed = isComplete(student,assignment);
     const mark = completed ? calculateStudent(student, assignment) : null;
     const row = document.createElement('tr');
@@ -307,7 +311,40 @@ function renderStudents() {
 
     els.studentTableBody.appendChild(row);
   });
+  if (state.students.length && !visibleStudents) {
+    els.studentTableBody.innerHTML = '<tr><td colspan="5" class="section-note">No matching students.</td></tr>';
+  }
 }
+
+// Search only filters the roster presentation; it never removes student records.
+function searchNormalise(value) {
+  return String(value ?? '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+}
+function withinOneEdit(a, b) {
+  if (Math.abs(a.length - b.length) > 1 || Math.min(a.length,b.length) < 4) return false;
+  let i = 0, k = 0, edits = 0;
+  while (i < a.length && k < b.length) {
+    if (a[i] === b[k]) { i++; k++; continue; }
+    if (++edits > 1) return false;
+    if (a.length > b.length) i++;
+    else if (b.length > a.length) k++;
+    else { i++; k++; }
+  }
+  return edits + Number(i < a.length || k < b.length) <= 1;
+}
+function studentMatchesQuery(student, rawQuery) {
+  const query = searchNormalise(rawQuery);
+  if (!query) return true;
+  const name = searchNormalise(student.name);
+  const id = searchNormalise(student.studentId);
+  const words = (name + ' ' + id).trim().split(/\s+/);
+  return query.split(/\s+/).every(token =>
+    name.includes(token) || id.includes(token) || words.some(word =>
+      word.startsWith(token) || withinOneEdit(word, token)
+    )
+  );
+}
+document.querySelector('#rosterSearch').addEventListener('input', () => renderStudents());
 
 function renderMarking() {
   const assignment = currentAssignment();

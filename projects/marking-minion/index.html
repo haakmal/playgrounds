@@ -15,7 +15,7 @@
       <div>
         <div class="app-brand">
           <h1>Marking Minion</h1>
-          <span class="version-label" aria-label="Version 1.3">v1.4</span>
+          <span class="version-label" aria-label="Version 1.5">v1.5</span>
         </div>
       </div>
       <div class="header-actions">
@@ -124,7 +124,15 @@
             <button id="addStudentBtn" type="button">Add student</button>
           </div>
           <div class="roster-import print-remove">
-            <button id="importRosterBtn" type="button">Import Moodle roster (CSV)</button
+            <label class="roster-search"
+              ><span class="sr-only">Search students by name or ID</span
+              ><input
+                id="rosterSearch"
+                type="search"
+                placeholder="Search students or ID"
+                autocomplete="off"
+                aria-label="Search students by name or ID" /></label
+            ><button id="importRosterBtn" type="button">Import Moodle roster (CSV)</button
             ><input id="rosterCsvFile" type="file" accept=".csv,text/csv,text/plain" hidden aria-label="Choose Moodle roster CSV" /><span
               id="rosterImportStatus"
               role="status"
@@ -139,7 +147,7 @@
                   <th>Student</th>
                   <th>ID</th>
                   <th>Mark</th>
-                  <th>Grade</th>
+                  <th class="roster-grade-heading">Grade</th>
                   <th></th>
                 </tr>
               </thead>
@@ -242,25 +250,27 @@
             </section>
           </div>
         </section>
-        <section class="panel analytics-panel print-remove">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow">03 / Cohort overview</p>
-              <h2>Assessment analytics</h2>
+        <details class="panel analytics-panel print-remove" id="analyticsDetails">
+          <summary class="analytics-toggle">
+            <span class="analytics-toggle-copy"><span class="eyebrow">03 / Cohort overview</span><strong>Assessment analytics</strong></span
+            ><span class="analytics-toggle-indicator" aria-hidden="true"></span>
+          </summary>
+          <div class="analytics-body">
+            <div class="section-heading">
+              <div class="chart-controls">
+                <select id="analyticsScope" aria-label="Analytics scope">
+                  <option value="current">Current assessment</option>
+                  <option value="overall">Combined class grade</option></select
+                ><button class="is-current" id="distributionBtn" type="button">Distribution</button
+                ><button id="curveBtn" type="button">Curve</button>
+              </div>
             </div>
-            <div class="chart-controls">
-              <select id="analyticsScope" aria-label="Analytics scope">
-                <option value="current">Current assessment</option>
-                <option value="overall">Combined class grade</option></select
-              ><button class="is-current" id="distributionBtn" type="button">Distribution</button
-              ><button id="curveBtn" type="button">Curve</button>
-            </div>
+            <div class="stats-grid" id="statsGrid"></div>
+            <p class="section-note" id="analyticsNote"></p>
+            <div aria-label="Distribution of students' final marks" class="analytics-chart" id="analyticsChart" role="img"></div>
+            <div class="grade-counts" id="gradeCounts"></div>
           </div>
-          <div class="stats-grid" id="statsGrid"></div>
-          <p class="section-note" id="analyticsNote"></p>
-          <div aria-label="Distribution of students' final marks" class="analytics-chart" id="analyticsChart" role="img"></div>
-          <div class="grade-counts" id="gradeCounts"></div>
-        </section>
+        </details>
       </div>
     </main>
     <section id="cohortPrint" class="cohort-print" aria-label="Complete assessment marking register"></section>
@@ -274,42 +284,43 @@
       </div></template
     >
     <script src="app.js"></script>
+  
+<!-- BEGIN RETURN LINK -->
+<script>
+// inject-home-link.js
+(function () {
+	// Inject Font Awesome stylesheet
+	const fa = document.createElement("link");
+	fa.rel = "stylesheet";
+	fa.href = "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css";
+	fa.crossOrigin = "anonymous";
+	document.head.appendChild(fa);
+	
+	// Create the back link
+	const link = document.createElement("a");
+	link.href = "/";
+  	link.className = "print-remove";
+	link.innerHTML = '← Back to Playgrounds <i class="fab fa-github"><i>';
+	Object.assign(link.style, {
+	  position: "fixed",
+	  bottom: "20px",
+	  right: "20px",
+	  background: "#000",
+	  color: "#fff",
+	  padding: "8px 12px",
+	  zIndex: 1000,
+	  fontSize: "14px",
+	  opacity: 0.7,
+	  borderRadius: "6px",
+	  textDecoration: "none",
+    fontFamily: "Helvetica,Arial, sans-serif"
+	});
+	link.onmouseover = () => (link.style.opacity = "1");
+	link.onmouseout = () => (link.style.opacity = "0.7");
+	document.body.appendChild(link);
+})();
+</script>
+<!-- END RETURN LINK -->
 
-    <!-- BEGIN RETURN LINK -->
-    <script>
-      // inject-home-link.js
-      (function () {
-        // Inject Font Awesome stylesheet
-        const fa = document.createElement("link");
-        fa.rel = "stylesheet";
-        fa.href = "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css";
-        fa.crossOrigin = "anonymous";
-        document.head.appendChild(fa);
-
-        // Create the back link
-        const link = document.createElement("a");
-        link.href = "/";
-        link.className = "print-remove";
-        link.innerHTML = '← Back to Playgrounds <i class="fab fa-github"><i>';
-        Object.assign(link.style, {
-          position: "fixed",
-          bottom: "20px",
-          right: "20px",
-          background: "#000",
-          color: "#fff",
-          padding: "8px 12px",
-          zIndex: 1000,
-          fontSize: "14px",
-          opacity: 0.7,
-          borderRadius: "6px",
-          textDecoration: "none",
-          fontFamily: "Helvetica,Arial, sans-serif",
-        });
-        link.onmouseover = () => (link.style.opacity = "1");
-        link.onmouseout = () => (link.style.opacity = "0.7");
-        document.body.appendChild(link);
-      })();
-    </script>
-    <!-- END RETURN LINK -->
-  </body>
+</body>
 </html>
