@@ -1010,7 +1010,7 @@ textarea {
   background: #8f1d14;
 }
 
-.print-only {
+.print-only, .print-remove {
   display: none;
 }
 
