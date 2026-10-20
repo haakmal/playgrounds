@@ -690,3 +690,50 @@ button.danger:not(#resetBtn):not(:disabled):hover,
 .override-icon[hidden] { display:none !important; }
 .override-icon { width:25px; height:25px; min-height:25px; }
 @media (max-width:480px) { .override-controls { flex-basis:24px; } }
+
+/* v1.3: inline confirmation with a stable mark/grade footprint. */
+.overall-result:has(.result-mark-line.is-editing) #editFinalMark {
+  visibility:visible;
+  pointer-events:auto;
+}
+.result-value-stack {
+  width:112px;
+  min-height:3.65rem;
+}
+.result-value-stack .overall-mark,
+.result-value-stack .manual-mark-editor {
+  width:100%;
+  height:2.45rem;
+  box-sizing:border-box;
+}
+.result-value-stack .overall-mark {
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  white-space:nowrap;
+}
+.result-value-stack .manual-mark-editor input {
+  width:100%;
+  height:100%;
+  margin:0;
+  padding:0 4px;
+  font-size:2.6rem;
+  line-height:1;
+  letter-spacing:-.05em;
+  border:1px solid #999;
+  border-radius:2px;
+  appearance:textfield;
+  -moz-appearance:textfield;
+}
+.result-value-stack .manual-mark-editor input::-webkit-inner-spin-button,
+.result-value-stack .manual-mark-editor input::-webkit-outer-spin-button {
+  -webkit-appearance:none;
+  margin:0;
+}
+.result-value-stack .overall-grade {
+  margin-top:5px;
+}
+@media (max-width:480px) {
+  .result-value-stack { width:90px; }
+  .result-value-stack .manual-mark-editor input { font-size:1.65rem; }
+}

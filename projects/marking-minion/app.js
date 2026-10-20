@@ -328,8 +328,14 @@ function renderMarking() {
   els.markingTitle.textContent = student.name || student.studentId || 'Selected student';
   els.markingEmpty.hidden = true;
   els.markingContent.hidden = false;
-  els.overallMark.textContent = completed ? annotatedMark(mark,hasOverride(student,assignment)) : '—';
-  els.overallGrade.textContent = completed ? gradeForMark(mark) : 'In progress';
+  // The marking workspace previews the accumulated rubric mark as bands are selected.
+  // A preview does not make an incomplete rubric a final grade in the roster,
+  // analytics, print record or combined assessment result.
+  const selectedCount = assignment.criteria.filter(c => bandByKey(studentMarks(student,assignment)[c.id])).length;
+  const hasCalculatedResult = hasOverride(student,assignment) || selectedCount > 0;
+  els.overallMark.textContent = hasCalculatedResult ? annotatedMark(mark,hasOverride(student,assignment)) : '—';
+  els.overallGrade.textContent = completed ? gradeForMark(mark) :
+    (hasCalculatedResult ? `${gradeForMark(mark)} · In progress` : 'In progress');
   updateOverrideControls(student,assignment);
   els.printClass.textContent = state.className || '—';
   els.printAssignment.textContent = assignment.name || '—';
@@ -681,6 +687,10 @@ function updateOverrideControls(student, assignment) {
 function closeInlineMarkEditor() {
   document.getElementById('manualMarkEditor').hidden = true;
   document.querySelector('.result-mark-line').classList.remove('is-editing');
+  const button = document.getElementById('editFinalMark');
+  button.textContent = '✎';
+  button.title = 'Edit final assessment mark';
+  button.setAttribute('aria-label', button.title);
 }
 function openInlineMarkEditor() {
   const student = currentStudent();
@@ -690,6 +700,10 @@ function openInlineMarkEditor() {
   input.setCustomValidity('');
   document.getElementById('manualMarkEditor').hidden = false;
   document.querySelector('.result-mark-line').classList.add('is-editing');
+  const button = document.getElementById('editFinalMark');
+  button.textContent = '✓';
+  button.title = 'Confirm manual final assessment mark';
+  button.setAttribute('aria-label', button.title);
   input.focus(); input.select();
 }
 function saveInlineMarkEditor() {
@@ -712,6 +726,11 @@ function saveInlineMarkEditor() {
 document.getElementById('editFinalMark').addEventListener('click', () => {
   if (document.getElementById('manualMarkEditor').hidden) openInlineMarkEditor();
   else saveInlineMarkEditor();
+});
+// Prevent the input's blur handler firing before the confirm button click.
+// Otherwise saving on blur can re-render the button as Reset before click lands.
+document.getElementById('editFinalMark').addEventListener('pointerdown', event => {
+  if (!document.getElementById('manualMarkEditor').hidden) event.preventDefault();
 });
 document.getElementById('manualMarkEditor').addEventListener('submit', event => {
   event.preventDefault(); saveInlineMarkEditor();
