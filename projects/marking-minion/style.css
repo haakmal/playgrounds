@@ -944,3 +944,36 @@ button.danger:not(#resetBtn):not(:disabled):hover,
     font-size: 7pt;
   }
 }
+
+/* Assessment and class summary print registers (v1.5.1). */
+@media print {
+  .print-register-table { table-layout: fixed; }
+  .print-register-table th, .print-register-table td { overflow-wrap: anywhere; }
+  .print-register-table .print-name-heading,
+  .print-register-table .print-name-cell { width: 16%; }
+  .print-register-table .print-id-heading,
+  .print-register-table .print-id-cell {
+    width: 10%;
+    white-space: nowrap;
+    word-break: normal;
+    overflow-wrap: normal;
+  }
+  .print-register-table .print-overall-cell { white-space: nowrap; }
+  .print-register-table .print-criterion-cell strong,
+  .print-register-table .print-assessment-cell strong { display: block; }
+  .print-register-table th small { display: block; font-size: 7pt; white-space: normal; }
+  .print-register-table .print-assessment-cell small {
+    display: block;
+    white-space: normal;
+    overflow-wrap: normal;
+    margin-top: 2px;
+    line-height: 1.25;
+  }
+  .print-register-table .print-late {
+    display: block;
+    font-size: 7pt;
+    white-space: nowrap;
+    margin-top: 2px;
+  }
+  .print-register-table .print-grade-main { white-space: nowrap; }
+}
