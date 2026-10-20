@@ -677,3 +677,16 @@ button.danger:not(#resetBtn):not(:disabled):hover,
 .marking-item.rubric-suspended .band-option input {
   pointer-events: none;
 }
+
+/* v1.3: one context-sensitive control; mark and grade share a vertical axis. */
+.workspace-column .marking-panel > .section-heading { align-items:flex-start; }
+.workspace-column .marking-panel > .section-heading .overall-result { align-self:flex-start; }
+.result-mark-line { display:flex; align-items:flex-start; justify-content:flex-end; gap:7px; min-height:0; }
+.result-value-stack { display:flex; flex-direction:column; align-items:flex-end; justify-content:flex-start; min-width:0; }
+.result-value-stack .overall-mark { margin:0; }
+.result-value-stack .overall-grade { margin:5px 0 0; text-align:right; }
+.result-value-stack .manual-mark-editor { margin:0; }
+.override-controls { display:flex; flex-direction:column; gap:0; align-items:center; flex:0 0 25px; align-self:flex-start; }
+.override-icon[hidden] { display:none !important; }
+.override-icon { width:25px; height:25px; min-height:25px; }
+@media (max-width:480px) { .override-controls { flex-basis:24px; } }
