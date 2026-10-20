@@ -310,6 +310,13 @@ function renderStudents() {
 
     row.querySelector(".remove-student").addEventListener("click", (e) => {
       e.stopPropagation();
+      const studentLabel = student.name || student.studentId || "this student";
+      if (
+        !confirm(
+          `Remove “${studentLabel}” from the class roster? This will permanently delete their marks and manual overrides across all assessments. Export your session first if you need a backup.`,
+        )
+      )
+        return;
       state.students = state.students.filter((s) => s.id !== student.id);
       state.assignments.forEach((a) => {
         delete a.marks[student.id];

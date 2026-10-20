@@ -2029,3 +2029,82 @@ button.danger:not(#resetBtn):not(:disabled):hover,
   visibility: hidden;
   pointer-events: none;
 }
+
+/* v1.3: stable one-row header with result controls at the top right */
+.workspace-column .marking-panel > .section-heading {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 16px;
+}
+.workspace-column .marking-panel > .section-heading > :first-child {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: left;
+}
+.workspace-column .marking-panel > .section-heading #markingTitle {
+  overflow-wrap: anywhere;
+}
+.workspace-column .marking-panel > .section-heading .overall-result {
+  flex: 0 0 auto;
+  min-width: 0;
+  align-self: center;
+  text-align: right;
+}
+.result-mark-line {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 6px;
+  min-height: 2.6rem;
+}
+.result-grade-line {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 2px;
+}
+.result-grade-line .overall-grade {
+  margin: 0;
+}
+.override-controls {
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 4px;
+  align-self: flex-start;
+}
+.override-icon {
+  width: 25px;
+  height: 25px;
+  min-height: 25px;
+  padding: 0;
+  border-radius: 2px;
+}
+@media (max-width: 480px) {
+  .workspace-column .marking-panel > .section-heading {
+    gap: 8px;
+  }
+  .overall-mark {
+    font-size: 1.65rem;
+  }
+  .override-icon {
+    width: 24px;
+    height: 24px;
+    min-height: 24px;
+  }
+}
+
+/* Manual final-mark override: keep rubric selections visible but inactive. */
+.marking-item.rubric-suspended {
+  opacity: 0.42;
+}
+.marking-item.rubric-suspended .band-option,
+.marking-item.rubric-suspended .band-option:hover {
+  cursor: default;
+}
+.marking-item.rubric-suspended .band-option input {
+  pointer-events: none;
+}
