@@ -76,6 +76,16 @@ The importer combines first and last names into a student name and uses the Mood
 
 Existing students are identified by their usernames, allowing additional students to be imported without overwriting previously recorded marks.
 
+## Manual final marks
+
+The pencil beside a student's final assessment mark allows tutors to enter an overall mark from 0–100, including decimals. The manual mark takes precedence over the rubric calculation for that assessment, so it determines the displayed grade, combined class result and analytics. The underlying rubric selections remain saved and visible but become muted and non-interactive while the override is active. Use the reset arrow beside the mark to restore the original rubric calculation without losing those selections.
+
+> [!NOTE]
+> An asterisk (`*`) beside a mark indicates that the assessment mark was entered manually. This distinction is also carried into the student roster and printed registers so be mindful when sharing results anywhere. The asterisk signals an override, not an additional penalty or grade adjustment.
+
+> [!IMPORTANT]
+> This tool does not calculate late penalties on purpose. It is a companion tool to make marking easier rather than relying on Moodle's clunky interface. We still have to go in and update it there and that is where late penalties can be applied. Use this tool only for reference and own records. Moodle should always be the final calculation source.
+
 ## Assessment analytics
 
 Marking Minion provides an overview of marking outcomes for individual assessments and the combined class results.
