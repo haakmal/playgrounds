@@ -335,6 +335,8 @@ function renderMarking() {
     els.markingContent.hidden = true;
     els.overallMark.textContent = "—";
     els.overallGrade.textContent = "—";
+    document.getElementById("overrideControls").hidden = true;
+    closeInlineMarkEditor();
     return;
   }
 
@@ -821,48 +823,68 @@ function analyticsScope() {
 }
 function updateOverrideControls(student, assignment) {
   const active = hasOverride(student, assignment);
-  const group = document.getElementById("overrideControls");
-  group.hidden = false;
-  document.getElementById("editFinalMark").hidden = active;
+  document.getElementById("overrideControls").hidden = false;
+  document.getElementById("editFinalMark").hidden = false;
   document.getElementById("resetFinalMark").hidden = !active;
-  document.getElementById("manualMarkEditor").hidden = true;
+  closeInlineMarkEditor();
   document.getElementById("overallResult").classList.toggle("is-overridden", active);
-  document.getElementById("manualMarkNote").hidden = !active;
 }
-document.getElementById("editFinalMark").addEventListener("click", () => {
+function closeInlineMarkEditor() {
+  document.getElementById("manualMarkEditor").hidden = true;
+  document.querySelector(".result-mark-line").classList.remove("is-editing");
+}
+function openInlineMarkEditor() {
   const student = currentStudent();
   if (!student) return;
-  const box = document.getElementById("manualMarkEditor");
   const input = document.getElementById("manualMarkInput");
   input.value = isComplete(student) ? String(calculateStudent(student)) : "";
-  box.hidden = false;
+  input.setCustomValidity("");
+  document.getElementById("manualMarkEditor").hidden = false;
+  document.querySelector(".result-mark-line").classList.add("is-editing");
   input.focus();
   input.select();
-});
-document.getElementById("cancelFinalMark").addEventListener("click", () => {
-  document.getElementById("manualMarkEditor").hidden = true;
-});
-document.getElementById("manualMarkEditor").addEventListener("submit", (event) => {
-  event.preventDefault();
+}
+function saveInlineMarkEditor() {
   const input = document.getElementById("manualMarkInput");
-  const text = input.value.trim();
-  const value = Number(text);
+  const text = input.value.trim(),
+    value = Number(text);
   if (!text || !Number.isFinite(value) || value < 0 || value > 100) {
     input.setCustomValidity("Enter a mark from 0 to 100.");
     input.reportValidity();
-    return;
+    return false;
   }
   input.setCustomValidity("");
   const student = currentStudent(),
     assessment = currentAssignment();
-  if (!student) return;
+  if (!student || !assessment) return false;
   assessment.overrides ||= {};
   assessment.overrides[student.id] = Math.round((value + Number.EPSILON) * 100) / 100;
+  closeInlineMarkEditor();
   saveState();
   renderStudents();
   renderMarking();
+  return true;
+}
+document.getElementById("editFinalMark").addEventListener("click", () => {
+  if (document.getElementById("manualMarkEditor").hidden) openInlineMarkEditor();
+  else saveInlineMarkEditor();
+});
+document.getElementById("manualMarkEditor").addEventListener("submit", (event) => {
+  event.preventDefault();
+  saveInlineMarkEditor();
+});
+document.getElementById("manualMarkInput").addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    event.preventDefault();
+    closeInlineMarkEditor();
+    document.getElementById("editFinalMark").focus();
+  }
 });
 document.getElementById("manualMarkInput").addEventListener("input", (event) => event.target.setCustomValidity(""));
+document.getElementById("manualMarkInput").addEventListener("blur", (event) => {
+  // Do not discard a typed value when the user clicks elsewhere.
+  if (!document.getElementById("manualMarkEditor").hidden) saveInlineMarkEditor();
+});
 document.getElementById("resetFinalMark").addEventListener("click", () => {
   const student = currentStudent(),
     assessment = currentAssignment();

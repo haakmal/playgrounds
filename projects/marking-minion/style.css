@@ -1937,33 +1937,53 @@ button.danger:not(#resetBtn):not(:disabled):hover,
   font-weight: 400;
 }
 
-/* v1.3: final assessment mark override */
+/* v1.3: edit the displayed final mark in place */
 .overall-result {
   position: relative;
+  min-width: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.result-mark-line {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  min-height: 2.6rem;
+}
+.result-grade-line {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 7px;
+  margin-top: 5px;
+}
+.result-grade-line .overall-grade {
+  margin-top: 4px;
 }
 .override-controls {
   display: inline-flex;
-  vertical-align: middle;
-  margin-top: 5px;
+  align-items: center;
+  gap: 4px;
 }
 .override-controls[hidden],
-.manual-mark-editor[hidden],
-.manual-mark-note[hidden] {
+.manual-mark-editor[hidden] {
   display: none !important;
 }
 .override-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex: none;
   background: #f5f5f5;
   color: #111;
   border: 1px solid #c8c8c8;
   border-radius: 2px;
-  width: 28px;
-  height: 28px;
+  width: 25px;
+  height: 25px;
   padding: 0;
   cursor: pointer;
-  font-size: 17px;
+  font-size: 16px;
   line-height: 1;
 }
 .override-icon:hover {
@@ -1975,46 +1995,37 @@ button.danger:not(#resetBtn):not(:disabled):hover,
   outline-offset: 2px;
 }
 .manual-mark-editor {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 5px;
-  margin-top: 6px;
-}
-.manual-mark-editor label {
-  font-size: 11px;
-  color: #444;
-  white-space: nowrap;
+  margin: 0;
+  padding: 0;
 }
 .manual-mark-editor input {
-  width: 76px;
-  min-width: 0;
-  height: 28px;
-  padding: 3px 5px;
-  font: inherit;
+  box-sizing: border-box;
+  width: 112px;
+  height: 2.6rem;
+  padding: 2px 5px;
+  border: 1px solid #777;
+  background: #fff;
+  border-radius: 2px;
+  color: #111;
+  font-size: 2rem;
+  font-weight: 800;
   text-align: right;
+  font-variant-numeric: tabular-nums;
 }
-.manual-mark-note {
-  display: block;
-  margin-top: 5px;
-  color: #666;
-  font-size: 11px;
-  font-weight: 400;
-  max-width: 210px;
-}
-.rubric-suspended {
-  opacity: 0.42;
-}
-.rubric-suspended .band-option {
-  cursor: default;
-}
-.rubric-suspended .band-option input {
-  pointer-events: none;
+.result-mark-line.is-editing .overall-mark {
+  display: none;
 }
 @media print {
   .override-controls,
   .manual-mark-editor {
     display: none !important;
   }
+  .result-mark-line.is-editing .overall-mark {
+    display: block;
+  }
+}
+/* Keep the edit trigger out of the tab/click path while its mark field is active. */
+.overall-result:has(.result-mark-line.is-editing) #editFinalMark {
+  visibility: hidden;
+  pointer-events: none;
 }

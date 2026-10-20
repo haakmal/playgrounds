@@ -172,34 +172,42 @@
               <h2 id="markingTitle">Select a student</h2>
             </div>
             <div aria-live="polite" class="overall-result" id="overallResult">
-              <span class="overall-mark" id="overallMark">—</span>
-              <span class="overall-grade" id="overallGrade">—</span>
-              <div class="override-controls print-remove" id="overrideControls" hidden>
-                <button
-                  type="button"
-                  id="editFinalMark"
-                  class="override-icon"
-                  title="Edit final assessment mark"
-                  aria-label="Edit final assessment mark">
-                  ✎
-                </button>
-                <button
-                  type="button"
-                  id="resetFinalMark"
-                  class="override-icon"
-                  title="Return to rubric-calculated mark"
-                  aria-label="Return to rubric-calculated mark"
-                  hidden>
-                  ↺
-                </button>
+              <div class="result-mark-line">
+                <span class="overall-mark" id="overallMark">—</span>
+                <form id="manualMarkEditor" class="manual-mark-editor print-remove" hidden>
+                  <input
+                    id="manualMarkInput"
+                    type="number"
+                    min="0"
+                    max="100"
+                    step="0.01"
+                    required
+                    aria-label="Manual final assessment mark out of 100"
+                    inputmode="decimal" />
+                </form>
               </div>
-              <form id="manualMarkEditor" class="manual-mark-editor print-remove" hidden>
-                <label for="manualMarkInput">Final mark /100</label
-                ><input id="manualMarkInput" type="number" min="0" max="100" step="0.01" required />
-                <button type="submit" class="override-icon" title="Save manual mark" aria-label="Save manual mark">✓</button>
-                <button type="button" id="cancelFinalMark" class="override-icon" title="Cancel" aria-label="Cancel editing">×</button>
-              </form>
-              <small id="manualMarkNote" class="manual-mark-note" hidden>* Manual final mark; rubric retained below.</small>
+              <div class="result-grade-line">
+                <span class="overall-grade" id="overallGrade">—</span>
+                <div class="override-controls print-remove" id="overrideControls" hidden>
+                  <button
+                    type="button"
+                    id="editFinalMark"
+                    class="override-icon"
+                    title="Edit final assessment mark"
+                    aria-label="Edit final assessment mark">
+                    ✎
+                  </button>
+                  <button
+                    type="button"
+                    id="resetFinalMark"
+                    class="override-icon"
+                    title="Return to rubric-calculated mark"
+                    aria-label="Return to rubric-calculated mark"
+                    hidden>
+                    ↺
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
           <div class="empty-state" id="markingEmpty">Add or select a student to begin marking.</div>
