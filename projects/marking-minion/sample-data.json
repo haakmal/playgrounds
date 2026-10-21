@@ -248,7 +248,9 @@
           "sample-st-15": 78,
           "sample-st-23": 92,
           "sample-st-27": 41
-        }
+        },
+        "type": "individual",
+        "groups": []
       },
       {
         "id": "sample-assignment-2",
@@ -272,34 +274,9 @@
           }
         ],
         "marks": {
-          "sample-st-01": {
-            "sample-at2-c1": "DN",
-            "sample-at2-c2": "PS",
-            "sample-at2-c3": "HD"
-          },
-          "sample-st-02": {
-            "sample-at2-c1": "HD",
-            "sample-at2-c2": "PERFECT",
-            "sample-at2-c3": "HD"
-          },
           "sample-st-03": {
-            "sample-at2-c1": "DN",
-            "sample-at2-c2": "DN",
-            "sample-at2-c3": "PS"
-          },
-          "sample-st-04": {
-            "sample-at2-c1": "HD",
-            "sample-at2-c2": "DN",
-            "sample-at2-c3": "CR"
-          },
-          "sample-st-05": {
             "sample-at2-c1": "CR",
-            "sample-at2-c2": "PS",
-            "sample-at2-c3": "HD"
-          },
-          "sample-st-06": {
-            "sample-at2-c1": "CR",
-            "sample-at2-c2": "CR",
+            "sample-at2-c2": "DN",
             "sample-at2-c3": "DN"
           },
           "sample-st-07": {
@@ -307,114 +284,29 @@
             "sample-at2-c2": "PERFECT",
             "sample-at2-c3": "HD"
           },
-          "sample-st-08": {
-            "sample-at2-c1": "HD",
-            "sample-at2-c2": "DN",
-            "sample-at2-c3": "NONE"
-          },
-          "sample-st-09": {
-            "sample-at2-c1": "CR"
-          },
-          "sample-st-10": {
-            "sample-at2-c1": "CR",
-            "sample-at2-c2": "PS",
-            "sample-at2-c3": "FL"
-          },
           "sample-st-11": {
-            "sample-at2-c1": "DN",
-            "sample-at2-c2": "HD",
-            "sample-at2-c3": "DN"
-          },
-          "sample-st-12": {
-            "sample-at2-c1": "CR",
-            "sample-at2-c2": "PS",
-            "sample-at2-c3": "CR"
-          },
-          "sample-st-13": {
-            "sample-at2-c1": "FL",
-            "sample-at2-c2": "PS",
-            "sample-at2-c3": "FL"
-          },
-          "sample-st-14": {
             "sample-at2-c1": "HD",
             "sample-at2-c2": "HD",
-            "sample-at2-c3": "CR"
-          },
-          "sample-st-15": {
-            "sample-at2-c1": "HD",
-            "sample-at2-c2": "PERFECT",
-            "sample-at2-c3": "PS"
+            "sample-at2-c3": "HD"
           },
           "sample-st-16": {
             "sample-at2-c1": "DN",
-            "sample-at2-c2": "CR",
-            "sample-at2-c3": "DN"
-          },
-          "sample-st-17": {
-            "sample-at2-c1": "HD",
-            "sample-at2-c2": "HD",
-            "sample-at2-c3": "HD"
-          },
-          "sample-st-18": {
-            "sample-at2-c1": "FL",
-            "sample-at2-c2": "PS",
-            "sample-at2-c3": "FL"
+            "sample-at2-c2": "CR"
           },
           "sample-st-19": {
-            "sample-at2-c1": "HD",
-            "sample-at2-c2": "PERFECT",
-            "sample-at2-c3": "DN"
-          },
-          "sample-st-20": {
-            "sample-at2-c1": "CR",
-            "sample-at2-c2": "CR",
-            "sample-at2-c3": "DN"
-          },
-          "sample-st-21": {
-            "sample-at2-c1": "DN",
-            "sample-at2-c2": "PERFECT",
+            "sample-at2-c1": "PS",
+            "sample-at2-c2": "FL",
             "sample-at2-c3": "CR"
-          },
-          "sample-st-22": {
-            "sample-at2-c1": "DN",
-            "sample-at2-c2": "DN",
-            "sample-at2-c3": "HD"
           },
           "sample-st-23": {
             "sample-at2-c1": "CR",
             "sample-at2-c2": "DN",
             "sample-at2-c3": "DN"
           },
-          "sample-st-24": {},
-          "sample-st-25": {
-            "sample-at2-c1": "FL",
-            "sample-at2-c2": "HD",
-            "sample-at2-c3": "DN"
-          },
-          "sample-st-26": {
-            "sample-at2-c1": "HD",
-            "sample-at2-c2": "DN",
-            "sample-at2-c3": "PS"
-          },
           "sample-st-27": {
             "sample-at2-c1": "DN",
             "sample-at2-c2": "FL",
             "sample-at2-c3": "PS"
-          },
-          "sample-st-28": {
-            "sample-at2-c1": "CR",
-            "sample-at2-c2": "DN",
-            "sample-at2-c3": "PERFECT"
-          },
-          "sample-st-29": {
-            "sample-at2-c1": "CR",
-            "sample-at2-c2": "PS",
-            "sample-at2-c3": "FL"
-          },
-          "sample-st-30": {
-            "sample-at2-c1": "PS",
-            "sample-at2-c2": "HD",
-            "sample-at2-c3": "CR"
           }
         },
         "deadline": "2026-11-02T23:59",
@@ -449,17 +341,149 @@
           "sample-st-30": "2026-11-05T05:19"
         },
         "overrides": {
-          "sample-st-01": 88,
-          "sample-st-06": 73,
-          "sample-st-10": 62,
-          "sample-st-14": 96,
           "sample-st-19": 58,
-          "sample-st-24": 81,
-          "sample-st-29": 47
-        }
+          "sample-st-03": 77
+        },
+        "type": "group",
+        "groups": [
+          {
+            "id": "sample-group-01",
+            "memberIds": [
+              "sample-st-01",
+              "sample-st-02",
+              "sample-st-03",
+              "sample-st-04"
+            ],
+            "individualIds": [
+              "sample-st-03"
+            ],
+            "marks": {
+              "sample-at2-c1": "HD",
+              "sample-at2-c2": "DN",
+              "sample-at2-c3": "HD"
+            }
+          },
+          {
+            "id": "sample-group-02",
+            "memberIds": [
+              "sample-st-05",
+              "sample-st-06",
+              "sample-st-07",
+              "sample-st-08"
+            ],
+            "individualIds": [
+              "sample-st-07"
+            ],
+            "marks": {
+              "sample-at2-c1": "CR",
+              "sample-at2-c2": "DN",
+              "sample-at2-c3": "PS"
+            },
+            "override": 83
+          },
+          {
+            "id": "sample-group-03",
+            "memberIds": [
+              "sample-st-09",
+              "sample-st-10",
+              "sample-st-11",
+              "sample-st-12"
+            ],
+            "individualIds": [
+              "sample-st-11"
+            ],
+            "marks": {
+              "sample-at2-c1": "PS",
+              "sample-at2-c2": "CR",
+              "sample-at2-c3": "PS"
+            }
+          },
+          {
+            "id": "sample-group-04",
+            "memberIds": [
+              "sample-st-13",
+              "sample-st-14",
+              "sample-st-15",
+              "sample-st-16"
+            ],
+            "individualIds": [
+              "sample-st-16"
+            ],
+            "marks": {
+              "sample-at2-c1": "FL",
+              "sample-at2-c2": "PS",
+              "sample-at2-c3": "CR"
+            }
+          },
+          {
+            "id": "sample-group-05",
+            "memberIds": [
+              "sample-st-17",
+              "sample-st-18",
+              "sample-st-19",
+              "sample-st-20"
+            ],
+            "individualIds": [
+              "sample-st-19"
+            ],
+            "marks": {
+              "sample-at2-c1": "DN",
+              "sample-at2-c2": "HD",
+              "sample-at2-c3": "DN"
+            },
+            "override": 72
+          },
+          {
+            "id": "sample-group-06",
+            "memberIds": [
+              "sample-st-21",
+              "sample-st-22",
+              "sample-st-23",
+              "sample-st-24"
+            ],
+            "individualIds": [
+              "sample-st-23"
+            ],
+            "marks": {
+              "sample-at2-c1": "HD",
+              "sample-at2-c2": "CR",
+              "sample-at2-c3": "DN"
+            }
+          },
+          {
+            "id": "sample-group-07",
+            "memberIds": [
+              "sample-st-25",
+              "sample-st-26",
+              "sample-st-27"
+            ],
+            "individualIds": [
+              "sample-st-27"
+            ],
+            "marks": {
+              "sample-at2-c1": "CR",
+              "sample-at2-c2": "PS",
+              "sample-at2-c3": "CR"
+            }
+          },
+          {
+            "id": "sample-group-08",
+            "memberIds": [
+              "sample-st-28",
+              "sample-st-29",
+              "sample-st-30"
+            ],
+            "individualIds": [],
+            "marks": {
+              "sample-at2-c1": "DN",
+              "sample-at2-c2": "CR",
+              "sample-at2-c3": "HD"
+            }
+          }
+        ]
       }
     ],
-    "selectedAssignmentId": "sample-assignment-1",
+    "selectedAssignmentId": "sample-assignment-2",
     "students": [
       {
         "id": "sample-st-01",
@@ -612,6 +636,6 @@
         "studentId": "z5200030"
       }
     ],
-    "selectedStudentId": "sample-st-01"
+    "selectedStudentId": "sample-st-02"
   }
 }
