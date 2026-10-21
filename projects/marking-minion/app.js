@@ -83,7 +83,7 @@ function migrateState(data) {
   data.selectedStudentId = selectedStudentId || students[0]?.id || null;
   return data;
 }
-// Group records belong to an assessment; submission timestamps remain student-specific.
+// Group records belong to an assessment; group submission timing is shared even for individual marks.
 function assessmentGroups(assessment) { assessment.groups ||= []; return assessment.groups; }
 function studentGroup(student, assessment = currentAssignment()) {
   return (assessment.groups || []).find(g => Array.isArray(g.memberIds) && g.memberIds.includes(student.id)) || null;
@@ -720,6 +720,7 @@ function validateImportedState(data) {
         if (!g || typeof g.id !== 'string' || !Array.isArray(g.memberIds) || !Array.isArray(g.individualIds) || !g.marks || typeof g.marks !== 'object' || Array.isArray(g.marks)) throw new Error('Invalid group.');
         for (const id of g.memberIds) { if (!ids.has(id) || linked.has(id)) throw new Error('Invalid or duplicated group member.'); linked.add(id); }
         if (g.individualIds.some(id => !g.memberIds.includes(id))) throw new Error('Invalid individual group member.');
+        if (g.submittedAt !== undefined && (typeof g.submittedAt !== 'string' || !validLocalDateTime(g.submittedAt))) throw new Error('Invalid group submission time.');
         if (g.override !== undefined && (typeof g.override !== 'number' || !Number.isFinite(g.override) || g.override < 0 || g.override > 100)) throw new Error('Invalid group override.');
         for (const band of Object.values(g.marks)) if (!bandByKey(band)) throw new Error('Invalid group rubric band.');
       }
@@ -789,6 +790,7 @@ document.querySelector('#assessmentType').addEventListener('change', event => {
     }
     // Preserve shared results on all members before unlinking, including manual overrides.
     for (const group of assessment.groups) for (const id of group.memberIds) {
+      detachSubmission(id, assessment, group);
       if ((group.individualIds || []).includes(id)) continue;
       assessment.marks[id] = {...(group.marks || {})};
       assessment.overrides ||= {};
@@ -815,6 +817,7 @@ function renderGroupPanel(student, assessment) {
   document.querySelectorAll('.group-unlink').forEach(button => button.addEventListener('click', () => {
     const id = button.dataset.id;
     const wasIndividual = (group.individualIds || []).includes(id);
+    detachSubmission(id, assessment, group);
     group.memberIds = group.memberIds.filter(v => v !== id);
     group.individualIds = (group.individualIds || []).filter(v => v !== id);
     // The departing student keeps their effective result as an independent record.
@@ -839,7 +842,7 @@ document.querySelector('#groupAdd').addEventListener('click', () => {
   if (matches.length !== 1) { alert(matches.length ? 'More than one student matches. Enter a student ID to identify one student.' : 'No available student matches.'); return; }
   let group = studentGroup(student, assessment);
   if (!group) {
-    group = {id:uid(),memberIds:[student.id],individualIds:[],marks:{...studentMarks(student,assessment)}};
+    group = {id:uid(),memberIds:[student.id],individualIds:[],marks:{...studentMarks(student,assessment)},submittedAt:assessment.submissions?.[student.id] || assessment.submissions?.[matches[0].id] || ''};
     const override = manualMark(student, assessment);
     if (override !== null) group.override = override;
     assessmentGroups(assessment).push(group);
@@ -979,9 +982,39 @@ function validLocalDateTime(value) {
   const two = n => String(n).padStart(2, '0');
   return `${date.getFullYear()}-${two(date.getMonth()+1)}-${two(date.getDate())}T${two(date.getHours())}:${two(date.getMinutes())}` === value;
 }
+// Shared group timing takes precedence over legacy per-student timestamps.
+// For existing sessions without a group timestamp, prefer the first recorded
+// member time in roster order, so each member displays the same result.
+function effectiveSubmission(student, assignment) {
+  const group = assignment.type === 'group' ? studentGroup(student, assignment) : null;
+  if (group) {
+    if (Object.prototype.hasOwnProperty.call(group, 'submittedAt')) return group.submittedAt || '';
+    const member = group.memberIds.find(id => assignment.submissions?.[id]);
+    return member ? assignment.submissions[member] : '';
+  }
+  return assignment.submissions?.[student.id] || '';
+}
+function setSubmission(student, assignment, value) {
+  const group = assignment.type === 'group' ? studentGroup(student, assignment) : null;
+  if (group) group.submittedAt = value;
+  else {
+    assignment.submissions ||= {};
+    if (value) assignment.submissions[student.id] = value;
+    else delete assignment.submissions[student.id];
+  }
+}
+function detachSubmission(studentId, assignment, group) {
+  // A departing member retains the submission time previously shared by the group.
+  const value = Object.prototype.hasOwnProperty.call(group, 'submittedAt')
+    ? group.submittedAt
+    : (group.memberIds.map(id => assignment.submissions?.[id]).find(Boolean) || '');
+  assignment.submissions ||= {};
+  if (value) assignment.submissions[studentId] = value;
+  else delete assignment.submissions[studentId];
+}
 function latenessText(student, assignment) {
   const deadline = assignment.deadline || '';
-  const submitted = assignment.submissions?.[student.id] || '';
+  const submitted = effectiveSubmission(student, assignment);
   if (!deadline || !submitted || !validLocalDateTime(deadline) || !validLocalDateTime(submitted)) return '—';
   const minutes = Math.max(0, Math.ceil((new Date(submitted) - new Date(deadline)) / 60000));
   if (!minutes) return 'On time';
@@ -991,7 +1024,7 @@ function latenessText(student, assignment) {
 }
 function renderLateness(student, assignment) {
   document.getElementById('lateDeadline').value = validLocalDateTime(assignment.deadline || '') ? (assignment.deadline || '') : '';
-  const submitted = assignment.submissions?.[student.id] || '';
+  const submitted = effectiveSubmission(student, assignment);
   document.getElementById('lateSubmitted').value = validLocalDateTime(submitted) ? submitted : '';
   document.getElementById('lateResult').textContent = latenessText(student, assignment);
 }
@@ -1003,12 +1036,11 @@ for (const [field, shared] of [['lateDeadline', true], ['lateSubmitted', false]]
     if (!validLocalDateTime(value)) return;
     if (shared) assignment.deadline = value;
     else {
-      assignment.submissions ||= {};
-      if (value) assignment.submissions[student.id] = value;
-      else delete assignment.submissions[student.id];
+      setSubmission(student, assignment, value);
     }
     saveState();
     if (student) renderLateness(student, assignment);
+    renderStudents();
     if (shared) render();
   });
 }
