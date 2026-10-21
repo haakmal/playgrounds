@@ -1,42 +1,42 @@
-const STORAGE_KEY = "moodleRubricMarker.v1";
+const STORAGE_KEY = 'moodleRubricMarker.v1';
 
 const BANDS = [
-  { key: "NONE", label: "Failed to meet criterion", short: "Fail", midpoint: 0 },
-  { key: "FL", label: "FL", short: "FL", midpoint: 30 },
-  { key: "PS", label: "PS", short: "PS", midpoint: 60 },
-  { key: "CR", label: "CR", short: "CR", midpoint: 70 },
-  { key: "DN", label: "DN", short: "DN", midpoint: 80 },
-  { key: "HD", label: "HD", short: "HD", midpoint: 90 },
-  { key: "PERFECT", label: "Perfect application of criterion", short: "Perfect", midpoint: 100 },
+  { key: 'NONE', label: 'Failed to meet criterion', short: 'Fail', midpoint: 0 },
+  { key: 'FL', label: 'FL', short: 'FL', midpoint: 30 },
+  { key: 'PS', label: 'PS', short: 'PS', midpoint: 60 },
+  { key: 'CR', label: 'CR', short: 'CR', midpoint: 70 },
+  { key: 'DN', label: 'DN', short: 'DN', midpoint: 80 },
+  { key: 'HD', label: 'HD', short: 'HD', midpoint: 90 },
+  { key: 'PERFECT', label: 'Perfect application of criterion', short: 'Perfect', midpoint: 100 }
 ];
 
 const DEFAULT_CRITERIA = [
-  { id: uid(), title: "Criterion 1", weight: 50 },
-  { id: uid(), title: "Criterion 2", weight: 50 },
+  { id: uid(), title: 'Criterion 1', weight: 50 },
+  { id: uid(), title: 'Criterion 2', weight: 50 }
 ];
 
 function uid() {
   return Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-5);
 }
 
-function createAssignment(name = "Assessment 1") {
+function createAssignment(name = 'Assessment 1') {
   return {
     id: uid(),
     name,
     weight: 100,
-    criteria: structuredClone(DEFAULT_CRITERIA).map((c) => ({ ...c, id: uid() })),
-    marks: {},
+    criteria: structuredClone(DEFAULT_CRITERIA).map(c => ({ ...c, id: uid() })),
+    marks: {}
   };
 }
 
 function defaultState() {
   const assignment = createAssignment();
   return {
-    className: "",
+    className: '',
     students: [],
     selectedStudentId: null,
     assignments: [assignment],
-    selectedAssignmentId: assignment.id,
+    selectedAssignmentId: assignment.id
   };
 }
 
@@ -56,83 +56,111 @@ function loadState() {
 
 // Convert legacy assignment-owned rosters to a shared class roster.
 function migrateState(data) {
-  if (Array.isArray(data.students) && data.assignments.every((a) => a.marks && !Array.isArray(a.students))) return data;
+  if (Array.isArray(data.students) && data.assignments.every(a => a.marks && !Array.isArray(a.students))) return data;
   const students = [];
   const identity = new Map();
   const ids = new Set();
   let selectedStudentId = null;
   for (const a of data.assignments) {
     const marks = {};
-    for (const st of a.students || []) {
-      const key = st.studentId?.trim() ? `id:${st.studentId.trim().toLowerCase()}` : `name:${(st.name || "").trim().toLowerCase()}`;
+    for (const st of (a.students || [])) {
+      const key = st.studentId?.trim() ? `id:${st.studentId.trim().toLowerCase()}` : `name:${(st.name || '').trim().toLowerCase()}`;
       let id = identity.get(key);
       if (!id) {
         id = ids.has(st.id) ? uid() : st.id || uid();
-        identity.set(key, id);
-        ids.add(id);
-        students.push({ id, name: st.name || "", studentId: st.studentId || "" });
+        identity.set(key, id); ids.add(id);
+        students.push({id, name:st.name || '', studentId:st.studentId || ''});
       }
-      marks[id] = { ...(st.marks || {}) };
+      marks[id] = {...(st.marks || {})};
       if (a.id === data.selectedAssignmentId && a.selectedStudentId === st.id) selectedStudentId = id;
     }
     a.marks = marks;
     delete a.students;
     delete a.selectedStudentId;
-    if (!Number.isFinite(a.weight))
-      a.weight = data.assignments.length === 1 ? 100 : Math.round((100 / data.assignments.length) * 100) / 100;
+    if (!Number.isFinite(a.weight)) a.weight = data.assignments.length === 1 ? 100 : Math.round(100 / data.assignments.length * 100) / 100;
   }
   data.students = students;
   data.selectedStudentId = selectedStudentId || students[0]?.id || null;
   return data;
 }
+// Group records belong to an assessment; submission timestamps remain student-specific.
+function assessmentGroups(assessment) { assessment.groups ||= []; return assessment.groups; }
+function studentGroup(student, assessment = currentAssignment()) {
+  return (assessment.groups || []).find(g => Array.isArray(g.memberIds) && g.memberIds.includes(student.id)) || null;
+}
+function individuallyMarked(student, assessment = currentAssignment()) {
+  const group = studentGroup(student, assessment);
+  return !!group && (group.individualIds || []).includes(student.id);
+}
+function sharedGroup(student, assessment = currentAssignment()) {
+  const group = studentGroup(student, assessment);
+  return group && !individuallyMarked(student, assessment) ? group : null;
+}
+function effectiveMarks(student, assessment = currentAssignment()) {
+  const group = sharedGroup(student, assessment);
+  return group ? (group.marks ||= {}) : (assessment.marks?.[student.id] || {});
+}
+function setEffectiveBand(student, assessment, criterionId, key) {
+  const group = sharedGroup(student, assessment);
+  const marks = group ? (group.marks ||= {}) : (assessment.marks[student.id] ||= {});
+  if (key) marks[criterionId] = key;
+  else delete marks[criterionId];
+}
+function setEffectiveOverride(student, assessment, value) {
+  const group = sharedGroup(student, assessment);
+  if (group) { if (value === null) delete group.override; else group.override = value; }
+  else { assessment.overrides ||= {}; if (value === null) delete assessment.overrides[student.id]; else assessment.overrides[student.id] = value; }
+}
+function groupInfo(student, assessment = currentAssignment()) {
+  const group = studentGroup(student, assessment);
+  if (!group) return '';
+  const others = group.memberIds.filter(id => id !== student.id).map(id => state.students.find(s => s.id === id)).filter(Boolean).map(s => s.name || s.studentId);
+  return `Grouped${others.length ? ' with ' + others.join(', ') : ''}`;
+}
 function manualMark(student, assignment = currentAssignment()) {
-  const value = assignment.overrides?.[student.id];
-  return typeof value === "number" && Number.isFinite(value) && value >= 0 && value <= 100 ? value : null;
+  const group = sharedGroup(student, assignment);
+  const value = group ? group.override : assignment.overrides?.[student.id];
+  return typeof value === 'number' && Number.isFinite(value) && value >= 0 && value <= 100 ? value : null;
 }
 function hasOverride(student, assignment = currentAssignment()) {
   return manualMark(student, assignment) !== null;
 }
 function annotatedMark(mark, overridden) {
-  return formatMark(mark) + (overridden ? "*" : "");
+  return formatMark(mark) + (overridden ? '*' : '');
 }
 function studentMarks(student, assignment = currentAssignment()) {
-  return assignment.marks?.[student.id] || {};
+  return effectiveMarks(student, assignment);
 }
 function isComplete(student, assignment = currentAssignment()) {
-  if (hasOverride(student, assignment)) return true;
-  return (
-    assignment.criteria.length > 0 &&
-    Math.abs(totalWeight(assignment) - 100) < 0.000001 &&
-    assignment.criteria.every((c) => bandByKey(studentMarks(student, assignment)[c.id]))
-  );
+  if (hasOverride(student,assignment)) return true;
+  return assignment.criteria.length > 0 && Math.abs(totalWeight(assignment)-100)<0.000001 &&
+    assignment.criteria.every(c => bandByKey(studentMarks(student,assignment)[c.id]));
 }
 function overallStudent(student) {
-  const ready = state.assignments.length && state.assignments.every((a) => isComplete(student, a));
-  const total = state.assignments.reduce((n, a) => n + ((Number(a.weight) || 0) * calculateStudent(student, a)) / 100, 0);
-  return { ready: !!ready && Math.abs(totalAssessmentWeight() - 100) < 0.000001, mark: Math.round(total * 100) / 100 };
+  const ready = state.assignments.length && state.assignments.every(a => isComplete(student,a));
+  const total = state.assignments.reduce((n,a) => n+(Number(a.weight)||0)*calculateStudent(student,a)/100,0);
+  return {ready: !!ready && Math.abs(totalAssessmentWeight()-100)<0.000001, mark:Math.round(total*100)/100};
 }
-function totalAssessmentWeight() {
-  return state.assignments.reduce((n, a) => n + (Number(a.weight) || 0), 0);
-}
+function totalAssessmentWeight() {return state.assignments.reduce((n,a)=>n+(Number(a.weight)||0),0);}
 function saveState() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    const status = document.querySelector("#saveStatus");
-    if (status) status.textContent = "Saved locally in this browser";
+    const status = document.querySelector('#saveStatus');
+    if (status) status.textContent = 'Saved locally in this browser';
   } catch (error) {
-    const status = document.querySelector("#saveStatus");
-    if (status) status.textContent = "Unable to save — export your data";
-    console.error("Local storage save failed:", error);
+    const status = document.querySelector('#saveStatus');
+    if (status) status.textContent = 'Unable to save — export your data';
+    console.error('Local storage save failed:', error);
   }
 }
 
 function currentAssignment() {
-  return state.assignments.find((a) => a.id === state.selectedAssignmentId) || state.assignments[0];
+  return state.assignments.find(a => a.id === state.selectedAssignmentId) || state.assignments[0];
 }
 
 function currentStudent() {
   const assignment = currentAssignment();
-  return state.students.find((s) => s.id === state.selectedStudentId) || null;
+  return state.students.find(s => s.id === state.selectedStudentId) || null;
 }
 
 function totalWeight(assignment = currentAssignment()) {
@@ -140,88 +168,84 @@ function totalWeight(assignment = currentAssignment()) {
 }
 
 function bandByKey(key) {
-  return BANDS.find((b) => b.key === key) || null;
+  return BANDS.find(b => b.key === key) || null;
 }
 
 function calculateStudent(student, assignment = currentAssignment()) {
-  const manual = manualMark(student, assignment);
+  const manual = manualMark(student,assignment);
   if (manual !== null) return manual;
   const total = assignment.criteria.reduce((sum, criterion) => {
-    const key = studentMarks(student, assignment)[criterion.id];
+    const key = studentMarks(student,assignment)[criterion.id];
     const band = bandByKey(key);
     if (!band) return sum;
-    return sum + (band.midpoint * (Number(criterion.weight) || 0)) / 100;
+    return sum + (band.midpoint * (Number(criterion.weight) || 0) / 100);
   }, 0);
 
   return Math.round((total + Number.EPSILON) * 100) / 100;
 }
 
 function gradeForMark(mark) {
-  if (mark >= 85) return "HD";
-  if (mark >= 75) return "DN";
-  if (mark >= 65) return "CR";
-  if (mark >= 50) return "PS";
-  return "FL";
+  if (mark >= 85) return 'HD';
+  if (mark >= 75) return 'DN';
+  if (mark >= 65) return 'CR';
+  if (mark >= 50) return 'PS';
+  return 'FL';
 }
 
 function formatMark(mark) {
   if (Number.isInteger(mark)) return String(mark);
-  return mark.toFixed(2).replace(/0+$/, "").replace(/\.$/, "");
+  return mark.toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
 }
 
 const els = {
-  className: document.querySelector("#className"),
-  assignmentName: document.querySelector("#assignmentName"),
-  assignmentSelect: document.querySelector("#assignmentSelect"),
-  newAssignmentBtn: document.querySelector("#newAssignmentBtn"),
-  deleteAssignmentBtn: document.querySelector("#deleteAssignmentBtn"),
-  criteriaList: document.querySelector("#criteriaList"),
-  criterionTemplate: document.querySelector("#criterionTemplate"),
-  addCriterionBtn: document.querySelector("#addCriterionBtn"),
-  weightTotal: document.querySelector("#weightTotal"),
-  criteriaWarning: document.querySelector("#criteriaWarning"),
-  studentName: document.querySelector("#studentName"),
-  studentId: document.querySelector("#studentId"),
-  addStudentBtn: document.querySelector("#addStudentBtn"),
-  studentTableBody: document.querySelector("#studentTableBody"),
-  markingTitle: document.querySelector("#markingTitle"),
-  markingEmpty: document.querySelector("#markingEmpty"),
-  markingContent: document.querySelector("#markingContent"),
-  markingCriteria: document.querySelector("#markingCriteria"),
-  overallMark: document.querySelector("#overallMark"),
-  overallGrade: document.querySelector("#overallGrade"),
-  printClass: document.querySelector("#printClass"),
-  printAssignment: document.querySelector("#printAssignment"),
-  printStudent: document.querySelector("#printStudent"),
-  printStudentId: document.querySelector("#printStudentId"),
-  bandReference: document.querySelector("#bandReference"),
-  printBtn: document.querySelector("#printBtn"),
-  resetBtn: document.querySelector("#resetBtn"),
+  className: document.querySelector('#className'),
+  assignmentName: document.querySelector('#assignmentName'),
+  assignmentSelect: document.querySelector('#assignmentSelect'),
+  newAssignmentBtn: document.querySelector('#newAssignmentBtn'),
+  deleteAssignmentBtn: document.querySelector('#deleteAssignmentBtn'),
+  criteriaList: document.querySelector('#criteriaList'),
+  criterionTemplate: document.querySelector('#criterionTemplate'),
+  addCriterionBtn: document.querySelector('#addCriterionBtn'),
+  weightTotal: document.querySelector('#weightTotal'),
+  criteriaWarning: document.querySelector('#criteriaWarning'),
+  studentName: document.querySelector('#studentName'),
+  studentId: document.querySelector('#studentId'),
+  addStudentBtn: document.querySelector('#addStudentBtn'),
+  studentTableBody: document.querySelector('#studentTableBody'),
+  markingTitle: document.querySelector('#markingTitle'),
+  markingEmpty: document.querySelector('#markingEmpty'),
+  markingContent: document.querySelector('#markingContent'),
+  markingCriteria: document.querySelector('#markingCriteria'),
+  overallMark: document.querySelector('#overallMark'),
+  overallGrade: document.querySelector('#overallGrade'),
+  printClass: document.querySelector('#printClass'),
+  printAssignment: document.querySelector('#printAssignment'),
+  printStudent: document.querySelector('#printStudent'),
+  printStudentId: document.querySelector('#printStudentId'),
+  bandReference: document.querySelector('#bandReference'),
+  printBtn: document.querySelector('#printBtn'),
+  resetBtn: document.querySelector('#resetBtn')
 };
 
 function render() {
   const assignment = currentAssignment();
 
-  els.className.value = state.className || "";
-  els.assignmentName.value = assignment.name || "";
-  document.getElementById("lateDeadlineDisplay").textContent =
-    assignment.deadline && validLocalDateTime(assignment.deadline)
-      ? new Date(assignment.deadline).toLocaleString("en-AU", { dateStyle: "medium", timeStyle: "short" })
-      : "Not set";
+  els.className.value = state.className || '';
+  els.assignmentName.value = assignment.name || '';
+  document.querySelector('#assessmentType').value = assignment.type === 'group' ? 'group' : 'individual';
+  document.getElementById('lateDeadlineDisplay').textContent = assignment.deadline && validLocalDateTime(assignment.deadline) ? new Date(assignment.deadline).toLocaleString('en-AU', {dateStyle:'medium',timeStyle:'short'}) : 'Not set';
+  // The deadline belongs to the assessment, even when no student is selected.
+  document.getElementById('lateDeadline').value = validLocalDateTime(assignment.deadline || '') ? (assignment.deadline || '') : '';
 
-  els.assignmentSelect.innerHTML = state.assignments
-    .map(
-      (a) => `<option value="${a.id}" ${a.id === assignment.id ? "selected" : ""}>${escapeHtml(a.name || "Untitled assessment")}</option>`,
-    )
-    .join("");
+  els.assignmentSelect.innerHTML = state.assignments.map(a =>
+    `<option value="${a.id}" ${a.id === assignment.id ? 'selected' : ''}>${escapeHtml(a.name || 'Untitled assessment')}</option>`
+  ).join('');
 
   els.deleteAssignmentBtn.disabled = state.assignments.length <= 1;
-  const printSelect = document.querySelector("#printScope");
+  const printSelect = document.querySelector('#printScope');
   const priorScope = printSelect.value;
-  printSelect.innerHTML =
-    state.assignments.map((a) => `<option value="${a.id}">${escapeHtml(a.name)}</option>`).join("") +
-    '<option value="all">Class summary (all assessments)</option>';
-  if ([...printSelect.options].some((option) => option.value === priorScope)) printSelect.value = priorScope;
+  printSelect.innerHTML = state.assignments.map(a=>`<option value="${a.id}">${escapeHtml(a.name)}</option>`).join('') + '<option value="all">Class summary (all assessments)</option>';
+  if ([...printSelect.options].some(option => option.value === priorScope)) printSelect.value = priorScope;
   else printSelect.value = assignment.id;
 
   renderCriteria();
@@ -233,24 +257,24 @@ function render() {
 
 function renderCriteria() {
   const assignment = currentAssignment();
-  els.criteriaList.innerHTML = "";
+  els.criteriaList.innerHTML = '';
 
-  assignment.criteria.forEach((criterion) => {
+  assignment.criteria.forEach(criterion => {
     const node = els.criterionTemplate.content.firstElementChild.cloneNode(true);
-    const title = node.querySelector(".criterion-title");
-    const weight = node.querySelector(".criterion-weight");
-    const remove = node.querySelector(".remove-criterion");
+    const title = node.querySelector('.criterion-title');
+    const weight = node.querySelector('.criterion-weight');
+    const remove = node.querySelector('.remove-criterion');
 
     title.value = criterion.title;
     weight.value = criterion.weight;
 
-    title.addEventListener("input", () => {
+    title.addEventListener('input', () => {
       criterion.title = title.value;
       saveState();
       renderMarking();
     });
 
-    weight.addEventListener("input", () => {
+    weight.addEventListener('input', () => {
       criterion.weight = Math.max(0, Math.min(100, Number(weight.value) || 0));
       saveState();
       renderWeightStatus();
@@ -258,11 +282,9 @@ function renderCriteria() {
       renderMarking();
     });
 
-    remove.addEventListener("click", () => {
-      assignment.criteria = assignment.criteria.filter((c) => c.id !== criterion.id);
-      Object.values(assignment.marks).forEach((marks) => {
-        delete marks[criterion.id];
-      });
+    remove.addEventListener('click', () => {
+      assignment.criteria = assignment.criteria.filter(c => c.id !== criterion.id);
+      Object.values(assignment.marks).forEach(marks => {delete marks[criterion.id];});
       saveState();
       render();
     });
@@ -276,67 +298,54 @@ function renderCriteria() {
 function renderWeightStatus() {
   const total = totalWeight();
   els.weightTotal.textContent = `${formatMark(total)} / 100%`;
-  els.weightTotal.classList.toggle("invalid", total !== 100);
+  els.weightTotal.classList.toggle('invalid', total !== 100);
   els.criteriaWarning.hidden = total === 100;
 }
 
 function renderStudents() {
   const assignment = currentAssignment();
-  els.studentTableBody.innerHTML = "";
+  els.studentTableBody.innerHTML = '';
 
   if (!state.students.length) {
     els.studentTableBody.innerHTML = `<tr><td colspan="5" class="section-note">No students added yet.</td></tr>`;
     return;
   }
 
-  const query = document.querySelector("#rosterSearch")?.value.trim() || "";
+  const query = document.querySelector('#rosterSearch')?.value.trim() || '';
   let visibleStudents = 0;
-  state.students.forEach((student) => {
+  state.students.forEach(student => {
     if (query && !studentMatchesQuery(student, query)) return;
     visibleStudents++;
-    const completed = isComplete(student, assignment);
+    const completed = isComplete(student,assignment);
     const mark = completed ? calculateStudent(student, assignment) : null;
-    const row = document.createElement("tr");
+    const row = document.createElement('tr');
     const grade = mark === null ? null : gradeForMark(mark);
     const timing = latenessText(student, assignment);
-    const lateBadge = timing.startsWith("Late ")
-      ? `<span class="roster-late" title="${escapeHtml(timing)} after assessment deadline" aria-label="${escapeHtml(timing)} after assessment deadline">Late</span>`
-      : "";
-    if (student.id === state.selectedStudentId) {
-      row.classList.add("active");
-      row.setAttribute("aria-selected", "true");
-    }
+    const individualBadge = individuallyMarked(student, assignment) ? '<sup class="roster-individual" title="Individually marked within group" aria-label="Individually marked within group">†</sup>' : '';
+    const lateBadge = timing.startsWith('Late ') ? `<span class="roster-late" title="${escapeHtml(timing)} after assessment deadline" aria-label="${escapeHtml(timing)} after assessment deadline">Late</span>` : '';
+    if (student.id === state.selectedStudentId) { row.classList.add('active'); row.setAttribute('aria-selected', 'true'); }
     row.innerHTML = `
-      <td><span class="roster-student-name">${escapeHtml(student.name || "Unnamed student")}</span>${lateBadge}</td>
-      <td>${escapeHtml(student.studentId || "—")}</td>
-      <td class="numeric">${mark === null ? "—" : annotatedMark(mark, hasOverride(student, assignment))}</td>
-      <td>${grade === null ? "—" : `<span class="roster-grade grade-${grade.toLowerCase()}">${grade}${hasOverride(student, assignment) ? "*" : ""}</span>`}</td>
+      <td><span class="roster-student-line"><span class="roster-student-name">${escapeHtml(student.name || 'Unnamed student')}</span>${individualBadge}${lateBadge}</span></td>
+      <td>${escapeHtml(student.studentId || '—')}</td>
+      <td class="numeric">${mark === null ? "—" : annotatedMark(mark,hasOverride(student,assignment))}${individuallyMarked(student,assignment) ? '<sup class="roster-individual" title="Individual group mark">†</sup>' : ''}</td>
+      <td>${grade === null ? '—' : `<span class="roster-grade grade-${grade.toLowerCase()}">${grade}${hasOverride(student,assignment) ? '*' : ''}</span>`}</td>
       <td><div class="row-actions"><button type="button" class="remove-student danger" aria-label="Remove student" title="Remove student">×</button></div></td>
     `;
 
-    row.addEventListener("click", (e) => {
-      if (e.target.closest(".remove-student")) return;
+    row.addEventListener('click', e => {
+      if (e.target.closest('.remove-student')) return;
       state.selectedStudentId = student.id;
       saveState();
       renderStudents();
       renderMarking();
     });
 
-    row.querySelector(".remove-student").addEventListener("click", (e) => {
+    row.querySelector('.remove-student').addEventListener('click', e => {
       e.stopPropagation();
-      const studentLabel = student.name || student.studentId || "this student";
-      if (
-        !confirm(
-          `Remove “${studentLabel}” from the class roster? This will permanently delete their marks and manual overrides across all assessments. Export your session first if you need a backup.`,
-        )
-      )
-        return;
-      state.students = state.students.filter((s) => s.id !== student.id);
-      state.assignments.forEach((a) => {
-        delete a.marks[student.id];
-        if (a.overrides) delete a.overrides[student.id];
-        if (a.submissions) delete a.submissions[student.id];
-      });
+      const studentLabel = student.name || student.studentId || 'this student';
+      if (!confirm(`Remove “${studentLabel}” from the class roster? This will permanently delete their marks and manual overrides across all assessments. Export your session first if you need a backup.`)) return;
+      state.students = state.students.filter(s => s.id !== student.id);
+      state.assignments.forEach(a => {delete a.marks[student.id]; if (a.overrides) delete a.overrides[student.id]; if (a.submissions) delete a.submissions[student.id]; if (a.groups) { a.groups.forEach(g => {g.memberIds = g.memberIds.filter(id => id !== student.id); g.individualIds = (g.individualIds || []).filter(id => id !== student.id);}); a.groups = a.groups.filter(g => g.memberIds.length); }});
       if (state.selectedStudentId === student.id) state.selectedStudentId = state.students[0]?.id || null;
       saveState();
       renderStudents();
@@ -352,31 +361,17 @@ function renderStudents() {
 
 // Search only filters the roster presentation; it never removes student records.
 function searchNormalise(value) {
-  return String(value ?? "")
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, " ")
-    .trim();
+  return String(value ?? '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 }
 function withinOneEdit(a, b) {
-  if (Math.abs(a.length - b.length) > 1 || Math.min(a.length, b.length) < 4) return false;
-  let i = 0,
-    k = 0,
-    edits = 0;
+  if (Math.abs(a.length - b.length) > 1 || Math.min(a.length,b.length) < 4) return false;
+  let i = 0, k = 0, edits = 0;
   while (i < a.length && k < b.length) {
-    if (a[i] === b[k]) {
-      i++;
-      k++;
-      continue;
-    }
+    if (a[i] === b[k]) { i++; k++; continue; }
     if (++edits > 1) return false;
     if (a.length > b.length) i++;
     else if (b.length > a.length) k++;
-    else {
-      i++;
-      k++;
-    }
+    else { i++; k++; }
   }
   return edits + Number(i < a.length || k < b.length) <= 1;
 }
@@ -385,98 +380,97 @@ function studentMatchesQuery(student, rawQuery) {
   if (!query) return true;
   const name = searchNormalise(student.name);
   const id = searchNormalise(student.studentId);
-  const words = (name + " " + id).trim().split(/\s+/);
-  return query
-    .split(/\s+/)
-    .every(
-      (token) => name.includes(token) || id.includes(token) || words.some((word) => word.startsWith(token) || withinOneEdit(word, token)),
-    );
+  const words = (name + ' ' + id).trim().split(/\s+/);
+  return query.split(/\s+/).every(token =>
+    name.includes(token) || id.includes(token) || words.some(word =>
+      word.startsWith(token) || withinOneEdit(word, token)
+    )
+  );
 }
-document.querySelector("#rosterSearch").addEventListener("input", () => renderStudents());
+document.querySelector('#rosterSearch').addEventListener('input', () => renderStudents());
 
 function renderMarking() {
   const assignment = currentAssignment();
   const student = currentStudent();
 
   if (!student) {
-    els.markingTitle.textContent = "Select a student";
+    els.markingTitle.textContent = 'Select a student';
     els.markingEmpty.hidden = false;
     els.markingContent.hidden = true;
-    els.overallMark.textContent = "—";
-    els.overallGrade.textContent = "—";
-    document.getElementById("overrideControls").hidden = true;
+    els.overallMark.textContent = '—';
+    els.overallGrade.textContent = '—';
+    document.getElementById('overrideControls').hidden = true;
     closeInlineMarkEditor();
+    // Prevent stale submission timing from remaining visible after a full reset.
+    document.getElementById('lateSubmitted').value = '';
+    document.getElementById('lateResult').textContent = '—';
     return;
   }
 
-  const completed = isComplete(student, assignment);
+  const completed = isComplete(student,assignment);
   const mark = calculateStudent(student, assignment);
-  els.markingTitle.textContent = student.name || student.studentId || "Selected student";
+  els.markingTitle.textContent = student.name || student.studentId || 'Selected student';
   els.markingEmpty.hidden = true;
   els.markingContent.hidden = false;
   // The marking workspace previews the accumulated rubric mark as bands are selected.
   // A preview does not make an incomplete rubric a final grade in the roster,
   // analytics, print record or combined assessment result.
-  const selectedCount = assignment.criteria.filter((c) => bandByKey(studentMarks(student, assignment)[c.id])).length;
-  const hasCalculatedResult = hasOverride(student, assignment) || selectedCount > 0;
-  els.overallMark.textContent = hasCalculatedResult ? annotatedMark(mark, hasOverride(student, assignment)) : "—";
-  els.overallGrade.textContent = completed
-    ? gradeForMark(mark)
-    : hasCalculatedResult
-      ? `${gradeForMark(mark)} · In progress`
-      : "In progress";
-  updateOverrideControls(student, assignment);
-  els.printClass.textContent = state.className || "—";
-  els.printAssignment.textContent = assignment.name || "—";
-  els.printStudent.textContent = student.name || "—";
-  els.printStudentId.textContent = student.studentId || "—";
+  const selectedCount = assignment.criteria.filter(c => bandByKey(studentMarks(student,assignment)[c.id])).length;
+  const hasCalculatedResult = hasOverride(student,assignment) || selectedCount > 0;
+  els.overallMark.textContent = hasCalculatedResult ? annotatedMark(mark,hasOverride(student,assignment)) : '—';
+  els.overallGrade.textContent = completed ? gradeForMark(mark) :
+    (hasCalculatedResult ? `${gradeForMark(mark)} · In progress` : 'In progress');
+  updateOverrideControls(student,assignment);
+  els.printClass.textContent = state.className || '—';
+  els.printAssignment.textContent = assignment.name || '—';
+  els.printStudent.textContent = student.name || '—';
+  els.printStudentId.textContent = student.studentId || '—';
 
   renderPriorMarks(student);
   renderLateness(student, assignment);
-  els.markingCriteria.innerHTML = "";
-  assignment.criteria.forEach((criterion) => {
-    const selected = studentMarks(student, assignment)[criterion.id] || "";
+  renderGroupPanel(student, assignment);
+  els.markingCriteria.innerHTML = '';
+  assignment.criteria.forEach(criterion => {
+    const selected = studentMarks(student,assignment)[criterion.id] || '';
     const selectedBand = bandByKey(selected);
-    const contribution = selectedBand ? (selectedBand.midpoint * (Number(criterion.weight) || 0)) / 100 : 0;
+    const contribution = selectedBand ? selectedBand.midpoint * (Number(criterion.weight) || 0) / 100 : 0;
 
-    const item = document.createElement("section");
-    item.className = "marking-item" + (hasOverride(student, assignment) ? " rubric-suspended" : "");
+    const item = document.createElement('section');
+    item.className = 'marking-item' + (hasOverride(student,assignment) ? ' rubric-suspended' : '');
     item.innerHTML = `
       <div class="marking-item-head">
-        <div class="marking-item-title">${escapeHtml(criterion.title || "Untitled criterion")}</div>
+        <div class="marking-item-title">${escapeHtml(criterion.title || 'Untitled criterion')}</div>
         <div class="marking-item-weight">${formatMark(Number(criterion.weight) || 0)}%</div>
-        <div class="marking-item-score">${selectedBand ? `${selectedBand.midpoint} × ${formatMark(Number(criterion.weight) || 0)}% = ${formatMark(contribution)}` : "Not marked"}</div>
+        <div class="marking-item-score">${selectedBand ? `${selectedBand.midpoint} × ${formatMark(Number(criterion.weight) || 0)}% = ${formatMark(contribution)}` : 'Not marked'}</div>
       </div>
-      <div class="band-options" role="radiogroup" aria-label="${escapeHtml(criterion.title || "Criterion")} band"></div>
+      <div class="band-options" role="radiogroup" aria-label="${escapeHtml(criterion.title || 'Criterion')} band"></div>
     `;
 
-    const options = item.querySelector(".band-options");
-    BANDS.forEach((band) => {
-      const option = document.createElement("label");
+    const options = item.querySelector('.band-options');
+    BANDS.forEach(band => {
+      const option = document.createElement('label');
       option.className = `band-option band-${band.key.toLowerCase()}`;
       option.innerHTML = `
-        <input type="radio" name="band-${criterion.id}" value="${band.key}" ${selected === band.key ? "checked" : ""}>
+        <input type="radio" name="band-${criterion.id}" value="${band.key}" ${selected === band.key ? 'checked' : ''}>
         <span>
           <strong class="band-code">${escapeHtml(band.short)}</strong>
           <span class="band-midpoint">${band.midpoint}</span>
         </span>
       `;
-      option.querySelector("input").disabled = hasOverride(student, assignment);
+      option.querySelector('input').disabled = hasOverride(student,assignment);
       // Clicking the currently selected band clears it (radio inputs do not
       // normally fire change when clicked again). Preserve the other bands.
-      if (selected === band.key && !hasOverride(student, assignment)) {
-        option.addEventListener("click", (event) => {
+      if (selected === band.key && !hasOverride(student,assignment)) {
+        option.addEventListener('click', event => {
           event.preventDefault();
-          assignment.marks[student.id] ||= {};
-          delete assignment.marks[student.id][criterion.id];
+          setEffectiveBand(student, assignment, criterion.id, null);
           saveState();
           renderStudents();
           renderMarking();
         });
       }
-      option.querySelector("input").addEventListener("change", () => {
-        assignment.marks[student.id] ||= {};
-        assignment.marks[student.id][criterion.id] = band.key;
+      option.querySelector('input').addEventListener('change', () => {
+        setEffectiveBand(student, assignment, criterion.id, band.key);
         saveState();
         renderStudents();
         renderMarking();
@@ -490,54 +484,44 @@ function renderMarking() {
 
 function renderBandReference() {
   if (!els.bandReference) return;
-  els.bandReference.innerHTML = BANDS.map(
-    (b) => `
+  els.bandReference.innerHTML = BANDS.map(b => `
     <div class="reference-band">
       <strong>${escapeHtml(b.label)}</strong>
       <span>${b.midpoint}</span>
     </div>
-  `,
-  ).join("");
+  `).join('');
 }
 
 function escapeHtml(value) {
-  return String(value ?? "").replace(
-    /[&<>'"]/g,
-    (ch) =>
-      ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        "'": "&#039;",
-        '"': "&quot;",
-      })[ch],
-  );
+  return String(value ?? '').replace(/[&<>'"]/g, ch => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#039;', '"': '&quot;'
+  }[ch]));
 }
 
-els.className.addEventListener("input", () => {
+els.className.addEventListener('input', () => {
   state.className = els.className.value;
   saveState();
-  if (currentStudent()) els.printClass.textContent = state.className || "—";
+  if (currentStudent()) els.printClass.textContent = state.className || '—';
 });
 
-els.assignmentName.addEventListener("input", () => {
+els.assignmentName.addEventListener('input', () => {
   currentAssignment().name = els.assignmentName.value;
   saveState();
   renderStudents();
   renderMarking();
   const selectedOption = els.assignmentSelect.querySelector(`option[value="${currentAssignment().id}"]`);
-  if (selectedOption) selectedOption.textContent = currentAssignment().name || "Untitled assessment";
+  if (selectedOption) selectedOption.textContent = currentAssignment().name || 'Untitled assessment';
 });
 
-els.assignmentSelect.addEventListener("change", () => {
+els.assignmentSelect.addEventListener('change', () => {
   state.selectedAssignmentId = els.assignmentSelect.value;
   saveState();
   render();
 });
 
-els.newAssignmentBtn.addEventListener("click", () => {
+els.newAssignmentBtn.addEventListener('click', () => {
   const assignment = createAssignment(`Assessment ${state.assignments.length + 1}`);
-  assignment.weight = Math.max(0, Math.round((100 - totalAssessmentWeight()) * 100) / 100);
+  assignment.weight = Math.max(0,Math.round((100-totalAssessmentWeight())*100)/100);
   state.assignments.push(assignment);
   state.selectedAssignmentId = assignment.id;
   saveState();
@@ -546,30 +530,26 @@ els.newAssignmentBtn.addEventListener("click", () => {
   els.assignmentName.select();
 });
 
-els.deleteAssignmentBtn.addEventListener("click", () => {
+els.deleteAssignmentBtn.addEventListener('click', () => {
   if (state.assignments.length <= 1) return;
   const assignment = currentAssignment();
-  if (!confirm(`Delete “${assignment.name || "Untitled assessment"}” and its marks? Class students will be retained.`)) return;
-  state.assignments = state.assignments.filter((a) => a.id !== assignment.id);
+  if (!confirm(`Delete “${assignment.name || 'Untitled assessment'}” and its marks? Class students will be retained.`)) return;
+  state.assignments = state.assignments.filter(a => a.id !== assignment.id);
   state.selectedAssignmentId = state.assignments[0].id;
   saveState();
   render();
 });
 
-els.addCriterionBtn.addEventListener("click", () => {
+els.addCriterionBtn.addEventListener('click', () => {
   const assignment = currentAssignment();
   assignment.criteria.push({ id: uid(), title: `Criterion ${assignment.criteria.length + 1}`, weight: 0 });
   saveState();
   renderCriteria();
 });
 
-els.addStudentBtn.addEventListener("click", addStudent);
-els.studentName.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") addStudent();
-});
-els.studentId.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") addStudent();
-});
+els.addStudentBtn.addEventListener('click', addStudent);
+els.studentName.addEventListener('keydown', e => { if (e.key === 'Enter') addStudent(); });
+els.studentId.addEventListener('keydown', e => { if (e.key === 'Enter') addStudent(); });
 
 function addStudent() {
   const name = els.studentName.value.trim();
@@ -580,43 +560,47 @@ function addStudent() {
   }
 
   const assignment = currentAssignment();
-  if (studentId && state.students.some((s) => s.studentId.toLowerCase() === studentId.toLowerCase())) {
-    alert("This student ID is already in the class roster.");
-    return;
-  }
+  if (studentId && state.students.some(s => s.studentId.toLowerCase() === studentId.toLowerCase())) {alert('This student ID is already in the class roster.'); return;}
   const student = { id: uid(), name, studentId };
   state.students.push(student);
   state.selectedStudentId = student.id;
-  els.studentName.value = "";
-  els.studentId.value = "";
+  els.studentName.value = '';
+  els.studentId.value = '';
   saveState();
   renderStudents();
   renderMarking();
   els.studentName.focus();
 }
 
-document.querySelector("#printBtn").addEventListener("click", () => {
-  renderCohortPrint();
-  window.print();
-});
+document.querySelector('#printBtn').addEventListener('click', () => {renderCohortPrint();window.print();});
 
-els.resetBtn.addEventListener("click", () => {
-  if (!confirm("Start fresh? This will clear all locally saved classes, assessments, students and marks in this browser.")) return;
+els.resetBtn.addEventListener('click', () => {
+  if (!confirm('Start fresh? This will clear all locally saved classes, assessments, students and marks in this browser.')) return;
   localStorage.removeItem(STORAGE_KEY);
   state = defaultState();
+  // Reset transient inputs and filters, not just the persisted data model.
+  els.studentName.value = '';
+  els.studentId.value = '';
+  document.getElementById('rosterSearch').value = '';
+  document.getElementById('lateDeadline').value = '';
+  document.getElementById('lateSubmitted').value = '';
+  document.getElementById('lateResult').textContent = '—';
+  document.getElementById('rosterImportStatus').textContent = '';
+  document.getElementById('analyticsScope').value = 'current';
   render();
+  saveState();
 });
 
 render();
 
 // Cohort analytics deliberately exclude incomplete rubrics.
-let analyticsView = "distribution";
-const statsGrid = document.querySelector("#statsGrid");
-const analyticsChart = document.querySelector("#analyticsChart");
-const analyticsNote = document.querySelector("#analyticsNote");
-const gradeCounts = document.querySelector("#gradeCounts");
-const distributionBtn = document.querySelector("#distributionBtn");
-const curveBtn = document.querySelector("#curveBtn");
+let analyticsView = 'distribution';
+const statsGrid = document.querySelector('#statsGrid');
+const analyticsChart = document.querySelector('#analyticsChart');
+const analyticsNote = document.querySelector('#analyticsNote');
+const gradeCounts = document.querySelector('#gradeCounts');
+const distributionBtn = document.querySelector('#distributionBtn');
+const curveBtn = document.querySelector('#curveBtn');
 const baseRender = render;
 render = function () {
   baseRender();
@@ -624,201 +608,132 @@ render = function () {
   renderAnalytics();
 };
 function updateWorkspaceHeading() {
-  document.querySelector("#workspaceAssessment").textContent = currentAssignment().name || "Untitled assessment";
-  document.querySelector("#workspaceClass").textContent = state.className || "Class not named";
+  document.querySelector('#workspaceAssessment').textContent = currentAssignment().name || 'Untitled assessment';
+  document.querySelector('#workspaceClass').textContent = state.className || 'Class not named';
 }
 function completedStudents() {
   const assignment = currentAssignment();
-  return state.students.filter((s) => isComplete(s, assignment));
+  return state.students.filter(s => isComplete(s,assignment));
 }
 function statsOf(values) {
   const n = values.length;
-  const mean = values.reduce((a, b) => a + b, 0) / n;
-  const sorted = [...values].sort((a, b) => a - b);
-  const median = n % 2 ? sorted[(n - 1) / 2] : (sorted[n / 2 - 1] + sorted[n / 2]) / 2;
-  const sd = Math.sqrt(values.reduce((sum, x) => sum + (x - mean) ** 2, 0) / n);
+  const mean = values.reduce((a,b) => a+b, 0) / n;
+  const sorted = [...values].sort((a,b) => a-b);
+  const median = n % 2 ? sorted[(n-1)/2] : (sorted[n/2-1]+sorted[n/2])/2;
+  const sd = Math.sqrt(values.reduce((sum,x) => sum+(x-mean)**2, 0)/n);
   return { mean, median, sd };
 }
-function gradeColor(g) {
-  return { FL: "#f2c9c9", PS: "#f6e8b9", CR: "#cdebdc", DN: "#cddff6", HD: "#e1d3f4" }[g] || "#dddddd";
-}
+function gradeColor(g) { return {FL:'#f2c9c9',PS:'#f6e8b9',CR:'#cdebdc',DN:'#cddff6',HD:'#e1d3f4'}[g] || '#dddddd'; }
 function renderAnalytics() {
   const a = currentAssignment();
   updateWorkspaceHeading();
   const complete = completedStudents();
-  const isOverall = analyticsScope() === "overall";
-  const candidates = isOverall ? state.students.filter((s) => overallStudent(s).ready) : complete;
-  const marks = candidates.map((s) => (isOverall ? overallStudent(s).mark : calculateStudent(s, a)));
+  const isOverall = analyticsScope() === 'overall';
+  const candidates = isOverall ? state.students.filter(s=>overallStudent(s).ready) : complete;
+  const marks = candidates.map(s=>isOverall ? overallStudent(s).mark : calculateStudent(s,a));
   const n = marks.length;
-  document.querySelector("#gradedCount").textContent = String(complete.length);
-  document.querySelector("#pendingCount").textContent = String(state.students.length - complete.length);
-  const { mean, median, sd } = n ? statsOf(marks) : { mean: 0, median: 0, sd: 0 };
+  document.querySelector('#gradedCount').textContent = String(complete.length);
+  document.querySelector('#pendingCount').textContent = String(state.students.length - complete.length);
+  const {mean,median,sd} = n ? statsOf(marks) : {mean:0,median:0,sd:0};
   statsGrid.innerHTML = [
-    ["Marked", `${n} / ${state.students.length}`],
-    ["Mean", n ? formatMark(mean) : "—"],
-    ["Median", n ? formatMark(median) : "—"],
-    ["Std. deviation", n ? formatMark(sd) : "—"],
-  ]
-    .map(([label, value]) => `<div class="stat"><strong>${value}</strong><span>${label}</span></div>`)
-    .join("");
-  distributionBtn.classList.toggle("is-current", analyticsView === "distribution");
-  curveBtn.classList.toggle("is-current", analyticsView === "curve");
-  analyticsNote.textContent = n
-    ? `Based on ${n} ${isOverall ? "fully graded class" : "graded"} ${n === 1 ? "student" : "students"}. ${state.students.length - n} incomplete ${state.students.length - n === 1 ? "record is" : "records are"} excluded. ${analyticsView === "curve" ? "The curve is a normal-distribution reference fitted to this cohort, not a grading target." : "Bars show observed marks in 10-point intervals."}`
-    : "No final marks yet. Complete every rubric criterion or enter a manual final assessment mark.";
-  const grades = ["FL", "PS", "CR", "DN", "HD"];
-  gradeCounts.innerHTML = grades
-    .map(
-      (g) =>
-        `<span class="grade-count grade-${g.toLowerCase()}"><strong>${g}</strong> ${marks.filter((m) => gradeForMark(m) === g).length}</span>`,
-    )
-    .join("");
-  if (!n) {
-    analyticsChart.innerHTML = '<div class="empty-state">Complete a student rubric to see the mark distribution.</div>';
-    return;
-  }
+    ['Marked', `${n} / ${state.students.length}`],
+    ['Mean', n ? formatMark(mean) : '—'],
+    ['Median', n ? formatMark(median) : '—'],
+    ['Std. deviation', n ? formatMark(sd) : '—']
+  ].map(([label,value]) => `<div class="stat"><strong>${value}</strong><span>${label}</span></div>`).join('');
+  distributionBtn.classList.toggle('is-current', analyticsView === 'distribution');
+  curveBtn.classList.toggle('is-current', analyticsView === 'curve');
+  analyticsNote.textContent = n ? `Based on ${n} ${isOverall ? 'fully graded class' : 'graded'} ${n === 1 ? 'student' : 'students'}. ${state.students.length-n} incomplete ${state.students.length-n === 1 ? 'record is' : 'records are'} excluded. ${analyticsView === 'curve' ? 'The curve is a normal-distribution reference fitted to this cohort, not a grading target.' : 'Bars show observed marks in 10-point intervals.'}` : 'No final marks yet. Complete every rubric criterion or enter a manual final assessment mark.';
+  const grades = ['FL','PS','CR','DN','HD'];
+  gradeCounts.innerHTML = grades.map(g => `<span class="grade-count grade-${g.toLowerCase()}"><strong>${g}</strong> ${marks.filter(m => gradeForMark(m) === g).length}</span>`).join('');
+  if (!n) { analyticsChart.innerHTML = '<div class="empty-state">Complete a student rubric to see the mark distribution.</div>'; return; }
   const bins = Array(10).fill(0);
-  for (const mark of marks) bins[Math.min(9, Math.floor(mark / 10))]++;
-  const W = 800,
-    H = 265,
-    L = 40,
-    R = 16,
-    T = 14,
-    B = 36,
-    chartW = W - L - R,
-    chartH = H - T - B;
-  const normal = (x) => (sd > 0 ? (Math.exp(-0.5 * ((x - mean) / sd) ** 2) / (sd * Math.sqrt(2 * Math.PI))) * n * 10 : 0);
-  const maxY = Math.max(1, ...bins, ...(analyticsView === "curve" && sd > 0 ? Array.from({ length: 101 }, (_, i) => normal(i)) : []));
-  const y = (v) => T + chartH - (v / maxY) * chartH;
-  let lines = "";
-  for (let k = 0; k <= 4; k++) {
-    const v = (maxY * k) / 4;
-    const py = y(v);
-    lines += `<line x1="${L}" x2="${W - R}" y1="${py}" y2="${py}" stroke="#ddd"/><text x="${L - 8}" y="${py + 4}" text-anchor="end" font-size="11" fill="#666">${formatMark(v)}</text>`;
-  }
-  let bars = bins
-    .map((v, i) => {
-      const x = L + (i * chartW) / 10 + 3;
-      const bw = chartW / 10 - 6;
-      return `<rect x="${x}" y="${y(v)}" width="${bw}" height="${Math.max(0, T + chartH - y(v))}" fill="${gradeColor(gradeForMark(i * 10 + 5))}"/><title>${i * 10}–${i === 9 ? 100 : i * 10 + 9}: ${v} students</title>`;
-    })
-    .join("");
-  let curve = "";
-  if (analyticsView === "curve" && sd > 0) {
-    for (const [start, end] of [[0, 100]]) {
-      const points = Array.from({ length: (end - start) * 2 + 1 }, (_, i) => {
-        const x = start + i / 2;
-        return `${L + (x / 100) * chartW},${y(normal(x))}`;
-      }).join(" ");
+  for (const mark of marks) bins[Math.min(9, Math.floor(mark/10))]++;
+  const W=800,H=265,L=40,R=16,T=14,B=36, chartW=W-L-R, chartH=H-T-B;
+  const normal = (x) => sd > 0 ? Math.exp(-.5*((x-mean)/sd)**2)/(sd*Math.sqrt(2*Math.PI))*n*10 : 0;
+  const maxY = Math.max(1,...bins, ...(analyticsView === 'curve' && sd > 0 ? Array.from({length:101},(_,i)=>normal(i)) : []));
+  const y = v => T+chartH-(v/maxY)*chartH;
+  let lines = '';
+  for (let k=0;k<=4;k++) { const v=maxY*k/4; const py=y(v); lines += `<line x1="${L}" x2="${W-R}" y1="${py}" y2="${py}" stroke="#ddd"/><text x="${L-8}" y="${py+4}" text-anchor="end" font-size="11" fill="#666">${formatMark(v)}</text>`; }
+  let bars = bins.map((v,i) => { const x=L+i*chartW/10+3; const bw=chartW/10-6; return `<rect x="${x}" y="${y(v)}" width="${bw}" height="${Math.max(0,T+chartH-y(v))}" fill="${gradeColor(gradeForMark(i*10+5))}"/><title>${i*10}–${i===9 ? 100 : i*10+9}: ${v} students</title>`; }).join('');
+  let curve = '';
+  if (analyticsView === 'curve' && sd > 0) {
+    for (const [start,end] of [[0,100]]) {
+      const points = Array.from({length:(end-start)*2+1},(_,i) => { const x=start+i/2; return `${L+x/100*chartW},${y(normal(x))}`; }).join(' ');
       curve += `<polyline points="${points}" fill="none" stroke="#242424" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>`;
     }
   }
-  const labels = Array.from(
-    { length: 11 },
-    (_, i) => `<text x="${L + (i * chartW) / 10}" y="${H - 12}" text-anchor="middle" font-size="12" fill="#666">${i * 10}</text>`,
-  ).join("");
-  analyticsChart.innerHTML = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" aria-label="Marks distribution chart">${lines}${bars}${curve}${labels}<line x1="${L}" x2="${W - R}" y1="${T + chartH}" y2="${T + chartH}" stroke="#111"/></svg>`;
+  const labels = Array.from({length:11},(_,i)=> `<text x="${L+i*chartW/10}" y="${H-12}" text-anchor="middle" font-size="12" fill="#666">${i*10}</text>`).join('');
+  analyticsChart.innerHTML = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" aria-label="Marks distribution chart">${lines}${bars}${curve}${labels}<line x1="${L}" x2="${W-R}" y1="${T+chartH}" y2="${T+chartH}" stroke="#111"/></svg>`;
 }
-distributionBtn.addEventListener("click", () => {
-  analyticsView = "distribution";
-  renderAnalytics();
-});
-curveBtn.addEventListener("click", () => {
-  analyticsView = "curve";
-  renderAnalytics();
-});
-document.querySelector("#analyticsScope").addEventListener("change", renderAnalytics);
+distributionBtn.addEventListener('click', () => { analyticsView='distribution'; renderAnalytics(); });
+curveBtn.addEventListener('click', () => { analyticsView='curve'; renderAnalytics(); });
+document.querySelector('#analyticsScope').addEventListener('change',renderAnalytics);
 // Keep statistics in sync with all existing marking and roster operations.
 const baseRenderStudents = renderStudents;
-renderStudents = function () {
-  baseRenderStudents();
-  renderAnalytics();
-};
+renderStudents = function () { baseRenderStudents(); renderAnalytics(); };
 const baseRenderWeightStatus = renderWeightStatus;
-renderWeightStatus = function () {
-  baseRenderWeightStatus();
-  renderAnalytics();
-};
+renderWeightStatus = function () { baseRenderWeightStatus(); renderAnalytics(); };
 const baseRenderMarking = renderMarking;
-renderMarking = function () {
-  baseRenderMarking();
-  updateWorkspaceHeading();
-};
+renderMarking = function () { baseRenderMarking(); updateWorkspaceHeading(); };
 render();
 // Expose setup on first use; keep it folded for established marking sessions.
-const configurationDrawer = document.querySelector(".configuration-drawer");
+const configurationDrawer = document.querySelector('.configuration-drawer');
 if (!state.className || !currentAssignment().name || totalWeight() !== 100) configurationDrawer.open = true;
 render();
 
+
 // Portable backups: v1 data envelope. Import replaces current local workspace only after validation and confirmation.
 function validateImportedState(data) {
-  const payload = data?.format === "moodle-rubric-marker" ? data.data : data;
-  if (
-    !payload ||
-    typeof payload.className !== "string" ||
-    !Array.isArray(payload.assignments) ||
-    !payload.assignments.length ||
-    payload.assignments.length > 100
-  )
-    throw new Error("Invalid class or assessments.");
+  const payload = data?.format === 'moodle-rubric-marker' ? data.data : data;
+  if (!payload || typeof payload.className !== 'string' || !Array.isArray(payload.assignments) || !payload.assignments.length || payload.assignments.length > 100) throw new Error('Invalid class or assessments.');
   const upgraded = structuredClone(payload);
   if (!Array.isArray(upgraded.students)) migrateState(upgraded);
-  if (!Array.isArray(upgraded.students) || upgraded.students.length > 10000) throw new Error("Invalid class roster.");
+  if (!Array.isArray(upgraded.students) || upgraded.students.length > 10000) throw new Error('Invalid class roster.');
   const ids = new Set();
   for (const st of upgraded.students) {
-    if (!st || typeof st.id !== "string" || !st.id || ids.has(st.id) || typeof st.name !== "string" || typeof st.studentId !== "string")
-      throw new Error("Invalid student.");
+    if (!st || typeof st.id !== 'string' || !st.id || ids.has(st.id) || typeof st.name !== 'string' || typeof st.studentId !== 'string') throw new Error('Invalid student.');
     ids.add(st.id);
   }
   const assignmentIds = new Set();
   for (const a of upgraded.assignments) {
-    if (
-      !a ||
-      typeof a.id !== "string" ||
-      assignmentIds.has(a.id) ||
-      typeof a.name !== "string" ||
-      !Array.isArray(a.criteria) ||
-      a.criteria.length > 100 ||
-      !a.marks ||
-      typeof a.marks !== "object" ||
-      Array.isArray(a.marks)
-    )
-      throw new Error("Invalid assessment.");
+    if (!a || typeof a.id !== 'string' || assignmentIds.has(a.id) || typeof a.name !== 'string' || !Array.isArray(a.criteria) || a.criteria.length > 100 || !a.marks || typeof a.marks !== 'object' || Array.isArray(a.marks)) throw new Error('Invalid assessment.');
     assignmentIds.add(a.id);
-    if (a.deadline !== undefined && (typeof a.deadline !== "string" || !validLocalDateTime(a.deadline)))
-      throw new Error("Invalid assessment deadline.");
+    if (a.deadline !== undefined && (typeof a.deadline !== 'string' || !validLocalDateTime(a.deadline))) throw new Error('Invalid assessment deadline.');
     if (a.submissions !== undefined) {
-      if (!a.submissions || typeof a.submissions !== "object" || Array.isArray(a.submissions)) throw new Error("Invalid submission times.");
+      if (!a.submissions || typeof a.submissions !== 'object' || Array.isArray(a.submissions)) throw new Error('Invalid submission times.');
       for (const [sid, value] of Object.entries(a.submissions)) {
-        if (!ids.has(sid) || typeof value !== "string" || !validLocalDateTime(value)) throw new Error("Invalid student submission time.");
+        if (!ids.has(sid) || typeof value !== 'string' || !validLocalDateTime(value)) throw new Error('Invalid student submission time.');
       }
     }
     if (a.overrides !== undefined) {
-      if (!a.overrides || typeof a.overrides !== "object" || Array.isArray(a.overrides)) throw new Error("Invalid overrides.");
-      for (const [studentId, mark] of Object.entries(a.overrides)) {
-        if (!ids.has(studentId) || typeof mark !== "number" || !Number.isFinite(mark) || mark < 0 || mark > 100)
-          throw new Error("Invalid manual mark.");
+      if (!a.overrides || typeof a.overrides !== 'object' || Array.isArray(a.overrides)) throw new Error('Invalid overrides.');
+      for (const [studentId,mark] of Object.entries(a.overrides)) {
+        if (!ids.has(studentId) || typeof mark !== 'number' || !Number.isFinite(mark) || mark < 0 || mark > 100) throw new Error('Invalid manual mark.');
+      }
+    }
+    if (a.type !== undefined && !['individual','group'].includes(a.type)) throw new Error('Invalid assessment type.');
+    if (a.groups !== undefined) {
+      if (!Array.isArray(a.groups) || a.groups.length > 10000) throw new Error('Invalid group records.');
+      const linked = new Set();
+      for (const g of a.groups) {
+        if (!g || typeof g.id !== 'string' || !Array.isArray(g.memberIds) || !Array.isArray(g.individualIds) || !g.marks || typeof g.marks !== 'object' || Array.isArray(g.marks)) throw new Error('Invalid group.');
+        for (const id of g.memberIds) { if (!ids.has(id) || linked.has(id)) throw new Error('Invalid or duplicated group member.'); linked.add(id); }
+        if (g.individualIds.some(id => !g.memberIds.includes(id))) throw new Error('Invalid individual group member.');
+        if (g.override !== undefined && (typeof g.override !== 'number' || !Number.isFinite(g.override) || g.override < 0 || g.override > 100)) throw new Error('Invalid group override.');
+        for (const band of Object.values(g.marks)) if (!bandByKey(band)) throw new Error('Invalid group rubric band.');
       }
     }
     if (a.weight === undefined) a.weight = upgraded.assignments.length === 1 ? 100 : 0;
-    if (!Number.isFinite(a.weight) || a.weight < 0 || a.weight > 100) throw new Error("Invalid assessment weighting.");
+    if (!Number.isFinite(a.weight) || a.weight < 0 || a.weight > 100) throw new Error('Invalid assessment weighting.');
     const cids = new Set();
     for (const c of a.criteria) {
-      if (
-        !c ||
-        typeof c.id !== "string" ||
-        cids.has(c.id) ||
-        typeof c.title !== "string" ||
-        !Number.isFinite(c.weight) ||
-        c.weight < 0 ||
-        c.weight > 100
-      )
-        throw new Error("Invalid criterion.");
+      if (!c || typeof c.id !== 'string' || cids.has(c.id) || typeof c.title !== 'string' || !Number.isFinite(c.weight) || c.weight < 0 || c.weight > 100) throw new Error('Invalid criterion.');
       cids.add(c.id);
     }
     for (const [id, marks] of Object.entries(a.marks)) {
-      if (!ids.has(id) || !marks || typeof marks !== "object" || Array.isArray(marks)) throw new Error("Invalid mark record.");
-      for (const [cid, band] of Object.entries(marks)) if (!cids.has(cid) || !bandByKey(band)) throw new Error("Invalid band selection.");
+      if (!ids.has(id) || !marks || typeof marks !== 'object' || Array.isArray(marks)) throw new Error('Invalid mark record.');
+      for (const [cid,band] of Object.entries(marks)) if (!cids.has(cid) || !bandByKey(band)) throw new Error('Invalid band selection.');
     }
   }
   if (!assignmentIds.has(upgraded.selectedAssignmentId)) upgraded.selectedAssignmentId = upgraded.assignments[0].id;
@@ -826,9 +741,9 @@ function validateImportedState(data) {
   return upgraded;
 }
 function downloadJSON(name, payload) {
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
+  const link = document.createElement('a');
   link.href = url;
   link.download = name;
   document.body.appendChild(link);
@@ -837,41 +752,23 @@ function downloadJSON(name, payload) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 function cleanFilename(name) {
-  return (
-    String(name || "class")
-      .trim()
-      .toLowerCase()
-      .replace(/[^a-z0-9_-]+/g, "-")
-      .replace(/^-|-$/g, "")
-      .slice(0, 55) || "class"
-  );
+  return String(name || 'class').trim().toLowerCase().replace(/[^a-z0-9_-]+/g, '-').replace(/^-|-$/g, '').slice(0, 55) || 'class';
 }
-document.querySelector("#exportBtn").addEventListener("click", () => {
+document.querySelector('#exportBtn').addEventListener('click', () => {
   downloadJSON(`marking-minion-${cleanFilename(state.className)}.json`, {
-    format: "moodle-rubric-marker",
-    version: 2,
-    exportedAt: new Date().toISOString(),
-    data: state,
+    format: 'moodle-rubric-marker', version: 2, exportedAt: new Date().toISOString(), data: state
   });
 });
-const importFile = document.querySelector("#importFile");
-document.querySelector("#importBtn").addEventListener("click", () => {
-  importFile.value = "";
-  importFile.click();
-});
-importFile.addEventListener("change", async () => {
+const importFile = document.querySelector('#importFile');
+document.querySelector('#importBtn').addEventListener('click', () => { importFile.value = ''; importFile.click(); });
+importFile.addEventListener('change', async () => {
   const file = importFile.files?.[0];
   if (!file) return;
   try {
-    if (file.size > 10 * 1024 * 1024) throw new Error("File exceeds the 10 MB import limit.");
+    if (file.size > 10 * 1024 * 1024) throw new Error('File exceeds the 10 MB import limit.');
     const imported = validateImportedState(JSON.parse(await file.text()));
     const students = imported.students.length;
-    if (
-      !confirm(
-        `Import ${imported.assignments.length} assessment(s) and ${students} student record(s)? This will replace the current local workspace. Export your existing data first if you wish to keep it.`,
-      )
-    )
-      return;
+    if (!confirm(`Import ${imported.assignments.length} assessment(s) and ${students} student record(s)? This will replace the current local workspace. Export your existing data first if you wish to keep it.`)) return;
     state = imported;
     saveState();
     render();
@@ -881,185 +778,226 @@ importFile.addEventListener("change", async () => {
 });
 
 // Rows are the only rubric presentation.
-document.querySelector("#markingCriteria").classList.add("layout-rows");
+document.querySelector('#markingCriteria').classList.add('layout-rows');
 
-function renderAssessmentWeightStatus() {
-  const input = document.querySelector("#assessmentWeight");
-  if (document.activeElement !== input) input.value = currentAssignment().weight ?? 0;
-  document.querySelector("#assessmentWeightTotal").textContent = `${formatMark(totalAssessmentWeight())} / 100%`;
-  document.querySelector("#assessmentWeightTotal").classList.toggle("invalid", Math.abs(totalAssessmentWeight() - 100) > 0.000001);
+document.querySelector('#assessmentType').addEventListener('change', event => {
+  const assessment = currentAssignment();
+  const next = event.target.value;
+  if (next === 'individual' && (assessment.groups || []).some(g => g.memberIds.length)) {
+    if (!confirm('Switch to individual assessment? Group links and shared group results will no longer apply. Student-specific rubric records are retained. Export the session first if you need the group results.')) {
+      event.target.value = 'group'; return;
+    }
+    // Preserve shared results on all members before unlinking, including manual overrides.
+    for (const group of assessment.groups) for (const id of group.memberIds) {
+      if ((group.individualIds || []).includes(id)) continue;
+      assessment.marks[id] = {...(group.marks || {})};
+      assessment.overrides ||= {};
+      if (typeof group.override === 'number') assessment.overrides[id] = group.override;
+      else delete assessment.overrides[id];
+    }
+    assessment.groups = [];
+  }
+  assessment.type = next;
+  saveState(); render();
+});
+function renderGroupPanel(student, assessment) {
+  const panel = document.querySelector('#groupPanel');
+  panel.hidden = assessment.type !== 'group';
+  if (panel.hidden) return;
+  const group = studentGroup(student, assessment);
+  document.querySelector('#groupStatus').textContent = group ? 'Linked students share a group result' : 'Not linked';
+  document.querySelector('#groupIndividual').disabled = !group;
+  document.querySelector('#groupIndividual').checked = individuallyMarked(student, assessment);
+  const options = state.students.filter(s => s.id !== student.id && !studentGroup(s, assessment));
+  document.querySelector('#groupCandidates').innerHTML = options.map(s => `<option value="${escapeHtml(s.studentId || s.name)}" label="${escapeHtml(s.name)}"></option>`).join('');
+  const members = group ? group.memberIds.filter(id => id !== student.id).map(id => state.students.find(s => s.id === id)).filter(Boolean) : [];
+  document.querySelector('#groupMembers').innerHTML = members.length ? members.map(s => `<span class="group-member"><span class="group-member-name">${escapeHtml(s.name || s.studentId)}${(group.individualIds || []).includes(s.id) ? '<sup class="individual-symbol" title="Individual mark">†</sup>' : ''}</span><button type="button" class="group-unlink" data-id="${s.id}" title="Unlink student" aria-label="Unlink ${escapeHtml(s.name)}">×</button></span>`).join('') : '<span class="section-note">None</span>';
+  document.querySelectorAll('.group-unlink').forEach(button => button.addEventListener('click', () => {
+    const id = button.dataset.id;
+    const wasIndividual = (group.individualIds || []).includes(id);
+    group.memberIds = group.memberIds.filter(v => v !== id);
+    group.individualIds = (group.individualIds || []).filter(v => v !== id);
+    // The departing student keeps their effective result as an independent record.
+    if (!wasIndividual) {
+      assessment.marks[id] = {...(group.marks || {})};
+      assessment.overrides ||= {};
+      if (typeof group.override === 'number') assessment.overrides[id] = group.override;
+      else delete assessment.overrides[id];
+    }
+    saveState(); renderStudents(); renderMarking();
+  }));
 }
-document.querySelector("#assessmentWeight").addEventListener("input", (e) => {
-  currentAssignment().weight = Math.max(0, Math.min(100, Number(e.target.value) || 0));
-  saveState();
-  renderAssessmentWeightStatus();
-  renderStudents();
-  renderMarking();
+document.querySelector('#groupAdd').addEventListener('click', () => {
+  const student = currentStudent(), assessment = currentAssignment();
+  if (!student || assessment.type !== 'group') return;
+  const input = document.querySelector('#groupSearch');
+  const query = searchNormalise(input.value);
+  if (!query) { input.focus(); return; }
+  const choices = state.students.filter(s => s.id !== student.id && !studentGroup(s, assessment));
+  const exact = choices.filter(s => searchNormalise(s.studentId) === query || searchNormalise(s.name) === query);
+  const matches = exact.length ? exact : choices.filter(s => studentMatchesQuery(s, input.value));
+  if (matches.length !== 1) { alert(matches.length ? 'More than one student matches. Enter a student ID to identify one student.' : 'No available student matches.'); return; }
+  let group = studentGroup(student, assessment);
+  if (!group) {
+    group = {id:uid(),memberIds:[student.id],individualIds:[],marks:{...studentMarks(student,assessment)}};
+    const override = manualMark(student, assessment);
+    if (override !== null) group.override = override;
+    assessmentGroups(assessment).push(group);
+  }
+  group.memberIds.push(matches[0].id);
+  input.value = '';
+  saveState(); renderStudents(); renderMarking();
+});
+document.querySelector('#groupIndividual').addEventListener('change', event => {
+  const student = currentStudent(), assessment = currentAssignment(), group = studentGroup(student, assessment);
+  if (!student || !group) return;
+  group.individualIds ||= [];
+  if (event.target.checked) {
+    assessment.marks[student.id] = {...(group.marks || {})};
+    assessment.overrides ||= {};
+    if (typeof group.override === 'number') assessment.overrides[student.id] = group.override;
+    else delete assessment.overrides[student.id];
+    group.individualIds.push(student.id);
+  } else group.individualIds = group.individualIds.filter(id => id !== student.id);
+  saveState(); renderStudents(); renderMarking();
+});
+function renderAssessmentWeightStatus() {
+  const input=document.querySelector('#assessmentWeight');
+  if (document.activeElement !== input) input.value=currentAssignment().weight ?? 0;
+  document.querySelector('#assessmentWeightTotal').textContent=`${formatMark(totalAssessmentWeight())} / 100%`;
+  document.querySelector('#assessmentWeightTotal').classList.toggle('invalid',Math.abs(totalAssessmentWeight()-100)>.000001);
+}
+document.querySelector('#assessmentWeight').addEventListener('input',e=>{
+  currentAssignment().weight=Math.max(0,Math.min(100,Number(e.target.value)||0));
+  saveState();renderAssessmentWeightStatus();renderStudents();renderMarking();
 });
 function renderPriorMarks(student) {
-  const current = currentAssignment();
-  const items = state.assignments
-    .filter((a) => a.id !== current.id)
-    .map((a) => {
-      const done = isComplete(student, a);
-      const score = done ? calculateStudent(student, a) : null;
-      return `<span class="prior-mark"><strong>${escapeHtml(a.name)}</strong> ${done ? `${annotatedMark(score, hasOverride(student, a))} (${gradeForMark(score)})` : "In progress"} <small> · ${formatMark(Number(a.weight) || 0)}%</small></span>`;
-    });
-  const total = overallStudent(student);
-  document.querySelector("#priorMarks").innerHTML = items.length
-    ? `<div class="prior-title">Other assessments</div>${items.join("")}${
-        total.ready
-          ? `<div class="prior-total">Class result <strong>${annotatedMark(
-              total.mark,
-              state.assignments.some((a) => hasOverride(student, a)),
-            )} / 100 · ${gradeForMark(total.mark)}</strong></div>`
-          : ""
-      }`
-    : "";
+  const current=currentAssignment();
+  const items=state.assignments.filter(a=>a.id!==current.id).map(a=>{
+    const done=isComplete(student,a);
+    const score=done ? calculateStudent(student,a) : null;
+    return `<span class="prior-mark"><strong>${escapeHtml(a.name)}</strong> ${done ? `${annotatedMark(score,hasOverride(student,a))} (${gradeForMark(score)})` : 'In progress'} <small> · ${formatMark(Number(a.weight)||0)}%</small></span>`;
+  });
+  const total=overallStudent(student);
+  document.querySelector('#priorMarks').innerHTML=items.length ? `<div class="prior-title">Other assessments</div>${items.join('')}${total.ready ? `<div class="prior-total">Class result <strong>${annotatedMark(total.mark,state.assignments.some(a=>hasOverride(student,a)))} / 100 · ${gradeForMark(total.mark)}</strong></div>` : ''}` : '';
 }
-function analyticsScope() {
-  return document.querySelector("#analyticsScope").value;
-}
+function analyticsScope() {return document.querySelector('#analyticsScope').value;}
 function updateOverrideControls(student, assignment) {
   const active = hasOverride(student, assignment);
-  document.getElementById("overrideControls").hidden = false;
-  document.getElementById("editFinalMark").hidden = active;
-  document.getElementById("resetFinalMark").hidden = !active;
+  document.getElementById('overrideControls').hidden = false;
+  document.getElementById('editFinalMark').hidden = active;
+  document.getElementById('resetFinalMark').hidden = !active;
   closeInlineMarkEditor();
-  document.getElementById("overallResult").classList.toggle("is-overridden", active);
+  document.getElementById('overallResult').classList.toggle('is-overridden', active);
 }
 function closeInlineMarkEditor() {
-  document.getElementById("manualMarkEditor").hidden = true;
-  document.querySelector(".result-mark-line").classList.remove("is-editing");
-  const button = document.getElementById("editFinalMark");
-  button.textContent = "✎";
-  button.title = "Edit final assessment mark";
-  button.setAttribute("aria-label", button.title);
+  document.getElementById('manualMarkEditor').hidden = true;
+  document.querySelector('.result-mark-line').classList.remove('is-editing');
+  const button = document.getElementById('editFinalMark');
+  button.textContent = '✎';
+  button.title = 'Edit final assessment mark';
+  button.setAttribute('aria-label', button.title);
 }
 function openInlineMarkEditor() {
   const student = currentStudent();
   if (!student) return;
-  const input = document.getElementById("manualMarkInput");
-  input.value = isComplete(student) ? String(calculateStudent(student)) : "";
-  input.setCustomValidity("");
-  document.getElementById("manualMarkEditor").hidden = false;
-  document.querySelector(".result-mark-line").classList.add("is-editing");
-  const button = document.getElementById("editFinalMark");
-  button.textContent = "✓";
-  button.title = "Confirm manual final assessment mark";
-  button.setAttribute("aria-label", button.title);
-  input.focus();
-  input.select();
+  const input = document.getElementById('manualMarkInput');
+  input.value = isComplete(student) ? String(calculateStudent(student)) : '';
+  input.setCustomValidity('');
+  document.getElementById('manualMarkEditor').hidden = false;
+  document.querySelector('.result-mark-line').classList.add('is-editing');
+  const button = document.getElementById('editFinalMark');
+  button.textContent = '✓';
+  button.title = 'Confirm manual final assessment mark';
+  button.setAttribute('aria-label', button.title);
+  input.focus(); input.select();
 }
 function saveInlineMarkEditor() {
-  const input = document.getElementById("manualMarkInput");
-  const text = input.value.trim(),
-    value = Number(text);
+  const input = document.getElementById('manualMarkInput');
+  const text = input.value.trim(), value = Number(text);
   if (!text || !Number.isFinite(value) || value < 0 || value > 100) {
-    input.setCustomValidity("Enter a mark from 0 to 100.");
+    input.setCustomValidity('Enter a mark from 0 to 100.');
     input.reportValidity();
     return false;
   }
-  input.setCustomValidity("");
-  const student = currentStudent(),
-    assessment = currentAssignment();
+  input.setCustomValidity('');
+  const student = currentStudent(), assessment = currentAssignment();
   if (!student || !assessment) return false;
   const enteredMark = Math.round((value + Number.EPSILON) * 100) / 100;
   // An unchanged rubric result is not a manual override. Compare against the
   // saved criterion selections, independently of any existing override.
-  const rubricMark =
-    Math.round(
-      assessment.criteria.reduce((sum, criterion) => {
-        const band = bandByKey(studentMarks(student, assessment)[criterion.id]);
-        return sum + (band ? (band.midpoint * (Number(criterion.weight) || 0)) / 100 : 0);
-      }, 0) * 100,
-    ) / 100;
+  const rubricMark = Math.round(assessment.criteria.reduce((sum, criterion) => {
+    const band = bandByKey(studentMarks(student, assessment)[criterion.id]);
+    return sum + (band ? band.midpoint * (Number(criterion.weight) || 0) / 100 : 0);
+  }, 0) * 100) / 100;
   if (Math.abs(enteredMark - rubricMark) < 0.000001) {
-    if (assessment.overrides) delete assessment.overrides[student.id];
+    setEffectiveOverride(student, assessment, null);
   } else {
-    assessment.overrides ||= {};
-    assessment.overrides[student.id] = enteredMark;
+    setEffectiveOverride(student, assessment, enteredMark);
   }
   closeInlineMarkEditor();
-  saveState();
-  renderStudents();
-  renderMarking();
+  saveState(); renderStudents(); renderMarking();
   return true;
 }
-document.getElementById("editFinalMark").addEventListener("click", () => {
-  if (document.getElementById("manualMarkEditor").hidden) openInlineMarkEditor();
+document.getElementById('editFinalMark').addEventListener('click', () => {
+  if (document.getElementById('manualMarkEditor').hidden) openInlineMarkEditor();
   else saveInlineMarkEditor();
 });
 // Prevent the input's blur handler firing before the confirm button click.
 // Otherwise saving on blur can re-render the button as Reset before click lands.
-document.getElementById("editFinalMark").addEventListener("pointerdown", (event) => {
-  if (!document.getElementById("manualMarkEditor").hidden) event.preventDefault();
+document.getElementById('editFinalMark').addEventListener('pointerdown', event => {
+  if (!document.getElementById('manualMarkEditor').hidden) event.preventDefault();
 });
-document.getElementById("manualMarkEditor").addEventListener("submit", (event) => {
-  event.preventDefault();
-  saveInlineMarkEditor();
+document.getElementById('manualMarkEditor').addEventListener('submit', event => {
+  event.preventDefault(); saveInlineMarkEditor();
 });
-document.getElementById("manualMarkInput").addEventListener("keydown", (event) => {
-  if (event.key === "Escape") {
-    event.preventDefault();
-    closeInlineMarkEditor();
-    document.getElementById("editFinalMark").focus();
-  }
+document.getElementById('manualMarkInput').addEventListener('keydown', event => {
+  if (event.key === 'Escape') { event.preventDefault(); closeInlineMarkEditor(); document.getElementById('editFinalMark').focus(); }
 });
-document.getElementById("manualMarkInput").addEventListener("input", (event) => event.target.setCustomValidity(""));
-document.getElementById("manualMarkInput").addEventListener("blur", (event) => {
+document.getElementById('manualMarkInput').addEventListener('input', event => event.target.setCustomValidity(''));
+document.getElementById('manualMarkInput').addEventListener('blur', event => {
   // Do not discard a typed value when the user clicks elsewhere.
-  if (!document.getElementById("manualMarkEditor").hidden) saveInlineMarkEditor();
+  if (!document.getElementById('manualMarkEditor').hidden) saveInlineMarkEditor();
 });
-document.getElementById("resetFinalMark").addEventListener("click", () => {
-  const student = currentStudent(),
-    assessment = currentAssignment();
+document.getElementById('resetFinalMark').addEventListener('click', () => {
+  const student = currentStudent(), assessment = currentAssignment();
   if (!student) return;
-  if (assessment.overrides) delete assessment.overrides[student.id];
-  saveState();
-  renderStudents();
-  renderMarking();
+  setEffectiveOverride(student, assessment, null);
+  saveState(); renderStudents(); renderMarking();
 });
 
-const PRINT_ADVISORY =
-  '<p class="marking-advisory print-marking-advisory"><strong>Marking advisory:</strong> All marks and grades calculated by Marking Minion are indicative only. Tutors and course convenors should refer to Moodle as the authoritative source for final marking calculations and grades.</p>';
+const PRINT_ADVISORY = '<p class="marking-advisory print-marking-advisory"><strong>Marking advisory:</strong> All marks and grades calculated by Marking Minion are indicative only. Tutors and course convenors should refer to Moodle as the authoritative source for final marking calculations and grades.</p>';
 
 // Print a complete register for the active assessment, including incomplete students.
 // No student records are omitted, and partial results are never presented as final grades.
 // Submission timing is informational and never enters mark calculations.
 function validLocalDateTime(value) {
-  if (value === "") return true;
+  if (value === '') return true;
   if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value)) return false;
   const date = new Date(value);
   if (!Number.isFinite(date.getTime())) return false;
-  const two = (n) => String(n).padStart(2, "0");
-  return (
-    `${date.getFullYear()}-${two(date.getMonth() + 1)}-${two(date.getDate())}T${two(date.getHours())}:${two(date.getMinutes())}` === value
-  );
+  const two = n => String(n).padStart(2, '0');
+  return `${date.getFullYear()}-${two(date.getMonth()+1)}-${two(date.getDate())}T${two(date.getHours())}:${two(date.getMinutes())}` === value;
 }
 function latenessText(student, assignment) {
-  const deadline = assignment.deadline || "";
-  const submitted = assignment.submissions?.[student.id] || "";
-  if (!deadline || !submitted || !validLocalDateTime(deadline) || !validLocalDateTime(submitted)) return "—";
+  const deadline = assignment.deadline || '';
+  const submitted = assignment.submissions?.[student.id] || '';
+  if (!deadline || !submitted || !validLocalDateTime(deadline) || !validLocalDateTime(submitted)) return '—';
   const minutes = Math.max(0, Math.ceil((new Date(submitted) - new Date(deadline)) / 60000));
-  if (!minutes) return "On time";
+  if (!minutes) return 'On time';
   const hours = Math.floor(minutes / 60);
   const remainder = minutes % 60;
-  return `Late ${hours ? `${hours}h ` : ""}${remainder ? `${remainder}m` : hours ? "" : "0m"}`.trim();
+  return `Late ${hours ? `${hours}h ` : ''}${remainder ? `${remainder}m` : (hours ? '' : '0m')}`.trim();
 }
 function renderLateness(student, assignment) {
-  document.getElementById("lateDeadline").value = validLocalDateTime(assignment.deadline || "") ? assignment.deadline || "" : "";
-  const submitted = assignment.submissions?.[student.id] || "";
-  document.getElementById("lateSubmitted").value = validLocalDateTime(submitted) ? submitted : "";
-  document.getElementById("lateResult").textContent = latenessText(student, assignment);
+  document.getElementById('lateDeadline').value = validLocalDateTime(assignment.deadline || '') ? (assignment.deadline || '') : '';
+  const submitted = assignment.submissions?.[student.id] || '';
+  document.getElementById('lateSubmitted').value = validLocalDateTime(submitted) ? submitted : '';
+  document.getElementById('lateResult').textContent = latenessText(student, assignment);
 }
-for (const [field, shared] of [
-  ["lateDeadline", true],
-  ["lateSubmitted", false],
-]) {
-  document.getElementById(field).addEventListener("change", (event) => {
-    const student = currentStudent(),
-      assignment = currentAssignment();
+for (const [field, shared] of [['lateDeadline', true], ['lateSubmitted', false]]) {
+  document.getElementById(field).addEventListener('change', event => {
+    const student = currentStudent(), assignment = currentAssignment();
     if (!assignment || (!shared && !student)) return;
     const value = event.target.value;
     if (!validLocalDateTime(value)) return;
@@ -1075,70 +1013,77 @@ for (const [field, shared] of [
   });
 }
 function renderCohortPrint() {
-  const scope = document.querySelector("#printScope").value;
-  const all = scope === "all";
+  const scope = document.querySelector('#printScope').value;
+  const all = scope === 'all';
   const assessments = state.assignments;
-  const assessment = assessments.find((a) => a.id === scope) || currentAssignment();
-  const el = document.getElementById("cohortPrint");
-  const heading = `<h1>${all ? "Class marking summary" : "Assessment marking register"}</h1><p>${escapeHtml(state.className || "Unnamed class")} · ${state.students.length} students · Printed ${new Date().toLocaleString("en-AU")}</p>${PRINT_ADVISORY}`;
-  const studentCells = (st) =>
-    `<td class="print-name-cell"><span class="print-name-text">${escapeHtml(st.name || "—")}</span></td><td class="print-id-cell">${escapeHtml(st.studentId || "—")}</td>`;
-  const gradeCell = (grade, late = "") =>
-    `<td class="print-grade-cell"><span class="print-grade-main">${grade}</span>${late ? `<small class="print-late">${escapeHtml(late)}</small>` : ""}</td>`;
+  const assessment = assessments.find(a => a.id === scope) || currentAssignment();
+  const el = document.getElementById('cohortPrint');
+  const heading = `<h1>${all ? 'Class marking summary' : 'Assessment marking register'}</h1><p>${escapeHtml(state.className || 'Unnamed class')} · ${state.students.length} students · Printed ${new Date().toLocaleString('en-AU')}</p>${PRINT_ADVISORY}`;
+  const individualGlyph = '<sup class="print-individual-symbol" title="Individual mark within group">†</sup>';
+  const studentCells = (st, printedAssessment = null) => {
+    const memberships = printedAssessment ? [printedAssessment] : assessments.filter(a => a.type === 'group' && studentGroup(st, a));
+    const otherNames = [];
+    for (const a of memberships) {
+      const g = studentGroup(st, a);
+      if (!g) continue;
+      for (const id of g.memberIds) {
+        if (id === st.id) continue;
+        const other = state.students.find(s => s.id === id);
+        if (other && !otherNames.includes(other.name || other.studentId)) otherNames.push(other.name || other.studentId);
+      }
+    }
+    const individually = memberships.some(a => individuallyMarked(st, a));
+    const note = otherNames.length ? `<small class="print-group-note">Grouped with ${escapeHtml(otherNames.join(', '))}</small>` : '';
+    return `<td class="print-name-cell"><span class="print-name-text">${escapeHtml(st.name || '—')}${individually ? individualGlyph : ''}</span>${note}</td><td class="print-id-cell">${escapeHtml(st.studentId || '—')}</td>`;
+  };
+  const gradeCell = (grade, late = '') => `<td class="print-grade-cell"><span class="print-grade-main">${grade}</span>${late ? `<small class="print-late">${escapeHtml(late)}</small>` : ''}</td>`;
 
   if (all) {
     // Each assessment occupies a single cell: raw mark, assessment weighting,
     // weighted contribution and the recorded submission timing.
-    const rows = state.students
-      .map((st) => {
-        const assessmentCells = assessments
-          .map((a) => {
-            const ready = isComplete(st, a);
-            const score = ready ? calculateStudent(st, a) : null;
-            const timing = latenessText(st, a);
-            const mark = ready ? annotatedMark(score, hasOverride(st, a)) : "—";
-            return `<td class="print-assessment-cell"><strong>${mark}</strong><small>Weight ${formatMark(a.weight)}%${ready ? ` · contributes ${formatMark((score * a.weight) / 100)}` : ""}</small>${timing !== "—" ? `<small class="print-late">${escapeHtml(timing)}</small>` : ""}</td>`;
-          })
-          .join("");
-        const result = overallStudent(st);
-        const anyOverride = assessments.some((a) => hasOverride(st, a));
-        const overall = result.ready ? annotatedMark(result.mark, anyOverride) : "—";
-        const grade = result.ready ? `${gradeForMark(result.mark)}${anyOverride ? "*" : ""}` : "—";
-        return `<tr>${studentCells(st)}${assessmentCells}<td class="print-overall-cell"><strong>${overall}</strong></td>${gradeCell(grade)}</tr>`;
-      })
-      .join("");
-    el.innerHTML = `<div class="print-register-heading">${heading}<p>Assessment weights: ${formatMark(totalAssessmentWeight())}/100%</p></div><table class="print-register-table print-summary-table"><thead><tr><th class="print-name-heading">Name</th><th class="print-id-heading">ID</th>${assessments.map((a) => `<th>${escapeHtml(a.name)}<small>${formatMark(a.weight)}% of overall</small></th>`).join("")}<th>Overall score</th><th>Grade</th></tr></thead><tbody>${rows}</tbody></table><p class="print-footnote">Each assessment cell shows the mark out of 100, its weighting, weighted contribution (where graded), and submission lateness if recorded. Overall scores require all assessments to be graded and their weights to total 100%. * denotes a manual override. Lateness is informational only; no penalties or hurdles are calculated.</p>`;
+    const rows = state.students.map(st => {
+      const assessmentCells = assessments.map(a => {
+        const ready = isComplete(st, a);
+        const score = ready ? calculateStudent(st, a) : null;
+        const timing = latenessText(st, a);
+        const mark = ready ? annotatedMark(score, hasOverride(st, a)) + (individuallyMarked(st,a) ? individualGlyph : '') : '—';
+        return `<td class="print-assessment-cell"><strong>${mark}</strong><small>Weight ${formatMark(a.weight)}%${ready ? ` · contributes ${formatMark(score*a.weight/100)}` : ''}</small>${timing !== '—' ? `<small class="print-late">${escapeHtml(timing)}</small>` : ''}</td>`;
+      }).join('');
+      const result = overallStudent(st);
+      const anyOverride = assessments.some(a => hasOverride(st, a));
+      const overall = result.ready ? annotatedMark(result.mark, anyOverride) : '—';
+      const grade = result.ready ? `${gradeForMark(result.mark)}${anyOverride ? '*' : ''}` : '—';
+      return `<tr>${studentCells(st)}${assessmentCells}<td class="print-overall-cell"><strong>${overall}</strong></td>${gradeCell(grade)}</tr>`;
+    }).join('');
+    el.innerHTML = `<div class="print-register-heading">${heading}<p>Assessment weights: ${formatMark(totalAssessmentWeight())}/100%</p></div><table class="print-register-table print-summary-table"><thead><tr><th class="print-name-heading">Name</th><th class="print-id-heading">ID</th>${assessments.map(a => `<th>${escapeHtml(a.name)}<small>${formatMark(a.weight)}% of overall${a.type === 'group' ? ' · Group' : ''}</small></th>`).join('')}<th>Overall score</th><th>Grade</th></tr></thead><tbody>${rows}</tbody></table><p class="print-footnote">Each assessment cell shows the mark out of 100, its weighting, weighted contribution (where graded), and submission lateness if recorded. Overall scores require all assessments to be graded and their weights to total 100%. * denotes a manual override. Group membership appears beneath names. † denotes an individual result within a group. Lateness is informational only; no penalties or hurdles are calculated.</p>`;
   } else {
     const criteria = assessment.criteria;
-    const rows = state.students
-      .map((st) => {
-        const ready = isComplete(st, assessment);
-        const score = ready ? calculateStudent(st, assessment) : null;
-        const criterionCells = criteria
-          .map((c) => {
-            const band = bandByKey(studentMarks(st, assessment)[c.id]);
-            if (!band) return '<td class="print-unmarked">—</td>';
-            const name = band.key === "NONE" ? "0" : band.key === "PERFECT" ? "100" : band.key;
-            return `<td class="print-criterion-cell"><strong>${name}</strong><small>${formatMark((band.midpoint * c.weight) / 100)} marks</small></td>`;
-          })
-          .join("");
-        const mark = ready ? annotatedMark(score, hasOverride(st, assessment)) : "—";
-        const grade = ready ? `${gradeForMark(score)}${hasOverride(st, assessment) ? "*" : ""}` : "—";
-        const timing = latenessText(st, assessment);
-        return `<tr>${studentCells(st)}${criterionCells}<td class="print-overall-cell"><strong>${mark}</strong></td>${gradeCell(grade, timing === "—" ? "" : timing)}</tr>`;
-      })
-      .join("");
-    el.innerHTML = `<div class="print-register-heading">${heading}<p>${escapeHtml(assessment.name)} · Assessment weighting ${formatMark(assessment.weight)}% of class total · ${state.students.filter((st) => isComplete(st, assessment)).length} graded</p></div><table class="print-register-table print-assessment-table"><thead><tr><th class="print-name-heading">Name</th><th class="print-id-heading">ID</th>${criteria.map((c, i) => `<th>C${i + 1}: ${escapeHtml(c.title)}<small>${formatMark(c.weight)}% of assessment</small></th>`).join("")}<th>Mark /100</th><th>Grade</th></tr></thead><tbody>${rows}</tbody></table><p class="print-footnote">* identifies a manually overridden assessment mark</p>`;
+    const rows = state.students.map(st => {
+      const ready = isComplete(st, assessment);
+      const score = ready ? calculateStudent(st, assessment) : null;
+      const criterionCells = criteria.map(c => {
+        const band = bandByKey(studentMarks(st, assessment)[c.id]);
+        if (!band) return '<td class="print-unmarked">—</td>';
+        const name = band.key === 'NONE' ? '0' : band.key === 'PERFECT' ? '100' : band.key;
+        return `<td class="print-criterion-cell"><strong>${name}</strong><small>${formatMark(band.midpoint*c.weight/100)} marks</small></td>`;
+      }).join('');
+      const mark = ready ? annotatedMark(score, hasOverride(st, assessment)) + (individuallyMarked(st,assessment) ? individualGlyph : '') : '—';
+      const grade = ready ? `${gradeForMark(score)}${hasOverride(st, assessment) ? '*' : ''}${individuallyMarked(st,assessment) ? individualGlyph : ''}` : '—';
+      const timing = latenessText(st, assessment);
+      return `<tr>${studentCells(st, assessment)}${criterionCells}<td class="print-overall-cell"><strong>${mark}</strong></td>${gradeCell(grade, timing === '—' ? '' : timing)}</tr>`;
+    }).join('');
+    el.innerHTML = `<div class="print-register-heading">${heading}<p>${escapeHtml(assessment.name)}${assessment.type === 'group' ? ' · Group assessment' : ''} · Assessment weighting ${formatMark(assessment.weight)}% of class total · ${state.students.filter(st => isComplete(st, assessment)).length} graded</p></div><table class="print-register-table print-assessment-table"><thead><tr><th class="print-name-heading">Name</th><th class="print-id-heading">ID</th>${criteria.map((c, i) => `<th>C${i+1}: ${escapeHtml(c.title)}<small>${formatMark(c.weight)}% of assessment</small></th>`).join('')}<th>Mark /100</th><th>Grade</th></tr></thead><tbody>${rows}</tbody></table><p class="print-footnote">Criteria show the selected Moodle band and its weighted mark. * identifies a manually overridden assessment mark; rubric selections are retained for reference only. Group membership appears beneath student names; † identifies an individual result within a group. Lateness is informational and does not affect the mark. Midpoints: 0, FL 30, PS 60, CR 70, DN 80, HD 90, Perfect 100.</p>`;
   }
 }
-window.addEventListener("beforeprint", renderCohortPrint);
+window.addEventListener('beforeprint', renderCohortPrint);
+
 
 // v8 navigation: keep one class roster across assignments.
 function stepNavigation(kind, delta) {
-  const list = kind === "assessment" ? state.assignments : state.students;
-  const key = kind === "assessment" ? "selectedAssignmentId" : "selectedStudentId";
+  const list = kind === 'assessment' ? state.assignments : state.students;
+  const key = kind === 'assessment' ? 'selectedAssignmentId' : 'selectedStudentId';
   if (!list.length) return;
-  const index = list.findIndex((item) => item.id === state[key]);
+  const index = list.findIndex(item => item.id === state[key]);
   const next = index + delta;
   if (next < 0 || next >= list.length) return;
   state[key] = list[next].id;
@@ -1147,138 +1092,95 @@ function stepNavigation(kind, delta) {
 }
 function updateNavigation() {
   for (const [kind, list, key, label] of [
-    ["Assessment", state.assignments, "selectedAssignmentId", "Assessment"],
-    ["Student", state.students, "selectedStudentId", "Student"],
+    ['Assessment', state.assignments, 'selectedAssignmentId', 'Assessment'],
+    ['Student', state.students, 'selectedStudentId', 'Student']
   ]) {
-    const index = list.findIndex((item) => item.id === state[key]);
+    const index = list.findIndex(item => item.id === state[key]);
     document.querySelector(`#prev${kind}`).disabled = index <= 0;
     document.querySelector(`#next${kind}`).disabled = index < 0 || index >= list.length - 1;
-    document.querySelector(`#${kind.toLowerCase()}Position`).textContent =
-      index < 0 ? `0 / ${list.length}` : `${index + 1} / ${list.length}`;
+    document.querySelector(`#${kind.toLowerCase()}Position`).textContent = index < 0 ? `0 / ${list.length}` : `${index + 1} / ${list.length}`;
   }
 }
-for (const [id, kind, direction] of [
-  ["prevAssessment", "assessment", -1],
-  ["nextAssessment", "assessment", 1],
-  ["prevStudent", "student", -1],
-  ["nextStudent", "student", 1],
-])
-  document.getElementById(id).addEventListener("click", () => stepNavigation(kind, direction));
+for (const [id,kind,direction] of [
+  ['prevAssessment','assessment',-1],['nextAssessment','assessment',1],
+  ['prevStudent','student',-1],['nextStudent','student',1]
+]) document.getElementById(id).addEventListener('click', () => stepNavigation(kind, direction));
 const v8Render = render;
-render = function () {
-  v8Render();
-  updateNavigation();
-};
+render = function() { v8Render(); updateNavigation(); };
 const v8RenderStudents = renderStudents;
-renderStudents = function () {
-  v8RenderStudents();
-  updateNavigation();
-};
+renderStudents = function() { v8RenderStudents(); updateNavigation(); };
 const v8RenderMarking = renderMarking;
-renderMarking = function () {
-  v8RenderMarking();
-  updateNavigation();
-};
+renderMarking = function() { v8RenderMarking(); updateNavigation(); };
 
 // RFC 4180-style parser: quotes, escaped quotes, commas and embedded newlines.
 function parseRosterCSV(text) {
   const rows = [];
-  let row = [],
-    value = "",
-    quoted = false;
-  text = text.replace(/^\uFEFF/, "");
+  let row = [], value = '', quoted = false;
+  text = text.replace(/^\uFEFF/, '');
   for (let i = 0; i < text.length; i++) {
     const char = text[i];
     if (quoted) {
-      if (char === '"' && text[i + 1] === '"') {
-        value += '"';
-        i++;
-      } else if (char === '"') quoted = false;
+      if (char === '"' && text[i+1] === '"') { value += '"'; i++; }
+      else if (char === '"') quoted = false;
       else value += char;
     } else if (char === '"' && !value) quoted = true;
-    else if (char === ",") {
-      row.push(value);
-      value = "";
-    } else if (char === "\n" || char === "\r") {
-      if (char === "\r" && text[i + 1] === "\n") i++;
-      row.push(value);
-      value = "";
-      if (row.some((cell) => cell.trim())) rows.push(row);
+    else if (char === ',') { row.push(value); value = ''; }
+    else if (char === '\n' || char === '\r') {
+      if (char === '\r' && text[i+1] === '\n') i++;
+      row.push(value); value = '';
+      if (row.some(cell => cell.trim())) rows.push(row);
       row = [];
     } else value += char;
   }
-  if (quoted) throw new Error("CSV has an unclosed quoted field.");
+  if (quoted) throw new Error('CSV has an unclosed quoted field.');
   row.push(value);
-  if (row.some((cell) => cell.trim())) rows.push(row);
-  if (!rows.length) throw new Error("The CSV is empty.");
-  const normalise = (header) =>
-    header
-      .trim()
-      .toLowerCase()
-      .replace(/[^a-z0-9]/g, "");
+  if (row.some(cell => cell.trim())) rows.push(row);
+  if (!rows.length) throw new Error('The CSV is empty.');
+  const normalise = header => header.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
   const headers = rows.shift().map(normalise);
-  const first = headers.indexOf("firstname"),
-    last = headers.indexOf("lastname");
-  const username = headers.indexOf("username");
-  const email = headers.indexOf("emailaddress"),
-    group = headers.indexOf("groups");
-  if (first === -1 || last === -1 || username === -1) throw new Error("Required Moodle columns: First name, Last name, Username.");
+  const first = headers.indexOf('firstname'), last = headers.indexOf('lastname');
+  const username = headers.indexOf('username');
+  const email = headers.indexOf('emailaddress'), group = headers.indexOf('groups');
+  if (first === -1 || last === -1 || username === -1)
+    throw new Error('Required Moodle columns: First name, Last name, Username.');
   const records = rows.map((fields, index) => {
-    const name = [fields[first], fields[last]]
-      .map((v) => (v || "").trim())
-      .filter(Boolean)
-      .join(" ");
-    const studentId = (fields[username] || "").trim();
-    if (!studentId) throw new Error(`Row ${index + 2} has no Username. Import cancelled.`);
-    return {
-      name,
-      studentId,
-      email: email === -1 ? "" : (fields[email] || "").trim(),
-      group: group === -1 ? "" : (fields[group] || "").trim(),
-    };
+    const name = [fields[first], fields[last]].map(v => (v || '').trim()).filter(Boolean).join(' ');
+    const studentId = (fields[username] || '').trim();
+    if (!studentId) throw new Error(`Row ${index+2} has no Username. Import cancelled.`);
+    return { name, studentId, email: email === -1 ? '' : (fields[email] || '').trim(), group: group === -1 ? '' : (fields[group] || '').trim() };
   });
-  if (!records.length) throw new Error("There are no student rows in the CSV.");
+  if (!records.length) throw new Error('There are no student rows in the CSV.');
   return records;
 }
-const rosterCsvFile = document.querySelector("#rosterCsvFile");
-document.querySelector("#importRosterBtn").addEventListener("click", () => {
-  rosterCsvFile.value = "";
+const rosterCsvFile = document.querySelector('#rosterCsvFile');
+document.querySelector('#importRosterBtn').addEventListener('click', () => {
+  rosterCsvFile.value = '';
   rosterCsvFile.click();
 });
-rosterCsvFile.addEventListener("change", async () => {
+rosterCsvFile.addEventListener('change', async () => {
   const file = rosterCsvFile.files?.[0];
   if (!file) return;
   try {
-    if (file.size > 5 * 1024 * 1024) throw new Error("CSV exceeds 5 MB.");
+    if (file.size > 5 * 1024 * 1024) throw new Error('CSV exceeds 5 MB.');
     const records = parseRosterCSV(await file.text());
-    const known = new Set(state.students.map((s) => s.studentId.trim().toLowerCase()).filter(Boolean));
-    const additions = [],
-      seen = new Set();
+    const known = new Set(state.students.map(s => s.studentId.trim().toLowerCase()).filter(Boolean));
+    const additions = [], seen = new Set();
     let skipped = 0;
     for (const record of records) {
       const id = record.studentId.toLowerCase();
-      if (known.has(id) || seen.has(id)) {
-        skipped++;
-        continue;
-      }
+      if (known.has(id) || seen.has(id)) { skipped++; continue; }
       seen.add(id);
       additions.push({ id: uid(), ...record });
     }
     if (!additions.length) {
-      document.querySelector("#rosterImportStatus").textContent = `No new students — ${skipped} existing or duplicate IDs skipped.`;
+      document.querySelector('#rosterImportStatus').textContent = `No new students — ${skipped} existing or duplicate IDs skipped.`;
       return;
     }
-    if (
-      !confirm(
-        `Add ${additions.length} student(s) to the class roster? ${skipped} duplicate/existing ID(s) will be skipped. Existing students and marks will not be changed.`,
-      )
-    )
-      return;
+    if (!confirm(`Add ${additions.length} student(s) to the class roster? ${skipped} duplicate/existing ID(s) will be skipped. Existing students and marks will not be changed.`)) return;
     state.students.push(...additions);
     if (!state.selectedStudentId) state.selectedStudentId = additions[0].id;
-    saveState();
-    render();
-    document.querySelector("#rosterImportStatus").textContent = `Added ${additions.length} students; skipped ${skipped} duplicate IDs.`;
+    saveState(); render();
+    document.querySelector('#rosterImportStatus').textContent = `Added ${additions.length} students; skipped ${skipped} duplicate IDs.`;
   } catch (error) {
     alert(`Roster import failed: ${error.message}\n\nNo changes were made.`);
   }

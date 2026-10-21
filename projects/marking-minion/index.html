@@ -5,17 +5,18 @@
     <meta content="width=device-width,initial-scale=1" name="viewport" />
     <title>Marking Minion</title>
     <link href="style.css" rel="stylesheet" />
-    <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon-16x16.png" />
-    <link rel="manifest" href="./assets/site.webmanifest" />
+      <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon.png" />
+      <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png" />
+      <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon-16x16.png" />
+      <link rel="manifest" href="./assets/site.webmanifest" />
+    </head>
   </head>
   <body>
     <header class="app-header print-remove">
       <div>
         <div class="app-brand">
           <h1>Marking Minion</h1>
-          <span class="version-label" aria-label="Version 1.5.1">v1.5.1</span>
+          <span class="version-label" aria-label="Version 1.6">v1.6</span>
         </div>
       </div>
       <div class="header-actions">
@@ -79,6 +80,15 @@
                 ><span>Assessment weight (% of class grade)</span
                 ><input id="assessmentWeight" type="number" min="0" max="100" step="1" value="100" /></label
               ><span id="assessmentWeightTotal" class="weight-total">100 / 100%</span>
+            </div>
+            <div class="assessment-type-row">
+              <label
+                ><span>Assessment type</span
+                ><select id="assessmentType">
+                  <option value="individual">Individual</option>
+                  <option value="group">Group</option>
+                </select></label
+              ><span class="section-note">Group assessments share rubric marks unless individual marking is enabled.</span>
             </div>
             <div class="assessment-deadline-field">
               <label
@@ -234,6 +244,31 @@
             </div>
             <div id="priorMarks" class="prior-marks"></div>
             <div class="marking-criteria layout-rows" id="markingCriteria"></div>
+            <section id="groupPanel" class="group-panel print-remove" hidden>
+              <div class="group-panel-heading">
+                <h3>Group marking</h3>
+                <span id="groupStatus" class="section-note"></span>
+              </div>
+              <div class="group-link-row">
+                <span class="group-label">Grouped with:</span>
+                <div id="groupMembers" class="group-members"></div>
+                <div class="group-add-controls">
+                  <label class="sr-only" for="groupSearch">Find student to add to group</label
+                  ><input
+                    id="groupSearch"
+                    type="search"
+                    list="groupCandidates"
+                    placeholder="Name or ID"
+                    autocomplete="off"
+                    aria-label="Find student to add to group" /><datalist id="groupCandidates"></datalist
+                  ><button id="groupAdd" type="button">Add</button>
+                </div>
+              </div>
+              <label class="group-individual"
+                ><input id="groupIndividual" type="checkbox" /> Individual mark for this student
+                <sup class="individual-symbol" aria-label="Individual mark">†</sup></label
+              >
+            </section>
             <section class="late-panel print-remove" aria-labelledby="lateHeading">
               <div class="late-panel-heading">
                 <h3 id="lateHeading">Submission timing</h3>
@@ -284,5 +319,43 @@
       </div></template
     >
     <script src="app.js"></script>
-  </body>
+  
+<!-- BEGIN RETURN LINK -->
+<script>
+// inject-home-link.js
+(function () {
+	// Inject Font Awesome stylesheet
+	const fa = document.createElement("link");
+	fa.rel = "stylesheet";
+	fa.href = "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css";
+	fa.crossOrigin = "anonymous";
+	document.head.appendChild(fa);
+	
+	// Create the back link
+	const link = document.createElement("a");
+	link.href = "/";
+  	link.className = "print-remove";
+	link.innerHTML = '← Back to Playgrounds <i class="fab fa-github"><i>';
+	Object.assign(link.style, {
+	  position: "fixed",
+	  bottom: "20px",
+	  right: "20px",
+	  background: "#000",
+	  color: "#fff",
+	  padding: "8px 12px",
+	  zIndex: 1000,
+	  fontSize: "14px",
+	  opacity: 0.7,
+	  borderRadius: "6px",
+	  textDecoration: "none",
+    fontFamily: "Helvetica,Arial, sans-serif"
+	});
+	link.onmouseover = () => (link.style.opacity = "1");
+	link.onmouseout = () => (link.style.opacity = "0.7");
+	document.body.appendChild(link);
+})();
+</script>
+<!-- END RETURN LINK -->
+
+</body>
 </html>

@@ -977,3 +977,109 @@ button.danger:not(#resetBtn):not(:disabled):hover,
   }
   .print-register-table .print-grade-main { white-space: nowrap; }
 }
+
+/* Group assessment controls */
+.assessment-type-row {display:flex;flex-wrap:wrap;align-items:end;gap:12px;margin-top:12px}
+.assessment-type-row label {min-width:170px;flex:0 1 220px}
+.group-panel {border:1px solid var(--border,#d9d9d9);padding:var(--ui-panel-padding,14px);margin-top:12px}
+.group-panel[hidden] {display:none}
+.group-panel-heading,.group-link-row {display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.group-panel-heading h3 {margin:0}
+.group-link-row {margin:12px 0}
+.group-link-row label {flex:1;min-width:180px}
+.group-link-row input {width:100%}
+.group-members {display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.group-member {display:inline-flex;align-items:center;gap:6px;background:#f0f0f0;border:1px solid #d5d5d5;padding:4px 8px;font-size:var(--ui-text-small,.78rem);color:#111}
+.group-unlink {border:1px solid #b44;color:#a22;background:transparent;padding:0 5px;height:22px;min-width:22px;cursor:pointer}
+.group-unlink:hover {background:#a22;color:#fff}
+.group-individual {display:flex;align-items:center;gap:8px;margin:8px 0}
+.group-individual input {width:auto;height:auto}
+@media print { .print-group-note {display:block;font-weight:400;font-size:7pt;line-height:1.2;color:#555;margin-top:2px;white-space:normal;overflow-wrap:anywhere} }
+
+.roster-individual {display:inline-block;border:1px solid #c9c9c9;background:#f4f4f4;color:#111;padding:1px 4px;font-size:.7rem;margin-left:4px;white-space:nowrap}
+
+/* v1.6.1: group workspace follows submission timing panel rhythm */
+.group-panel { padding:var(--ui-panel-padding,14px); margin-top:12px; }
+.group-panel-heading { margin-bottom:10px; }
+.group-panel-heading h3 { font-size:var(--ui-heading); }
+.group-link-row { display:flex; align-items:center; justify-content:flex-start; gap:8px; flex-wrap:wrap; margin:0; min-width:0; }
+.group-label { white-space:nowrap; font-size:var(--ui-text-small); font-weight:600; }
+.group-members { display:flex; flex:1 1 180px; flex-wrap:wrap; align-items:center; gap:5px; margin:0; min-width:0; }
+.group-member { padding:0 0 0 8px; min-height:var(--ui-icon-size,30px); gap:6px; max-width:100%; }
+.group-member-name { min-width:0; overflow-wrap:anywhere; }
+.group-unlink { flex:none; width:var(--ui-icon-size,30px); height:var(--ui-icon-size,30px); min-width:var(--ui-icon-size,30px); min-height:0; padding:0; display:grid;place-items:center; align-self:stretch; }
+.group-add-controls { margin-left:auto;display:flex;align-items:center;gap:6px;flex:0 1 235px;min-width:175px; }
+.group-add-controls input { min-width:0;width:100%; }
+.group-add-controls button {flex:none;min-height:var(--ui-control-height,36px);}
+.group-individual { margin:10px 0 0; font-size:var(--ui-text-small); }
+.individual-symbol,.roster-individual { font-size:.72em; line-height:0; vertical-align:super; font-weight:700; background:none; border:0; padding:0; margin-left:2px; color:inherit; }
+@media (max-width:600px) { .group-add-controls { flex:1 1 100%; margin-left:0; } }
+@media print {
+  .print-register-table tbody tr { break-inside:avoid; page-break-inside:avoid; height:auto; }
+  .print-register-table .print-name-cell { height:auto; vertical-align:top; overflow:visible; }
+  .print-register-table .print-name-text { display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; line-height:1.25; max-height:2.5em; }
+  .print-register-table .print-group-note { display:block; position:static; font-size:6.7pt;line-height:1.25;white-space:normal;overflow-wrap:anywhere;word-break:normal;margin-top:3px;max-height:none; }
+  .print-register-table .print-id-cell { white-space:nowrap; overflow-wrap:normal;word-break:normal; }
+  .print-register-table .print-individual-symbol {font-size:.75em;vertical-align:super;line-height:0;}
+  .print-register-table .print-name-heading,.print-register-table .print-name-cell {width:20%;}
+  .print-register-table .print-id-heading,.print-register-table .print-id-cell {width:10%;}
+}
+
+/* v1.6.2: align group marking with the submission timing section. */
+.group-panel {
+  margin-top: 16px;
+  padding: 12px 0 0;
+  border: 0;
+  border-top: 1px solid var(--line, #ddd);
+  background: transparent;
+}
+.group-panel-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 9px;
+}
+.group-panel-heading h3 {
+  margin: 0;
+  font-size: var(--ui-text, .875rem);
+  font-weight: 600;
+}
+.group-panel-heading .section-note {
+  font-size: var(--ui-text-small, .78rem);
+  font-weight: 500;
+}
+.group-link-row { margin: 0; gap: 8px; align-items: center; }
+.group-label { font-size: var(--ui-label-text, .73rem); font-weight: 400; }
+.group-individual { margin: 8px 0 0; font-size: var(--ui-text-small, .78rem); }
+
+/* Put name, individual-mark dagger and lateness on the same roster line.
+   Long names still wrap without forcing the table columns to expand. */
+.roster-column .student-table .roster-student-line {
+  display: inline;
+  min-width: 0;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.roster-column .student-table .roster-student-name {
+  display: inline;
+  overflow-wrap: anywhere;
+}
+.roster-column .student-table .roster-individual {
+  display: inline;
+  margin-left: 2px;
+  vertical-align: super;
+}
+.roster-column .student-table .roster-late {
+  display: inline-block;
+  margin: 0 0 0 5px;
+  padding: 1px 5px;
+  background: #f8e0e0;
+  border: 1px solid #dc9f9f;
+  color: #111;
+  vertical-align: baseline;
+  white-space: nowrap;
+  font-size: .72em;
+  line-height: 1.35;
+}
