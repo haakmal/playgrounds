@@ -69,3 +69,10 @@ The renderer module can be tested separately with Node, and the included JSON fi
 - `app.js`: local editing, persistence, imports, rendering and navigation.
 - `radial-layout.js`: pure layout functions; no family data is modified.
 - `samples/*.json`: fictional regression collections.
+
+## v0.7 notation and routing
+
+- `DEC` marks deceased people in place of the dagger icon.
+- `DIV`, `SEP`, `FRM`, `HIS`, and `END` indicate divorced, separated, former, historical, and ended-by-death partnerships. Full labels remain in the relationship editor.
+- Circular routes reserve separate tracks where unrelated arcs would otherwise coincide, with 14 SVG-unit radial spacing. Shared parentage junctions remain shared. Complex networks may still have unavoidable spoke intersections.
+- The archival JSON format is unchanged.

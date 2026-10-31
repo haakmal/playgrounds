@@ -42,3 +42,7 @@
 /* v0.6 ring routing */
 .link{stroke-linecap:round;stroke-linejoin:round}
 #detailBackBtn{white-space:nowrap}
+
+/* v0.7 compact, neutral life and partnership markers */
+.personNode .lifeMarkText{font-size:9px;fill:#fff;font-weight:700}
+.edgeStatus text{font-weight:700;letter-spacing:.15px}

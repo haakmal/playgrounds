@@ -1,5 +1,5 @@
 import {radialAtlas, lineageDetail, parentageUnits} from './radial-layout.js';
-/* Family Atlas v0.6: radial descendant display, contextual lineage, local-first records. */
+/* Family Atlas v0.7: radial descendant display, contextual lineage, local-first records. */
 const $=s=>document.querySelector(s), svgNS='http://www.w3.org/2000/svg';
 const uid=()=>crypto.randomUUID();
 const blank=()=>({schemaVersion:'0.2',collection:{id:uid(),title:'My family atlas'},people:[],relationships:[],sources:[],assertions:[],identityMappings:[],importHistory:[]});
@@ -133,6 +133,34 @@ function ringPath(start,end,comp,trackRadius){
  return `M${start.x.toFixed(2)} ${start.y.toFixed(2)} L${sp.x.toFixed(2)} ${sp.y.toFixed(2)}`+
    arcStep(comp,r,s.a,e.a)+` L${end.x.toFixed(2)} ${end.y.toFixed(2)}`;
 }
+// Reserve distinct circular tracks where unrelated arcs overlap.
+// Coincident spokes at a shared parentage junction remain intentional.
+function routeLanes(){
+  const tracks=new Map(),spacing=14,tau=2*Math.PI;
+  const norm=a=>(a%tau+tau)%tau;
+  const span=(a,b,r)=>{
+    a=norm(a);b=norm(b);
+    const delta=Math.atan2(Math.sin(b-a),Math.cos(b-a));
+    const low=delta<0?a+delta:a,high=delta<0?a:a+delta;
+    const margin=Math.min(.23,Math.max(.02,7/r));
+    return [low-margin,high+margin];
+  };
+  const overlaps=(a,b)=>[-tau,0,tau].some(shift=>a[0]<b[1]+shift&&b[0]+shift<a[1]);
+  return (comp,start,end,base,kind='parentage')=>{
+    const key=comp.ids[0]+':'+kind,used=tracks.get(key)||[];
+    for(let n=0;n<100;n++){
+      const radius=base+(kind==='parentage'?(n%2?1:-1)*Math.ceil(n/2)*spacing:n*spacing);
+      if(radius<18)continue;
+      const region=span(polarData(start,comp).a,polarData(end,comp).a,radius);
+      const entry=used.find(x=>Math.abs(x.radius-radius)<.1);
+      if(!entry){used.push({radius,regions:[region]});tracks.set(key,used);return radius;}
+      if(entry.regions.every(x=>!overlaps(x,region))){entry.regions.push(region);return radius;}
+    }
+    return base+used.length*spacing;
+  };
+}
+const statusCodes={divorced:'DIV',separated:'SEP',former:'FRM',historical:'HIS','ended by death':'END'};
+function statusCode(s){return statusCodes[String(s||'').toLowerCase()]||String(s||'').slice(0,3).toUpperCase();}
 function meanAngle(pts,comp){
  const angles=pts.map(p=>polarData(p,comp).a);
  const sx=angles.reduce((v,a)=>v+Math.cos(a),0),sy=angles.reduce((v,a)=>v+Math.sin(a),0);
@@ -171,6 +199,7 @@ function renderGraph(){
   const relevant=data.relationships.filter(r=>ids.has(r.from)&&ids.has(r.to));
   const parentRels=relevant.filter(r=>r.type==='parentage');
   const handledParents=new Set();
+  const reserveLane=routeLanes();
   for(const u of parentageUnits([...ids],relevant)){
     const parents=u.parents.map(id=>coords.get(id)).filter(Boolean);
     const children=u.children.map(id=>coords.get(id)).filter(Boolean);
@@ -186,17 +215,33 @@ function renderGraph(){
       const jr=corridor>40?parentR+corridor*.52:Math.max(18,childR-55);
       j=polarPoint(comp.cx,comp.cy,jr,angle);
     }else j={x:childMid.x,y:(parentMid.y+childMid.y)/2};
+    // Allocate a track for the full angular footprint of this parentage group.
+    const unitComp=viewMode==='atlas'?layout.components.find(c=>c.ids.includes(u.children[0])):null;
+    let unitLane=null;
+    if(unitComp){
+      const tau=2*Math.PI;
+      const angles=[...parents,...children].map(p=>(polarData(p,unitComp).a%tau+tau)%tau).sort((a,b)=>a-b);
+      let gap=-1,cut=0;
+      for(let k=0;k<angles.length;k++){
+        const next=k===angles.length-1?angles[0]+tau:angles[k+1];
+        if(next-angles[k]>gap){gap=next-angles[k];cut=k;}
+      }
+      const start=polarPoint(unitComp.cx,unitComp.cy,1,angles[(cut+1)%angles.length]);
+      const end=polarPoint(unitComp.cx,unitComp.cy,1,angles[cut]);
+      unitLane=reserveLane(unitComp,start,end,polarData(j,unitComp).r,'parentage');
+      j=polarPoint(unitComp.cx,unitComp.cy,unitLane,meanAngle(children,unitComp));
+    }
     // Parentage junction is a renderer construct, not a marriage or an additional person.
     for(const id of u.parents){const a=coords.get(id);if(!a)continue;
       const highlighted=parentRels.some(r=>r.from===id&&u.children.includes(r.to)&&routeEdges.has(r.id));
       const comp=viewMode==='atlas'?layout.components.find(c=>c.ids.includes(id)):null;
-      const path=comp?ringPath(a,j,comp,polarData(j,comp).r):`M${a.x} ${a.y+20} V${j.y} H${j.x}`;
+      const path=comp?ringPath(a,j,comp,unitLane):`M${a.x} ${a.y+20} V${j.y} H${j.x}`;
       addLink(es,path,'parentage',`${label(person(id))}: recorded parentage`,highlighted);
     }
     for(const id of u.children){const b=coords.get(id);if(!b)continue;
       const highlighted=parentRels.some(r=>r.to===id&&u.parents.includes(r.from)&&routeEdges.has(r.id));
       const comp=viewMode==='atlas'?layout.components.find(c=>c.ids.includes(id)):null;
-      const path=comp?ringPath(j,b,comp,polarData(j,comp).r):`M${j.x} ${j.y} H${b.x} V${b.y-20}`;
+      const path=comp?ringPath(j,b,comp,unitLane):`M${j.x} ${j.y} H${b.x} V${b.y-20}`;
       addLink(es,path,'parentage',`Recorded child: ${label(person(id))}`,highlighted);
     }
     es.append(svg('circle',{cx:j.x,cy:j.y,r:3,class:'parentJunction'}));
@@ -210,7 +255,7 @@ function renderGraph(){
     if(kind==='sibling'&&[...parentSets.get(r.from)].some(p=>parentSets.get(r.to).has(p))&&!highlight)continue;
     if(kind==='parentage'){
       const comp=layout.components?.find(c=>c.ids.includes(r.from));
-      addLink(es,comp?ringPath(a,b,comp,(polarData(a,comp).r+polarData(b,comp).r)/2):`M${a.x} ${a.y} L${b.x} ${b.y}`,kind,'Parentage connection',highlight);continue;
+      addLink(es,comp?ringPath(a,b,comp,reserveLane(comp,a,b,(polarData(a,comp).r+polarData(b,comp).r)/2,'parentage')):`M${a.x} ${a.y} L${b.x} ${b.y}`,kind,'Parentage connection',highlight);continue;
     }
     const gap=pointDist(a,b);
     const cross=viewMode==='atlas' && kind==='partnership' && gap>200;
@@ -221,17 +266,19 @@ function renderGraph(){
       const comp=layout.components.find(c=>c.ids.includes(r.from));
       if(comp){
         const x=polarData(a,comp),y=polarData(b,comp);
-        const lane=kind==='partnership'?Math.max(x.r,y.r)+35:Math.max(30,Math.min(x.r,y.r)-26);
+        const preferred=kind==='partnership'?Math.max(x.r,y.r)+35:Math.max(30,Math.min(x.r,y.r)-26);
+        const lane=reserveLane(comp,a,b,preferred,kind);
         d=ringPath(a,b,comp,lane);
       }else d=`M${a.x} ${a.y} L${b.x} ${b.y}`;
     }else d=`M${a.x} ${a.y} L${b.x} ${b.y}`;
     addLink(es,d,kind,`${label(person(r.from))} / ${label(person(r.to))}: ${routeDescription(r,r.from,r.to)}`,highlight,cross&&!shown?'crossQuiet':'');
     if(kind==='partnership'&&r.status&&r.status!=='current'&&r.status!=='unknown'&&(!cross||shown)){
-      const state=String(r.status).replace(/\b\w/g,c=>c.toUpperCase());
-      const x=(a.x+b.x)/2,y=(a.y+b.y)/2-14,w=Math.max(58,state.length*6.2+14);
+      const code=statusCode(r.status);
+      const x=(a.x+b.x)/2,y=(a.y+b.y)/2-14,w=Math.max(33,code.length*7+12);
       const g=svg('g',{class:'edgeStatus'});
-      g.append(svg('rect',{x:x-w/2,y:y-12,width:w,height:20,rx:2}));
-      g.append(svg('text',{x,y:y+2,'text-anchor':'middle'},state));es.append(g);
+      g.append(svg('rect',{x:x-w/2,y:y-10,width:w,height:20,rx:2}));
+      g.append(svg('text',{x,y:y+3,'text-anchor':'middle'},code));
+      g.append(svg('title',{},`Partnership status: ${r.status}`));es.append(g);
     }
   }
   for(const [id,pos] of coords){
@@ -241,7 +288,7 @@ function renderGraph(){
     const plateWidth=Math.max(68,Math.min(226,display.length*7.4+25));
     g.append(svg('circle',{r:19,cx:0,cy:0}));
     g.append(svg('text',{x:0,y:4,'text-anchor':'middle',class:'initial'},p.nameStatus==='unknown'?'?':name.charAt(0).toUpperCase()));
-    if(deceased){g.append(svg('rect',{x:11,y:-27,width:18,height:18,rx:2,class:'lifeMarker'}));g.append(svg('text',{x:20,y:-14,'text-anchor':'middle',class:'lifeMarkText'},'†'));}
+    if(deceased){g.append(svg('rect',{x:11,y:-27,width:29,height:17,rx:2,class:'lifeMarker'}));g.append(svg('text',{x:25.5,y:-15,'text-anchor':'middle',class:'lifeMarkText'},'DEC'));}
     g.append(svg('rect',{x:-plateWidth/2,y:24,width:plateWidth,height:23,rx:2,class:'nameplate'}));
     g.append(svg('text',{x:0,y:40,'text-anchor':'middle'},display));
     g.append(svg('title',{},`${name}${deceased?' — Deceased':''}`));
@@ -256,7 +303,7 @@ function renderGraph(){
   const maxY=Math.max(...[...positions.map(p=>p.y+85),...clusters.map(c=>c.cy+c.radius+35),...(positions.length?[]:[100])]);
   graphBounds={x:minX,y:minY,w:maxX-minX,h:maxY-minY};
   applyView();
-  $('#status').textContent=`${ids.size} people · ${clusters.length||1} network${clusters.length===1?'':'s'} · Drag to pan · Scroll to zoom · † deceased`;
+  $('#status').textContent=`${ids.size} people · ${clusters.length||1} network${clusters.length===1?'':'s'} · Drag to pan · Scroll to zoom · DEC deceased`;
   renderFocusBar();
 }
 function applyView(){$('#world').setAttribute('transform',`translate(${pan.x} ${pan.y}) scale(${zoom})`);$('#stage').classList.toggle('overviewScale',zoom<.43);}
@@ -323,7 +370,7 @@ $('#detailBackBtn').onclick=()=>{focus=null;focusBack=[];switchView('atlas');};
 $('#traceBtn').onclick=chooseRoute;$('#addBtn').onclick=()=>newPerson(selected,'sibling');$('#zoomFit').onclick=fitAll;$('#zoomIn').onclick=()=>zoomAt(1.2,$('#stage').clientWidth/2,$('#stage').clientHeight/2);$('#zoomOut').onclick=()=>zoomAt(1/1.2,$('#stage').clientWidth/2,$('#stage').clientHeight/2);
 $('#searchBtn').onclick=()=>{modal('Find a person',`<div class="field"><label>Search by name</label><input id="globalSearch" placeholder="Search people…"></div><div id="searchResults"></div>`,root=>{const input=root.querySelector('input'),draw=()=>{const q=input.value.trim();root.querySelector('#searchResults').innerHTML=(q?data.people.map(p=>({p,score:searchScore(q,label(p))})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,25):data.people.map(p=>({p})).slice(0,25)).map(({p})=>`<button class="personItem" data-id="${p.id}"><span><strong>${escapeHtml(label(p))}</strong><small>${p.birth?'Born '+escapeHtml(p.birth):'Select to navigate'}</small></span></button>`).join('');root.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>{const id=b.dataset.id;if(viewMode==='detail'&&!graphSubset().has(id)){focus=id;renderGraph();}
 closeModal();selectPerson(id);fitPerson(id);});};input.oninput=draw;draw();input.focus();});};
-$('#exportBtn').onclick=()=>modal('Export family atlas',`<p>JSON is the complete, portable archive. SVG exports the current graph view.</p><div class="stack"><button id="jsonExport">Download complete JSON archive</button><button id="svgExport">Download current graph as SVG</button></div>`,root=>{root.querySelector('#jsonExport').onclick=()=>{backup();closeModal();};root.querySelector('#svgExport').onclick=()=>{const x=$('#atlas').cloneNode(true);x.setAttribute('xmlns',svgNS);x.setAttribute('viewBox',`${graphBounds.x} ${graphBounds.y} ${graphBounds.w} ${graphBounds.h}`);x.removeAttribute('width');x.removeAttribute('height');x.querySelector('#world').setAttribute('transform','');const style=document.createElementNS(svgNS,'style');style.textContent='.generationRing{fill:none;stroke:#aaa;stroke-opacity:.45;stroke-width:1}.clusterCaption text{fill:#555;font:11px Arial}.clusterCaption .nameplate{fill:#fff;stroke:#bbb}.parentJunction{fill:#fff;stroke:#333;stroke-width:1.2}.link{fill:none;stroke:#888;stroke-width:1.5}.link.parentage{stroke:#333;stroke-width:1.7}.link.sibling{stroke:#aaa;stroke-width:1}.link.crossQuiet{stroke-opacity:.2}.link.partnership{stroke-dasharray:6 4}.link.guardian,.link.other,.link.sibling{stroke-dasharray:3 4}.personNode circle{fill:white;stroke:#222;stroke-width:1.5}.personNode text{fill:#111;font:12px Arial}.personNode .nameplate{fill:white;stroke:#bbb}.personNode .initial{font-weight:bold}.personNode .lifeMarker{fill:#222;stroke:#222}.personNode .lifeMarkText{fill:#fff;font-weight:bold}.edgeStatus rect{fill:white;stroke:#777;stroke-width:.75}.edgeStatus text{fill:#222;font:10px Arial}.link.routeLink{stroke:#111;stroke-width:3.5;stroke-dasharray:none}.componentCircle{fill:#fafafa;stroke:#222;stroke-width:1.5}.componentDot{fill:#555}.componentNode .nameplate{fill:#fff;stroke:#aaa}.componentName{fill:#111;font:bold 13px Arial}.componentCount{fill:#555;font:11px Arial}';x.prepend(style);download(new XMLSerializer().serializeToString(x),'family-atlas.svg','image/svg+xml');closeModal();};});
+$('#exportBtn').onclick=()=>modal('Export family atlas',`<p>JSON is the complete, portable archive. SVG exports the current graph view.</p><div class="stack"><button id="jsonExport">Download complete JSON archive</button><button id="svgExport">Download current graph as SVG</button></div>`,root=>{root.querySelector('#jsonExport').onclick=()=>{backup();closeModal();};root.querySelector('#svgExport').onclick=()=>{const x=$('#atlas').cloneNode(true);x.setAttribute('xmlns',svgNS);x.setAttribute('viewBox',`${graphBounds.x} ${graphBounds.y} ${graphBounds.w} ${graphBounds.h}`);x.removeAttribute('width');x.removeAttribute('height');x.querySelector('#world').setAttribute('transform','');const style=document.createElementNS(svgNS,'style');style.textContent='.generationRing{fill:none;stroke:#aaa;stroke-opacity:.45;stroke-width:1}.clusterCaption text{fill:#555;font:11px Arial}.clusterCaption .nameplate{fill:#fff;stroke:#bbb}.parentJunction{fill:#fff;stroke:#333;stroke-width:1.2}.link{fill:none;stroke:#888;stroke-width:1.5}.link.parentage{stroke:#333;stroke-width:1.7}.link.sibling{stroke:#aaa;stroke-width:1}.link.crossQuiet{stroke-opacity:.2}.link.partnership{stroke-dasharray:6 4}.link.guardian,.link.other,.link.sibling{stroke-dasharray:3 4}.personNode circle{fill:white;stroke:#222;stroke-width:1.5}.personNode text{fill:#111;font:12px Arial}.personNode .nameplate{fill:white;stroke:#bbb}.personNode .initial{font-weight:bold}.personNode .lifeMarker{fill:#222;stroke:#222}.personNode .lifeMarkText{fill:#fff;font-weight:bold;font-size:9px}.edgeStatus rect{fill:white;stroke:#777;stroke-width:.75}.edgeStatus text{fill:#222;font:bold 10px Arial}.link.routeLink{stroke:#111;stroke-width:3.5;stroke-dasharray:none}.componentCircle{fill:#fafafa;stroke:#222;stroke-width:1.5}.componentDot{fill:#555}.componentNode .nameplate{fill:#fff;stroke:#aaa}.componentName{fill:#111;font:bold 13px Arial}.componentCount{fill:#555;font:11px Arial}';x.prepend(style);download(new XMLSerializer().serializeToString(x),'family-atlas.svg','image/svg+xml');closeModal();};});
 $('#importBtn').onclick=()=>{$('#fileInput').value='';$('#fileInput').click();};$('#fileInput').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const d=ensure(JSON.parse(await f.text()));if(d.people.length>5000)throw Error('File has too many people for this version');beginImport(d);}catch(err){modal('Import error',`<p>${escapeHtml(err.message)}</p>`);}};
 function sourceKey(collectionId,recordId){return `${collectionId}::${recordId}`;}
 function mappedId(collectionId,recordId){return data.identityMappings.find(m=>m.sourceKey===sourceKey(collectionId,recordId))?.personId||null;}
