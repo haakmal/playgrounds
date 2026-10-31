@@ -82,3 +82,16 @@ Person dates now use year, month and day controls while storing the existing par
 Life status and primary parentage use compact radio controls. Legal parentage remains independently selectable.
 DEC is black, SEP/DIV light red, and FRM/HIS/END pale yellow. The legend is titled Relationship key.
 The Fit view control replaces All. Source JSON remains compatible with v0.7.
+
+## v0.9 — Family-detail junction correction
+
+The traditional Family Detail layout now reserves space for each descendant's
+subtree before positioning people. Children of separate couples are positioned
+under their own parentage groups. Each family parentage junction uses one shared
+horizontal bus with separate vertical child stems; unrelated junctions are not
+merged or reused.
+
+The radial renderer, data model, local storage, and import/export remain
+unchanged. Run `node tests/family-detail.test.mjs` to check all six sample
+collections. Complex cross-branch parentage connections may still require
+further routing work.

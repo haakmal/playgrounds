@@ -149,17 +149,83 @@ export function radialAtlas(people,relationships,nameOf) {
   return {positions,components};
 }
 
-/** A focused, top-to-bottom presentation; no separate permanent family identity. */
+
+/**
+ * Family detail is organised as descendant subtrees rather than independent
+ * alphabetical rows. Coordinates are derived only for display and never saved.
+ * A partnered block reserves room for its children and their descendants,
+ * preventing grandchildren from slipping beneath unrelated branches.
+ */
 export function lineageDetail(ids, relationships, nameOf) {
-  const membership=new Set(ids);
-  const relevant=relationships.filter(r=>membership.has(r.from)&&membership.has(r.to));
-  const depth=depthMap(ids,relevant), levels=orderByRelationships(ids,relevant,depth,nameOf);
+  const members=new Set(ids), relevant=relationships.filter(r=>members.has(r.from)&&members.has(r.to));
+  const depth=depthMap(ids,relevant), rows=new Map();
+  for(const id of ids){
+    const d=depth.get(id)||0;
+    if(!rows.has(d))rows.set(d,[]);
+    rows.get(d).push(id);
+  }
+  const blocks=[], byPerson=new Map();
+  for(const level of [...rows.keys()].sort((a,b)=>a-b)){
+    const membersAtLevel=rows.get(level);
+    const leader=new Map(membersAtLevel.map(id=>[id,id]));
+    const find=id=>{
+      if(leader.get(id)===id)return id;
+      const root=find(leader.get(id));leader.set(id,root);return root;
+    };
+    for(const r of relevant)if(['partnership','marriage'].includes(r.type)&&leader.has(r.from)&&leader.has(r.to)){
+      const a=find(r.from),b=find(r.to);if(a!==b)leader.set(b,a);
+    }
+    const groups=new Map();
+    for(const id of membersAtLevel){
+      const key=find(id);if(!groups.has(key))groups.set(key,[]);groups.get(key).push(id);
+    }
+    for(const group of groups.values()){
+      group.sort((a,b)=>nameOf(a).localeCompare(nameOf(b)));
+      const block={id:blocks.length,level,people:group,children:[],parent:null,width:0};
+      blocks.push(block);
+      for(const id of group)byPerson.set(id,block);
+    }
+  }
+  const incoming=new Map(ids.map(id=>[id,[]]));
+  for(const r of relevant)if(r.type==='parentage'&&incoming.has(r.to))incoming.get(r.to).push(r.from);
+  for(const block of blocks){
+    const score=new Map();
+    for(const id of block.people)for(const parent of incoming.get(id)||[]){
+      const b=byPerson.get(parent);
+      if(b&&b!==block&&b.level<block.level)score.set(b,(score.get(b)||0)+1);
+    }
+    const options=[...score].sort((a,b)=>b[1]-a[1]||a[0].level-b[0].level||a[0].id-b[0].id);
+    if(options.length){block.parent=options[0][0];block.parent.children.push(block);}
+  }
+  const step=184,gap=88,rootGap=130;
+  const name=b=>nameOf(b.people[0])||'';
+  const widthOf=(b,seen=new Set())=>{
+    if(seen.has(b))return b.people.length*step;
+    seen.add(b);
+    b.children.sort((a,c)=>a.level-c.level||name(a).localeCompare(name(c)));
+    const widths=b.children.map(child=>widthOf(child,seen));
+    const descendants=widths.reduce((a,c)=>a+c,0)+Math.max(0,widths.length-1)*gap;
+    b.width=Math.max(b.people.length*step,descendants);
+    seen.delete(b);return b.width;
+  };
+  const roots=blocks.filter(b=>!b.parent).sort((a,b)=>a.level-b.level||name(a).localeCompare(name(b)));
+  roots.forEach(b=>widthOf(b));
+  const all=roots.reduce((sum,b)=>sum+b.width,0)+Math.max(0,roots.length-1)*rootGap;
   const positions=new Map();
-  let width=0;
-  for(const [d,row] of [...levels].sort((a,b)=>a[0]-b[0])){
-    const step=184, span=(row.length-1)*step;
-    width=Math.max(width,span+200);
-    row.forEach((id,i)=>positions.set(id,{x:i*step-span/2,y:d*190,depth:d}));
+  const place=(b,left,seen=new Set())=>{
+    if(seen.has(b))return;seen.add(b);
+    const center=left+b.width/2;
+    const first=center-b.people.length*step/2+step/2;
+    b.people.forEach((id,i)=>positions.set(id,{x:first+i*step,y:b.level*190,depth:b.level}));
+    const childWidth=b.children.reduce((sum,c)=>sum+c.width,0)+Math.max(0,b.children.length-1)*gap;
+    let cursor=left+(b.width-childWidth)/2;
+    for(const child of b.children){place(child,cursor,seen);cursor+=child.width+gap;}
+  };
+  let cursor=-all/2;
+  for(const b of roots){place(b,cursor);cursor+=b.width+rootGap;}
+  for(const id of ids)if(!positions.has(id)){
+    positions.set(id,{x:cursor+step/2,y:(depth.get(id)||0)*190,depth:depth.get(id)||0});
+    cursor+=step;
   }
   return {positions,units:parentageUnits(ids,relevant)};
 }

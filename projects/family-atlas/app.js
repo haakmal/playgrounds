@@ -1,5 +1,5 @@
 import {radialAtlas, lineageDetail, parentageUnits} from './radial-layout.js';
-/* Family Atlas v0.8: radial descendant display, contextual lineage, local-first records. */
+/* Family Atlas v0.9: radial descendant display, contextual lineage, local-first records. */
 const $=s=>document.querySelector(s), svgNS='http://www.w3.org/2000/svg';
 const uid=()=>crypto.randomUUID();
 const blank=()=>({schemaVersion:'0.2',collection:{id:uid(),title:'My family atlas'},people:[],relationships:[],sources:[],assertions:[],identityMappings:[],importHistory:[]});
@@ -277,7 +277,7 @@ function renderGraph(){
       const corridor=childR-parentR;
       const jr=corridor>40?parentR+corridor*.52:Math.max(18,childR-55);
       j=polarPoint(comp.cx,comp.cy,jr,angle);
-    }else j={x:childMid.x,y:(parentMid.y+childMid.y)/2};
+    }else j={x:parentMid.x,y:(parentMid.y+childMid.y)/2};
     // Allocate a track for the full angular footprint of this parentage group.
     const unitComp=viewMode==='atlas'?layout.components.find(c=>c.ids.includes(u.children[0])):null;
     let unitLane=null;
@@ -294,18 +294,37 @@ function renderGraph(){
       unitLane=reserveLane(unitComp,start,end,polarData(j,unitComp).r,'parentage');
       j=polarPoint(unitComp.cx,unitComp.cy,unitLane,meanAngle(children,unitComp));
     }
-    // Parentage junction is a renderer construct, not a marriage or an additional person.
-    for(const id of u.parents){const a=coords.get(id);if(!a)continue;
-      const highlighted=parentRels.some(r=>r.from===id&&u.children.includes(r.to)&&routeEdges.has(r.id));
-      const comp=viewMode==='atlas'?layout.components.find(c=>c.ids.includes(id)):null;
-      const path=comp?ringPath(a,j,comp,unitLane):`M${a.x} ${a.y+20} V${j.y} H${j.x}`;
-      addLink(es,path,'parentage',`${label(person(id))}: recorded parentage`,highlighted);
-    }
-    for(const id of u.children){const b=coords.get(id);if(!b)continue;
-      const highlighted=parentRels.some(r=>r.to===id&&u.parents.includes(r.from)&&routeEdges.has(r.id));
-      const comp=viewMode==='atlas'?layout.components.find(c=>c.ids.includes(id)):null;
-      const path=comp?ringPath(j,b,comp,unitLane):`M${j.x} ${j.y} H${b.x} V${b.y-20}`;
-      addLink(es,path,'parentage',`Recorded child: ${label(person(id))}`,highlighted);
+
+    // Each family owns its own parentage bus. Draw the bus once, then a separate
+    // stem for each recorded child. Junctions cannot adopt another group's child.
+    if(viewMode==='detail'){
+      const upperY=j.y-25,busY=j.y+15;
+      for(const id of u.parents){
+        const a=coords.get(id);if(!a)continue;
+        const active=parentRels.some(r=>r.from===id&&u.children.includes(r.to)&&routeEdges.has(r.id));
+        addLink(es,`M${a.x} ${a.y+20} V${upperY} H${j.x}`,'parentage',`${label(person(id))}: recorded parentage`,active);
+      }
+      const left=Math.min(j.x,...children.map(p=>p.x)),right=Math.max(j.x,...children.map(p=>p.x));
+      const active=parentRels.some(r=>u.parents.includes(r.from)&&u.children.includes(r.to)&&routeEdges.has(r.id));
+      addLink(es,`M${j.x} ${upperY} V${busY} M${left} ${busY} H${right}`,'parentage','Shared parentage junction',active);
+      for(const id of u.children){
+        const b=coords.get(id);if(!b)continue;
+        const highlighted=parentRels.some(r=>r.to===id&&u.parents.includes(r.from)&&routeEdges.has(r.id));
+        addLink(es,`M${b.x} ${busY} V${b.y-20}`,'parentage',`Recorded child: ${label(person(id))}`,highlighted);
+      }
+    }else{
+      for(const id of u.parents){
+        const a=coords.get(id);if(!a)continue;
+        const highlighted=parentRels.some(r=>r.from===id&&u.children.includes(r.to)&&routeEdges.has(r.id));
+        const comp=layout.components.find(c=>c.ids.includes(id));
+        addLink(es,comp?ringPath(a,j,comp,unitLane):`M${a.x} ${a.y+20} V${j.y} H${j.x}`,'parentage',`${label(person(id))}: recorded parentage`,highlighted);
+      }
+      for(const id of u.children){
+        const b=coords.get(id);if(!b)continue;
+        const highlighted=parentRels.some(r=>r.to===id&&u.parents.includes(r.from)&&routeEdges.has(r.id));
+        const comp=layout.components.find(c=>c.ids.includes(id));
+        addLink(es,comp?ringPath(j,b,comp,unitLane):`M${j.x} ${j.y} H${b.x} V${b.y-20}`,'parentage',`Recorded child: ${label(person(id))}`,highlighted);
+      }
     }
     es.append(svg('circle',{cx:j.x,cy:j.y,r:3,class:'parentJunction'}));
     for(const r of parentRels)if(u.parents.includes(r.from)&&u.children.includes(r.to))handledParents.add(r.id);
