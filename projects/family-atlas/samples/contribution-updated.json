@@ -1,0 +1,263 @@
+{
+  "schemaVersion": "0.2",
+  "collection": {
+    "id": "8ab16d0b-e089-58b1-b3ef-050b6ad8e44f",
+    "title": "Cousin contribution"
+  },
+  "people": [
+    {
+      "id": "bf3cff30-b3a5-504f-9a93-9c223dd6df79",
+      "name": "Rashid Shah",
+      "nameStatus": "known",
+      "lifeStatus": "unknown",
+      "birth": "1950"
+    },
+    {
+      "id": "cfb7ae2f-078b-5b5f-b214-27fd2a829356",
+      "name": "Amina Qureshi",
+      "nameStatus": "known",
+      "lifeStatus": "unknown",
+      "birth": "1953"
+    },
+    {
+      "id": "e3753d78-0aa7-5c44-a341-111d3c007cea",
+      "name": "Karim Shah",
+      "nameStatus": "known",
+      "lifeStatus": "unknown",
+      "birth": "1978"
+    },
+    {
+      "id": "c04de3e8-6012-56ba-a7ab-56914b903413",
+      "name": "Naveed Shah",
+      "nameStatus": "known",
+      "lifeStatus": "unknown",
+      "birth": "1955"
+    },
+    {
+      "id": "8ca06293-e74e-5fe6-b5bc-381a7732e6c0",
+      "name": "Saira Malik",
+      "nameStatus": "known",
+      "lifeStatus": "unknown",
+      "birth": "1955"
+    },
+    {
+      "id": "c4ccf0fc-058b-5525-a69a-dbee08f50502",
+      "name": "Kamran Malik",
+      "nameStatus": "known",
+      "lifeStatus": "unknown",
+      "birth": "1980"
+    },
+    {
+      "id": "8dc55c4c-8bcd-5c19-ab43-a46ad2a68fe4",
+      "name": "Noor Malik",
+      "nameStatus": "known",
+      "lifeStatus": "unknown",
+      "birth": "1984"
+    },
+    {
+      "id": "93635270-d34e-5793-810d-fdef7b9e1f9b",
+      "name": "Jamal Qureshi",
+      "nameStatus": "known",
+      "lifeStatus": "unknown",
+      "birth": "1982"
+    },
+    {
+      "id": "c84fc19c-cfdf-5087-b761-3175ecf94d3b",
+      "name": "Mariam Shah",
+      "nameStatus": "known",
+      "lifeStatus": "unknown",
+      "birth": "1958"
+    },
+    {
+      "id": "4ab17d99-d650-5137-bb8a-7756ad6ce742",
+      "name": "Sana Shah",
+      "nameStatus": "known",
+      "lifeStatus": "unknown",
+      "birth": "1981"
+    },
+    {
+      "id": "8daafda4-5ca1-5816-821b-9a09d4dce02e",
+      "name": "Samina Shah",
+      "nameStatus": "known",
+      "lifeStatus": "unknown",
+      "birth": "1951"
+    },
+    {
+      "id": "2fbe4885-9396-5eb1-b523-2077f5047a28",
+      "name": "Daniyal Malik",
+      "nameStatus": "known",
+      "lifeStatus": "unknown",
+      "birth": "2010"
+    },
+    {
+      "id": "be99d3e5-61e9-5e0a-9d70-d67465854de3",
+      "name": "Hareem Malik",
+      "nameStatus": "known",
+      "lifeStatus": "unknown",
+      "birth": "2014"
+    },
+    {
+      "id": "0bb09974-f0e6-54c8-8e4d-3fdd2a742fbe",
+      "name": "Zubaida Akhtar",
+      "nameStatus": "known",
+      "lifeStatus": "unknown",
+      "birth": "1938"
+    },
+    {
+      "id": "95a479b3-a4af-5f0d-a43e-d9d811885016",
+      "name": "Saad Akhtar",
+      "nameStatus": "known",
+      "lifeStatus": "unknown",
+      "birth": "1968"
+    },
+    {
+      "id": "fd398cf0-3987-5841-863f-161a30d1e7c2",
+      "name": "Waseem Akhtar",
+      "nameStatus": "known",
+      "lifeStatus": "unknown",
+      "birth": "1970"
+    },
+    {
+      "id": "ee5185b6-bb6e-5928-8b2d-12b67334dedf",
+      "name": "Hafsa Akhtar",
+      "nameStatus": "known",
+      "lifeStatus": "unknown",
+      "birth": "1998"
+    },
+    {
+      "id": "87f66970-0866-597d-bec3-b596fe9e6277",
+      "name": "Farooq Rana",
+      "nameStatus": "known",
+      "lifeStatus": "unknown",
+      "birth": "1972"
+    },
+    {
+      "id": "13e2844a-682c-56b8-8b2e-71a18961846a",
+      "name": "Kinza Rana",
+      "nameStatus": "known",
+      "lifeStatus": "unknown",
+      "birth": "2001"
+    },
+    {
+      "id": "e7cec16a-7b70-5492-8331-0ae40f7883a6",
+      "name": "Areeba Malik",
+      "nameStatus": "known",
+      "lifeStatus": "living",
+      "birth": "2020"
+    }
+  ],
+  "relationships": [
+    {
+      "id": "035d8f36-162b-54b7-847a-8a455e3f6749",
+      "type": "parentage",
+      "from": "bf3cff30-b3a5-504f-9a93-9c223dd6df79",
+      "to": "e3753d78-0aa7-5c44-a341-111d3c007cea"
+    },
+    {
+      "id": "768b9571-0468-53be-8062-d3dc75e5913c",
+      "type": "parentage",
+      "from": "bf3cff30-b3a5-504f-9a93-9c223dd6df79",
+      "to": "4ab17d99-d650-5137-bb8a-7756ad6ce742"
+    },
+    {
+      "id": "9c7465f6-1996-52ea-80bb-2badf88ba749",
+      "type": "parentage",
+      "from": "cfb7ae2f-078b-5b5f-b214-27fd2a829356",
+      "to": "e3753d78-0aa7-5c44-a341-111d3c007cea"
+    },
+    {
+      "id": "50ee04c5-0a0f-556c-8673-8bf8a21277ae",
+      "type": "parentage",
+      "from": "cfb7ae2f-078b-5b5f-b214-27fd2a829356",
+      "to": "4ab17d99-d650-5137-bb8a-7756ad6ce742"
+    },
+    {
+      "id": "c30d051a-c481-5c7f-a540-0b3490040ddc",
+      "type": "parentage",
+      "from": "c04de3e8-6012-56ba-a7ab-56914b903413",
+      "to": "c4ccf0fc-058b-5525-a69a-dbee08f50502"
+    },
+    {
+      "id": "73008710-a836-5ea9-9562-6e34b5c2a17b",
+      "type": "parentage",
+      "from": "c04de3e8-6012-56ba-a7ab-56914b903413",
+      "to": "8dc55c4c-8bcd-5c19-ab43-a46ad2a68fe4"
+    },
+    {
+      "id": "e1957a68-b18e-531d-9735-4e2cbd775b90",
+      "type": "parentage",
+      "from": "8ca06293-e74e-5fe6-b5bc-381a7732e6c0",
+      "to": "c4ccf0fc-058b-5525-a69a-dbee08f50502"
+    },
+    {
+      "id": "0b2cbfc6-233a-5100-84cc-6e4cb03ff31b",
+      "type": "parentage",
+      "from": "8ca06293-e74e-5fe6-b5bc-381a7732e6c0",
+      "to": "8dc55c4c-8bcd-5c19-ab43-a46ad2a68fe4"
+    },
+    {
+      "id": "7017e017-64b7-5dc4-ae54-f90306ae8e6b",
+      "type": "parentage",
+      "from": "c4ccf0fc-058b-5525-a69a-dbee08f50502",
+      "to": "2fbe4885-9396-5eb1-b523-2077f5047a28"
+    },
+    {
+      "id": "41a828fa-d80c-5996-a88d-eccc31484e63",
+      "type": "parentage",
+      "from": "c4ccf0fc-058b-5525-a69a-dbee08f50502",
+      "to": "be99d3e5-61e9-5e0a-9d70-d67465854de3"
+    },
+    {
+      "id": "bb52ec82-5855-570d-9c8e-f07d8820f5e3",
+      "type": "parentage",
+      "from": "0bb09974-f0e6-54c8-8e4d-3fdd2a742fbe",
+      "to": "95a479b3-a4af-5f0d-a43e-d9d811885016"
+    },
+    {
+      "id": "27589285-5bcb-5c3b-9daa-0c2b97d7c156",
+      "type": "parentage",
+      "from": "0bb09974-f0e6-54c8-8e4d-3fdd2a742fbe",
+      "to": "fd398cf0-3987-5841-863f-161a30d1e7c2"
+    },
+    {
+      "id": "324f6ee2-3ef6-565e-b3b1-efe69094b0a1",
+      "type": "parentage",
+      "from": "95a479b3-a4af-5f0d-a43e-d9d811885016",
+      "to": "ee5185b6-bb6e-5928-8b2d-12b67334dedf"
+    },
+    {
+      "id": "b1d9f09c-e3db-5b5c-95d3-d5f68e6d4719",
+      "type": "guardian",
+      "from": "fd398cf0-3987-5841-863f-161a30d1e7c2",
+      "to": "ee5185b6-bb6e-5928-8b2d-12b67334dedf"
+    },
+    {
+      "id": "acdad498-0c26-5010-a280-1de871ba6004",
+      "type": "parentage",
+      "from": "87f66970-0866-597d-bec3-b596fe9e6277",
+      "to": "13e2844a-682c-56b8-8b2e-71a18961846a"
+    },
+    {
+      "id": "b7d76953-54be-508a-bcf0-504d997c52e1",
+      "type": "other",
+      "from": "95a479b3-a4af-5f0d-a43e-d9d811885016",
+      "to": "87f66970-0866-597d-bec3-b596fe9e6277"
+    },
+    {
+      "id": "35893065-9c13-5335-a9b2-3f572353412c",
+      "type": "parentage",
+      "from": "c4ccf0fc-058b-5525-a69a-dbee08f50502",
+      "to": "2fbe4885-9396-5eb1-b523-2077f5047a28"
+    },
+    {
+      "id": "c164e426-7d48-5969-acd8-6ff46264c7fa",
+      "type": "parentage",
+      "from": "c4ccf0fc-058b-5525-a69a-dbee08f50502",
+      "to": "e7cec16a-7b70-5492-8331-0ae40f7883a6"
+    }
+  ],
+  "sources": [],
+  "assertions": [],
+  "identityMappings": [],
+  "importHistory": []
+}
