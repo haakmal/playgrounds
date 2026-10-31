@@ -1,4 +1,4 @@
-# Family Atlas v0.5 — radial descendant experiment
+# Family Atlas v0.6 — ring-routed radial atlas
 
 A local-first, monochrome family-history editor intended for static hosting (including GitHub Pages). No account or server-side family database is required. Actual family archives should **not** be committed to a public repository.
 
@@ -17,9 +17,9 @@ Visit http://localhost:8000/. A local HTTP server is required because the applic
 The previous *Atlas / Network / Radial / Lineage* selection has been replaced by:
 
 1. **Radial atlas (default).** Every disconnected component is a separate concentric descendant formation. Innermost rings represent the most ancestral recorded positions in that component. Subsequent rings represent parent-child depth, not age, birth year or a universal generation number. Partners without separate recorded ancestry share their co-parent's band. If both partners have their own ancestry, their different bands are preserved.
-2. **Family detail.** Select a person, then choose *Family detail* or *Focus here*. The top-to-bottom view shows ancestors and descendants through parentage, plus adjacent partners/siblings. Adjust its ancestor/descendant depth using the contextual bar. The same person and relationship records are used for both layouts.
+2. **Family detail.** Select a person, then choose *Family detail*. The top-to-bottom view shows ancestors and descendants through parentage, plus adjacent partners/siblings. Adjust its ancestor/descendant depth using the contextual bar. The same person and relationship records are used for both layouts.
 
-**Navigation:** drag empty space to pan, use wheel/trackpad to zoom, select a circle to inspect its record, and use **Network** (with someone selected) to fit their connected component or **All** to fit the entire collection. Names are temporarily hidden at far-out overview scale to reduce collisions, and reappear when zooming in. Search can locate any recorded person. **Trace path** finds the shortest recorded connection chain and highlights it; it is not an inferred biological kinship label.
+**Navigation:** drag empty space to pan, use wheel/trackpad to zoom, select a circle to inspect its record, and use **All** to fit the entire collection. Names are temporarily hidden at far-out overview scale to reduce collisions, and reappear when zooming in. Search can locate any recorded person. **Trace path** finds the shortest recorded connection chain and highlights it; it is not an inferred biological kinship label.
 
 **Visual grammar:**
 
@@ -31,7 +31,11 @@ The previous *Atlas / Network / Radial / Lineage* selection has been replaced by
 - Long cross-ring partnerships are quiet until either endpoint is selected or a traced path highlights the link.
 - A dagger (†) on a person means explicitly recorded deceased; a missing death date never means living.
 
-The diagram uses a lightweight radial allocation and two-pass relationship rendering. It is a **prototype**: crossing edges and nonideal group ordering are still possible, especially when branches reconnect, partners have independent recorded ancestry, or multiple family groups share descendants. Junctions, rings and layout positions are generated; nothing is stored in the archive to imply invented kinship.
+The radial renderer routes parentage through straight radial spokes and concentric circular arcs instead of free-curving paths. Family detail retains its previous layout. The diagram uses a lightweight radial allocation and two-pass relationship rendering. It is a **prototype**: crossing edges and nonideal group ordering are still possible, especially when branches reconnect, partners have independent recorded ancestry, or multiple family groups share descendants. Junctions, rings and layout positions are generated; nothing is stored in the archive to imply invented kinship.
+
+## Controls
+
+The top toolbar has Search, Trace path, Import, Export, More and Add person. Family detail is opened from a selected person, with a single return button in the toolbar. The family detail bar controls ancestry and descendant depth and history. The lower right contains zoom in, zoom out and All. The inactive Network button and duplicate Trace / Family detail actions have been removed.
 
 ## Edit people and relationships
 

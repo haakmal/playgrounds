@@ -1,5 +1,5 @@
 import {radialAtlas, lineageDetail, parentageUnits} from './radial-layout.js';
-/* Family Atlas v0.5: radial descendant display, contextual lineage, local-first records. */
+/* Family Atlas v0.6: radial descendant display, contextual lineage, local-first records. */
 const $=s=>document.querySelector(s), svgNS='http://www.w3.org/2000/svg';
 const uid=()=>crypto.randomUUID();
 const blank=()=>({schemaVersion:'0.2',collection:{id:uid(),title:'My family atlas'},people:[],relationships:[],sources:[],assertions:[],identityMappings:[],importHistory:[]});
@@ -35,7 +35,7 @@ const opts=[['parentage_parent','Parent'],['sibling','Sibling'],['parentage_chil
 function quickType(selectedType='sibling'){return `<div class="field"><label>Relationship to selected person</label><div class="quick">${opts.map(([v,n])=>`<button type="button" class="typeBtn ${v===selectedType?'selectedChoice':''}" data-type="${v}">${n}</button>`).join('')}</div></div>`;}
 function bindTypeButtons(root){root.querySelectorAll('.typeBtn').forEach(b=>b.onclick=()=>{root.querySelectorAll('.typeBtn').forEach(c=>c.classList.remove('selectedChoice'));b.classList.add('selectedChoice');});}
 function editPerson(id){const p=person(id);if(!p)return;modal('Edit person',`<div class="field"><label>Name</label><input id="editName" value="${escapeHtml(p.name||'')}"></div><label class="row"><input id="editUnknown" type="checkbox" ${p.nameStatus==='unknown'?'checked':''}> Name unknown</label><div class="field"><label>Born (optional: YYYY, YYYY-MM or YYYY-MM-DD)</label><input id="editBirth" value="${escapeHtml(p.birth||'')}"></div><div class="field"><label>Died (optional)</label><input id="editDeath" value="${escapeHtml(p.death||'')}"></div><div class="field"><label>Life status</label><select id="editLife"><option value="unknown">Unknown</option><option value="living">Living</option><option value="deceased">Deceased</option></select></div><div class="field"><label>Notes</label><textarea id="editNotes">${escapeHtml(p.notes||'')}</textarea></div><div class="row spread"><button id="removePerson">Delete person</button><button id="savePerson" class="primary">Save changes</button></div>`,root=>{root.querySelector('#editLife').value=p.lifeStatus||'unknown';root.querySelector('#savePerson').onclick=()=>{const known=!root.querySelector('#editUnknown').checked,name=root.querySelector('#editName').value.trim();if(known&&!name)return notice('Enter a name or mark it unknown');Object.assign(p,{name:known?name:'',nameStatus:known?'known':'unknown',birth:root.querySelector('#editBirth').value.trim(),death:root.querySelector('#editDeath').value.trim(),lifeStatus:root.querySelector('#editLife').value,notes:root.querySelector('#editNotes').value});closeModal();save();};root.querySelector('#removePerson').onclick=()=>{if(!confirm(`Delete ${label(p)} and all their connections? Export a backup first if needed.`))return;data.people=data.people.filter(x=>x.id!==id);data.relationships=data.relationships.filter(r=>r.from!==id&&r.to!==id);selected=null;closeModal();save();};});}
-function drawSide(){const side=$('#side');if(!selected||!person(selected)){side.classList.add('hidden');return;}const p=person(selected);side.classList.remove('hidden');const rels=data.relationships.filter(r=>related(r,p.id));side.innerHTML=`<div class="row spread"><h2>${escapeHtml(label(p))}</h2><button id="closeSide" aria-label="Close details">×</button></div><div class="row"><span class="pill">${escapeHtml(p.lifeStatus||'unknown')}</span>${p.birth?`<span class="pill">Born ${escapeHtml(p.birth)}</span>`:''}${p.death?`<span class="pill">Died ${escapeHtml(p.death)}</span>`:''}</div>${p.notes?`<p class="small">${escapeHtml(p.notes)}</p>`:''}<div class="horizontal" style="margin-top:13px"><button id="editPerson">Edit details</button><button id="focusHere">Focus here</button></div><div class="sep"></div><h3>Expand family</h3><p class="hint">Choose a relationship, then add someone directly.</p><div class="quick" id="expandQuick">${opts.map(([t,n])=>`<button data-type="${t}">+ ${n}</button>`).join('')}</div><p class="hint">Or connect to people already in this atlas:</p><button id="connectExisting">Connect existing people</button><h3>Relationships (${rels.length})</h3>${rels.length?rels.map(r=>`<div class="relationLine"><div><strong>${escapeHtml(label(person(related(r,p.id))))}</strong><div class="muted tiny">${escapeHtml(describe(r,p.id))}${r.roles?.length?' · '+escapeHtml(r.roles.join(', ')):''}</div></div><div class="row"><button data-rel-edit="${r.id}">Edit</button><button data-remove="${r.id}" title="Remove connection">Remove</button></div></div>`).join(''):'<p class="hint">No connections yet.</p>'}<div class="sep"></div><div class="small muted">${escapeHtml(p.sourceRefs?.length?'Imported sources: '+p.sourceRefs.length:'Local record')}${data.assertions.some(a=>a.personId===p.id)?' · Conflicting imported information retained':''}</div>`;side.querySelector('#closeSide').onclick=()=>{selected=null;drawSide();render();};side.querySelector('#editPerson').onclick=()=>editPerson(p.id);side.querySelector('#focusHere').onclick=()=>enterFocus(p.id);side.querySelectorAll('#expandQuick button').forEach(b=>b.onclick=()=>newPerson(p.id,b.dataset.type));side.querySelector('#connectExisting').onclick=()=>connectExisting(p.id);side.querySelectorAll('[data-rel-edit]').forEach(b=>b.onclick=()=>editRelationship(b.dataset.relEdit));side.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{const r=data.relationships.find(x=>x.id===b.dataset.remove);if(confirm('Remove this relationship? The people will remain in the atlas.')){data.relationships=data.relationships.filter(x=>x!==r);save();}});}
+function drawSide(){const side=$('#side');if(!selected||!person(selected)){side.classList.add('hidden');return;}const p=person(selected);side.classList.remove('hidden');const rels=data.relationships.filter(r=>related(r,p.id));side.innerHTML=`<div class="row spread"><h2>${escapeHtml(label(p))}</h2><button id="closeSide" aria-label="Close details">×</button></div><div class="row"><span class="pill">${escapeHtml(p.lifeStatus||'unknown')}</span>${p.birth?`<span class="pill">Born ${escapeHtml(p.birth)}</span>`:''}${p.death?`<span class="pill">Died ${escapeHtml(p.death)}</span>`:''}</div>${p.notes?`<p class="small">${escapeHtml(p.notes)}</p>`:''}<div class="horizontal" style="margin-top:13px"><button id="editPerson">Edit details</button><button id="focusHere">Family detail</button></div><div class="sep"></div><h3>Expand family</h3><p class="hint">Choose a relationship, then add someone directly.</p><div class="quick" id="expandQuick">${opts.map(([t,n])=>`<button data-type="${t}">+ ${n}</button>`).join('')}</div><p class="hint">Or connect to people already in this atlas:</p><button id="connectExisting">Connect existing people</button><h3>Relationships (${rels.length})</h3>${rels.length?rels.map(r=>`<div class="relationLine"><div><strong>${escapeHtml(label(person(related(r,p.id))))}</strong><div class="muted tiny">${escapeHtml(describe(r,p.id))}${r.roles?.length?' · '+escapeHtml(r.roles.join(', ')):''}</div></div><div class="row"><button data-rel-edit="${r.id}">Edit</button><button data-remove="${r.id}" title="Remove connection">Remove</button></div></div>`).join(''):'<p class="hint">No connections yet.</p>'}<div class="sep"></div><div class="small muted">${escapeHtml(p.sourceRefs?.length?'Imported sources: '+p.sourceRefs.length:'Local record')}${data.assertions.some(a=>a.personId===p.id)?' · Conflicting imported information retained':''}</div>`;side.querySelector('#closeSide').onclick=()=>{selected=null;drawSide();render();};side.querySelector('#editPerson').onclick=()=>editPerson(p.id);side.querySelector('#focusHere').onclick=()=>enterFocus(p.id);side.querySelectorAll('#expandQuick button').forEach(b=>b.onclick=()=>newPerson(p.id,b.dataset.type));side.querySelector('#connectExisting').onclick=()=>connectExisting(p.id);side.querySelectorAll('[data-rel-edit]').forEach(b=>b.onclick=()=>editRelationship(b.dataset.relEdit));side.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{const r=data.relationships.find(x=>x.id===b.dataset.remove);if(confirm('Remove this relationship? The people will remain in the atlas.')){data.relationships=data.relationships.filter(x=>x!==r);save();}});}
 function editRelationship(id){const r=data.relationships.find(x=>x.id===id);if(!r)return;const personA=person(r.from),personB=person(r.to);modal('Edit relationship',`<p><strong>${escapeHtml(label(personA))}</strong> — <strong>${escapeHtml(label(personB))}</strong></p><p class="hint">${escapeHtml(describe(r,r.from))}. Changing this connection does not remove either person.</p>${r.type==='partnership'?`<div class="field"><label>Classification</label><select id="relClass"><option value="partner">Partner</option><option value="married">Married</option></select></div><div class="field"><label>Relationship status</label><select id="relStatus">${['current','separated','divorced','former','ended by death','historical','unknown'].map(s=>`<option value="${s}">${s}</option>`).join('')}</select></div><div class="field"><label>Start year/date (optional)</label><input id="relStart" value="${escapeHtml(r.start||'')}"></div><div class="field"><label>End year/date (optional)</label><input id="relEnd" value="${escapeHtml(r.end||'')}"></div>`:r.type==='parentage'?`<div class="field"><label>Parentage roles (select all applicable)</label>${['biological','adoptive','legal','foster'].map(role=>`<label class="row"><input type="checkbox" data-role="${role}" ${(r.roles||[]).includes(role)?'checked':''}> ${role}</label>`).join('')}</div><div class="field"><label>Parental role (optional)</label><select id="parentRole"><option value="">Unspecified</option><option value="mother">Mother</option><option value="father">Father</option><option value="other">Other</option></select></div>`:'<p class="hint">This connection is reciprocal where appropriate. To change its type, remove it and create the correct connection.</p>'}<div class="row spread"><button id="cancelRel">Cancel</button><button class="primary" id="saveRel">Save relationship</button></div>`,root=>{root.querySelector('#cancelRel').onclick=closeModal;if(r.type==='partnership'){root.querySelector('#relClass').value=r.classification||'partner';root.querySelector('#relStatus').value=r.status||'current';}if(r.type==='parentage')root.querySelector('#parentRole').value=r.parentRole||'';root.querySelector('#saveRel').onclick=()=>{if(r.type==='partnership')Object.assign(r,{classification:root.querySelector('#relClass').value,status:root.querySelector('#relStatus').value,start:root.querySelector('#relStart').value.trim(),end:root.querySelector('#relEnd').value.trim()});if(r.type==='parentage')Object.assign(r,{roles:[...root.querySelectorAll('[data-role]:checked')].map(n=>n.dataset.role),parentRole:root.querySelector('#parentRole').value});closeModal();save();};});}
 function searchScore(query,text){query=query.toLowerCase().trim();text=text.toLowerCase();if(!query)return 0;if(text.includes(query))return 120-query.length+Math.max(0,25-text.indexOf(query));const a=query.split(/\s+/),b=text.split(/\s+/);let score=0;for(const q of a){let best=0;for(const word of b){if(word.startsWith(q))best=Math.max(best,65);else if(editDistance(q,word)<=Math.max(1,Math.floor(q.length*.3)))best=Math.max(best,35);}score+=best;}return score;}
 function editDistance(a,b){if(Math.abs(a.length-b.length)>3)return 99;const prev=Array.from({length:b.length+1},(_,i)=>i);for(let i=1;i<=a.length;i++){let old=prev[0];prev[0]=i;for(let j=1;j<=b.length;j++){const prior=prev[j];prev[j]=Math.min(prev[j]+1,prev[j-1]+1,old+(a[i-1]===b[j-1]?0:1));old=prior;}}return prev[b.length];}
@@ -109,10 +109,7 @@ function components(){
 }
 function svg(tag,attrs={},text){const n=document.createElementNS(svgNS,tag);for(const [k,v] of Object.entries(attrs))n.setAttribute(k,v);if(text!==undefined)n.textContent=text;return n;}
 function updateViewControls(){
-  document.querySelectorAll('[data-view]').forEach(b=>{
-    const active=b.dataset.view===viewMode;
-    b.classList.toggle('activeView',active);b.setAttribute('aria-pressed',String(active));
-  });
+  document.querySelector('#detailBackBtn')?.classList.toggle('hidden',viewMode!=='detail');
 }
 function switchView(mode,reference=null){
   viewMode=mode==='detail'?'detail':'atlas';route=null;
@@ -122,6 +119,26 @@ function switchView(mode,reference=null){
 const polarPoint=(cx,cy,r,a)=>({x:cx+r*Math.cos(a),y:cy+r*Math.sin(a)});
 const midpoint=points=>({x:points.reduce((s,p)=>s+p.x,0)/points.length,y:points.reduce((s,p)=>s+p.y,0)/points.length});
 const pointDist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+// Radial grammar: spokes and concentric arcs; no arbitrary quadratic curves.
+function polarData(p,comp){const x=p.x-comp.cx,y=p.y-comp.cy;return {a:Math.atan2(y,x),r:Math.hypot(x,y)};}
+function arcStep(comp,r,a,b){
+ const delta=Math.atan2(Math.sin(b-a),Math.cos(b-a));
+ if(Math.abs(delta)<.00001)return '';
+ const q=polarPoint(comp.cx,comp.cy,r,b);
+ return ` A${r} ${r} 0 0 ${delta>0?1:0} ${q.x.toFixed(2)} ${q.y.toFixed(2)}`;
+}
+function ringPath(start,end,comp,trackRadius){
+ const s=polarData(start,comp),e=polarData(end,comp),r=Math.max(12,trackRadius);
+ const sp=polarPoint(comp.cx,comp.cy,r,s.a);
+ return `M${start.x.toFixed(2)} ${start.y.toFixed(2)} L${sp.x.toFixed(2)} ${sp.y.toFixed(2)}`+
+   arcStep(comp,r,s.a,e.a)+` L${end.x.toFixed(2)} ${end.y.toFixed(2)}`;
+}
+function meanAngle(pts,comp){
+ const angles=pts.map(p=>polarData(p,comp).a);
+ const sx=angles.reduce((v,a)=>v+Math.cos(a),0),sy=angles.reduce((v,a)=>v+Math.sin(a),0);
+ return Math.abs(sx)+Math.abs(sy)<1e-6?angles[0]:Math.atan2(sy,sx);
+}
+
 function addLink(layer,d,kind,tip,active=false,extra=''){
   const line=svg('path',{d,class:`link ${kind}${active?' routeLink':''} ${extra}`.trim()});
   line.append(svg('title',{},tip));layer.append(line);return line;
@@ -153,7 +170,7 @@ function renderGraph(){
   }
   const relevant=data.relationships.filter(r=>ids.has(r.from)&&ids.has(r.to));
   const parentRels=relevant.filter(r=>r.type==='parentage');
-  const unitMap=new Map(),handledParents=new Set();
+  const handledParents=new Set();
   for(const u of parentageUnits([...ids],relevant)){
     const parents=u.parents.map(id=>coords.get(id)).filter(Boolean);
     const children=u.children.map(id=>coords.get(id)).filter(Boolean);
@@ -161,23 +178,25 @@ function renderGraph(){
     const childMid=midpoint(children),parentMid=midpoint(parents);
     let j;
     if(viewMode==='atlas'){
-      const childP=children[0],cx=layout.components.find(c=>c.ids.includes(u.children[0]))?.cx||0,cy=layout.components.find(c=>c.ids.includes(u.children[0]))?.cy||0;
-      const childVector=midpoint(children.map(p=>({x:p.x-cx,y:p.y-cy})));
-      const a=Math.atan2(childVector.y,childVector.x);
-      const pr=parents.reduce((s,p)=>s+Math.hypot(p.x-cx,p.y-cy),0)/parents.length;
-      const cr=children.reduce((s,p)=>s+Math.hypot(p.x-cx,p.y-cy),0)/children.length;
-      j=polarPoint(cx,cy,Math.max(20,(pr+cr)/2),a);
+      const comp=layout.components.find(c=>c.ids.includes(u.children[0]));
+      const angle=meanAngle(children,comp);
+      const parentR=Math.max(...parents.map(p=>polarData(p,comp).r));
+      const childR=Math.min(...children.map(p=>polarData(p,comp).r));
+      const corridor=childR-parentR;
+      const jr=corridor>40?parentR+corridor*.52:Math.max(18,childR-55);
+      j=polarPoint(comp.cx,comp.cy,jr,angle);
     }else j={x:childMid.x,y:(parentMid.y+childMid.y)/2};
     // Parentage junction is a renderer construct, not a marriage or an additional person.
     for(const id of u.parents){const a=coords.get(id);if(!a)continue;
-      const relation=parentRels.find(r=>r.from===id&&u.children.includes(r.to));
       const highlighted=parentRels.some(r=>r.from===id&&u.children.includes(r.to)&&routeEdges.has(r.id));
-      const path=viewMode==='atlas'?`M${a.x} ${a.y} Q${j.x} ${a.y} ${j.x} ${j.y}`:`M${a.x} ${a.y+20} V${j.y} H${j.x}`;
+      const comp=viewMode==='atlas'?layout.components.find(c=>c.ids.includes(id)):null;
+      const path=comp?ringPath(a,j,comp,polarData(j,comp).r):`M${a.x} ${a.y+20} V${j.y} H${j.x}`;
       addLink(es,path,'parentage',`${label(person(id))}: recorded parentage`,highlighted);
     }
     for(const id of u.children){const b=coords.get(id);if(!b)continue;
       const highlighted=parentRels.some(r=>r.to===id&&u.parents.includes(r.from)&&routeEdges.has(r.id));
-      const path=viewMode==='atlas'?`M${j.x} ${j.y} Q${b.x} ${j.y} ${b.x} ${b.y}`:`M${j.x} ${j.y} H${b.x} V${b.y-20}`;
+      const comp=viewMode==='atlas'?layout.components.find(c=>c.ids.includes(id)):null;
+      const path=comp?ringPath(j,b,comp,polarData(j,comp).r):`M${j.x} ${j.y} H${b.x} V${b.y-20}`;
       addLink(es,path,'parentage',`Recorded child: ${label(person(id))}`,highlighted);
     }
     es.append(svg('circle',{cx:j.x,cy:j.y,r:3,class:'parentJunction'}));
@@ -190,19 +209,20 @@ function renderGraph(){
     if(kind==='parentage'&&handledParents.has(r.id))continue;
     if(kind==='sibling'&&[...parentSets.get(r.from)].some(p=>parentSets.get(r.to).has(p))&&!highlight)continue;
     if(kind==='parentage'){
-      addLink(es,`M${a.x} ${a.y} Q${(a.x+b.x)/2} ${(a.y+b.y)/2} ${b.x} ${b.y}`,kind,'Parentage connection',highlight);continue;
+      const comp=layout.components?.find(c=>c.ids.includes(r.from));
+      addLink(es,comp?ringPath(a,b,comp,(polarData(a,comp).r+polarData(b,comp).r)/2):`M${a.x} ${a.y} L${b.x} ${b.y}`,kind,'Parentage connection',highlight);continue;
     }
     const gap=pointDist(a,b);
     const cross=viewMode==='atlas' && kind==='partnership' && gap>200;
     // Long cross-ring links stay subdued until their endpoint is selected or a route is traced.
     const shown=highlight||selected===r.from||selected===r.to;
     let d;
-    if(kind==='partnership'&&viewMode==='atlas'){
+    if(viewMode==='atlas'){
       const comp=layout.components.find(c=>c.ids.includes(r.from));
       if(comp){
-        const mid=midpoint([a,b]),vx=mid.x-comp.cx,vy=mid.y-comp.cy,dist=Math.hypot(vx,vy)||1;
-        const pull=Math.min(125,gap*.28);
-        d=`M${a.x} ${a.y} Q${mid.x+vx/dist*pull} ${mid.y+vy/dist*pull} ${b.x} ${b.y}`;
+        const x=polarData(a,comp),y=polarData(b,comp);
+        const lane=kind==='partnership'?Math.max(x.r,y.r)+35:Math.max(30,Math.min(x.r,y.r)-26);
+        d=ringPath(a,b,comp,lane);
       }else d=`M${a.x} ${a.y} L${b.x} ${b.y}`;
     }else d=`M${a.x} ${a.y} L${b.x} ${b.y}`;
     addLink(es,d,kind,`${label(person(r.from))} / ${label(person(r.to))}: ${routeDescription(r,r.from,r.to)}`,highlight,cross&&!shown?'crossQuiet':'');
@@ -242,7 +262,6 @@ function renderGraph(){
 function applyView(){$('#world').setAttribute('transform',`translate(${pan.x} ${pan.y}) scale(${zoom})`);$('#stage').classList.toggle('overviewScale',zoom<.43);}
 function fitAll(){const s=$('#stage'),w=s.clientWidth,h=s.clientHeight;if(!coords.size){zoom=1;pan={x:w/2,y:h/2};applyView();return;}zoom=Math.max(.06,Math.min(1.5,Math.min((w-95)/graphBounds.w,(h-110)/graphBounds.h)));pan={x:(w-graphBounds.w*zoom)/2-graphBounds.x*zoom,y:(h-graphBounds.h*zoom)/2-graphBounds.y*zoom};applyView();}
 function fitPerson(id){const p=coords.get(id);if(!p){fitAll();return;}zoom=Math.max(.8,Math.min(1.15,zoom));pan={x:$('#stage').clientWidth*.5-p.x*zoom,y:$('#stage').clientHeight*.45-p.y*zoom};applyView();}
-function fitNetwork(){if(!selected||viewMode==='detail')return fitAll();const group=components().find(c=>c.includes(selected));if(!group)return fitAll();const pts=group.map(id=>coords.get(id)).filter(Boolean),x=Math.min(...pts.map(p=>p.x))-150,y=Math.min(...pts.map(p=>p.y))-105,w=Math.max(...pts.map(p=>p.x))-x+150,h=Math.max(...pts.map(p=>p.y))-y+110;const st=$('#stage');zoom=Math.max(.06,Math.min(1.4,Math.min((st.clientWidth-50)/w,(st.clientHeight-95)/h)));pan={x:(st.clientWidth-w*zoom)/2-x*zoom,y:(st.clientHeight-h*zoom)/2-y*zoom};applyView();}
 function zoomAt(scale,cx,cy){const nz=Math.max(.06,Math.min(3,zoom*scale)),r=nz/zoom;pan={x:cx-(cx-pan.x)*r,y:cy-(cy-pan.y)*r};zoom=nz;applyView();}
 const atlas=$('#atlas');atlas.addEventListener('pointerdown',e=>{if(e.button!==0||e.target.closest('.personNode'))return;drag={x:e.clientX,y:e.clientY,px:pan.x,py:pan.y};preventClick=false;atlas.setPointerCapture(e.pointerId);atlas.classList.add('dragging');});atlas.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>4)preventClick=true;pan={x:drag.px+dx,y:drag.py+dy};applyView();});atlas.addEventListener('pointerup',()=>{drag=null;atlas.classList.remove('dragging');setTimeout(()=>preventClick=false,30);});atlas.addEventListener('wheel',e=>{e.preventDefault();const rect=atlas.getBoundingClientRect();zoomAt(e.deltaY<0?1.13:1/1.13,e.clientX-rect.left,e.clientY-rect.top);},{passive:false});atlas.addEventListener('click',e=>{if(!preventClick&&!e.target.closest('.personNode')){selected=null;drawSide();renderGraph();}});
 function selectPerson(id){selected=id;drawSide();renderGraph();}
@@ -284,13 +303,11 @@ function renderFocusBar(){
     b.querySelector('#routeExit').onclick=()=>{route=null;renderGraph();};
     b.querySelector('#routeDetails').onclick=showRouteSteps;return;
   }
-  b.innerHTML=`<strong>Family detail: ${escapeHtml(label(person(focus)))}</strong><label>Ancestors <select id="upCount">${[0,1,2,3,4,5,6].map(x=>`<option value="${x}" ${x===focusUp?'selected':''}>${x}</option>`).join('')}</select></label><label>Descendants <select id="downCount">${[0,1,2,3,4,5,6].map(x=>`<option value="${x}" ${x===focusDown?'selected':''}>${x}</option>`).join('')}</select></label><button id="focusTrace">Trace path</button><button id="focusBack" ${!focusBack.length?'disabled':''}>Back</button><button id="focusExit">Radial atlas</button>`;
+  b.innerHTML=`<strong>Family detail: ${escapeHtml(label(person(focus)))}</strong><label>Ancestors <select id="upCount">${[0,1,2,3,4,5,6].map(x=>`<option value="${x}" ${x===focusUp?'selected':''}>${x}</option>`).join('')}</select></label><label>Descendants <select id="downCount">${[0,1,2,3,4,5,6].map(x=>`<option value="${x}" ${x===focusDown?'selected':''}>${x}</option>`).join('')}</select></label><button id="focusBack" ${!focusBack.length?'disabled':''}>Back</button>`;
   $('#stage').append(b);
   b.querySelector('#upCount').onchange=e=>{focusUp=+e.target.value;renderGraph();fitAll();};
   b.querySelector('#downCount').onchange=e=>{focusDown=+e.target.value;renderGraph();fitAll();};
-  b.querySelector('#focusTrace').onclick=chooseRoute;
   b.querySelector('#focusBack').onclick=()=>{focus=focusBack.pop();renderGraph();fitAll();};
-  b.querySelector('#focusExit').onclick=()=>{focus=null;focusBack=[];switchView('atlas');};
 }
 function showRouteSteps(){
   if(!route)return;
@@ -301,9 +318,9 @@ function showRouteSteps(){
   }
   modal('Recorded relationship path',`<p class="hint">This is the shortest recorded connection pathway. It may cross partnerships or social relationships and is not a determination of biological kinship.</p>${lines.join('')||'<p>These are the same person.</p>'}<button id="closeSteps">Return to path</button>`,root=>root.querySelector('#closeSteps').onclick=closeModal);
 }
-function render(){drawSide();renderGraph();$('#collectionTitle').textContent=data.collection.title||'Local collection';$('#focusBtn').textContent=viewMode==='detail'?'Radial atlas':'Family detail';}
-document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>switchView(b.dataset.view));
-$('#traceBtn').onclick=chooseRoute;$('#addBtn').onclick=()=>newPerson(selected,'sibling');$('#fitBtn').onclick=fitAll;$('#zoomFit').onclick=fitAll;$('#fitNetwork').onclick=fitNetwork;$('#zoomIn').onclick=()=>zoomAt(1.2,$('#stage').clientWidth/2,$('#stage').clientHeight/2);$('#zoomOut').onclick=()=>zoomAt(1/1.2,$('#stage').clientWidth/2,$('#stage').clientHeight/2);$('#focusBtn').onclick=()=>viewMode==='detail'?switchView('atlas'):enterFocus(selected||data.people[0]?.id);
+function render(){drawSide();renderGraph();$('#collectionTitle').textContent=data.collection.title||'Local collection';}
+$('#detailBackBtn').onclick=()=>{focus=null;focusBack=[];switchView('atlas');};
+$('#traceBtn').onclick=chooseRoute;$('#addBtn').onclick=()=>newPerson(selected,'sibling');$('#zoomFit').onclick=fitAll;$('#zoomIn').onclick=()=>zoomAt(1.2,$('#stage').clientWidth/2,$('#stage').clientHeight/2);$('#zoomOut').onclick=()=>zoomAt(1/1.2,$('#stage').clientWidth/2,$('#stage').clientHeight/2);
 $('#searchBtn').onclick=()=>{modal('Find a person',`<div class="field"><label>Search by name</label><input id="globalSearch" placeholder="Search people…"></div><div id="searchResults"></div>`,root=>{const input=root.querySelector('input'),draw=()=>{const q=input.value.trim();root.querySelector('#searchResults').innerHTML=(q?data.people.map(p=>({p,score:searchScore(q,label(p))})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,25):data.people.map(p=>({p})).slice(0,25)).map(({p})=>`<button class="personItem" data-id="${p.id}"><span><strong>${escapeHtml(label(p))}</strong><small>${p.birth?'Born '+escapeHtml(p.birth):'Select to navigate'}</small></span></button>`).join('');root.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>{const id=b.dataset.id;if(viewMode==='detail'&&!graphSubset().has(id)){focus=id;renderGraph();}
 closeModal();selectPerson(id);fitPerson(id);});};input.oninput=draw;draw();input.focus();});};
 $('#exportBtn').onclick=()=>modal('Export family atlas',`<p>JSON is the complete, portable archive. SVG exports the current graph view.</p><div class="stack"><button id="jsonExport">Download complete JSON archive</button><button id="svgExport">Download current graph as SVG</button></div>`,root=>{root.querySelector('#jsonExport').onclick=()=>{backup();closeModal();};root.querySelector('#svgExport').onclick=()=>{const x=$('#atlas').cloneNode(true);x.setAttribute('xmlns',svgNS);x.setAttribute('viewBox',`${graphBounds.x} ${graphBounds.y} ${graphBounds.w} ${graphBounds.h}`);x.removeAttribute('width');x.removeAttribute('height');x.querySelector('#world').setAttribute('transform','');const style=document.createElementNS(svgNS,'style');style.textContent='.generationRing{fill:none;stroke:#aaa;stroke-opacity:.45;stroke-width:1}.clusterCaption text{fill:#555;font:11px Arial}.clusterCaption .nameplate{fill:#fff;stroke:#bbb}.parentJunction{fill:#fff;stroke:#333;stroke-width:1.2}.link{fill:none;stroke:#888;stroke-width:1.5}.link.parentage{stroke:#333;stroke-width:1.7}.link.sibling{stroke:#aaa;stroke-width:1}.link.crossQuiet{stroke-opacity:.2}.link.partnership{stroke-dasharray:6 4}.link.guardian,.link.other,.link.sibling{stroke-dasharray:3 4}.personNode circle{fill:white;stroke:#222;stroke-width:1.5}.personNode text{fill:#111;font:12px Arial}.personNode .nameplate{fill:white;stroke:#bbb}.personNode .initial{font-weight:bold}.personNode .lifeMarker{fill:#222;stroke:#222}.personNode .lifeMarkText{fill:#fff;font-weight:bold}.edgeStatus rect{fill:white;stroke:#777;stroke-width:.75}.edgeStatus text{fill:#222;font:10px Arial}.link.routeLink{stroke:#111;stroke-width:3.5;stroke-dasharray:none}.componentCircle{fill:#fafafa;stroke:#222;stroke-width:1.5}.componentDot{fill:#555}.componentNode .nameplate{fill:#fff;stroke:#aaa}.componentName{fill:#111;font:bold 13px Arial}.componentCount{fill:#555;font:11px Arial}';x.prepend(style);download(new XMLSerializer().serializeToString(x),'family-atlas.svg','image/svg+xml');closeModal();};});

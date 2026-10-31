@@ -11,20 +11,8 @@
 .routeStep span{font-size:12px;color:#555}
 .focusbar{max-width:calc(100% - 30px)}
 
-/* Version 0.4: minimal monochrome view switch and connected-component markers */
-.viewSwitch{display:flex;border:1px solid #777;flex-shrink:0}
-.viewSwitch button{border:0;border-radius:0;border-right:1px solid #aaa;padding:8px 10px}
-.viewSwitch button:last-child{border-right:0}
-.viewSwitch .activeView{background:#171717;color:#fff}
-.componentNode{cursor:pointer}
-.componentCircle{fill:#fafafa;stroke:#222;stroke-width:1.5}
-.componentDot{fill:#555}
-.componentNode .nameplate{fill:#fff;stroke:#aaa}
-.componentName{fill:#111;font:600 13px Arial,Helvetica,sans-serif}
-.componentCount{fill:#555;font:11px Arial,Helvetica,sans-serif}
-.componentNode:hover .componentCircle{stroke-width:3}
+/* Contextual navigation only. */
 @media print{.focusbar{display:none!important}}
-
 /* v0.5: descendant-ring atlas and contextual lineage detail */
 .generationRing{fill:none;stroke:#aaa;stroke-width:1;stroke-opacity:.45;pointer-events:none}
 .clusterCaption text{fill:#555;font:11px Arial,Helvetica,sans-serif;pointer-events:none}
@@ -50,3 +38,7 @@
 .keyLine.dashed{border-top-style:dashed}
 .keyLine.dotted{border-top-style:dotted}
 @media print{.graphLegend{display:none!important}}
+
+/* v0.6 ring routing */
+.link{stroke-linecap:round;stroke-linejoin:round}
+#detailBackBtn{white-space:nowrap}
