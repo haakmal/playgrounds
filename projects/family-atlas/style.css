@@ -46,3 +46,28 @@
 /* v0.7 compact, neutral life and partnership markers */
 .personNode .lifeMarkText{font-size:9px;fill:#fff;font-weight:700}
 .edgeStatus text{font-weight:700;letter-spacing:.15px}
+
+/* v0.8 UI controls and status notation */
+.dateField,.choiceField{border:1px solid #ddd;padding:10px 12px 12px;margin:14px 0;min-width:0}
+.dateField legend,.choiceField legend{font-size:12px;font-weight:700;padding:0 5px;color:#222}
+.dateGrid{display:grid;grid-template-columns:minmax(100px,1.3fr) minmax(85px,1fr) minmax(75px,1fr);gap:9px}
+.dateGrid .field{margin:0}.dateGrid input,.dateGrid select{min-width:0}
+.choiceGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.radioChoice,.checkLine{display:flex;gap:8px;align-items:center;font-size:13px;color:#222;cursor:pointer}
+.radioChoice{border:1px solid #ccc;padding:9px 10px;min-height:38px}
+.radioChoice:has(input:checked){border-color:#333;background:#f2f2f2}
+.radioChoice input,.checkLine input{width:16px;height:16px;flex:0 0 16px;margin:0;accent-color:#222}
+.legalChoice{margin-top:12px;padding:10px 2px;border-top:1px solid #ddd}
+.fieldWarning{font-size:12px;background:#f8f4e8;border:1px solid #c7b890;padding:9px}
+.personNode .lifeMarker.status-deceased{fill:#222;stroke:#222}
+.edgeStatus.status-divorced rect,.edgeStatus.status-separated rect{fill:#f5d7d7;stroke:#b87575}
+.edgeStatus.status-divorced text,.edgeStatus.status-separated text{fill:#5b2727}
+.edgeStatus.status-former rect,.edgeStatus.status-historical rect,.edgeStatus.status-ended-by-death rect{fill:#fff1ba;stroke:#c4a85e}
+.edgeStatus.status-former text,.edgeStatus.status-historical text,.edgeStatus.status-ended-by-death text{fill:#5d4a17}
+.legendSection{font-weight:700;border-top:1px solid #ddd;padding-top:10px;margin-top:11px}
+.legendMarker{font-weight:700;min-width:38px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;padding:3px 5px;border:1px solid #aaa}
+.marker-deceased{background:#222;color:#fff;border-color:#222}
+.marker-separation{background:#f5d7d7;color:#5b2727;border-color:#b87575}
+.marker-history{background:#fff1ba;color:#5d4a17;border-color:#c4a85e}
+.graphLegend{max-width:240px}
+@media(max-width:420px){.dateGrid{grid-template-columns:1fr 1fr}.dateGrid .field:first-child{grid-column:1/-1}}

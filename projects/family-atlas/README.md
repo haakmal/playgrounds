@@ -76,3 +76,9 @@ The renderer module can be tested separately with Node, and the included JSON fi
 - `DIV`, `SEP`, `FRM`, `HIS`, and `END` indicate divorced, separated, former, historical, and ended-by-death partnerships. Full labels remain in the relationship editor.
 - Circular routes reserve separate tracks where unrelated arcs would otherwise coincide, with 14 SVG-unit radial spacing. Shared parentage junctions remain shared. Complex networks may still have unavoidable spoke intersections.
 - The archival JSON format is unchanged.
+
+## v0.8 UI adjustments
+Person dates now use year, month and day controls while storing the existing partial ISO date format.
+Life status and primary parentage use compact radio controls. Legal parentage remains independently selectable.
+DEC is black, SEP/DIV light red, and FRM/HIS/END pale yellow. The legend is titled Relationship key.
+The Fit view control replaces All. Source JSON remains compatible with v0.7.
