@@ -1,0 +1,595 @@
+{
+  "schemaVersion": "0.2",
+  "collection": {
+    "id": "077754b1-9b0e-5c99-b4b9-6d300fd12b4f",
+    "title": "Layout test: ten children and descendant rings"
+  },
+  "people": [
+    {
+      "id": "f11d358e-5db6-5703-8ad5-4568e8c3f2b0",
+      "name": "Ancestor A",
+      "nameStatus": "known",
+      "lifeStatus": "deceased"
+    },
+    {
+      "id": "b31d0f4e-112c-57bf-b563-2a497bcdd4df",
+      "name": "Ancestor B",
+      "nameStatus": "known",
+      "lifeStatus": "deceased"
+    },
+    {
+      "id": "cdac74d8-de45-5a47-b034-5fe6b73c7ded",
+      "name": "Child 1",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "2a43aaaf-da34-5cce-8487-e8bf68a8409f",
+      "name": "Partner 1",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "b5946406-9df7-54dc-99ad-cf347df1d4e0",
+      "name": "Grandchild 1",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "493e6bd1-45dd-5a27-87e7-f8c37bb31687",
+      "name": "Child 2",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "c5d9dcf2-d7a0-58d5-8392-12acc6d74977",
+      "name": "Partner 2",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "fc0cfb37-60e6-5174-94e5-f8cb8f0d26a4",
+      "name": "Grandchild 2",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "316a2d42-7e4d-5ab9-942d-c6e9888cf1ce",
+      "name": "Child 3",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "2fc32e6e-edeb-565d-923e-c388d045f10d",
+      "name": "Partner 3",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "f9acb401-8815-57b7-a656-7f62966809f9",
+      "name": "Grandchild 3",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "a147a911-2973-51fa-83ae-28487b417e14",
+      "name": "Child 4",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "75dd98aa-d408-5460-85be-e75d9d1a6d21",
+      "name": "Partner 4",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "817fe1fc-0d59-5ca1-aa6e-b649ebd47d9b",
+      "name": "Grandchild 4",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "c3c74a55-cba7-5293-8676-4ceabfbb2332",
+      "name": "Child 5",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "ab22461d-9927-5875-84d1-02cf8ca0f424",
+      "name": "Partner 5",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "3b18f279-f6fe-544e-a25d-e9af32e2a2dc",
+      "name": "Grandchild 5",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "ecd7e14c-c3e9-5cba-93c6-75bebca5b1d7",
+      "name": "Child 6",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "c8c6348b-3d60-501a-94df-c43b66ba870d",
+      "name": "Partner 6",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "beb5bd39-9eed-5803-abb9-9bff93227f6d",
+      "name": "Grandchild 6",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "b8e9831b-8a1b-5fb9-8acc-ed9ac428f79d",
+      "name": "Child 7",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "80b26d6f-86d7-58d7-a9ee-2e869b9c3e9f",
+      "name": "Partner 7",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "05e6053b-9062-598c-b728-e9a8fe0d4dfc",
+      "name": "Grandchild 7",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "11c1d1cc-3298-5eb0-8f0d-1c245fe18fef",
+      "name": "Child 8",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "6ad9d75c-ce38-59ad-ac13-9fa3d2f8adc5",
+      "name": "Partner 8",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "d0eb5467-093e-57dd-b1d7-43d6c0917fdb",
+      "name": "Grandchild 8",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "0c85300e-4f76-5e1c-a77c-1ab6c474ae36",
+      "name": "Child 9",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "e07cecbf-0b9b-5be9-80c4-31f5d84efc34",
+      "name": "Partner 9",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "7f3a29df-edb7-54db-8d9d-30b1282cdde3",
+      "name": "Grandchild 9",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "26886491-c688-516b-9706-c024637374d7",
+      "name": "Child 10",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "3ebc4111-9230-5c4a-a892-868fc88481b8",
+      "name": "Partner 10",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "a3ecfd4a-175e-56bf-8d0e-78b4aefa6d76",
+      "name": "Grandchild 10",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    }
+  ],
+  "relationships": [
+    {
+      "id": "7bd2efba-3c22-55b6-9557-37f8eec87a1b",
+      "type": "partnership",
+      "from": "f11d358e-5db6-5703-8ad5-4568e8c3f2b0",
+      "to": "b31d0f4e-112c-57bf-b563-2a497bcdd4df",
+      "classification": "married",
+      "status": "historical"
+    },
+    {
+      "id": "cfbbbada-a10a-5f2f-8e84-9f2131ab59f2",
+      "type": "parentage",
+      "from": "f11d358e-5db6-5703-8ad5-4568e8c3f2b0",
+      "to": "cdac74d8-de45-5a47-b034-5fe6b73c7ded",
+      "roles": [
+        "biological"
+      ]
+    },
+    {
+      "id": "c0f04683-7620-595e-91be-32d3e2a7e2ef",
+      "type": "parentage",
+      "from": "b31d0f4e-112c-57bf-b563-2a497bcdd4df",
+      "to": "cdac74d8-de45-5a47-b034-5fe6b73c7ded",
+      "roles": [
+        "biological"
+      ]
+    },
+    {
+      "id": "668fce60-1391-570e-9e62-e8f6f0ca9739",
+      "type": "partnership",
+      "from": "cdac74d8-de45-5a47-b034-5fe6b73c7ded",
+      "to": "2a43aaaf-da34-5cce-8487-e8bf68a8409f",
+      "classification": "partner",
+      "status": "current"
+    },
+    {
+      "id": "5aea15eb-73d0-51f7-8404-b9566a299c34",
+      "type": "parentage",
+      "from": "cdac74d8-de45-5a47-b034-5fe6b73c7ded",
+      "to": "b5946406-9df7-54dc-99ad-cf347df1d4e0"
+    },
+    {
+      "id": "8ec6a10b-d6ca-5b00-9de3-8a3aaec0544b",
+      "type": "parentage",
+      "from": "2a43aaaf-da34-5cce-8487-e8bf68a8409f",
+      "to": "b5946406-9df7-54dc-99ad-cf347df1d4e0"
+    },
+    {
+      "id": "a7d21ac4-36f2-5f58-9792-752776bf978d",
+      "type": "parentage",
+      "from": "f11d358e-5db6-5703-8ad5-4568e8c3f2b0",
+      "to": "493e6bd1-45dd-5a27-87e7-f8c37bb31687",
+      "roles": [
+        "biological"
+      ]
+    },
+    {
+      "id": "20b1aefd-ae5f-571f-a089-a8aff1ba5e20",
+      "type": "parentage",
+      "from": "b31d0f4e-112c-57bf-b563-2a497bcdd4df",
+      "to": "493e6bd1-45dd-5a27-87e7-f8c37bb31687",
+      "roles": [
+        "biological"
+      ]
+    },
+    {
+      "id": "b578ee04-fd10-59fa-bce3-a7996d32f230",
+      "type": "partnership",
+      "from": "493e6bd1-45dd-5a27-87e7-f8c37bb31687",
+      "to": "c5d9dcf2-d7a0-58d5-8392-12acc6d74977",
+      "classification": "partner",
+      "status": "current"
+    },
+    {
+      "id": "c397af42-d814-58ae-a611-7e3ed579e10f",
+      "type": "parentage",
+      "from": "493e6bd1-45dd-5a27-87e7-f8c37bb31687",
+      "to": "fc0cfb37-60e6-5174-94e5-f8cb8f0d26a4"
+    },
+    {
+      "id": "b1cf619b-86be-5f92-919d-6739aede3ec8",
+      "type": "parentage",
+      "from": "c5d9dcf2-d7a0-58d5-8392-12acc6d74977",
+      "to": "fc0cfb37-60e6-5174-94e5-f8cb8f0d26a4"
+    },
+    {
+      "id": "4b3a1089-762f-5b3c-b5f0-86b1f077d6af",
+      "type": "parentage",
+      "from": "f11d358e-5db6-5703-8ad5-4568e8c3f2b0",
+      "to": "316a2d42-7e4d-5ab9-942d-c6e9888cf1ce",
+      "roles": [
+        "biological"
+      ]
+    },
+    {
+      "id": "728b5265-85f8-5a1c-985b-3cb16974ffa1",
+      "type": "parentage",
+      "from": "b31d0f4e-112c-57bf-b563-2a497bcdd4df",
+      "to": "316a2d42-7e4d-5ab9-942d-c6e9888cf1ce",
+      "roles": [
+        "biological"
+      ]
+    },
+    {
+      "id": "15496dad-ccd3-548e-a9e2-2517faf25369",
+      "type": "partnership",
+      "from": "316a2d42-7e4d-5ab9-942d-c6e9888cf1ce",
+      "to": "2fc32e6e-edeb-565d-923e-c388d045f10d",
+      "classification": "partner",
+      "status": "current"
+    },
+    {
+      "id": "10c8f550-b6f6-5ef6-8773-70da934a9db7",
+      "type": "parentage",
+      "from": "316a2d42-7e4d-5ab9-942d-c6e9888cf1ce",
+      "to": "f9acb401-8815-57b7-a656-7f62966809f9"
+    },
+    {
+      "id": "ef257f5f-9bb7-5df6-ab39-49b921464758",
+      "type": "parentage",
+      "from": "2fc32e6e-edeb-565d-923e-c388d045f10d",
+      "to": "f9acb401-8815-57b7-a656-7f62966809f9"
+    },
+    {
+      "id": "8f31662e-1862-514a-85da-9e693ff109e8",
+      "type": "parentage",
+      "from": "f11d358e-5db6-5703-8ad5-4568e8c3f2b0",
+      "to": "a147a911-2973-51fa-83ae-28487b417e14",
+      "roles": [
+        "biological"
+      ]
+    },
+    {
+      "id": "913ecfe7-e8c9-56e0-8f1d-61f4da4fb963",
+      "type": "parentage",
+      "from": "b31d0f4e-112c-57bf-b563-2a497bcdd4df",
+      "to": "a147a911-2973-51fa-83ae-28487b417e14",
+      "roles": [
+        "biological"
+      ]
+    },
+    {
+      "id": "43a8023f-166d-5c6f-98d0-7ae98503e525",
+      "type": "partnership",
+      "from": "a147a911-2973-51fa-83ae-28487b417e14",
+      "to": "75dd98aa-d408-5460-85be-e75d9d1a6d21",
+      "classification": "partner",
+      "status": "current"
+    },
+    {
+      "id": "a3e81f67-181f-569e-a6ef-6ed3efcadeb8",
+      "type": "parentage",
+      "from": "a147a911-2973-51fa-83ae-28487b417e14",
+      "to": "817fe1fc-0d59-5ca1-aa6e-b649ebd47d9b"
+    },
+    {
+      "id": "ec68b41d-a619-5776-a736-3f5c91bbc77c",
+      "type": "parentage",
+      "from": "75dd98aa-d408-5460-85be-e75d9d1a6d21",
+      "to": "817fe1fc-0d59-5ca1-aa6e-b649ebd47d9b"
+    },
+    {
+      "id": "131345d8-2356-5da9-8e04-c3a5c1d5b594",
+      "type": "parentage",
+      "from": "f11d358e-5db6-5703-8ad5-4568e8c3f2b0",
+      "to": "c3c74a55-cba7-5293-8676-4ceabfbb2332",
+      "roles": [
+        "biological"
+      ]
+    },
+    {
+      "id": "61652df5-0b3a-5b45-8dc1-43cb6cb9ce6f",
+      "type": "parentage",
+      "from": "b31d0f4e-112c-57bf-b563-2a497bcdd4df",
+      "to": "c3c74a55-cba7-5293-8676-4ceabfbb2332",
+      "roles": [
+        "biological"
+      ]
+    },
+    {
+      "id": "08817f5b-cfa0-59ad-a9bb-a4a8c13e3151",
+      "type": "partnership",
+      "from": "c3c74a55-cba7-5293-8676-4ceabfbb2332",
+      "to": "ab22461d-9927-5875-84d1-02cf8ca0f424",
+      "classification": "partner",
+      "status": "divorced"
+    },
+    {
+      "id": "155a3a5d-7c74-55f4-953e-6b48cc3f83f5",
+      "type": "parentage",
+      "from": "c3c74a55-cba7-5293-8676-4ceabfbb2332",
+      "to": "3b18f279-f6fe-544e-a25d-e9af32e2a2dc"
+    },
+    {
+      "id": "15be11b9-97a4-5a0e-bddc-a2df124cc758",
+      "type": "parentage",
+      "from": "ab22461d-9927-5875-84d1-02cf8ca0f424",
+      "to": "3b18f279-f6fe-544e-a25d-e9af32e2a2dc"
+    },
+    {
+      "id": "055df6c6-8621-5517-b99e-7a7be990285a",
+      "type": "parentage",
+      "from": "f11d358e-5db6-5703-8ad5-4568e8c3f2b0",
+      "to": "ecd7e14c-c3e9-5cba-93c6-75bebca5b1d7",
+      "roles": [
+        "biological"
+      ]
+    },
+    {
+      "id": "fde988f9-fc93-5991-9eca-1daa6c8d6b08",
+      "type": "parentage",
+      "from": "b31d0f4e-112c-57bf-b563-2a497bcdd4df",
+      "to": "ecd7e14c-c3e9-5cba-93c6-75bebca5b1d7",
+      "roles": [
+        "biological"
+      ]
+    },
+    {
+      "id": "d821f92c-60e6-5b48-82b0-91361cc011de",
+      "type": "partnership",
+      "from": "ecd7e14c-c3e9-5cba-93c6-75bebca5b1d7",
+      "to": "c8c6348b-3d60-501a-94df-c43b66ba870d",
+      "classification": "partner",
+      "status": "current"
+    },
+    {
+      "id": "f6bc4107-debd-58f1-9564-eb85a8ee0580",
+      "type": "parentage",
+      "from": "ecd7e14c-c3e9-5cba-93c6-75bebca5b1d7",
+      "to": "beb5bd39-9eed-5803-abb9-9bff93227f6d"
+    },
+    {
+      "id": "b2866dbd-5eb3-5fed-9553-2485806220f2",
+      "type": "parentage",
+      "from": "c8c6348b-3d60-501a-94df-c43b66ba870d",
+      "to": "beb5bd39-9eed-5803-abb9-9bff93227f6d"
+    },
+    {
+      "id": "a485f2fb-075a-5ded-a8c5-d8cb581aad21",
+      "type": "parentage",
+      "from": "f11d358e-5db6-5703-8ad5-4568e8c3f2b0",
+      "to": "b8e9831b-8a1b-5fb9-8acc-ed9ac428f79d",
+      "roles": [
+        "biological"
+      ]
+    },
+    {
+      "id": "31c5bbb7-449c-5712-b5cb-685e4a0c86b3",
+      "type": "parentage",
+      "from": "b31d0f4e-112c-57bf-b563-2a497bcdd4df",
+      "to": "b8e9831b-8a1b-5fb9-8acc-ed9ac428f79d",
+      "roles": [
+        "biological"
+      ]
+    },
+    {
+      "id": "e6d3d89e-495a-5b4a-88f6-274cbf1a4930",
+      "type": "partnership",
+      "from": "b8e9831b-8a1b-5fb9-8acc-ed9ac428f79d",
+      "to": "80b26d6f-86d7-58d7-a9ee-2e869b9c3e9f",
+      "classification": "partner",
+      "status": "current"
+    },
+    {
+      "id": "9633c968-6a54-548c-ab62-91aca41ca2e0",
+      "type": "parentage",
+      "from": "b8e9831b-8a1b-5fb9-8acc-ed9ac428f79d",
+      "to": "05e6053b-9062-598c-b728-e9a8fe0d4dfc"
+    },
+    {
+      "id": "36f1ce91-5907-5d92-8697-f2668bd0a7dd",
+      "type": "parentage",
+      "from": "80b26d6f-86d7-58d7-a9ee-2e869b9c3e9f",
+      "to": "05e6053b-9062-598c-b728-e9a8fe0d4dfc"
+    },
+    {
+      "id": "4651dc5f-ad53-5351-95a6-06572a26267b",
+      "type": "parentage",
+      "from": "f11d358e-5db6-5703-8ad5-4568e8c3f2b0",
+      "to": "11c1d1cc-3298-5eb0-8f0d-1c245fe18fef",
+      "roles": [
+        "biological"
+      ]
+    },
+    {
+      "id": "4b094578-f490-5e15-9e05-0a52d13a2148",
+      "type": "parentage",
+      "from": "b31d0f4e-112c-57bf-b563-2a497bcdd4df",
+      "to": "11c1d1cc-3298-5eb0-8f0d-1c245fe18fef",
+      "roles": [
+        "biological"
+      ]
+    },
+    {
+      "id": "a40bbb15-cb41-55af-9774-71e6bb205015",
+      "type": "partnership",
+      "from": "11c1d1cc-3298-5eb0-8f0d-1c245fe18fef",
+      "to": "6ad9d75c-ce38-59ad-ac13-9fa3d2f8adc5",
+      "classification": "partner",
+      "status": "current"
+    },
+    {
+      "id": "ae77ccea-f52f-5e9b-82f5-bce04b82a30c",
+      "type": "parentage",
+      "from": "11c1d1cc-3298-5eb0-8f0d-1c245fe18fef",
+      "to": "d0eb5467-093e-57dd-b1d7-43d6c0917fdb"
+    },
+    {
+      "id": "3a57348b-a84a-5f77-9be7-ef6c29ef2b5f",
+      "type": "parentage",
+      "from": "6ad9d75c-ce38-59ad-ac13-9fa3d2f8adc5",
+      "to": "d0eb5467-093e-57dd-b1d7-43d6c0917fdb"
+    },
+    {
+      "id": "7fcf4947-d498-544d-96eb-052925dfd6aa",
+      "type": "parentage",
+      "from": "f11d358e-5db6-5703-8ad5-4568e8c3f2b0",
+      "to": "0c85300e-4f76-5e1c-a77c-1ab6c474ae36",
+      "roles": [
+        "biological"
+      ]
+    },
+    {
+      "id": "f1924c7d-b727-5c82-9b78-206aa6e5700e",
+      "type": "parentage",
+      "from": "b31d0f4e-112c-57bf-b563-2a497bcdd4df",
+      "to": "0c85300e-4f76-5e1c-a77c-1ab6c474ae36",
+      "roles": [
+        "biological"
+      ]
+    },
+    {
+      "id": "9cb93569-0c31-59b5-b1ef-b2ebb4fdb8ad",
+      "type": "partnership",
+      "from": "0c85300e-4f76-5e1c-a77c-1ab6c474ae36",
+      "to": "e07cecbf-0b9b-5be9-80c4-31f5d84efc34",
+      "classification": "partner",
+      "status": "current"
+    },
+    {
+      "id": "1d9d07e5-3e38-5545-baf1-481013e8ecca",
+      "type": "parentage",
+      "from": "0c85300e-4f76-5e1c-a77c-1ab6c474ae36",
+      "to": "7f3a29df-edb7-54db-8d9d-30b1282cdde3"
+    },
+    {
+      "id": "63b6e87f-15f6-533f-94f2-e930e6cbfa83",
+      "type": "parentage",
+      "from": "e07cecbf-0b9b-5be9-80c4-31f5d84efc34",
+      "to": "7f3a29df-edb7-54db-8d9d-30b1282cdde3"
+    },
+    {
+      "id": "2ac9ee90-5079-5775-a9ba-fa641e7711d1",
+      "type": "parentage",
+      "from": "f11d358e-5db6-5703-8ad5-4568e8c3f2b0",
+      "to": "26886491-c688-516b-9706-c024637374d7",
+      "roles": [
+        "biological"
+      ]
+    },
+    {
+      "id": "c85dd1f6-f1db-57d0-b5b6-7f057a858141",
+      "type": "parentage",
+      "from": "b31d0f4e-112c-57bf-b563-2a497bcdd4df",
+      "to": "26886491-c688-516b-9706-c024637374d7",
+      "roles": [
+        "biological"
+      ]
+    },
+    {
+      "id": "32da519a-dc7b-5c82-a6b7-8592605136f8",
+      "type": "partnership",
+      "from": "26886491-c688-516b-9706-c024637374d7",
+      "to": "3ebc4111-9230-5c4a-a892-868fc88481b8",
+      "classification": "partner",
+      "status": "current"
+    },
+    {
+      "id": "cac30c4b-d816-5fc3-8cbe-fc2bbbff4e93",
+      "type": "parentage",
+      "from": "26886491-c688-516b-9706-c024637374d7",
+      "to": "a3ecfd4a-175e-56bf-8d0e-78b4aefa6d76"
+    },
+    {
+      "id": "facc14b8-625e-5ae0-a119-a3d002ddb508",
+      "type": "parentage",
+      "from": "3ebc4111-9230-5c4a-a892-868fc88481b8",
+      "to": "a3ecfd4a-175e-56bf-8d0e-78b4aefa6d76"
+    }
+  ],
+  "sources": [],
+  "assertions": [],
+  "identityMappings": [],
+  "importHistory": []
+}

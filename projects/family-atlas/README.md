@@ -1,82 +1,67 @@
-# Family Atlas — Layout and pathway revision v0.3
+# Family Atlas v0.5 — radial descendant experiment
 
-A static, local-first family atlas designed for a personal GitHub Pages project. No accounts, backend, analytics or external services. HTML/CSS/JS only; data stays in browser storage unless you export or share it.
+A local-first, monochrome family-history editor intended for static hosting (including GitHub Pages). No account or server-side family database is required. Actual family archives should **not** be committed to a public repository.
 
-## Running
+## Run
 
-Extract the folder, then serve it over HTTP:
+Open a terminal in the `family-atlas` directory and run:
 
-```bash
-cd family-atlas
+```sh
 python -m http.server 8000
 ```
 
-Open http://localhost:8000. Upload the folder unchanged to a GitHub Pages directory to deploy. The application's own files include fictional example JSON data only; do not commit private family archives to a public repository.
+Visit http://localhost:8000/. A local HTTP server is required because the application uses ES modules and loads the optional samples via `fetch`.
 
-## Main controls
+## The simplified interface
 
-- **Add person** with no person selected: create an independent person (name or unknown only).
-- **Select a node**, then use **+ Parent / + Sibling / + Child / + Partner / + Guardian / + Other** to create a new relative in a single operation.
-- **Connect existing people**: choose a relationship type, tick nearby family members (within two graph connections), or fuzzy-search the whole atlas. Multiple connections can be committed together.
-- **Edit relationship** in the person's side panel to update partnership classification/status/dates or parentage roles. Reciprocal sibling/partner connections use a single stored relationship regardless of which side initiates it.
-- **Drag empty space to pan**, scroll to zoom, or use **+ / − / Fit** bottom right. **Fit all** frames the whole graph; at that scale large graphs may be small. Zoom in to read.
-- **Focus**: select someone and use Focus here, adjust ancestor/descendant depth, select another relative, Focus here again, and Back to retrace. Exit focus returns to the entire collection.
-- **Trace path**: use the top toolbar or the Focus bar to search for two people and reveal their shortest recorded relationship chain. The viewport isolates and highlights the route; View steps describes each edge. This is a connection route, not an inferred cousin/uncle title.
-- **Deceased markers**: a small dagger marker (†) appears on people explicitly marked deceased. A missing death date is not treated as proof of life.
-- **Former relationships**: partnership lines retain their dashed connection; divorced, separated, former and other non-current statuses have small labels on the graph. Edit the connection in the side panel.
-- **More**: load fictional family example, start empty, rename, or back up the current collection.
-- **Import**: load an independent family JSON. Potential same-person records are suggested, but remain separate unless explicitly matched. A downloaded JSON recovery snapshot precedes committing the import.
-- **Export**: complete JSON archive (durable source of truth) or current graph as SVG (visual presentation only).
+The previous *Atlas / Network / Radial / Lineage* selection has been replaced by:
 
-## Test datasets
+1. **Radial atlas (default).** Every disconnected component is a separate concentric descendant formation. Innermost rings represent the most ancestral recorded positions in that component. Subsequent rings represent parent-child depth, not age, birth year or a universal generation number. Partners without separate recorded ancestry share their co-parent's band. If both partners have their own ancestry, their different bands are preserved.
+2. **Family detail.** Select a person, then choose *Family detail* or *Focus here*. The top-to-bottom view shows ancestors and descendants through parentage, plus adjacent partners/siblings. Adjust its ancestor/descendant depth using the contextual bar. The same person and relationship records are used for both layouts.
 
-- `samples/three-children-partners.json` — dedicated regression case: two parents, three children, each with a partner and child; one divorced partnership and one deceased ancestor. Import into an empty collection to examine the layout quickly.
+**Navigation:** drag empty space to pan, use wheel/trackpad to zoom, select a circle to inspect its record, and use **Network** (with someone selected) to fit their connected component or **All** to fit the entire collection. Names are temporarily hidden at far-out overview scale to reduce collisions, and reappear when zooming in. Search can locate any recorded person. **Trace path** finds the shortest recorded connection chain and highlights it; it is not an inferred biological kinship label.
 
-- `samples/extensive-family.json` — 76 people, 91 connections, multiple independent components, many generations, same-parent siblings, former marriages, unmarried co-parents, adoption and guardianship, unknown names.
-- `samples/contribution.json` — 19 people, 17 connections; contains independent records of people already present in the extensive sample (including conflicting birth years) plus new relatives and an independent branch.
-- `samples/contribution-updated.json` — 20 people, 18 connections; retains its collection identity and record IDs, introduces one person, and revises one birth year.
+**Visual grammar:**
 
-### Suggested manual tests
+- Concentric thin circles: depth of descent inside an automatically detected connected network.
+- Strong solid connection: recorded parentage. Multiple recorded parents and children share a small, generated junction (not a marriage node).
+- Fine solid connection: explicitly asserted siblings when the same relationship isn't already explained by recorded shared parentage.
+- Dashed connection: partnership (including former, separated and divorced relationships).
+- Dotted connection: guardianship or unspecified family connection.
+- Long cross-ring partnerships are quiet until either endpoint is selected or a traced path highlights the link.
+- A dagger (†) on a person means explicitly recorded deceased; a missing death date never means living.
 
-1. Start empty. Add Yourself, add Brother A and Brother B from Yourself using **+ Sibling**. Each sibling link should appear only once, and each person's panel should display the reciprocal relationship. Brothers A and B are not automatically asserted to be siblings of one another.
-2. Add a parent to Yourself, then add other children to the parent. Examine the inferred structure. (Explicit sibling assertions remain stored.)
-3. Start an empty collection and import `samples/three-children-partners.json`; verify each child is adjacent to their partner, divorced status is labelled, and the deceased marker appears. Trace a path from one grandchild to another.
-4. Load the extensive fictional sample from More; zoom into its main family and pan to other disconnected components. Focus on a grandchild, then refocus on an ancestor and use Back.
-5. Import contribution.json, manually match a few overlapping people, commit, then import contribution-updated.json. Previously mapped source identities should be recognised, with new people added without repeating mapped records.
-6. Export JSON, start empty, import the archive, and confirm people/relationships remain available.
+The diagram uses a lightweight radial allocation and two-pass relationship rendering. It is a **prototype**: crossing edges and nonideal group ordering are still possible, especially when branches reconnect, partners have independent recorded ancestry, or multiple family groups share descendants. Junctions, rings and layout positions are generated; nothing is stored in the archive to imply invented kinship.
 
-## Data model
+## Edit people and relationships
 
-- `people`: each person has a UUID; unknown names are distinct records, not a shared `Unknown` person.
-- `relationships`: stored once as source->target; sibling/partner/other are undirected for deduplication and interpretation; parentage and guardianship are directional. Parentage roles may overlap.
-- `sources`, `assertions`, `identityMappings`, `importHistory`: provenance, imported conflicts, source-qualified match decisions and import metadata.
-- Relationships never imply marriage from co-parentage, or biological parentage from partnership.
-- An absent date or parent is unrecorded, not evidence of a negative fact.
+Use **+ Add person** to add a first, independent person. With a person selected, use the contextual **Expand family** buttons to add a parent, sibling, child or partner in one flow. **Connect existing people** offers nearby selections and fuzzy name search for distant entries. Sibling and partnership relationships are reciprocal; no duplicate reverse link is created. A connection can be removed without removing either person. Status and date fields are optional and edited separately.
 
-## Important current limitations
+## Local data, imports and backups
 
-- **Import review:** suggested identity matches can be selected, but field conflicts are preserved internally rather than shown in a complete side-by-side field editor. Relationship differences involving the same logical edge are partly consolidated. A full undo/merge reversal feature is not implemented.
-- **Layout:** partners at the same parentage level are packed as adjacent blocks before each generation is ordered, fixing the common three-children/three-spouses case. Multiple co-parents, crossing parentage lines and unusually layered partnerships can still be difficult to render without collisions. No manual node positioning.
-- **Path tracing:** shortest paths traverse the recorded graph, including partnership and other edges; they do not automatically infer a precise kinship term. Unconnected people have no traceable path.
-- **Derived relationships:** explicit sibling relationships and shared-parent connections are visible, but there is not yet a comprehensive inferred-kinship panel (e.g. automatically listing all aunts, uncles and cousins).
-- **History:** partnership status, dates and roles can be edited, with current/non-current status shown in the graph. Multiple relationship events are not separately timestamped as a complete history timeline.
-- **Validation:** prevents creating direct self-links and directed parentage cycles through the editing UI, but imported archives are not fully schema-sanitised. Use files from trusted family contributors, and retain backups.
-- **Browser storage:** localStorage has finite capacity and can be cleared. The program is not an encrypted vault. For long-term preservation, regularly export and separately store JSON copies. The current storage namespace is `family-atlas-v02`, so older prototypes' local data are not silently migrated; export the old data before switching versions if needed.
-- **Mobile:** supports touch dragging and button-based zoom; pinch zoom is not implemented.
+Records autosave in the browser under the same local-storage key as v0.2–v0.4; switching to this version at the **same origin** retains the prior data. Browser storage is not a durable backup. **Export → Download complete JSON archive** regularly. JSON is the authoritative portable family archive; SVG is a rendering snapshot, not a substitute.
 
-Copyright-free sample data is wholly fictional. Contributions are never uploaded to a server by the application.
+**Import** adds a JSON collection and presents suggested possible identity matches for human review; it does not automatically decide that similar names mean the same person. When an identity is manually reconciled, conflicting imported attribute values are retained as assertions rather than silently replacing existing working values. Repeated imports use source-qualified identity mappings. A backup download is triggered before an import is committed.
 
-## Version 0.4: multiple rendering views
+**More → Load extensive fictional sample** replaces the current collection **after a confirmation and backup download**. All samples contain invented names and data and can be committed to the repository. To test an import, load a base sample and then use **Import** to add a different sample.
 
-This is a view-comparison iteration. The same local JSON people, relationships, sources, and identity matches are shared between modes.
+## Sample datasets
 
-- **Atlas**: connected-component overview. Each marker represents one disconnected network, not a named family and not a single nuclear household. Select a marker to explore its members.
-- **Network**: the existing layered graph of the selected connected network. This remains an experimental layout; complex co-parentage can still produce crossing lines.
-- **Radial**: centred on the selected person, with optional 1–3 steps of recorded connections. Rings represent connection distance, *not generations*. Select another person and choose **Centre on selected** to move through the graph.
-- **Lineage**: generational ancestor/descendant focus, plus contextual partners and siblings. Choose **Focus here** from a person's details panel.
+- `samples/extensive-family.json`: 76 invented people, multiple disconnected groups and relationship types.
+- `samples/contribution.json`: 19 invented people, overlaps and conflicting values for import review.
+- `samples/contribution-updated.json`: 20 invented people, follow-up version of the same contribution for repeat import.
+- `samples/three-children-partners.json`: two ancestors, three children, their partners and grandchildren; the key co-parent junction regression.
+- `samples/ten-children-rings.json`: two ancestors with ten children, partners and grandchildren; tests arc allocation.
+- `samples/cross-ring-partnership.json`: partners with different recorded descent depths, connecting previously distant branches, plus an independent person.
 
-### Testing
+## Verification and limitations
 
-Under **More**, load the extensive fictional family, then use Atlas, Network, Radial and Lineage to compare the views. The `samples/three-children-partners.json` file specifically tests two parents, three siblings, their partners, and their children. Import that file into an empty collection to examine the scenario independently. The two contribution samples remain available for testing duplicate review and repeat imports.
+The renderer module can be tested separately with Node, and the included JSON fixtures are validated. Browser interaction testing remains important; the first radial arrangement is intentionally an experiment, not a finished genealogy layout engine. Not every crossing can be avoided, and the **Family detail** view is a focused subset, not a complete replacement for a formal pedigree chart. Some finer source-conflict management and historical audit editing are future work.
 
-This iteration does not claim to completely remove line crossings from the Network view. It is intended to test whether different spatial layouts should be used for overview, local relationships, and lineage before undertaking a deeper renderer rewrite.
+## Files
+
+- `index.html`: interface shell.
+- `style.css`: flat monochrome styling.
+- `app.js`: local editing, persistence, imports, rendering and navigation.
+- `radial-layout.js`: pure layout functions; no family data is modified.
+- `samples/*.json`: fictional regression collections.

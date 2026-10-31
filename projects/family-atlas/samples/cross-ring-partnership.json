@@ -1,0 +1,151 @@
+{
+  "schemaVersion": "0.2",
+  "collection": {
+    "id": "84100cf5-7997-5325-8980-30b6b5ced206",
+    "title": "Layout test: overlapping branches and cross-ring partnership"
+  },
+  "people": [
+    {
+      "id": "dfa19e6e-41ca-51e1-b6c3-8778e43580ea",
+      "name": "Ancestor A",
+      "nameStatus": "known",
+      "lifeStatus": "deceased"
+    },
+    {
+      "id": "289eb2c8-957d-589f-b352-2793f7f8f9e9",
+      "name": "Ancestor B",
+      "nameStatus": "known",
+      "lifeStatus": "deceased"
+    },
+    {
+      "id": "b8d377eb-d410-5256-adda-f555b7a94cfc",
+      "name": "Sibling A",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "4660f79c-2759-57d5-b34b-37f7389a7c79",
+      "name": "Sibling B",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "2cc1ea48-d9e0-521a-8d46-f893065e5541",
+      "name": "Child A",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "7dfc027a-80d7-5828-b2b4-abe4223a4af4",
+      "name": "Grandchild A",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "606a3947-4690-52db-9ce1-d5977584caa5",
+      "name": "Great-grandchild A",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "5a296f03-2496-52c3-bde2-a154c6ce5cab",
+      "name": "Cousin B",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "10fc489c-8ef0-58ac-82c0-a07f6cb90dd4",
+      "name": "Child of cross-ring couple",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    },
+    {
+      "id": "f542777c-46f1-54f8-af6e-4ad842b2a8a2",
+      "name": "Independent person",
+      "nameStatus": "known",
+      "lifeStatus": "unknown"
+    }
+  ],
+  "relationships": [
+    {
+      "id": "624f174d-e21e-52cd-b9a0-1320017a94b8",
+      "type": "partnership",
+      "from": "dfa19e6e-41ca-51e1-b6c3-8778e43580ea",
+      "to": "289eb2c8-957d-589f-b352-2793f7f8f9e9",
+      "classification": "married",
+      "status": "former"
+    },
+    {
+      "id": "67b4ea73-d35c-510f-95d6-f41607085640",
+      "type": "parentage",
+      "from": "dfa19e6e-41ca-51e1-b6c3-8778e43580ea",
+      "to": "b8d377eb-d410-5256-adda-f555b7a94cfc"
+    },
+    {
+      "id": "22e1446a-66a9-52f9-924c-edc14431c1d7",
+      "type": "parentage",
+      "from": "289eb2c8-957d-589f-b352-2793f7f8f9e9",
+      "to": "b8d377eb-d410-5256-adda-f555b7a94cfc"
+    },
+    {
+      "id": "e347eeb1-dcaa-5414-8a1b-cfe6122f16e7",
+      "type": "parentage",
+      "from": "dfa19e6e-41ca-51e1-b6c3-8778e43580ea",
+      "to": "4660f79c-2759-57d5-b34b-37f7389a7c79"
+    },
+    {
+      "id": "54feb551-462b-566c-aac7-51f0a0fa197d",
+      "type": "parentage",
+      "from": "289eb2c8-957d-589f-b352-2793f7f8f9e9",
+      "to": "4660f79c-2759-57d5-b34b-37f7389a7c79"
+    },
+    {
+      "id": "7460884b-bcd5-52e8-8abf-98e766739c27",
+      "type": "parentage",
+      "from": "b8d377eb-d410-5256-adda-f555b7a94cfc",
+      "to": "2cc1ea48-d9e0-521a-8d46-f893065e5541"
+    },
+    {
+      "id": "76c5c5f4-de75-5d15-a425-b38d47223639",
+      "type": "parentage",
+      "from": "2cc1ea48-d9e0-521a-8d46-f893065e5541",
+      "to": "7dfc027a-80d7-5828-b2b4-abe4223a4af4"
+    },
+    {
+      "id": "aaa72b19-0a13-55c0-9464-c5be3fa6fa5b",
+      "type": "parentage",
+      "from": "7dfc027a-80d7-5828-b2b4-abe4223a4af4",
+      "to": "606a3947-4690-52db-9ce1-d5977584caa5"
+    },
+    {
+      "id": "056d166a-2ba8-5822-86e1-76ad824397ed",
+      "type": "parentage",
+      "from": "4660f79c-2759-57d5-b34b-37f7389a7c79",
+      "to": "5a296f03-2496-52c3-bde2-a154c6ce5cab"
+    },
+    {
+      "id": "a4c0327d-12ef-5b41-9393-b3c41d113185",
+      "type": "partnership",
+      "from": "606a3947-4690-52db-9ce1-d5977584caa5",
+      "to": "5a296f03-2496-52c3-bde2-a154c6ce5cab",
+      "classification": "partner",
+      "status": "current"
+    },
+    {
+      "id": "13a0c6b2-62a7-58f6-86c1-7166b943a066",
+      "type": "parentage",
+      "from": "606a3947-4690-52db-9ce1-d5977584caa5",
+      "to": "10fc489c-8ef0-58ac-82c0-a07f6cb90dd4"
+    },
+    {
+      "id": "bb7184ac-90c2-5baf-bc81-0becd5e6b333",
+      "type": "parentage",
+      "from": "5a296f03-2496-52c3-bde2-a154c6ce5cab",
+      "to": "10fc489c-8ef0-58ac-82c0-a07f6cb90dd4"
+    }
+  ],
+  "sources": [],
+  "assertions": [],
+  "identityMappings": [],
+  "importHistory": []
+}

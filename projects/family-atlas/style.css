@@ -24,3 +24,29 @@
 .componentCount{fill:#555;font:11px Arial,Helvetica,sans-serif}
 .componentNode:hover .componentCircle{stroke-width:3}
 @media print{.focusbar{display:none!important}}
+
+/* v0.5: descendant-ring atlas and contextual lineage detail */
+.generationRing{fill:none;stroke:#aaa;stroke-width:1;stroke-opacity:.45;pointer-events:none}
+.clusterCaption text{fill:#555;font:11px Arial,Helvetica,sans-serif;pointer-events:none}
+.clusterCaption .nameplate{fill:#fff;stroke:#bbb;stroke-width:.75}
+.parentJunction{fill:#fff;stroke:#333;stroke-width:1.2;pointer-events:none}
+.link.parentage{stroke:#3b3b3b;stroke-width:1.7;stroke-dasharray:none}
+.link.sibling{stroke:#aaa;stroke-width:1;stroke-dasharray:none}
+.link.partnership{stroke:#555;stroke-width:1.5;stroke-dasharray:6 4}
+.link.guardian,.link.other{stroke:#999;stroke-width:1.3;stroke-dasharray:1 5;stroke-linecap:round}
+.link.crossQuiet{stroke-opacity:.2;stroke-width:1;stroke-dasharray:4 5}
+.link.routeLink{stroke:#111;stroke-width:3.5;stroke-dasharray:none;stroke-opacity:1}
+.personNode .nameplate{fill:white;stroke:#bbb;stroke-width:.8}
+.personNode text{fill:#111}
+@media(max-width:780px){.viewSwitch button{padding:7px 8px}}
+
+.overviewScale .personNode > text:not(.initial),.overviewScale .personNode .nameplate{display:none}
+.graphLegend{position:absolute;top:14px;right:12px;z-index:2;background:#fff;border:1px solid #bbb;padding:8px 10px;font-size:11px;max-width:210px}
+.graphLegend summary{cursor:pointer;font-weight:600}
+.graphLegend div{display:flex;align-items:center;gap:9px;margin-top:8px}
+.graphLegend p{line-height:1.4;color:#666;margin:9px 0 0}
+.keyLine{width:36px;border-top:2px solid #555;display:inline-block;flex-shrink:0}
+.keyLine.fine{border-top-width:1px}
+.keyLine.dashed{border-top-style:dashed}
+.keyLine.dotted{border-top-style:dotted}
+@media print{.graphLegend{display:none!important}}
