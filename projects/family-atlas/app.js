@@ -1,5 +1,5 @@
 import {radialAtlas, lineageDetail, parentageUnits} from './radial-layout.js';
-/* Family Atlas v0.9: radial descendant display, contextual lineage, local-first records. */
+/* Family Atlas v0.12: radial descendant display, contextual lineage, local-first records. */
 const $=s=>document.querySelector(s), svgNS='http://www.w3.org/2000/svg';
 const uid=()=>crypto.randomUUID();
 const blank=()=>({schemaVersion:'0.2',collection:{id:uid(),title:'My family atlas'},people:[],relationships:[],sources:[],assertions:[],identityMappings:[],importHistory:[]});
@@ -7,6 +7,8 @@ const KEY='family-atlas-v02';
 let data,selected=null,focus=null,focusBack=[],focusUp=2,focusDown=2,importCandidate=null,importChoices={};
 let route=null; // Shortest recorded path between two people, not a genealogical inference.
 let viewMode='atlas';
+let showNames=true,relationshipFilter='all';
+let batchMode=false,batchTab='people',batchPeople=new Set(),batchRelations=new Set(),batchGroup=null,batchReference=null,batchUndo=null;
 let zoom=1,pan={x:80,y:80},coords=new Map(),graphBounds={x:0,y:0,w:1,h:1},drag=null,preventClick=false;
 const deep=x=>JSON.parse(JSON.stringify(x));
 const ensure=d=>{const c=blank();if(!d||!Array.isArray(d.people)||!Array.isArray(d.relationships))throw Error('Not a valid Family Atlas collection');return {...c,...d,collection:{...c.collection,...(d.collection||{})},people:d.people.map(p=>({...p,id:p.id||uid()})),relationships:d.relationships.map(r=>({...r,id:r.id||uid()})),sources:d.sources||[],assertions:d.assertions||[],identityMappings:d.identityMappings||[],importHistory:d.importHistory||[]};};
@@ -24,13 +26,27 @@ function describe(r,id){if(r.type==='parentage')return r.from===id?'Child':'Pare
 function addRel(type,a,b,extra={}){if(a===b)return false;const r={id:uid(),type,from:a,to:b,...extra};const prior=data.relationships.find(q=>sameRel(q,r));if(prior){if(type==='parentage'&&extra.roles)prior.roles=[...new Set([...(prior.roles||[]),...extra.roles])];return false;}if(type==='parentage'&&wouldCycle(data.relationships,a,b))return false;data.relationships.push(r);return true;}
 function wouldCycle(rels,parentId,childId){const stack=[childId],seen=new Set();while(stack.length){const id=stack.pop();if(id===parentId)return true;if(seen.has(id))continue;seen.add(id);for(const r of rels)if(r.type==='parentage'&&r.from===id)stack.push(r.to);}return false;}
 function notice(msg){$('#toast').textContent=msg;$('#toast').style.display='block';clearTimeout(notice.timer);notice.timer=setTimeout(()=>$('#toast').style.display='none',3200);}
+// Shared fuzzy search: exact, token, prefix and minor spelling differences.
+export function searchScore(query,candidate){
+ const norm=v=>String(v||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+ const q=norm(query),c=norm(candidate);if(!q||!c)return 0;
+ if(q===c)return 120;
+ if(c.startsWith(q))return 95;
+ if(c.includes(q))return 80;
+ const tokens=q.split(' '),names=c.split(' ');
+ const distance=(a,b)=>{if(Math.abs(a.length-b.length)>2)return 9;let prev=Array.from({length:b.length+1},(_,i)=>i);for(let i=1;i<=a.length;i++){const next=[i];for(let j=1;j<=b.length;j++)next[j]=Math.min(next[j-1]+1,prev[j]+1,prev[j-1]+(a[i-1]===b[j-1]?0:1));prev=next;}return prev[b.length];};
+ let total=0;
+ for(const token of tokens){let best=0;for(const name of names){if(name===token)best=Math.max(best,55);else if(name.startsWith(token))best=Math.max(best,45);else if(name.includes(token))best=Math.max(best,34);else{const d=distance(token,name);if(token.length>=3&&d<=Math.min(2,Math.floor(token.length/3)))best=Math.max(best,Math.max(8,29-d*8));}}if(!best)return 0;total+=best;}
+ return total/tokens.length+(c.includes(q)?15:0);
+}
 function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function modal(title,html,bind){$('#modalTitle').textContent=title;$('#modalBody').innerHTML=html;$('#modal').classList.remove('hidden');bind?.($('#modalBody'));}
 function closeModal(){$('#modal').classList.add('hidden');$('#modalBody').innerHTML='';}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#modal').classList.contains('hidden')){e.preventDefault();closeModal();}});
 $('#modalClose').onclick=closeModal;$('#modal').addEventListener('click',e=>{if(e.target===$('#modal'))closeModal();});
 const download=(obj,name,type='application/json')=>{const blob=new Blob([typeof obj==='string'?obj:JSON.stringify(obj,null,2)],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1200);};
 function backup(){download(data,`family-atlas-${new Date().toISOString().slice(0,10)}.json`);localStorage.setItem(KEY+'-lastbackup',String(Date.now()));}
-function newPerson(anchor=null,relation=null){modal('Add person',`<p class="muted">${anchor?'Expand the family of '+escapeHtml(label(person(anchor))):'Create a new, independent person'}</p>${anchor?quickType(relation):''}<div class="field"><label>Name</label><input id="newName" autofocus placeholder="Enter a name"></div><label class="row"><input id="unknown" type="checkbox"> Name unknown</label><p class="hint">More information can be added later. No dates or life status are required.</p><div class="row spread"><button id="cancel">Cancel</button><button class="primary" id="makePerson">${anchor?'Add to family':'Create person'}</button></div>`,root=>{if(anchor)bindTypeButtons(root);root.querySelector('#unknown').onchange=e=>{root.querySelector('#newName').disabled=e.target.checked;};root.querySelector('#cancel').onclick=closeModal;root.querySelector('#makePerson').onclick=()=>{const unknown=root.querySelector('#unknown').checked,name=root.querySelector('#newName').value.trim(),type=root.querySelector('.typeBtn.selectedChoice')?.dataset.type||relation;if(!unknown&&!name)return notice('Enter a name or select Name unknown');const id=uid();data.people.push({id,name:unknown?'':name,nameStatus:unknown?'unknown':'known',lifeStatus:'unknown'});if(anchor&&type){const [from,to]=type==='parentage_parent'?[id,anchor]:type==='parentage_child'?[anchor,id]:[anchor,id];addRel(type.startsWith('parentage')?'parentage':type,from,to);}selected=id;viewMode='atlas';closeModal();save();fitPerson(id);};root.querySelector('#newName').focus();});}
+function newPerson(anchor=null,relation=null){modal('Add person',`<p class="muted">${anchor?'Expand the family of '+escapeHtml(label(person(anchor))):'Create a new, independent person'}</p>${anchor?quickType(relation):''}<div class="field"><label>Name</label><input id="newName" autofocus placeholder="Enter a name"></div><label class="row"><input id="unknown" type="checkbox"> Name unknown</label><fieldset class="choiceField"><legend>Gender (optional)</legend><div class="choiceGrid">${genderOptions('newGender','')}</div></fieldset><p class="hint">More information can be added later. No dates or life status are required.</p><div class="row spread"><button id="cancel">Cancel</button><button class="primary" id="makePerson">${anchor?'Add to family':'Create person'}</button></div>`,root=>{if(anchor)bindTypeButtons(root);root.querySelector('#unknown').onchange=e=>{root.querySelector('#newName').disabled=e.target.checked;};root.querySelector('#cancel').onclick=closeModal;root.querySelector('#makePerson').onclick=()=>{const unknown=root.querySelector('#unknown').checked,name=root.querySelector('#newName').value.trim(),type=root.querySelector('.typeBtn.selectedChoice')?.dataset.type||relation;if(!unknown&&!name)return notice('Enter a name or select Name unknown');const id=uid();data.people.push({id,name:unknown?'':name,nameStatus:unknown?'unknown':'known',lifeStatus:'unknown',gender:root.querySelector('input[name="newGender"]:checked')?.value||''});if(anchor&&type){const [from,to]=type==='parentage_parent'?[id,anchor]:type==='parentage_child'?[anchor,id]:[anchor,id];addRel(type.startsWith('parentage')?'parentage':type,from,to);}selected=id;viewMode='atlas';closeModal();save();fitPerson(id);};root.querySelector('#newName').focus();});}
 const opts=[['parentage_parent','Parent'],['sibling','Sibling'],['parentage_child','Child'],['partnership','Partner'],['guardian','Guardian'],['other','Other']];
 function quickType(selectedType='sibling'){return `<div class="field"><label>Relationship to selected person</label><div class="quick">${opts.map(([v,n])=>`<button type="button" class="typeBtn ${v===selectedType?'selectedChoice':''}" data-type="${v}">${n}</button>`).join('')}</div></div>`;}
 function bindTypeButtons(root){root.querySelectorAll('.typeBtn').forEach(b=>b.onclick=()=>{root.querySelectorAll('.typeBtn').forEach(c=>c.classList.remove('selectedChoice'));b.classList.add('selectedChoice');});}
@@ -55,12 +71,15 @@ function readDate(root,key){
  if(m&&d&&Number(d)>new Date(Date.UTC(Number(y),Number(m),0)).getUTCDate())throw Error('Invalid day for that month.');
  return y+(m?'-'+m:'')+(d?'-'+d:'');
 }
+// Gender is recorded only when explicitly chosen. It never infers parental role.
+function genderOptions(group,value){return [['','Not specified'],['male','Male'],['female','Female'],['other','Other']].map(([v,t])=>`<label class="radioChoice"><input type="radio" name="${group}" value="${v}" ${value===v?'checked':''}>${t}</label>`).join('');}
 function editPerson(id){
  const p=person(id);if(!p)return;
  modal('Edit person',`<div class="field"><label>Name</label><input id="editName" value="${escapeHtml(p.name||'')}"></div>
  <label class="checkLine"><input id="editUnknown" type="checkbox" ${p.nameStatus==='unknown'?'checked':''}> Name unknown</label>
  ${dateFields('birth','Born',p.birth)}${dateFields('death','Died',p.death)}
  <fieldset class="choiceField"><legend>Life status</legend><div class="choiceGrid">${[['unknown','Unknown'],['living','Living'],['deceased','Deceased']].map(([v,t])=>`<label class="radioChoice"><input type="radio" name="editLife" value="${v}" ${(p.lifeStatus||'unknown')===v?'checked':''}>${t}</label>`).join('')}</div></fieldset>
+ <fieldset class="choiceField"><legend>Gender (optional)</legend><div class="choiceGrid">${genderOptions('editGender',p.gender||'')}</div></fieldset>
  <div class="field"><label>Notes</label><textarea id="editNotes">${escapeHtml(p.notes||'')}</textarea></div>
  <div class="row spread"><button id="removePerson">Delete person</button><button id="savePerson" class="primary">Save changes</button></div>`,root=>{
  const unknown=root.querySelector('#editUnknown'),nameField=root.querySelector('#editName');
@@ -71,13 +90,36 @@ function editPerson(id){
  let birth,death;try{birth=readDate(root,'birth');death=readDate(root,'death');}catch(e){return notice(e.message);}
  const lifeStatus=root.querySelector('input[name="editLife"]:checked').value;
  if(lifeStatus==='living'&&death)return notice('A living person cannot have a recorded death date.');
- Object.assign(p,{name:known?name:'',nameStatus:known?'known':'unknown',birth,death,lifeStatus,notes:root.querySelector('#editNotes').value});
+ Object.assign(p,{name:known?name:'',nameStatus:known?'known':'unknown',birth,death,lifeStatus,gender:root.querySelector('input[name="editGender"]:checked').value,notes:root.querySelector('#editNotes').value});
  closeModal();save();
  };
  root.querySelector('#removePerson').onclick=()=>{if(!confirm(`Delete ${label(p)} and all their connections? Export a backup first if needed.`))return;data.people=data.people.filter(x=>x.id!==id);data.relationships=data.relationships.filter(r=>r.from!==id&&r.to!==id);selected=null;closeModal();save();};
  });
 }
-function drawSide(){const side=$('#side');if(!selected||!person(selected)){side.classList.add('hidden');return;}const p=person(selected);side.classList.remove('hidden');const rels=data.relationships.filter(r=>related(r,p.id));side.innerHTML=`<div class="row spread"><h2>${escapeHtml(label(p))}</h2><button id="closeSide" aria-label="Close details">×</button></div><div class="row"><span class="pill">${escapeHtml(p.lifeStatus||'unknown')}</span>${p.birth?`<span class="pill">Born ${escapeHtml(p.birth)}</span>`:''}${p.death?`<span class="pill">Died ${escapeHtml(p.death)}</span>`:''}</div>${p.notes?`<p class="small">${escapeHtml(p.notes)}</p>`:''}<div class="horizontal" style="margin-top:13px"><button id="editPerson">Edit details</button><button id="focusHere">Family detail</button></div><div class="sep"></div><h3>Expand family</h3><p class="hint">Choose a relationship, then add someone directly.</p><div class="quick" id="expandQuick">${opts.map(([t,n])=>`<button data-type="${t}">+ ${n}</button>`).join('')}</div><p class="hint">Or connect to people already in this atlas:</p><button id="connectExisting">Connect existing people</button><h3>Relationships (${rels.length})</h3>${rels.length?rels.map(r=>`<div class="relationLine"><div><strong>${escapeHtml(label(person(related(r,p.id))))}</strong><div class="muted tiny">${escapeHtml(describe(r,p.id))}${r.roles?.length?' · '+escapeHtml(r.roles.join(', ')):''}</div></div><div class="row"><button data-rel-edit="${r.id}">Edit</button><button data-remove="${r.id}" title="Remove connection">Remove</button></div></div>`).join(''):'<p class="hint">No connections yet.</p>'}<div class="sep"></div><div class="small muted">${escapeHtml(p.sourceRefs?.length?'Imported sources: '+p.sourceRefs.length:'Local record')}${data.assertions.some(a=>a.personId===p.id)?' · Conflicting imported information retained':''}</div>`;side.querySelector('#closeSide').onclick=()=>{selected=null;drawSide();render();};side.querySelector('#editPerson').onclick=()=>editPerson(p.id);side.querySelector('#focusHere').onclick=()=>enterFocus(p.id);side.querySelectorAll('#expandQuick button').forEach(b=>b.onclick=()=>newPerson(p.id,b.dataset.type));side.querySelector('#connectExisting').onclick=()=>connectExisting(p.id);side.querySelectorAll('[data-rel-edit]').forEach(b=>b.onclick=()=>editRelationship(b.dataset.relEdit));side.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{const r=data.relationships.find(x=>x.id===b.dataset.remove);if(confirm('Remove this relationship? The people will remain in the atlas.')){data.relationships=data.relationships.filter(x=>x!==r);save();}});}
+function relationCategory(r,id){if(r.type==='parentage')return r.from===id?'children':'parents';if(relKind(r)==='partnership')return 'partners';if(r.type==='sibling')return 'siblings';return 'other';}
+function drawSide(){
+ if(batchMode){drawBatchSide();return;}
+ const side=$('#side');if(!selected||!person(selected)){side.classList.add('hidden');return;}
+ const p=person(selected),rels=data.relationships.filter(r=>related(r,p.id)),cats=[['all','All'],['parents','Parents'],['children','Children'],['partners','Partners'],['siblings','Siblings'],['other','Other']];
+ const count=c=>c==='all'?rels.length:rels.filter(r=>relationCategory(r,p.id)===c).length;
+ side.classList.remove('hidden');
+ const life=p.lifeStatus==='deceased'?'<span class="personTag marker-deceased">DEC</span>':p.lifeStatus==='living'?'<span class="personTag">Living</span>':'';
+ side.innerHTML=`<div class="row spread"><h2>${escapeHtml(label(p))}</h2><button id="closeSide" aria-label="Close details">×</button></div>
+ <div class="personTagRow">${life}${p.birth?`<span class="personTag">Born ${escapeHtml(p.birth)}</span>`:''}${p.death?`<span class="personTag">Died ${escapeHtml(p.death)}</span>`:''}${p.gender?`<span class="personTag">${escapeHtml(p.gender.charAt(0).toUpperCase()+p.gender.slice(1))}</span>`:''}</div>
+ ${p.notes?`<p class="small">${escapeHtml(p.notes)}</p>`:''}<div class="horizontal" style="margin-top:13px"><button id="editPerson">Edit details</button><button id="focusHere">Family detail</button></div>
+ <div class="sep"></div><h3>Expand family</h3><p class="hint">Choose a relationship, then add someone directly.</p><div class="quick" id="expandQuick">${opts.map(([t,n])=>`<button data-type="${t}">+ ${n}</button>`).join('')}</div>
+ <p class="hint">Or connect to people already in this atlas:</p><button id="connectExisting">Connect existing people</button>
+ <div class="row spread relationshipHeading"><h3>Relationships (${rels.length})</h3><label class="relationFilterLabel">Show <select id="relationFilter">${cats.map(([c,t])=>`<option value="${c}" ${relationshipFilter===c?'selected':''}>${t} (${count(c)})</option>`).join('')}</select></label></div>
+ <div id="relationList">${rels.map(r=>`<div class="relationLine" data-group="${relationCategory(r,p.id)}"><div class="relationDescription"><strong>${escapeHtml(label(person(related(r,p.id))))}</strong><div class="muted tiny">${escapeHtml(describe(r,p.id))}${r.roles?.length?' · '+escapeHtml(r.roles.join(', ')):''}</div></div><div class="row"><button data-rel-edit="${r.id}">Edit</button><button data-remove="${r.id}" title="Remove connection">Remove</button></div></div>`).join('')}</div><p class="hint" id="relationEmpty" hidden>No relationships in this category.</p>
+ <div class="sep"></div><div class="small muted">${escapeHtml(p.sourceRefs?.length?'Imported sources: '+p.sourceRefs.length:'Local record')}${data.assertions.some(a=>a.personId===p.id)?' · Conflicting imported information retained':''}</div>`;
+ function applyFilter(){let n=0;side.querySelectorAll('.relationLine').forEach(row=>{const visible=relationshipFilter==='all'||row.dataset.group===relationshipFilter;row.hidden=!visible;if(visible)n++;});side.querySelector('#relationEmpty').hidden=n!==0;}
+ side.querySelector('#relationFilter').onchange=e=>{relationshipFilter=e.target.value;applyFilter();};applyFilter();
+ side.querySelector('#closeSide').onclick=()=>{selected=null;drawSide();renderGraph();};side.querySelector('#editPerson').onclick=()=>editPerson(p.id);side.querySelector('#focusHere').onclick=()=>enterFocus(p.id);
+ side.querySelectorAll('#expandQuick button').forEach(b=>b.onclick=()=>newPerson(p.id,b.dataset.type));
+ side.querySelector('#connectExisting').onclick=()=>connectExisting(p.id);
+ side.querySelectorAll('[data-rel-edit]').forEach(b=>b.onclick=()=>editRelationship(b.dataset.relEdit));
+ side.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{const r=data.relationships.find(x=>x.id===b.dataset.remove);if(confirm('Remove this relationship? The people will remain in the atlas.')){data.relationships=data.relationships.filter(x=>x!==r);save();}});
+}
 
 function editRelationship(id){
  const r=data.relationships.find(x=>x.id===id);if(!r)return;
@@ -102,9 +144,17 @@ function editRelationship(id){
  };
  });
 }
-function connectExisting(id){const state={type:'sibling',choices:new Set(),search:''};const vicinity=near(id);modal('Connect existing people',`<div class="muted small">From <strong>${escapeHtml(label(person(id)))}</strong></div>${quickType('sibling')}<div class="field"><label>People nearby · select one or more</label><div id="nearList"></div></div><div class="field"><label>Find someone elsewhere in the atlas</label><input id="connectSearch" placeholder="Search names (tolerates spelling variations)"></div><div id="farList"></div><p class="hint" id="connectCount">No people selected</p><div class="row spread"><button id="cancel">Cancel</button><button id="commitConnect" class="primary">Connect selected</button></div>`,root=>{bindTypeButtons(root);root.querySelectorAll('.typeBtn').forEach(b=>b.onclick=()=>{root.querySelectorAll('.typeBtn').forEach(x=>x.classList.remove('selectedChoice'));b.classList.add('selectedChoice');state.type=b.dataset.type;drawLists();});root.querySelector('#cancel').onclick=closeModal;root.querySelector('#connectSearch').oninput=e=>{state.search=e.target.value;drawLists();};function item(p,dist){const v=state.type.startsWith('parentage')?'parentage':state.type;const [from,to]=state.type==='parentage_parent'?[p.id,id]:[id,p.id];const exists=data.relationships.some(r=>sameRel(r,{type:v,from,to}));return `<button class="personItem ${state.choices.has(p.id)?'active':''}" data-person="${p.id}" ${exists?'disabled':''}><input type="checkbox" tabindex="-1" ${state.choices.has(p.id)?'checked':''} ${exists?'disabled':''}><span><strong>${escapeHtml(label(p))}</strong><small>${exists?'Already connected':dist!==undefined?`Within ${dist} connection${dist===1?'':'s'}`:'Elsewhere'}${p.birth?' · Born '+escapeHtml(p.birth):''}</small></span></button>`;}
-function drawLists(){const all=data.people.filter(p=>p.id!==id);const nearby=all.filter(p=>vicinity.has(p.id)&&vicinity.get(p.id)<=2).sort((a,b)=>vicinity.get(a.id)-vicinity.get(b.id)||label(a).localeCompare(label(b))).slice(0,16);root.querySelector('#nearList').innerHTML=nearby.length?nearby.map(p=>item(p,vicinity.get(p.id))).join(''):'<div class="hint">No nearby people yet. Search the collection below.</div>';const distant=state.search.trim()?all.map(p=>({p,score:searchScore(state.search,label(p))})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,20).map(x=>x.p):[];root.querySelector('#farList').innerHTML=distant.map(p=>item(p,vicinity.get(p.id))).join('')||(state.search?'<div class="noResults">No matches. Try another spelling.</div>':'');root.querySelector('#connectCount').textContent=state.choices.size+' selected';root.querySelectorAll('[data-person]').forEach(b=>b.onclick=()=>{const pid=b.dataset.person;state.choices.has(pid)?state.choices.delete(pid):state.choices.add(pid);drawLists();});}
-root.querySelector('#commitConnect').onclick=()=>{if(!state.choices.size)return notice('Select at least one person');const result=[];for(const pid of state.choices){const type=state.type.startsWith('parentage')?'parentage':state.type;const [a,b]=state.type==='parentage_parent'?[pid,id]:[id,pid];result.push({pid,success:addRel(type,a,b)});}if(result.some(r=>!r.success))notice('Some connections already existed or would create a parentage loop');closeModal();save();};drawLists();});}
+function connectExisting(id){const state={type:'sibling',choices:new Set(),search:''};const vicinity=near(id);modal('Connect existing people',`<div class="muted small">From <strong>${escapeHtml(label(person(id)))}</strong></div><div class="field"><label for="connectSearch">Find someone in the atlas</label><input id="connectSearch" placeholder="Search names (tolerates spelling variations)" autocomplete="off"></div>${quickType('sibling')}<div class="field"><label id="nearbyLabel">Nearby people</label><div id="farList" class="connectResults"></div><div id="nearList" hidden></div></div><p class="hint" id="connectCount">No people selected</p><div class="row spread"><button id="cancel">Cancel</button><button id="commitConnect" class="primary">Connect selected</button></div>`,root=>{bindTypeButtons(root);root.querySelectorAll('.typeBtn').forEach(b=>b.onclick=()=>{root.querySelectorAll('.typeBtn').forEach(x=>x.classList.remove('selectedChoice'));b.classList.add('selectedChoice');state.type=b.dataset.type;drawLists();});root.querySelector('#cancel').onclick=closeModal;root.querySelector('#connectSearch').oninput=e=>{state.search=e.target.value;drawLists();};function item(p,dist){const v=state.type.startsWith('parentage')?'parentage':state.type;const [from,to]=state.type==='parentage_parent'?[p.id,id]:[id,p.id];const exists=data.relationships.some(r=>sameRel(r,{type:v,from,to}));return `<button class="personItem ${state.choices.has(p.id)?'active':''}" data-person="${p.id}" ${exists?'disabled':''}><input type="checkbox" tabindex="-1" ${state.choices.has(p.id)?'checked':''} ${exists?'disabled':''}><span><strong>${escapeHtml(label(p))}</strong><small>${exists?'Already connected':dist!==undefined?`Within ${dist} connection${dist===1?'':'s'}`:'Elsewhere'}${p.birth?' · Born '+escapeHtml(p.birth):''}</small></span></button>`;}
+function drawLists(){
+ const all=data.people.filter(p=>p.id!==id),q=state.search.trim();
+ const filtered=q?all.map(p=>({p,score:searchScore(q,label(p))})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score||label(a.p).localeCompare(label(b.p))).slice(0,30).map(x=>x.p):all.filter(p=>vicinity.has(p.id)&&vicinity.get(p.id)<=2).sort((a,b)=>vicinity.get(a.id)-vicinity.get(b.id)||label(a).localeCompare(label(b))).slice(0,24);
+ root.querySelector('#farList').innerHTML=filtered.length?filtered.map(p=>item(p,vicinity.get(p.id))).join(''):`<div class="noResults">${q?'No matching people. Try a different spelling.':'No nearby people. Search the full atlas above.'}</div>`;
+ root.querySelector('#nearList').innerHTML='';
+ root.querySelector('#nearbyLabel').textContent=q?`Search results (${filtered.length})`:`Nearby people (${filtered.length})`;
+ root.querySelector('#connectCount').textContent=state.choices.size+' selected';
+ root.querySelectorAll('[data-person]').forEach(b=>b.onclick=()=>{const pid=b.dataset.person;state.choices.has(pid)?state.choices.delete(pid):state.choices.add(pid);drawLists();});
+}
+root.querySelector('#commitConnect').onclick=()=>{if(!state.choices.size)return notice('Select at least one person');const result=[];for(const pid of state.choices){const type=state.type.startsWith('parentage')?'parentage':state.type;const [a,b]=state.type==='parentage_parent'?[pid,id]:[id,pid];result.push({pid,success:addRel(type,a,b)});}if(result.some(r=>!r.success))notice('Some connections already existed or would create a parentage loop');closeModal();save();};drawLists();root.querySelector('#connectSearch').focus();});}
 // A relationship path is an undirected traversal of *recorded* connections.
 // Keep directional semantics in the displayed step descriptions.
 function shortestPath(start,goal){
@@ -231,8 +281,15 @@ function meanAngle(pts,comp){
 }
 
 function addLink(layer,d,kind,tip,active=false,extra=''){
-  const line=svg('path',{d,class:`link ${kind}${active?' routeLink':''} ${extra}`.trim()});
-  line.append(svg('title',{},tip));layer.append(line);return line;
+ const g=svg('g',{class:`edgeGroup ${kind}${active?' routeLink':''} ${extra}`.trim()});
+ const line=svg('path',{d,class:`link ${kind}${active?' routeLink':''} ${extra}`.trim()});
+ line.append(svg('title',{},tip));g.append(line);layer.append(g);return line;
+}
+// Plain strokes: the previous crossing-bridge experiment has been withdrawn.
+// The independent routing algorithm is left intact for a future dedicated trial.
+function orderConnections(edges){
+ const rank=g=>g.classList.contains('parentage')?3:g.classList.contains('partnership')?2:1;
+ [...edges.querySelectorAll(':scope > .edgeGroup')].sort((a,b)=>rank(a)-rank(b)).forEach(g=>edges.append(g));
 }
 function renderGraph(){
   updateViewControls();
@@ -246,7 +303,7 @@ function renderGraph(){
     coords=layout.positions;
     ids=new Set(coords.keys());
   }
-  const es=$('#edges'),ns=$('#nodes');es.replaceChildren();ns.replaceChildren();
+  const es=$('#edges'),js=$('#junctions'),ns=$('#nodes'),annotations=$('#annotations');es.replaceChildren();js.replaceChildren();ns.replaceChildren();annotations.replaceChildren();
   const routeEdges=new Set(route?.edges||[]);
   if(viewMode==='atlas')for(const component of layout.components){
     const {cx,cy,rings,ids:members}=component;
@@ -326,7 +383,9 @@ function renderGraph(){
         addLink(es,comp?ringPath(j,b,comp,unitLane):`M${j.x} ${j.y} H${b.x} V${b.y-20}`,'parentage',`Recorded child: ${label(person(id))}`,highlighted);
       }
     }
-    es.append(svg('circle',{cx:j.x,cy:j.y,r:3,class:'parentJunction'}));
+    const junction=svg('circle',{cx:j.x,cy:j.y,r:batchMode?7:3,class:'parentJunction'+(batchMode?' batchJunction':'')+(batchGroup&&sameGroup(batchGroup,u)?' batchChosen':'')});
+    if(batchMode){junction.setAttribute('role','button');junction.setAttribute('tabindex','0');junction.setAttribute('aria-label','Select parentage group');const choose=event=>{event.stopPropagation();selectBatchGroup(u);};junction.addEventListener('click',choose);junction.addEventListener('keydown',event=>{if(event.key==='Enter')choose(event);});}
+    js.append(junction);
     for(const r of parentRels)if(u.parents.includes(r.from)&&u.children.includes(r.to))handledParents.add(r.id);
   }
   // Sibling assertions are preserved in JSON but suppressed when two people share recorded parentage.
@@ -353,26 +412,34 @@ function renderGraph(){
         d=ringPath(a,b,comp,lane);
       }else d=`M${a.x} ${a.y} L${b.x} ${b.y}`;
     }else d=`M${a.x} ${a.y} L${b.x} ${b.y}`;
-    addLink(es,d,kind,`${label(person(r.from))} / ${label(person(r.to))}: ${routeDescription(r,r.from,r.to)}`,highlight,cross&&!shown?'crossQuiet':'');
+    addLink(es,d,kind,`${label(person(r.from))} / ${label(person(r.to))}: ${routeDescription(r,r.from,r.to)}`,highlight,[cross&&!shown?'crossQuiet':'',kind==='partnership'?'status-'+String(r.status||'current').toLowerCase().replace(/[^a-z]+/g,'-'):''].filter(Boolean).join(' '));
+    if(batchMode && kind==='partnership'){const edge=es.lastElementChild;edge.classList.add('batchEdge');if(batchRelations.has(r.id))edge.classList.add('batchChosen');edge.addEventListener('click',event=>{event.stopPropagation();selectBatchRelation(r.id);});}
     if(kind==='partnership'&&r.status&&r.status!=='current'&&r.status!=='unknown'&&(!cross||shown)){
-      const code=statusCode(r.status);
-      const x=(a.x+b.x)/2,y=(a.y+b.y)/2-14,w=Math.max(33,code.length*7+12);
-      const g=svg('g',{class:'edgeStatus status-'+String(r.status).toLowerCase().replace(/[^a-z]+/g,'-')});
+      const code=statusCode(r.status),w=Math.max(33,code.length*7+12),path=es.lastElementChild.querySelector('.link');
+      const length=path.getTotalLength(),points=[.5,.38,.62,.27,.73,.15,.85].map(t=>path.getPointAtLength(length*t));
+      const clearance=q=>Math.min(...[...coords.values()].map(p=>{
+        const dx=Math.max(0,Math.abs(q.x-p.x)-Math.max(36,w/2+5)),dy=Math.max(0,Math.abs(q.y-p.y-12)-37);
+        return Math.hypot(dx,dy);
+      }));
+      points.sort((a,b)=>clearance(b)-clearance(a));
+      const {x,y}=points[0],g=svg('g',{class:'edgeStatus status-'+String(r.status).toLowerCase().replace(/[^a-z]+/g,'-')});
       g.append(svg('rect',{x:x-w/2,y:y-10,width:w,height:20,rx:2}));
       g.append(svg('text',{x,y:y+3,'text-anchor':'middle'},code));
-      g.append(svg('title',{},`Partnership status: ${r.status}`));es.append(g);
+      g.append(svg('title',{},`Partnership status: ${r.status}`));annotations.append(g);
     }
   }
+  // Plain connection strokes; actual parentage junctions are drawn in the upper SVG layer.
+  orderConnections(es);
   for(const [id,pos] of coords){
     const p=person(id),name=label(p),deceased=p.lifeStatus==='deceased';
-    const g=svg('g',{class:'personNode'+(selected===id?' selected':''),transform:`translate(${pos.x} ${pos.y})`,tabindex:'0',role:'button','aria-label':`${name}${deceased?', deceased':''}`});
+    const g=svg('g',{class:'personNode'+(batchMode&&batchPeople.has(id)?' batchChosen':'')+(selected===id?' selected':'')+(viewMode==='detail'&&focus===id?' focused':''),transform:`translate(${pos.x} ${pos.y})`,'data-person-id':id,tabindex:'0',role:'button','aria-label':`${name}${deceased?', deceased':''}`});
     const display=name.length>27?name.slice(0,25)+'…':name;
     const plateWidth=Math.max(68,Math.min(226,display.length*7.4+25));
     g.append(svg('circle',{r:19,cx:0,cy:0}));
     g.append(svg('text',{x:0,y:4,'text-anchor':'middle',class:'initial'},p.nameStatus==='unknown'?'?':name.charAt(0).toUpperCase()));
     if(deceased){g.append(svg('rect',{x:11,y:-27,width:29,height:17,rx:2,class:'lifeMarker status-deceased'}));g.append(svg('text',{x:25.5,y:-15,'text-anchor':'middle',class:'lifeMarkText'},'DEC'));}
-    g.append(svg('rect',{x:-plateWidth/2,y:24,width:plateWidth,height:23,rx:2,class:'nameplate'}));
-    g.append(svg('text',{x:0,y:40,'text-anchor':'middle'},display));
+    g.append(svg('rect',{x:-plateWidth/2,y:24,width:plateWidth,height:23,rx:2,class:'nameplate personName'}));
+    g.append(svg('text',{x:0,y:40,'text-anchor':'middle',class:'personName'},display));
     g.append(svg('title',{},`${name}${deceased?' — Deceased':''}`));
     g.addEventListener('click',event=>{event.stopPropagation();if(!preventClick)selectPerson(id);});
     g.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();selectPerson(id);}});
@@ -385,15 +452,17 @@ function renderGraph(){
   const maxY=Math.max(...[...positions.map(p=>p.y+85),...clusters.map(c=>c.cy+c.radius+35),...(positions.length?[]:[100])]);
   graphBounds={x:minX,y:minY,w:maxX-minX,h:maxY-minY};
   applyView();
-  $('#status').textContent=`${ids.size} people · ${clusters.length||1} network${clusters.length===1?'':'s'} · Drag to pan · Scroll to zoom · DEC deceased`;
+  $('#status').textContent=`${batchMode?'BATCH SELECT · ':''}${ids.size} people · ${clusters.length||1} network${clusters.length===1?'':'s'} · Drag to pan · Scroll to zoom · DEC deceased`;
   renderFocusBar();
 }
-function applyView(){$('#world').setAttribute('transform',`translate(${pan.x} ${pan.y}) scale(${zoom})`);$('#stage').classList.toggle('overviewScale',zoom<.43);}
+function applyView(){$('#stage').classList.toggle('namesHidden',!showNames);$('#toggleNames').textContent=showNames?'Hide names':'Show names';$('#toggleNames').setAttribute('aria-pressed',String(!showNames));$('#world').setAttribute('transform',`translate(${pan.x} ${pan.y}) scale(${zoom})`);$('#stage').classList.toggle('overviewScale',zoom<.43);}
 function fitAll(){const s=$('#stage'),w=s.clientWidth,h=s.clientHeight;if(!coords.size){zoom=1;pan={x:w/2,y:h/2};applyView();return;}zoom=Math.max(.06,Math.min(1.5,Math.min((w-95)/graphBounds.w,(h-110)/graphBounds.h)));pan={x:(w-graphBounds.w*zoom)/2-graphBounds.x*zoom,y:(h-graphBounds.h*zoom)/2-graphBounds.y*zoom};applyView();}
+function animateToPerson(id){const node=[...$('#nodes').querySelectorAll('.personNode')].find(n=>n.dataset.personId===id);node?.classList.add('navArrival');const world=$('#world');if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches)world.classList.add('viewportNavigating');fitPerson(id);setTimeout(()=>{world.classList.remove('viewportNavigating');node?.classList.remove('navArrival');},450);}
+function moveBack(){if(!focusBack.length)return;const prev=focusBack.pop();focus=prev;selected=prev;renderGraph();drawSide();animateToPerson(prev);}
 function fitPerson(id){const p=coords.get(id);if(!p){fitAll();return;}zoom=Math.max(.8,Math.min(1.15,zoom));pan={x:$('#stage').clientWidth*.5-p.x*zoom,y:$('#stage').clientHeight*.45-p.y*zoom};applyView();}
 function zoomAt(scale,cx,cy){const nz=Math.max(.06,Math.min(3,zoom*scale)),r=nz/zoom;pan={x:cx-(cx-pan.x)*r,y:cy-(cy-pan.y)*r};zoom=nz;applyView();}
-const atlas=$('#atlas');atlas.addEventListener('pointerdown',e=>{if(e.button!==0||e.target.closest('.personNode'))return;drag={x:e.clientX,y:e.clientY,px:pan.x,py:pan.y};preventClick=false;atlas.setPointerCapture(e.pointerId);atlas.classList.add('dragging');});atlas.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>4)preventClick=true;pan={x:drag.px+dx,y:drag.py+dy};applyView();});atlas.addEventListener('pointerup',()=>{drag=null;atlas.classList.remove('dragging');setTimeout(()=>preventClick=false,30);});atlas.addEventListener('wheel',e=>{e.preventDefault();const rect=atlas.getBoundingClientRect();zoomAt(e.deltaY<0?1.13:1/1.13,e.clientX-rect.left,e.clientY-rect.top);},{passive:false});atlas.addEventListener('click',e=>{if(!preventClick&&!e.target.closest('.personNode')){selected=null;drawSide();renderGraph();}});
-function selectPerson(id){selected=id;drawSide();renderGraph();}
+const atlas=$('#atlas');atlas.addEventListener('pointerdown',e=>{if(e.button!==0||e.target.closest('.personNode'))return;drag={x:e.clientX,y:e.clientY,px:pan.x,py:pan.y};preventClick=false;atlas.setPointerCapture(e.pointerId);atlas.classList.add('dragging');});atlas.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>4)preventClick=true;pan={x:drag.px+dx,y:drag.py+dy};applyView();});atlas.addEventListener('pointerup',()=>{drag=null;atlas.classList.remove('dragging');setTimeout(()=>preventClick=false,30);});atlas.addEventListener('wheel',e=>{e.preventDefault();const rect=atlas.getBoundingClientRect();zoomAt(e.deltaY<0?1.13:1/1.13,e.clientX-rect.left,e.clientY-rect.top);},{passive:false});atlas.addEventListener('click',e=>{if(!preventClick&&!e.target.closest('.personNode')&&!batchMode){selected=null;drawSide();renderGraph();}});
+function selectPerson(id){if(batchMode){toggleBatchPerson(id);return;}selected=id;if(viewMode==='detail'&&id!==focus){/* Selection alone does not change the family-detail reference. */}drawSide();renderGraph();}
 function enterFocus(id){if(!id)return notice('Select a person first');if(focus&&focus!==id)focusBack.push(focus);switchView('detail',id);}
 function chooseRoute(){
   if(!data.people.length)return notice('Add people before tracing relationships');
@@ -432,11 +501,37 @@ function renderFocusBar(){
     b.querySelector('#routeExit').onclick=()=>{route=null;renderGraph();};
     b.querySelector('#routeDetails').onclick=showRouteSteps;return;
   }
-  b.innerHTML=`<strong>Family detail: ${escapeHtml(label(person(focus)))}</strong><label>Ancestors <select id="upCount">${[0,1,2,3,4,5,6].map(x=>`<option value="${x}" ${x===focusUp?'selected':''}>${x}</option>`).join('')}</select></label><label>Descendants <select id="downCount">${[0,1,2,3,4,5,6].map(x=>`<option value="${x}" ${x===focusDown?'selected':''}>${x}</option>`).join('')}</select></label><button id="focusBack" ${!focusBack.length?'disabled':''}>Back</button>`;
+  const navigationFrom=focus;
+  const parentRels=data.relationships.filter(r=>r.type==='parentage'&&r.to===navigationFrom&&person(r.from));
+  const parents=parentRels.sort((a,b)=>{
+    const priority=r=>({mother:0,father:1,other:2}[r.parentRole]??3);
+    return priority(a)-priority(b)||label(person(a.from)).localeCompare(label(person(b.from)));
+  }).map(r=>r.from);
+  // Use explicit steps for navigation ordering.
+  const childRelations = data.relationships.filter(function (relationship) {
+    return relationship.type === 'parentage' &&
+      relationship.from === navigationFrom &&
+      Boolean(person(relationship.to));
+  });
+  const children = childRelations.map(function (relationship) {
+    return relationship.to;
+  });
+  children.sort(function (firstId, secondId) {
+    const firstName = label(person(firstId));
+    const secondName = label(person(secondId));
+    return firstName.localeCompare(secondName);
+  });
+  const selector=(direction,items)=>items.length>1?`<select id="${direction}Choice" aria-label="Choose ${direction==='up'?'parent':'child'}">${items.map(id=>`<option value="${escapeHtml(id)}">${escapeHtml(label(person(id)))}</option>`).join('')}</select>`:'';
+  b.innerHTML=`<strong>Family detail: ${escapeHtml(label(person(navigationFrom)))}</strong><div class="treeNavigate"><div class="treeStep"><button id="goParent" ${parents.length?'':'disabled'} title="Navigate to a recorded parent">↑ Parent</button>${selector('up',parents)}</div><div class="treeStep"><button id="goChild" ${children.length?'':'disabled'} title="Navigate to a recorded child">↓ Child</button>${selector('down',children)}</div></div><button id="focusBack" ${!focusBack.length?'disabled':''}>← Previous</button><details class="depthSettings"><summary>Visible generations</summary><label>Ancestors <select id="upCount">${[0,1,2,3,4,5,6].map(x=>`<option value="${x}" ${x===focusUp?'selected':''}>${x}</option>`).join('')}</select></label><label>Descendants <select id="downCount">${[0,1,2,3,4,5,6].map(x=>`<option value="${x}" ${x===focusDown?'selected':''}>${x}</option>`).join('')}</select></label></details>`;
   $('#stage').append(b);
+  const move=id=>{if(!id||id===navigationFrom)return;focusBack.push(focus);focus=id;selected=id;renderGraph();drawSide();animateToPerson(id);};
+  b.querySelector('#goParent').onclick=()=>move(b.querySelector('#upChoice')?.value||parents[0]);
+  b.querySelector('#goChild').onclick=()=>move(b.querySelector('#downChoice')?.value||children[0]);
+  b.querySelector('#upChoice')?.addEventListener('change',e=>move(e.target.value));
+  b.querySelector('#downChoice')?.addEventListener('change',e=>move(e.target.value));
   b.querySelector('#upCount').onchange=e=>{focusUp=+e.target.value;renderGraph();fitAll();};
   b.querySelector('#downCount').onchange=e=>{focusDown=+e.target.value;renderGraph();fitAll();};
-  b.querySelector('#focusBack').onclick=()=>{focus=focusBack.pop();renderGraph();fitAll();};
+  b.querySelector('#focusBack').onclick=()=>moveBack();
 }
 function showRouteSteps(){
   if(!route)return;
@@ -447,19 +542,156 @@ function showRouteSteps(){
   }
   modal('Recorded relationship path',`<p class="hint">This is the shortest recorded connection pathway. It may cross partnerships or social relationships and is not a determination of biological kinship.</p>${lines.join('')||'<p>These are the same person.</p>'}<button id="closeSteps">Return to path</button>`,root=>root.querySelector('#closeSteps').onclick=closeModal);
 }
+
+// Batch selection is UI state only. Data changes operate on the original person
+// and relationship UUID records; no visual junction is ever persisted.
+function sameGroup(a,b){
+ return a.parents.length===b.parents.length && a.children.length===b.children.length &&
+ a.parents.every(id=>b.parents.includes(id)) && a.children.every(id=>b.children.includes(id));
+}
+function clearBatchSelection(){batchPeople.clear();batchRelations.clear();batchGroup=null;batchReference=null;}
+function toggleBatchMode(){batchMode=!batchMode;clearBatchSelection();batchTab='people';$('#batchBtn').classList.toggle('primary',batchMode);$('#batchBtn').textContent=batchMode?'Done selecting':'Select multiple';render();}
+function toggleBatchPerson(id){
+ if(batchPeople.has(id)){batchPeople.delete(id);if(batchReference===id)batchReference=null;}else batchPeople.add(id);
+ batchGroup=null;drawBatchSide();renderGraph();
+}
+function selectBatchGroup(group){
+ batchGroup={parents:[...group.parents],children:[...group.children]};batchPeople=new Set([...group.parents,...group.children]);
+ batchReference=group.parents[0]||null;batchRelations.clear();batchTab='parentage';drawBatchSide();renderGraph();
+}
+function selectBatchRelation(id){
+ if(batchRelations.has(id))batchRelations.delete(id);else batchRelations.add(id);
+ batchTab='partnership';drawBatchSide();renderGraph();
+}
+function batchChosenPeople(){return [...batchPeople].map(person).filter(Boolean);}
+function batchReferenceOptions(){return [...batchPeople].filter(id=>person(id)&&(!batchGroup||batchGroup.parents.includes(id))).map(id=>`<option value="${escapeHtml(id)}" ${id===batchReference?'selected':''}>${escapeHtml(label(person(id)))}</option>`).join('');}
+function batchParentageTargets(){return [...batchPeople].filter(id=>id!==batchReference && person(id)&&(!batchGroup||batchGroup.children.includes(id)));}
+function batchParentageLinks(){return batchParentageTargets().map(id=>({id,record:data.relationships.find(r=>r.type==='parentage'&&r.from===batchReference&&r.to===id)}));}
+function batchPartnerLinks(){return [...batchRelations].map(id=>data.relationships.find(r=>r.id===id&&relKind(r)==='partnership')).filter(Boolean);}
+function batchHint(){return batchGroup?`Selected parentage junction · ${batchGroup.parents.length} recorded parents · ${batchGroup.children.length} children`:`${batchPeople.size} people · ${batchRelations.size} selected partnerships`;}
+function batchOptions(values){return values.map(([v,name])=>`<option value="${escapeHtml(v)}">${escapeHtml(name)}</option>`).join('');}
+function drawBatchSide(){
+ const side=$('#side');side.classList.remove('hidden');
+ const tabs=[['people','People'],['parentage','Parentage'],['partnership','Partnerships'],['group','Family group']];
+ const people=batchChosenPeople();
+ const selectedNames=people.map(p=>`<li>${escapeHtml(label(p))}</li>`).join('');
+ side.innerHTML=`<div class="row spread"><h2>Selection workspace</h2><button id="endBatch">Done</button></div>
+ <p class="hint">Click people to select. Click a parentage junction for its complete group, or a partnership line to select that relationship. Changes are reviewed before being applied.</p>
+ <p class="batchCount">${batchHint()}</p><div class="batchTabs">${tabs.map(([v,t])=>`<button data-tab="${v}" class="${batchTab===v?'selectedChoice':''}">${t}</button>`).join('')}</div>
+ <div id="batchForm"></div>
+ <details class="batchList"><summary>Selected people (${people.length})</summary><ul>${selectedNames||'<li>None</li>'}</ul></details>
+ <div class="row wrap batchFoot"><button id="batchClear">Clear selection</button><button id="batchUndo" ${batchUndo?'':'disabled'}>Undo last batch</button></div>`;
+ side.querySelector('#endBatch').onclick=toggleBatchMode;
+ side.querySelector('#batchClear').onclick=()=>{clearBatchSelection();drawBatchSide();renderGraph();};
+ side.querySelector('#batchUndo').onclick=()=>{
+   if(!batchUndo)return;data=ensure(deep(batchUndo));batchUndo=null;clearBatchSelection();save();notice('Last batch change undone');
+ };
+ side.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{batchTab=b.dataset.tab;drawBatchSide();});
+ const root=side.querySelector('#batchForm');
+ if(batchTab==='people'){
+   root.innerHTML=`<h3>Common attributes</h3><p class="hint">Only checked fields will change. Blank records can be filled without replacing recorded values.</p>
+   <label class="checkLine"><input type="checkbox" id="changeGender">Change gender</label><div class="field"><select id="batchGender">${batchOptions([['','Not specified'],['female','Female'],['male','Male'],['other','Other']])}</select></div>
+   <label class="checkLine"><input type="checkbox" id="changeLife">Change life status</label><div class="field"><select id="batchLife">${batchOptions([['unknown','Unknown'],['living','Living'],['deceased','Deceased']])}</select></div>
+   <label class="checkLine"><input type="checkbox" id="changeNotes">Append note</label><div class="field"><textarea id="batchNote" placeholder="Shared annotation — existing notes retained"></textarea></div>
+   <label class="checkLine"><input type="checkbox" id="blankOnly">Fill blank fields only (gender and life status)</label>
+   <button class="primary" id="batchReview">Review person changes</button>`;
+   root.querySelector('#batchReview').onclick=()=>{
+     const selectedIds=[...batchPeople];if(!selectedIds.length)return notice('Select people first');
+     const gender=root.querySelector('#changeGender').checked,life=root.querySelector('#changeLife').checked,note=root.querySelector('#changeNotes').checked;
+     if(!gender&&!life&&!note)return notice('Choose at least one field to change');
+     const values={gender:root.querySelector('#batchGender').value,lifeStatus:root.querySelector('#batchLife').value,note:root.querySelector('#batchNote').value.trim(),blank:root.querySelector('#blankOnly').checked};
+     if(note&&!values.note)return notice('Enter a note to append');
+     const changes=[];for(const id of selectedIds){const p=person(id);if(!p)continue;const update={};
+       if(gender&&(!values.blank||!p.gender))update.gender=values.gender;
+       if(life&&(!values.blank||!p.lifeStatus||p.lifeStatus==='unknown')){
+         if(values.lifeStatus==='living'&&p.death)return notice(`Cannot mark ${label(p)} living while a death date is recorded`);
+         update.lifeStatus=values.lifeStatus;
+       }
+       if(note)update.notes=[p.notes||'',values.note].filter(Boolean).join('\n');
+       if(Object.keys(update).length)changes.push({id,update});
+     }
+     reviewBatch(`Edit ${changes.length} people`,`${changes.length} person records will be updated. Only explicitly chosen fields change.`,()=>{for(const {id,update} of changes)Object.assign(person(id),update);});
+   };
+ }else if(batchTab==='parentage'){
+   root.innerHTML=`<h3>Parentage relationships</h3><p class="hint">Choose one reference parent. Other selected people become target children. Nothing is inferred from gender.</p>
+     <div class="field"><label>Reference parent</label><select id="batchParent"><option value="">Choose a selected person</option>${batchReferenceOptions()}</select></div>
+     <div id="batchTargetSummary" class="hint"></div>
+     <label class="checkLine"><input id="createMissingParentage" type="checkbox">Create missing parent–child links</label>
+     <label class="checkLine"><input id="changeClass" type="checkbox">Change primary classification</label><div class="field"><select id="batchClass">${batchOptions([['unspecified','Unspecified'],['biological','Biological'],['adoptive','Adoptive'],['foster','Foster']])}</select></div>
+     <label class="checkLine"><input id="changeRole" type="checkbox">Change parental role</label><div class="field"><select id="batchRole">${batchOptions([['','Unspecified'],['mother','Mother'],['father','Father'],['other','Other']])}</select></div>
+     <label class="checkLine"><input id="changeLegal" type="checkbox">Change legal parentage</label><div class="field"><select id="batchLegal">${batchOptions([['add','Mark as legal parent'],['remove','Remove legal classification']])}</select></div>
+     <button id="batchReview" class="primary">Review parentage changes</button>`;
+   const parentSelect=root.querySelector('#batchParent');
+   const sync=()=>{batchReference=parentSelect.value||null;const links=batchParentageLinks();root.querySelector('#batchTargetSummary').textContent=links.length?`${links.length} target people · ${links.filter(x=>x.record).length} existing parentage links · ${links.filter(x=>!x.record).length} missing`:'Select a reference parent and at least one target child.';};
+   parentSelect.onchange=sync;sync();
+   root.querySelector('#batchReview').onclick=()=>{
+     if(!batchReference)return notice('Choose a reference parent');const pairs=batchParentageLinks();if(!pairs.length)return notice('Select children as targets');
+     const create=root.querySelector('#createMissingParentage').checked,classification=root.querySelector('#changeClass').checked,role=root.querySelector('#changeRole').checked,legal=root.querySelector('#changeLegal').checked;
+     if(!create&&!classification&&!role&&!legal)return notice('Choose a parentage operation');
+     if(pairs.some(x=>!x.record)&&!create)return notice('Some links are missing. Enable Create missing links or deselect these people.');
+     const changes=pairs.map(x=>({id:x.id,record:x.record}));
+     const cls=root.querySelector('#batchClass').value,rval=root.querySelector('#batchRole').value,lv=root.querySelector('#batchLegal').value;
+     reviewBatch('Edit parentage',`${changes.length} parent–child links: ${changes.filter(x=>x.record).length} existing, ${changes.filter(x=>!x.record).length} to create. ${classification?'Primary classification: '+cls+'. ':''}${role?'Parental role: '+(rval||'Unspecified')+'. ':''}${legal?'Legal: '+lv+'. ':''}Other fields remain unchanged.`,()=>{
+       for(const change of changes){let r=change.record;if(!r){if(!addRel('parentage',batchReference,change.id))throw Error('Cannot connect '+label(person(change.id))+' (duplicate or ancestry cycle)');r=data.relationships.find(x=>x.type==='parentage'&&x.from===batchReference&&x.to===change.id);}
+         if(classification){const retained=(r.roles||[]).filter(x=>!['biological','adoptive','foster'].includes(x));r.roles=[...retained,...(cls==='unspecified'?[]:[cls])];}
+         if(legal){const kept=(r.roles||[]).filter(x=>x!=='legal');r.roles=lv==='add'?[...kept,'legal']:kept;}
+         if(role)r.parentRole=rval;
+       }
+     });
+   };
+ }else if(batchTab==='partnership'){
+   const pairs=batchPartnerLinks();root.innerHTML=`<h3>Partnerships</h3><p class="hint">Click partnership lines while selecting multiple, or select exactly two people to create a connection.</p>
+    <div class="batchList">${pairs.length?pairs.map(r=>`<div>${escapeHtml(label(person(r.from)))} — ${escapeHtml(label(person(r.to)))} <button data-remove-partner="${r.id}">×</button></div>`).join(''):'No partnership lines selected'}</div>
+    <label class="checkLine"><input id="changePartnerClass" type="checkbox">Change classification</label><div class="field"><select id="batchPartnerClass">${batchOptions([['partner','Partner'],['married','Married']])}</select></div>
+    <label class="checkLine"><input id="changePartnerStatus" type="checkbox">Change status</label><div class="field"><select id="batchPartnerStatus">${batchOptions([['current','Current'],['separated','Separated'],['divorced','Divorced'],['former','Former'],['ended by death','Ended by death'],['historical','Historical'],['unknown','Unknown']])}</select></div>
+    <label class="checkLine"><input id="createPartnership" type="checkbox">Connect the two selected people as partners (if not already connected)</label>
+    <button class="primary" id="batchReview">Review partnership changes</button>`;
+   root.querySelectorAll('[data-remove-partner]').forEach(b=>b.onclick=()=>selectBatchRelation(b.dataset.removePartner));
+   root.querySelector('#batchReview').onclick=()=>{
+     const create=root.querySelector('#createPartnership').checked,klass=root.querySelector('#changePartnerClass').checked,status=root.querySelector('#changePartnerStatus').checked,ids=[...batchPeople];
+     if(create&&ids.length!==2)return notice('Select exactly two people to connect as partners');
+     if(!create&&!pairs.length)return notice('Select partnership lines or choose Connect two people');
+     if(!create&&!klass&&!status)return notice('Choose a partnership field');
+     const cls=root.querySelector('#batchPartnerClass').value,st=root.querySelector('#batchPartnerStatus').value;
+     reviewBatch('Edit partnerships',`${pairs.length} existing partnership records${create?' and one requested connection':''}. ${klass?'Classification: '+cls+'. ':''}${status?'Status: '+st+'. ':''}`,()=>{
+       const targets=[...pairs];if(create){addRel('partnership',ids[0],ids[1]);const pair=data.relationships.find(r=>relKind(r)==='partnership'&&[r.from,r.to].every(id=>ids.includes(id)));if(pair&&!targets.includes(pair))targets.push(pair);}
+       for(const r of targets){if(klass)r.classification=cls;if(status)r.status=st;}
+     });
+   };
+ }else{
+   const group=batchGroup;root.innerHTML=`<h3>Parentage group</h3><p class="hint">Select a junction on the canvas to act on its recorded children. Adding a co-parent does not create a partnership.</p>
+     ${group?`<p>${group.parents.length} parent${group.parents.length===1?'':'s'} · ${group.children.length} child${group.children.length===1?'':'ren'}</p><p class="small">Children: ${group.children.map(id=>escapeHtml(label(person(id)))).join(', ')}</p>`:'<p class="hint">No junction selected.</p>'}
+     <div class="field"><label>Find an additional co-parent</label><input id="batchCoSearch" placeholder="Search an existing person" autocomplete="off"><div id="batchCoResults" class="connectResults"></div></div>`;
+   const search=root.querySelector('#batchCoSearch'),results=root.querySelector('#batchCoResults');
+   search.oninput=()=>{const q=search.value.trim();results.innerHTML=!group?'':!q?'<p class="hint">Search by name.</p>':data.people.filter(p=>!group.parents.includes(p.id)&&!group.children.includes(p.id)).map(p=>({p,score:searchScore(q,label(p))})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,12).map(x=>`<button class="personItem" data-co-id="${x.p.id}">${escapeHtml(label(x.p))}</button>`).join('')||'<p class="hint">No matching people.</p>';
+     results.querySelectorAll('[data-co-id]').forEach(b=>b.onclick=()=>{const id=b.dataset.coId;reviewBatch('Add co-parent',`Connect ${label(person(id))} as an additional recorded parent of ${group.children.length} children. No partnership will be inferred.`,()=>{for(const child of group.children)if(!addRel('parentage',id,child))throw Error('Cannot create parentage connection for '+label(person(child)));});});};
+ }
+}
+function reviewBatch(title,summary,operation){
+ modal(title,`<p>${escapeHtml(summary)}</p><div class="callout">Only the stated records and fields will change. Review your selection before applying. One-step Undo will be available.</div><div class="row spread"><button id="batchCancelReview">Cancel</button><button id="batchApplyReview" class="primary">Apply changes</button></div>`,root=>{
+   root.querySelector('#batchCancelReview').onclick=closeModal;
+   root.querySelector('#batchApplyReview').onclick=()=>{
+     const prior=deep(data);try{operation();batchUndo=prior;clearBatchSelection();closeModal();save();notice('Batch changes applied. Undo is available in the selection workspace.');}
+     catch(error){data=ensure(prior);notice('Batch cancelled: '+error.message);closeModal();render();}
+   };
+ });
+}
+
 function render(){drawSide();renderGraph();$('#collectionTitle').textContent=data.collection.title||'Local collection';}
+$('#toggleNames').onclick=()=>{showNames=!showNames;applyView();};
 $('#detailBackBtn').onclick=()=>{focus=null;focusBack=[];switchView('atlas');};
 $('#traceBtn').onclick=chooseRoute;$('#addBtn').onclick=()=>newPerson(selected,'sibling');$('#zoomFit').onclick=fitAll;$('#zoomIn').onclick=()=>zoomAt(1.2,$('#stage').clientWidth/2,$('#stage').clientHeight/2);$('#zoomOut').onclick=()=>zoomAt(1/1.2,$('#stage').clientWidth/2,$('#stage').clientHeight/2);
+$('#batchBtn').onclick=toggleBatchMode;
 $('#searchBtn').onclick=()=>{modal('Find a person',`<div class="field"><label>Search by name</label><input id="globalSearch" placeholder="Search people…"></div><div id="searchResults"></div>`,root=>{const input=root.querySelector('input'),draw=()=>{const q=input.value.trim();root.querySelector('#searchResults').innerHTML=(q?data.people.map(p=>({p,score:searchScore(q,label(p))})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,25):data.people.map(p=>({p})).slice(0,25)).map(({p})=>`<button class="personItem" data-id="${p.id}"><span><strong>${escapeHtml(label(p))}</strong><small>${p.birth?'Born '+escapeHtml(p.birth):'Select to navigate'}</small></span></button>`).join('');root.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>{const id=b.dataset.id;if(viewMode==='detail'&&!graphSubset().has(id)){focus=id;renderGraph();}
 closeModal();selectPerson(id);fitPerson(id);});};input.oninput=draw;draw();input.focus();});};
-$('#exportBtn').onclick=()=>modal('Export family atlas',`<p>JSON is the complete, portable archive. SVG exports the current graph view.</p><div class="stack"><button id="jsonExport">Download complete JSON archive</button><button id="svgExport">Download current graph as SVG</button></div>`,root=>{root.querySelector('#jsonExport').onclick=()=>{backup();closeModal();};root.querySelector('#svgExport').onclick=()=>{const x=$('#atlas').cloneNode(true);x.setAttribute('xmlns',svgNS);x.setAttribute('viewBox',`${graphBounds.x} ${graphBounds.y} ${graphBounds.w} ${graphBounds.h}`);x.removeAttribute('width');x.removeAttribute('height');x.querySelector('#world').setAttribute('transform','');const style=document.createElementNS(svgNS,'style');style.textContent='.generationRing{fill:none;stroke:#aaa;stroke-opacity:.45;stroke-width:1}.clusterCaption text{fill:#555;font:11px Arial}.clusterCaption .nameplate{fill:#fff;stroke:#bbb}.parentJunction{fill:#fff;stroke:#333;stroke-width:1.2}.link{fill:none;stroke:#888;stroke-width:1.5}.link.parentage{stroke:#333;stroke-width:1.7}.link.sibling{stroke:#aaa;stroke-width:1}.link.crossQuiet{stroke-opacity:.2}.link.partnership{stroke-dasharray:6 4}.link.guardian,.link.other,.link.sibling{stroke-dasharray:3 4}.personNode circle{fill:white;stroke:#222;stroke-width:1.5}.personNode text{fill:#111;font:12px Arial}.personNode .nameplate{fill:white;stroke:#bbb}.personNode .initial{font-weight:bold}.personNode .lifeMarker{fill:#222;stroke:#222}.edgeStatus.status-divorced rect,.edgeStatus.status-separated rect{fill:#f5d7d7;stroke:#a86d6d}.edgeStatus.status-former rect,.edgeStatus.status-historical rect,.edgeStatus.status-ended-by-death rect{fill:#fff1ba;stroke:#c5a95c}.personNode .lifeMarkText{fill:#fff;font-weight:bold;font-size:9px}.edgeStatus rect{fill:white;stroke:#777;stroke-width:.75}.edgeStatus text{fill:#222;font:bold 10px Arial}.link.routeLink{stroke:#111;stroke-width:3.5;stroke-dasharray:none}.componentCircle{fill:#fafafa;stroke:#222;stroke-width:1.5}.componentDot{fill:#555}.componentNode .nameplate{fill:#fff;stroke:#aaa}.componentName{fill:#111;font:bold 13px Arial}.componentCount{fill:#555;font:11px Arial}';x.prepend(style);download(new XMLSerializer().serializeToString(x),'family-atlas.svg','image/svg+xml');closeModal();};});
+$('#exportBtn').onclick=()=>modal('Export family atlas',`<p>JSON is the complete, portable archive. SVG exports the current graph view.</p><div class="stack"><button id="jsonExport">Download complete JSON archive</button><button id="svgExport">Download current graph as SVG</button></div>`,root=>{root.querySelector('#jsonExport').onclick=()=>{backup();closeModal();};root.querySelector('#svgExport').onclick=()=>{const x=$('#atlas').cloneNode(true);x.setAttribute('xmlns',svgNS);x.setAttribute('viewBox',`${graphBounds.x} ${graphBounds.y} ${graphBounds.w} ${graphBounds.h}`);x.removeAttribute('width');x.removeAttribute('height');x.querySelector('#world').setAttribute('transform','');const style=document.createElementNS(svgNS,'style');style.textContent='.generationRing{fill:none;stroke:#aaa;stroke-opacity:.45;stroke-width:1}.clusterCaption text{fill:#555;font:11px Arial}.clusterCaption .nameplate{fill:#fff;stroke:#bbb}.parentJunction{fill:#fff;stroke:#333;stroke-width:1.2}.link{fill:none;stroke:#888;stroke-width:1.5}.link.parentage{stroke:#333;stroke-width:1.7}.link.sibling{stroke:#aaa;stroke-width:1}.link.crossQuiet{stroke-opacity:.2}.link.partnership{stroke-dasharray:6 4}.link.guardian,.link.other,.link.sibling{stroke-dasharray:3 4}.personNode circle{fill:white;stroke:#222;stroke-width:1.5}.personNode text{fill:#111;font:12px Arial}.personNode .nameplate{fill:white;stroke:#bbb}.personNode .initial{font-weight:bold}.personNode .lifeMarker{fill:#222;stroke:#222}.edgeStatus.status-divorced rect,.edgeStatus.status-separated rect{fill:#f5d7d7;stroke:#a86d6d}.edgeStatus.status-former rect,.edgeStatus.status-historical rect,.edgeStatus.status-ended-by-death rect{fill:#fff1ba;stroke:#c5a95c}.personNode .lifeMarkText{fill:#fff;font-weight:bold;font-size:9px}.edgeStatus rect{fill:white;stroke:#777;stroke-width:.75}.edgeStatus text{fill:#222;font:bold 10px Arial}.link.routeLink{stroke:#111;stroke-width:3.5;stroke-dasharray:none}.componentCircle{fill:#fafafa;stroke:#222;stroke-width:1.5}.componentDot{fill:#555}.componentNode .nameplate{fill:#fff;stroke:#aaa}.componentName{fill:#111;font:bold 13px Arial}.componentCount{fill:#555;font:11px Arial}.edgeGroup.status-separated .link,.edgeGroup.status-divorced .link{stroke:#b87575}.edgeGroup.status-former .link,.edgeGroup.status-historical .link,.edgeGroup.status-ended-by-death .link{stroke:#c4a85e}';x.prepend(style);download(new XMLSerializer().serializeToString(x),'family-atlas.svg','image/svg+xml');closeModal();};});
 $('#importBtn').onclick=()=>{$('#fileInput').value='';$('#fileInput').click();};$('#fileInput').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const d=ensure(JSON.parse(await f.text()));if(d.people.length>5000)throw Error('File has too many people for this version');beginImport(d);}catch(err){modal('Import error',`<p>${escapeHtml(err.message)}</p>`);}};
 function sourceKey(collectionId,recordId){return `${collectionId}::${recordId}`;}
 function mappedId(collectionId,recordId){return data.identityMappings.find(m=>m.sourceKey===sourceKey(collectionId,recordId))?.personId||null;}
 function beginImport(incoming){importCandidate=incoming;importChoices={};const currentIds=new Set(data.people.map(p=>p.id));const potential=incoming.people.filter(p=>!mappedId(incoming.collection.id,p.id));function scorePerson(p,q){if(p.nameStatus==='unknown'||q.nameStatus==='unknown')return 0;const a=label(p).toLowerCase(),b=label(q).toLowerCase();let s=searchScore(a,b);if(a===b)s+=40;if(p.birth&&q.birth&&p.birth.slice(0,4)===q.birth.slice(0,4))s+=35;for(const r of incoming.relationships.filter(r=>related(r,p.id))){const n=incoming.people.find(x=>x.id===related(r,p.id));if(n&&data.relationships.some(k=>related(k,q.id)&&label(person(related(k,q.id))).toLowerCase()===label(n).toLowerCase()))s+=15;}return s;}
 const candidates=potential.map(p=>({p,matches:data.people.map(q=>({q,score:scorePerson(p,q)})).filter(x=>x.score>=35).sort((a,b)=>b.score-a.score).slice(0,5)})).filter(x=>x.matches.length);modal('Review imported family',`<p class="muted small">${incoming.people.length} people · ${incoming.relationships.length} connections · ${candidates.length} possible matches. No identities will be merged automatically.</p><div class="callout">Each match is your decision. Keeping records separate preserves both people. Confirming an identity retains the existing working fields and records imported alternatives.</div><div id="importMatches">${candidates.map(({p,matches})=>`<div class="matchCard"><strong>${escapeHtml(label(p))}${p.birth?' · '+escapeHtml(p.birth):''}</strong><small class="muted">Imported record</small><div class="field"><label>Possible match</label><select data-import="${p.id}"><option value="">Keep separate (default)</option>${matches.map(({q,score})=>`<option value="${q.id}">${escapeHtml(label(q))}${q.birth?' · '+escapeHtml(q.birth):''} — suggested match</option>`).join('')}</select></div></div>`).join('')||'<p>No likely duplicate people identified.</p>'}</div><div class="row spread"><button id="cancelImport">Cancel</button><button id="applyImport" class="primary">Review and add collection</button></div>`,root=>{root.querySelector('#cancelImport').onclick=closeModal;root.querySelector('#applyImport').onclick=()=>{root.querySelectorAll('[data-import]').forEach(s=>importChoices[s.dataset.import]=s.value);previewImport();};});}
 function previewImport(){const imp=importCandidate;const mapped=imp.people.filter(p=>importChoices[p.id]||mappedId(imp.collection.id,p.id)).length;modal('Confirm import',`<p><strong>${imp.people.length-mapped} new people</strong> and <strong>${mapped} reconciled people</strong> are proposed.</p><p class="hint">Identity matches will not overwrite existing names, dates or life status. Conflicting values are retained in source assertions. Existing relationship connections are not duplicated. Records absent from this contribution are never deleted.</p><div class="callout">A recovery snapshot will be downloaded before the import is applied. Keep it for restoration if needed.</div><div class="row spread"><button id="backImport">Back</button><button id="confirmImport" class="primary">Import collection</button></div>`,root=>{root.querySelector('#backImport').onclick=()=>beginImport(imp);root.querySelector('#confirmImport').onclick=()=>{backup();try{const stats=commitImport(imp,importChoices);closeModal();save();fitAll();notice(`Imported ${stats.newPeople} people and ${stats.newRelations} connections`);}catch(err){modal('Import error',`<p>${escapeHtml(err.message)}</p>`);}};});}
-function commitImport(imp,choices){const map=new Map(),sourceId=uid(),cid=imp.collection.id;data.sources.push({id:sourceId,label:imp.collection.title||'Imported family',collectionId:cid,importedAt:new Date().toISOString()});let newPeople=0,newRelations=0;const used=new Set(data.people.map(p=>p.id));for(const p of imp.people){const key=sourceKey(cid,p.id);let id=mappedId(cid,p.id)||choices[p.id];if(!id){id=used.has(p.id)?uid():p.id;data.people.push({...deep(p),id,sourceRefs:[...new Set([...(p.sourceRefs||[]),sourceId])]});newPeople++;used.add(id);}else{const existing=person(id);if(!existing)throw Error('Imported mapping refers to a missing person');existing.sourceRefs=[...new Set([...(existing.sourceRefs||[]),sourceId])];for(const field of ['name','birth','death','lifeStatus','notes']){const value=p[field],current=existing[field];if(value!==undefined&&value!==null&&value!==''&&current!==value){const ak=`${cid}|${p.id}|${field}|${JSON.stringify(value)}`;if(!data.assertions.some(a=>a.key===ak))data.assertions.push({key:ak,id:uid(),personId:id,field,value,sourceId,status:'unresolved'});}}}
+function commitImport(imp,choices){const map=new Map(),sourceId=uid(),cid=imp.collection.id;data.sources.push({id:sourceId,label:imp.collection.title||'Imported family',collectionId:cid,importedAt:new Date().toISOString()});let newPeople=0,newRelations=0;const used=new Set(data.people.map(p=>p.id));for(const p of imp.people){const key=sourceKey(cid,p.id);let id=mappedId(cid,p.id)||choices[p.id];if(!id){id=used.has(p.id)?uid():p.id;data.people.push({...deep(p),id,sourceRefs:[...new Set([...(p.sourceRefs||[]),sourceId])]});newPeople++;used.add(id);}else{const existing=person(id);if(!existing)throw Error('Imported mapping refers to a missing person');existing.sourceRefs=[...new Set([...(existing.sourceRefs||[]),sourceId])];for(const field of ['name','birth','death','lifeStatus','gender','notes']){const value=p[field],current=existing[field];if(value!==undefined&&value!==null&&value!==''&&current!==value){const ak=`${cid}|${p.id}|${field}|${JSON.stringify(value)}`;if(!data.assertions.some(a=>a.key===ak))data.assertions.push({key:ak,id:uid(),personId:id,field,value,sourceId,status:'unresolved'});}}}
 map.set(p.id,id);if(!data.identityMappings.some(x=>x.sourceKey===key))data.identityMappings.push({sourceKey:key,personId:id});}
 for(const r of imp.relationships){const from=map.get(r.from),to=map.get(r.to);if(!from||!to||from===to){continue;}const incoming={...deep(r),from,to,id:uid(),sourceRefs:[...new Set([...(r.sourceRefs||[]),sourceId])]};const existing=data.relationships.find(x=>sameRel(x,incoming));if(existing){existing.sourceRefs=[...new Set([...(existing.sourceRefs||[]),sourceId])];if(r.roles)existing.roles=[...new Set([...(existing.roles||[]),...r.roles])];if(existing.status&&r.status&&existing.status!==r.status&&!data.assertions.some(a=>a.relationshipId===existing.id&&a.field==='status'&&a.value===r.status&&a.originKey===sourceKey(cid,r.id)))data.assertions.push({id:uid(),relationshipId:existing.id,field:'status',value:r.status,sourceId,originKey:sourceKey(cid,r.id),status:'unresolved'});continue;}if(incoming.type==='parentage'&&wouldCycle(data.relationships,from,to)){data.assertions.push({id:uid(),field:'rejectedParentage',value:{from,to},sourceId,status:'unresolved'});continue;}data.relationships.push(incoming);newRelations++;}
 data.importHistory.push({id:uid(),collectionId:cid,sourceId,importedAt:new Date().toISOString(),newPeople,newRelations});return{newPeople,newRelations};}

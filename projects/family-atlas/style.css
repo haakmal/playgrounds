@@ -71,3 +71,63 @@
 .marker-history{background:#fff1ba;color:#5d4a17;border-color:#c4a85e}
 .graphLegend{max-width:240px}
 @media(max-width:420px){.dateGrid{grid-template-columns:1fr 1fr}.dateGrid .field:first-child{grid-column:1/-1}}
+
+/* v0.10 labels, crossing priority and focused controls */
+.personTagRow{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0 10px}
+.personTag{display:inline-flex;align-items:center;border:1px solid #ccc;background:#f4f4f4;color:#333;font-size:11px;padding:4px 7px;border-radius:2px}
+.personTag.marker-deceased{background:#222;color:white;border-color:#222}
+.relationshipHeading{margin-top:20px;gap:8px;flex-wrap:wrap}.relationshipHeading h3{margin:0}
+.relationFilterLabel{display:flex;align-items:center;gap:5px;font-size:11px;color:#555}
+.relationFilterLabel select{background:#fff;border:1px solid #aaa;padding:6px;max-width:180px}
+.relationDescription{min-width:0;overflow-wrap:anywhere}
+.relationLine[hidden],#relationEmpty[hidden]{display:none!important}
+.namesHidden .personNode>.personName{display:none}
+.namesHidden .personNode .lifeMarkText{display:block}
+.depthActions{display:flex;align-items:center;gap:5px}
+.depthActions span{font-size:11px;color:#555}
+.depthSettings summary{cursor:pointer;font-size:11px}
+.depthSettings label{display:inline-flex;align-items:center;gap:5px;margin:4px}
+.depthSettings select{min-width:55px}
+.edgeStatus{pointer-events:none}.edgeStatus rect{stroke-width:1.1}
+@media(max-width:780px){.focusbar{right:10px;left:10px;max-width:none}.depthActions{flex-wrap:wrap}}
+
+/* v0.11 — explicit labels and navigation */
+.namesHidden .personNode > .personName{display:none}
+.namesHidden .personNode .lifeMarkText{display:block!important}
+.edgeGroup.status-separated .link,.edgeGroup.status-divorced .link{stroke:#b87575}
+.edgeGroup.status-former .link,.edgeGroup.status-historical .link,.edgeGroup.status-ended-by-death .link{stroke:#c4a85e}
+.edgeGroup .link.routeLink{stroke:#111;stroke-width:3.5}
+#junctions .parentJunction{fill:white;stroke:#252525;stroke-width:1.4}
+.treeNavigate{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.treeStep{display:flex;align-items:center;gap:4px}
+.treeStep select{max-width:125px;padding:7px 5px}
+#world.viewportNavigating{transition:transform 290ms ease-in-out}
+.personNode.focused circle:first-child{stroke-width:2.5}
+.personNode.navArrival circle:first-child{animation:arrivalPulse 420ms ease-out}
+@keyframes arrivalPulse{0%{stroke-width:8;stroke:#777}100%{stroke-width:2.5;stroke:#222}}
+.connectResults{max-height:290px;overflow-y:auto}
+@media(prefers-reduced-motion:reduce){#world.viewportNavigating{transition:none}.personNode.navArrival circle:first-child{animation:none}}
+
+/* Crossing-gap experiment postponed until routing can be tested in isolation. */
+
+/* A nameplate toggle must never hide a life-status marker. */
+.namesHidden .personNode > .personName{display:none!important}
+.namesHidden .personNode > .lifeMarker,.namesHidden .personNode > .lifeMarkText{display:inline!important}
+
+/* v0.12 — selected records and batch workspace. No bridge or white-outline strokes. */
+.batchChosen>circle:first-child{stroke:#111!important;stroke-width:4!important;fill:#e6e6e6!important}
+#junctions .batchJunction{pointer-events:all;cursor:pointer;stroke-width:1.7;fill:white}
+#junctions .batchJunction.batchChosen{fill:#222;stroke:#222}
+.edgeGroup.batchEdge .link{pointer-events:stroke;cursor:pointer;stroke-width:3}
+.edgeGroup.batchEdge.batchChosen .link{stroke:#111!important;stroke-width:4!important;stroke-opacity:1!important}
+.batchTabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:12px 0}
+.batchTabs button{font-size:12px;padding:9px 5px}
+.batchCount{border:1px solid #bbb;background:#f6f6f6;padding:10px;font-size:12px}
+#batchForm{border-top:1px solid #ddd;margin-top:10px;padding-top:6px}
+#batchForm>button.primary{margin-top:12px;width:100%}
+#batchForm .checkLine{margin:12px 0 3px}
+#batchForm textarea{width:100%;min-height:70px;border:1px solid #aaa;padding:8px}
+#batchForm .field{margin-top:5px}
+.batchList{margin:15px 0 5px;font-size:12px;line-height:1.7}
+.batchList ul{padding-left:20px;margin:7px 0}
+.batchFoot{border-top:1px solid #ddd;margin-top:18px;padding-top:12px}

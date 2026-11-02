@@ -95,3 +95,48 @@ The radial renderer, data model, local storage, and import/export remain
 unchanged. Run `node tests/family-detail.test.mjs` to check all six sample
 collections. Complex cross-branch parentage connections may still require
 further routing work.
+
+## v0.10 display and interaction refinements
+- Hide/show person nameplates from the canvas controls; status markers remain visible.
+- Historical partnership labels follow their actual drawn path and choose a location with greater clearance from person nodes.
+- White line casings make crossings easier to interpret; parentage routes take visual precedence.
+- Family detail offers one-step Earlier/Later expansion and retains precise depth settings under Depth options.
+- Person details filter direct relationships into parents, children, partners, siblings and other.
+- Life-status labels in person details use the same compact style as graph labels.
+- Escape closes the open modal, not the selected person's side panel.
+- Connect Existing starts with fuzzy search, followed by nearby people.
+- Existing schema and all six fictional datasets are unchanged.
+
+## v0.11 — navigation, connection layering and search
+- Explicit `personName` classes ensure hiding names never hides `DEC`.
+- Connections are grouped and ordered by relationship priority. White underlay is
+  enabled only for transverse line crossings; junction dots paint above all lines.
+- Separated/divorced links use the same soft red as their status markers;
+  other historical partnership links use pale yellow.
+- Family Detail Up/Down navigates to a recorded parent/child. When there are
+  several, choose the destination from the adjacent dropdown. Parent sorting:
+  mother, father, other, unspecified, then alphabetically. No genealogical
+  assumptions are made from gender. Previous returns to the earlier focus.
+- A short viewport transition and focused-person marker aid orientation;
+  reduced-motion preferences are honoured.
+- Optional person `gender`: `male`, `female`, `other`, or empty. New and edited
+  people use the same field. Existing archive schema remains compatible.
+- Shared fuzzy search restores Connect Existing, global search, path tracing
+  and import candidate suggestion.
+
+## v0.11.1 browser startup fix
+
+Rewrites the Family Detail navigation sorting expression into explicit statements to address the reported browser parsing error at app.js:539. If an old error remains, hard-reload to clear cached app.js.
+
+## v0.12 Batch selection and navigation
+
+Activate **Select multiple** in the toolbar. Click people in either atlas or family detail. Click a shared parentage junction to select its parentage group; click a partnership connection to select one or more partnership records. The same contextual side panel offers:
+
+- **People**: change gender and life status; append notes. Use explicit field activation and optional blank-only values.
+- **Parentage**: choose one reference parent from the selected people and define classification, parental role, and legal parentage for the other selected people. Missing links require explicit approval.
+- **Partnerships**: edit existing selected partnership relationships, or connect exactly two selected people.
+- **Family group**: select a parentage junction and search for an existing person to connect as a co-parent for that group's children. A partnership is not inferred.
+
+Every batch modification requires a confirmation preview and enables one-step Undo. The entire previous JSON collection is retained in memory for Undo, but not stored in the export. Avoid editing concurrently in multiple tabs.
+
+The prior SVG white line casings and crossing bridges have been withdrawn. Ring-route spacing and actual junction markers are unchanged. Family-detail Parent/Child navigation now uses the current focus person; changing a destination dropdown navigates immediately.
