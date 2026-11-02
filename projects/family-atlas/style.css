@@ -146,3 +146,21 @@
 .batchAction{padding:12px;border:1px solid #aaa;margin:14px 0}
 .batchAction h4{margin:0 0 6px;font-size:13px}
 .batchAction p{margin:6px 0 12px}
+
+/* v0.14: map index and persistently visible modal buttons */
+.indexPanel{position:absolute;z-index:9;left:12px;top:12px;bottom:12px;width:min(370px,calc(100% - 24px));overflow-y:auto;touch-action:pan-y;background:white;border:1px solid #777;padding:16px}
+.indexHead{display:flex;align-items:flex-start;justify-content:space-between;border-bottom:1px solid #ccc;padding-bottom:10px}
+.indexHead h2{margin:3px 0;font-size:22px}.indexHead small{color:#666;font-size:10px;letter-spacing:.07em}
+.indexHead button{font-size:18px;padding:3px 9px}
+.indexSection{border-top:1px solid #ddd;padding:8px 0 15px}
+.indexSection h3{margin:8px 0 6px}.indexSection p{font-size:12px;line-height:1.5;color:#555}
+.indexSection .field{margin:8px 0}.indexSection select{padding:8px}
+.indexSection>.primary{width:100%;margin-top:5px}
+.indexFoot{border-top:2px solid #333;padding-top:12px;font-size:12px}.indexFoot p{color:#555}
+.modalCard{display:flex;flex-direction:column;overflow:hidden;padding:0;max-height:min(90dvh,850px)}
+.modalHead{flex:0 0 auto;margin:0;padding:15px 18px}
+#modalBody{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:14px 18px}
+.modalFooter{flex:0 0 auto;display:flex;border-top:1px solid #aaa;background:white;padding:12px 18px;z-index:1}
+.modalFooter>.row{width:100%;justify-content:space-between}
+.modalFooter button.primary{min-width:125px}
+@media(max-width:780px){.indexPanel{top:8px;bottom:8px;left:8px;width:min(380px,calc(100% - 16px))}.modalCard{max-height:92dvh}}

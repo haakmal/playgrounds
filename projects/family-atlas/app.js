@@ -1,5 +1,6 @@
+import {descendantScope} from './index-scope.js';
 import {radialAtlas, lineageDetail, parentageUnits} from './radial-layout.js';
-/* Family Atlas v0.13: radial descendant display, contextual lineage, local-first records. */
+/* Family Atlas v0.14: radial descendant display, contextual lineage, local-first records. */
 const $=s=>document.querySelector(s), svgNS='http://www.w3.org/2000/svg';
 const uid=()=>crypto.randomUUID();
 const blank=()=>({schemaVersion:'0.2',collection:{id:uid(),title:'My family atlas'},people:[],relationships:[],sources:[],assertions:[],identityMappings:[],importHistory:[]});
@@ -7,13 +8,14 @@ const KEY='family-atlas-v02';
 let data,selected=null,focus=null,focusBack=[],focusUp=2,focusDown=2,importCandidate=null,importChoices={};
 let route=null; // Shortest recorded path between two people, not a genealogical inference.
 let viewMode='atlas';
+let indexScope={kind:'all'},indexOpen=false;
 let showNames=true,relationshipFilter='all';
 let batchMode=false,batchTab='people',batchPeople=new Set(),batchRelations=new Set(),batchGroup=null,batchReference=null,batchUndo=null;
 let zoom=1,pan={x:80,y:80},coords=new Map(),graphBounds={x:0,y:0,w:1,h:1},drag=null,preventClick=false;
 const deep=x=>JSON.parse(JSON.stringify(x));
 const ensure=d=>{const c=blank();if(!d||!Array.isArray(d.people)||!Array.isArray(d.relationships))throw Error('Not a valid Family Atlas collection');return {...c,...d,collection:{...c.collection,...(d.collection||{})},people:d.people.map(p=>({...p,id:p.id||uid()})),relationships:d.relationships.map(r=>({...r,id:r.id||uid()})),sources:d.sources||[],assertions:d.assertions||[],identityMappings:d.identityMappings||[],importHistory:d.importHistory||[]};};
 try{data=ensure(JSON.parse(localStorage.getItem(KEY)));}catch{data=blank();}
-const save=()=>{route=null;data.collection.updatedAt=new Date().toISOString();try{localStorage.setItem(KEY,JSON.stringify(data));}catch{notice('Browser storage is full. Export your archive.');}render();};
+const save=()=>{route=null;if(indexScope.kind==='path')indexScope={kind:'all'};data.collection.updatedAt=new Date().toISOString();try{localStorage.setItem(KEY,JSON.stringify(data));}catch{notice('Browser storage is full. Export your archive.');}render();drawIndex();};
 const person=id=>data.people.find(p=>p.id===id);
 const label=p=>(p?.nameStatus==='unknown'||!p?.name)?'Unknown person':p.name;
 const related=(r,id)=>r.from===id?r.to:r.to===id?r.from:null;
@@ -40,13 +42,20 @@ export function searchScore(query,candidate){
  return total/tokens.length+(c.includes(q)?15:0);
 }
 function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function modal(title,html,bind){$('#modalTitle').textContent=title;$('#modalBody').innerHTML=html;$('#modal').classList.remove('hidden');bind?.($('#modalBody'));}
-function closeModal(){$('#modal').classList.add('hidden');$('#modalBody').innerHTML='';}
+function modal(title,html,bind){
+ const body=$('#modalBody'),footer=$('#modalFooter');
+ $('#modalTitle').textContent=title;body.innerHTML=html;footer.replaceChildren();footer.classList.add('hidden');
+ $('#modal').classList.remove('hidden');bind?.(body);
+ const action=[...body.querySelectorAll('.row.spread')].filter(x=>x.querySelector('button.primary')).at(-1);
+ if(action){footer.append(action);footer.classList.remove('hidden');}
+ else if(body.querySelector('#renameSave')){footer.append(body.querySelector('#renameSave'));footer.classList.remove('hidden');}
+}
+function closeModal(){$('#modal').classList.add('hidden');$('#modalBody').innerHTML='';$('#modalFooter').replaceChildren();$('#modalFooter').classList.add('hidden');}
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#modal').classList.contains('hidden')){e.preventDefault();closeModal();}});
 $('#modalClose').onclick=closeModal;$('#modal').addEventListener('click',e=>{if(e.target===$('#modal'))closeModal();});
 const download=(obj,name,type='application/json')=>{const blob=new Blob([typeof obj==='string'?obj:JSON.stringify(obj,null,2)],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1200);};
 function backup(){download(data,`family-atlas-${new Date().toISOString().slice(0,10)}.json`);localStorage.setItem(KEY+'-lastbackup',String(Date.now()));}
-function newPerson(anchor=null,relation=null){modal('Add person',`<p class="muted">${anchor?'Expand the family of '+escapeHtml(label(person(anchor))):'Create a new, independent person'}</p>${anchor?quickType(relation):''}<div class="field"><label>Name</label><input id="newName" autofocus placeholder="Enter a name"></div><label class="row"><input id="unknown" type="checkbox"> Name unknown</label><fieldset class="choiceField"><legend>Gender (optional)</legend><div class="choiceGrid">${genderOptions('newGender','')}</div></fieldset><p class="hint">More information can be added later. No dates or life status are required.</p><div class="row spread"><button id="cancel">Cancel</button><button class="primary" id="makePerson">${anchor?'Add to family':'Create person'}</button></div>`,root=>{if(anchor)bindTypeButtons(root);root.querySelector('#unknown').onchange=e=>{root.querySelector('#newName').disabled=e.target.checked;};root.querySelector('#cancel').onclick=closeModal;root.querySelector('#makePerson').onclick=()=>{const unknown=root.querySelector('#unknown').checked,name=root.querySelector('#newName').value.trim(),type=root.querySelector('.typeBtn.selectedChoice')?.dataset.type||relation;if(!unknown&&!name)return notice('Enter a name or select Name unknown');const id=uid();data.people.push({id,name:unknown?'':name,nameStatus:unknown?'unknown':'known',lifeStatus:'unknown',gender:root.querySelector('input[name="newGender"]:checked')?.value||''});if(anchor&&type){const [from,to]=type==='parentage_parent'?[id,anchor]:type==='parentage_child'?[anchor,id]:[anchor,id];addRel(type.startsWith('parentage')?'parentage':type,from,to);}selected=id;viewMode='atlas';closeModal();save();fitPerson(id);};root.querySelector('#newName').focus();});}
+function newPerson(anchor=null,relation=null){modal('Add person',`<p class="muted">${anchor?'Expand the family of '+escapeHtml(label(person(anchor))):'Create a new, independent person'}</p>${anchor?quickType(relation):''}<div class="field"><label>Name</label><input id="newName" autofocus placeholder="Enter a name"></div><label class="row"><input id="unknown" type="checkbox"> Name unknown</label><fieldset class="choiceField"><legend>Gender (optional)</legend><div class="choiceGrid">${genderOptions('newGender','')}</div></fieldset><p class="hint">More information can be added later. No dates or life status are required.</p><div class="row spread"><button id="cancel">Cancel</button><button class="primary" id="makePerson">${anchor?'Add to family':'Create person'}</button></div>`,root=>{if(anchor)bindTypeButtons(root);root.querySelector('#unknown').onchange=e=>{root.querySelector('#newName').disabled=e.target.checked;};root.querySelector('#cancel').onclick=closeModal;root.querySelector('#makePerson').onclick=()=>{const unknown=root.querySelector('#unknown').checked,name=root.querySelector('#newName').value.trim(),type=root.querySelector('.typeBtn.selectedChoice')?.dataset.type||relation;if(!unknown&&!name)return notice('Enter a name or select Name unknown');const id=uid();data.people.push({id,name:unknown?'':name,nameStatus:unknown?'unknown':'known',lifeStatus:'unknown',gender:root.querySelector('input[name="newGender"]:checked')?.value||''});if(anchor&&type){const [from,to]=type==='parentage_parent'?[id,anchor]:type==='parentage_child'?[anchor,id]:[anchor,id];addRel(type.startsWith('parentage')?'parentage':type,from,to);}selected=id;viewMode='atlas';if(indexScope.kind==='lineage'&&!anchor)indexScope={kind:'all'};closeModal();save();fitPerson(id);};root.querySelector('#newName').focus();});}
 const opts=[['parentage_parent','Parent'],['sibling','Sibling'],['parentage_child','Child'],['partnership','Partner'],['guardian','Guardian'],['other','Other']];
 function quickType(selectedType='sibling'){return `<div class="field"><label>Relationship to selected person</label><div class="quick">${opts.map(([v,n])=>`<button type="button" class="typeBtn ${v===selectedType?'selectedChoice':''}" data-type="${v}">${n}</button>`).join('')}</div></div>`;}
 function bindTypeButtons(root){root.querySelectorAll('.typeBtn').forEach(b=>b.onclick=()=>{root.querySelectorAll('.typeBtn').forEach(c=>c.classList.remove('selectedChoice'));b.classList.add('selectedChoice');});}
@@ -182,6 +191,89 @@ function routeDescription(r,a,b){
   if(r.type==='sibling')return 'sibling of';
   return 'connected to';
 }
+
+// Index operates on person IDs, relationship IDs, and generated parentage units.
+// It is not an additional hierarchy persisted into the JSON archive.
+function indexPeople(selected=''){
+ return '<option value="">Choose a person</option>'+[...data.people].sort((a,b)=>label(a).localeCompare(label(b))).map(p=>
+ `<option value="${escapeHtml(p.id)}" ${p.id===selected?'selected':''}>${escapeHtml(label(p))}${p.birth?' · '+escapeHtml(p.birth):''}</option>`).join('');
+}
+function indexGroups(){
+ return parentageUnits(data.people.map(p=>p.id),data.relationships)
+   .filter(u=>u.children.length).sort((a,b)=>a.parents.map(id=>label(person(id))).join().localeCompare(b.parents.map(id=>label(person(id))).join()));
+}
+function indexGroupOptions(selected=''){
+ return '<option value="">Choose a parentage group</option>'+indexGroups().map(u=>{
+ const key=u.parents.join('|');
+ return `<option value="${escapeHtml(key)}" ${key===selected?'selected':''}>${escapeHtml(u.parents.map(id=>label(person(id))).join(' + ')||'Unknown parent')} · ${u.children.length} children</option>`;
+ }).join('');
+}
+function indexedDescendants(spec){
+ const roots=spec.startType==='group'?indexGroups().find(u=>u.parents.join('|')===spec.startId)?.parents||[]:[spec.startId];
+ return descendantScope(data.people,data.relationships,roots,spec.depth,spec.stopId);
+}
+function indexedScopePeople(){
+ if(indexScope.kind==='lineage')return indexedDescendants(indexScope);
+ if(indexScope.kind==='path'&&route)return new Set(route.ids);
+ return new Set(data.people.map(p=>p.id));
+}
+function indexTitle(){
+ if(indexScope.kind==='lineage')return 'Descendant map · '+(indexScope.startType==='group'?
+ indexGroups().find(u=>u.parents.join('|')===indexScope.startId)?.parents.map(id=>label(person(id))).join(' + '):
+ label(person(indexScope.startId)))+' · '+indexScope.depth+' bands';
+ if(indexScope.kind==='path'&&route)return 'Person-to-person · '+label(person(route.ids[0]))+' to '+label(person(route.ids.at(-1)));
+ return 'Complete atlas';
+}
+function setIndexScope(spec){
+ indexScope=spec;if(spec.kind!=='path')route=null;
+ viewMode='atlas';focus=null;focusBack=[];
+ if(batchMode){batchMode=false;clearBatchSelection();$('#batchBtn').classList.remove('primary');$('#batchBtn').textContent='Select multiple';}
+ render();fitAll();drawIndex();
+}
+function drawIndex(){
+ const pane=$('#indexPanel');pane.classList.toggle('hidden',!indexOpen);
+ $('#indexBtn').setAttribute('aria-expanded',String(indexOpen));
+ if(!indexOpen)return;
+ const isGroup=indexScope.kind==='lineage'&&indexScope.startType==='group';
+ const start=indexScope.kind==='lineage'?indexScope.startId:selected||data.people[0]?.id||'';
+ pane.innerHTML=`<div class="indexHead"><div><small>ATLAS NAVIGATION</small><h2>Index</h2></div><button id="indexClose" aria-label="Close index">×</button></div>
+ <p class="hint">Choose a perspective on the same family archive. No people or relationships are duplicated.</p>
+ <section class="indexSection"><h3>Complete atlas</h3><p>All connected and disconnected family networks.</p><button id="indexAll">Show all families</button></section>
+ <section class="indexSection"><h3>Descendant map</h3><p>Begin from one person or a shared parentage junction. Move outward through recorded parent–child relationships.</p>
+ <div class="field"><label>Starting point</label><select id="indexStartType"><option value="person" ${!isGroup?'selected':''}>Person</option><option value="group" ${isGroup?'selected':''}>Parentage group</option></select></div>
+ <div class="field"><label id="startLabel">Starting ${isGroup?'group':'person'}</label><select id="indexStart">${isGroup?indexGroupOptions(start):indexPeople(start)}</select></div>
+ <div class="field"><label>Descendant bands</label><select id="indexDepth">${[1,2,3,4,5,6,8,10,20,30].map(v=>`<option value="${v}" ${v===(indexScope.depth||3)?'selected':''}>${v===30?'All (maximum 30 bands)':v}</option>`).join('')}</select></div>
+ <div class="field"><label>Stop expanding beyond person (optional)</label><select id="indexStop">${indexPeople(indexScope.kind==='lineage'?indexScope.stopId:'')}</select></div>
+ <button id="indexExplore" class="primary">Explore descendants</button></section>
+ <section class="indexSection"><h3>Between people</h3><p>Trace a chain of recorded parentage, partnerships or other relationships from member to member.</p>
+ <div class="field"><label>From</label><select id="indexFrom">${indexPeople(route?.ids?.[0]||selected||'')}</select></div>
+ <div class="field"><label>To</label><select id="indexTo">${indexPeople(route?.ids?.at(-1)||'')}</select></div>
+ <button id="indexPath">Trace this path</button></section>
+ <div class="indexFoot"><strong>Current view</strong><p>${escapeHtml(indexTitle())}</p></div>`;
+ pane.querySelector('#indexClose').onclick=()=>{indexOpen=false;drawIndex();};
+ pane.querySelector('#indexAll').onclick=()=>setIndexScope({kind:'all'});
+ pane.querySelector('#indexStartType').onchange=e=>{
+  const group=e.target.value==='group';pane.querySelector('#startLabel').textContent=group?'Starting group':'Starting person';
+  pane.querySelector('#indexStart').innerHTML=group?indexGroupOptions():indexPeople(selected||'');
+ };
+ pane.querySelector('#indexExplore').onclick=()=>{
+  const startType=pane.querySelector('#indexStartType').value,startId=pane.querySelector('#indexStart').value;
+  if(!startId)return notice('Choose a starting person or group');
+  const spec={kind:'lineage',startType,startId,depth:Number(pane.querySelector('#indexDepth').value),stopId:pane.querySelector('#indexStop').value||null};
+  const people=indexedDescendants(spec);
+  if(!people.size)return notice('No people found for this lineage');
+  if(spec.stopId&&!people.has(spec.stopId))return notice('The stopping person is outside this lineage');
+  setIndexScope(spec);
+ };
+ pane.querySelector('#indexPath').onclick=()=>{
+  const from=pane.querySelector('#indexFrom').value,to=pane.querySelector('#indexTo').value;
+  if(!from||!to)return notice('Choose both members');
+  const path=shortestPath(from,to);
+  if(!path)return notice('No recorded path connects these people');
+  route=path;setIndexScope({kind:'path'});
+ };
+}
+
 function graphSubset(){
   if(route)return new Set(route.ids);
   if(!focus)return new Set(data.people.map(p=>p.id));
@@ -226,7 +318,7 @@ function updateViewControls(){
 }
 function switchView(mode,reference=null){
   viewMode=mode==='detail'?'detail':'atlas';route=null;
-  if(viewMode==='detail')focus=reference||selected||focus||data.people[0]?.id||null;
+  if(viewMode==='detail'){if(indexScope.kind==='path')indexScope={kind:'all'};focus=reference||selected||focus||data.people[0]?.id||null;}
   renderGraph();fitAll();
 }
 const polarPoint=(cx,cy,r,a)=>({x:cx+r*Math.cos(a),y:cy+r*Math.sin(a)});
@@ -358,7 +450,8 @@ function renderGraph(){
     layout=lineageDetail([...ids],data.relationships,id=>label(person(id)));
     coords=layout.positions;
   }else{
-    layout=radialAtlas(data.people,data.relationships,id=>label(person(id)));
+    const allowed=indexedScopePeople();
+    layout=radialAtlas(data.people.filter(p=>allowed.has(p.id)),data.relationships.filter(r=>allowed.has(r.from)&&allowed.has(r.to)),id=>label(person(id)));
     coords=layout.positions;
     ids=new Set(coords.keys());
   }
@@ -520,7 +613,7 @@ function renderGraph(){
   const maxY=Math.max(...[...positions.map(p=>p.y+85),...clusters.map(c=>c.cy+c.radius+35),...(positions.length?[]:[100])]);
   graphBounds={x:minX,y:minY,w:maxX-minX,h:maxY-minY};
   applyView();
-  $('#status').textContent=`${batchMode?'BATCH SELECT · ':''}${ids.size} people · ${clusters.length||1} network${clusters.length===1?'':'s'} · Drag to pan · Scroll to zoom · DEC deceased`;
+  $('#status').textContent=`${batchMode?'BATCH SELECT · ':''}${indexTitle()} · ${ids.size} people · ${clusters.length||1} network${clusters.length===1?'':'s'} · Drag to pan · Scroll to zoom · DEC deceased`;
   renderFocusBar();
 }
 function applyView(){$('#stage').classList.toggle('namesHidden',!showNames);$('#toggleNames').textContent=showNames?'Hide names':'Show names';$('#toggleNames').setAttribute('aria-pressed',String(!showNames));$('#world').setAttribute('transform',`translate(${pan.x} ${pan.y}) scale(${zoom})`);$('#stage').classList.toggle('overviewScale',zoom<.43);}
@@ -555,7 +648,7 @@ function chooseRoute(){
       if(!chosen.from||!chosen.to)return notice('Select both people from the search results');
       const result=shortestPath(chosen.from,chosen.to);
       if(!result)return notice('No recorded relationship path connects these people');
-      route=result;viewMode="atlas";closeModal();renderGraph();fitAll();
+      route=result;indexScope={kind:'path'};viewMode='atlas';closeModal();renderGraph();fitAll();drawIndex();
     };
   });
 }
@@ -565,8 +658,8 @@ function renderFocusBar(){
   const b=document.createElement('div');b.className='focusbar';
   if(route){
     b.innerHTML=`<strong>Path: ${escapeHtml(label(person(route.ids[0])))} → ${escapeHtml(label(person(route.ids.at(-1))))}</strong><span>${route.edges.length} connections</span><button id="routeDetails">View steps</button><button id="routeNew">Trace another</button><button id="routeExit">Clear path</button>`;
-    $('#stage').append(b);b.querySelector('#routeNew').onclick=chooseRoute;
-    b.querySelector('#routeExit').onclick=()=>{route=null;renderGraph();};
+    $('#stage').append(b);b.querySelector('#routeNew').onclick=()=>{indexOpen=true;drawIndex();};
+    b.querySelector('#routeExit').onclick=()=>setIndexScope({kind:'all'});
     b.querySelector('#routeDetails').onclick=showRouteSteps;return;
   }
   const navigationFrom=focus;
@@ -799,9 +892,9 @@ function reviewBatch(title,summary,operation,rows=[]){
 function render(){drawSide();renderGraph();$('#collectionTitle').textContent=data.collection.title||'Local collection';}
 $('#toggleNames').onclick=()=>{showNames=!showNames;applyView();};
 $('#detailBackBtn').onclick=()=>{focus=null;focusBack=[];switchView('atlas');};
-$('#traceBtn').onclick=chooseRoute;$('#addBtn').onclick=()=>newPerson(selected,'sibling');$('#zoomFit').onclick=fitAll;$('#zoomIn').onclick=()=>zoomAt(1.2,$('#stage').clientWidth/2,$('#stage').clientHeight/2);$('#zoomOut').onclick=()=>zoomAt(1/1.2,$('#stage').clientWidth/2,$('#stage').clientHeight/2);
+$('#indexBtn').onclick=()=>{indexOpen=!indexOpen;drawIndex();};$('#addBtn').onclick=()=>newPerson(selected,'sibling');$('#zoomFit').onclick=fitAll;$('#zoomIn').onclick=()=>zoomAt(1.2,$('#stage').clientWidth/2,$('#stage').clientHeight/2);$('#zoomOut').onclick=()=>zoomAt(1/1.2,$('#stage').clientWidth/2,$('#stage').clientHeight/2);
 $('#batchBtn').onclick=toggleBatchMode;
-$('#searchBtn').onclick=()=>{modal('Find a person',`<div class="field"><label>Search by name</label><input id="globalSearch" placeholder="Search people…"></div><div id="searchResults"></div>`,root=>{const input=root.querySelector('input'),draw=()=>{const q=input.value.trim();root.querySelector('#searchResults').innerHTML=(q?data.people.map(p=>({p,score:searchScore(q,label(p))})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,25):data.people.map(p=>({p})).slice(0,25)).map(({p})=>`<button class="personItem" data-id="${p.id}"><span><strong>${escapeHtml(label(p))}</strong><small>${p.birth?'Born '+escapeHtml(p.birth):'Select to navigate'}</small></span></button>`).join('');root.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>{const id=b.dataset.id;if(viewMode==='detail'&&!graphSubset().has(id)){focus=id;renderGraph();}
+$('#searchBtn').onclick=()=>{modal('Find a person',`<div class="field"><label>Search by name</label><input id="globalSearch" placeholder="Search people…"></div><div id="searchResults"></div>`,root=>{const input=root.querySelector('input'),draw=()=>{const q=input.value.trim();root.querySelector('#searchResults').innerHTML=(q?data.people.map(p=>({p,score:searchScore(q,label(p))})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,25):data.people.map(p=>({p})).slice(0,25)).map(({p})=>`<button class="personItem" data-id="${p.id}"><span><strong>${escapeHtml(label(p))}</strong><small>${p.birth?'Born '+escapeHtml(p.birth):'Select to navigate'}</small></span></button>`).join('');root.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>{const id=b.dataset.id;if(viewMode==='atlas'&&!indexedScopePeople().has(id))indexScope={kind:'all'};if(viewMode==='detail'&&!graphSubset().has(id)){focus=id;renderGraph();}
 closeModal();selectPerson(id);fitPerson(id);});};input.oninput=draw;draw();input.focus();});};
 $('#exportBtn').onclick=()=>modal('Export family atlas',`<p>JSON is the complete, portable archive. SVG exports the current graph view.</p><div class="stack"><button id="jsonExport">Download complete JSON archive</button><button id="svgExport">Download current graph as SVG</button></div>`,root=>{root.querySelector('#jsonExport').onclick=()=>{backup();closeModal();};root.querySelector('#svgExport').onclick=()=>{const x=$('#atlas').cloneNode(true);x.setAttribute('xmlns',svgNS);x.setAttribute('viewBox',`${graphBounds.x} ${graphBounds.y} ${graphBounds.w} ${graphBounds.h}`);x.removeAttribute('width');x.removeAttribute('height');x.querySelector('#world').setAttribute('transform','');const style=document.createElementNS(svgNS,'style');style.textContent='.generationRing{fill:none;stroke:#aaa;stroke-opacity:.45;stroke-width:1}.clusterCaption text{fill:#555;font:11px Arial}.clusterCaption .nameplate{fill:#fff;stroke:#bbb}.parentJunction{fill:#fff;stroke:#333;stroke-width:1.2}.link{fill:none;stroke:#888;stroke-width:1.5}.link.parentage{stroke:#333;stroke-width:1.7}.link.sibling{stroke:#aaa;stroke-width:1}.link.crossQuiet{stroke-opacity:.2}.link.partnership{stroke-dasharray:6 4}.link.guardian,.link.other,.link.sibling{stroke-dasharray:3 4}.personNode circle{fill:white;stroke:#222;stroke-width:1.5}.personNode text{fill:#111;font:12px Arial}.personNode .nameplate{fill:white;stroke:#bbb}.personNode .initial{font-weight:bold}.personNode .lifeMarker{fill:#222;stroke:#222}.edgeStatus.status-divorced rect,.edgeStatus.status-separated rect{fill:#f5d7d7;stroke:#a86d6d}.edgeStatus.status-former rect,.edgeStatus.status-historical rect,.edgeStatus.status-ended-by-death rect{fill:#fff1ba;stroke:#c5a95c}.personNode .lifeMarkText{fill:#fff;font-weight:bold;font-size:9px}.edgeStatus rect{fill:white;stroke:#777;stroke-width:.75}.edgeStatus text{fill:#222;font:bold 10px Arial}.link.routeLink{stroke:#111;stroke-width:5.5;stroke-dasharray:none}.componentCircle{fill:#fafafa;stroke:#222;stroke-width:1.5}.componentDot{fill:#555}.componentNode .nameplate{fill:#fff;stroke:#aaa}.componentName{fill:#111;font:bold 13px Arial}.componentCount{fill:#555;font:11px Arial}.edgeGroup.status-separated .link,.edgeGroup.status-divorced .link{stroke:#b87575}.edgeGroup.status-former .link,.edgeGroup.status-historical .link,.edgeGroup.status-ended-by-death .link{stroke:#c4a85e}';x.prepend(style);download(new XMLSerializer().serializeToString(x),'family-atlas.svg','image/svg+xml');closeModal();};});
 $('#importBtn').onclick=()=>{$('#fileInput').value='';$('#fileInput').click();};$('#fileInput').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const d=ensure(JSON.parse(await f.text()));if(d.people.length>5000)throw Error('File has too many people for this version');beginImport(d);}catch(err){modal('Import error',`<p>${escapeHtml(err.message)}</p>`);}};
@@ -814,5 +907,7 @@ function commitImport(imp,choices){const map=new Map(),sourceId=uid(),cid=imp.co
 map.set(p.id,id);if(!data.identityMappings.some(x=>x.sourceKey===key))data.identityMappings.push({sourceKey:key,personId:id});}
 for(const r of imp.relationships){const from=map.get(r.from),to=map.get(r.to);if(!from||!to||from===to){continue;}const incoming={...deep(r),from,to,id:uid(),sourceRefs:[...new Set([...(r.sourceRefs||[]),sourceId])]};const existing=data.relationships.find(x=>sameRel(x,incoming));if(existing){existing.sourceRefs=[...new Set([...(existing.sourceRefs||[]),sourceId])];if(r.roles)existing.roles=[...new Set([...(existing.roles||[]),...r.roles])];if(existing.status&&r.status&&existing.status!==r.status&&!data.assertions.some(a=>a.relationshipId===existing.id&&a.field==='status'&&a.value===r.status&&a.originKey===sourceKey(cid,r.id)))data.assertions.push({id:uid(),relationshipId:existing.id,field:'status',value:r.status,sourceId,originKey:sourceKey(cid,r.id),status:'unresolved'});continue;}if(incoming.type==='parentage'&&wouldCycle(data.relationships,from,to)){data.assertions.push({id:uid(),field:'rejectedParentage',value:{from,to},sourceId,status:'unresolved'});continue;}data.relationships.push(incoming);newRelations++;}
 data.importHistory.push({id:uid(),collectionId:cid,sourceId,importedAt:new Date().toISOString(),newPeople,newRelations});return{newPeople,newRelations};}
-$('#menuBtn').onclick=()=>{const last=Number(localStorage.getItem(KEY+'-lastbackup')||0);modal('Collection management',`<p class="small muted">${data.people.length} people · ${data.relationships.length} relationships</p><div class="field"><label>Collection title</label><input id="renameCollection" value="${escapeHtml(data.collection.title||'Family Atlas')}"></div><div class="stack"><button id="renameSave">Rename collection</button><button id="loadSample">Load extensive fictional sample (replaces current collection)</button><button id="newCollection">Start empty collection</button><button id="downloadBackup">Download JSON backup</button></div><p class="hint">Last downloaded backup: ${last?new Date(last).toLocaleDateString():'No backup recorded'}. Browser data may be lost when site data is cleared.</p>`,root=>{root.querySelector('#renameSave').onclick=()=>{data.collection.title=root.querySelector('#renameCollection').value.trim()||'Family Atlas';closeModal();save();};root.querySelector('#downloadBackup').onclick=()=>{backup();notice('JSON archive downloaded');};root.querySelector('#newCollection').onclick=()=>{if(!confirm('Replace your current collection with an empty one? Export a backup first.'))return;backup();data=blank();selected=focus=null;viewMode='atlas';closeModal();save();fitAll();};root.querySelector('#loadSample').onclick=async()=>{if(!confirm('Replace your current collection with the extensive fictional sample? A JSON backup will download first.'))return;try{const r=await fetch('samples/extensive-family.json');if(!r.ok)throw Error('Sample is not available');const d=ensure(await r.json());backup();data=d;selected=focus=null;viewMode='atlas';closeModal();save();fitAll();}catch(err){notice(err.message);}};});};
+$('#menuBtn').onclick=()=>{const last=Number(localStorage.getItem(KEY+'-lastbackup')||0);modal('Collection management',`<p class="small muted">${data.people.length} people · ${data.relationships.length} relationships</p><div class="field"><label>Collection title</label><input id="renameCollection" value="${escapeHtml(data.collection.title||'Family Atlas')}"></div><div class="stack"><button id="renameSave">Rename collection</button><button id="loadSample">Load extensive fictional sample (replaces current collection)</button><button id="newCollection">Start empty collection</button><button id="downloadBackup">Download JSON backup</button></div><p class="hint">Last downloaded backup: ${last?new Date(last).toLocaleDateString():'No backup recorded'}. Browser data may be lost when site data is cleared.</p>`,root=>{root.querySelector('#renameSave').onclick=()=>{data.collection.title=root.querySelector('#renameCollection').value.trim()||'Family Atlas';closeModal();save();};root.querySelector('#downloadBackup').onclick=()=>{backup();notice('JSON archive downloaded');};root.querySelector('#newCollection').onclick=()=>{if(!confirm('Replace your current collection with an empty one? Export a backup first.'))return;backup();data=blank();selected=focus=null;indexScope={kind:'all'};viewMode='atlas';closeModal();save();fitAll();};root.querySelector('#loadSample').onclick=async()=>{if(!confirm('Replace your current collection with the extensive fictional sample? A JSON backup will download first.'))return;try{const r=await fetch('samples/extensive-family.json');if(!r.ok)throw Error('Sample is not available');const d=ensure(await r.json());backup();data=d;selected=focus=null;indexScope={kind:'all'};viewMode='atlas';closeModal();save();fitAll();}catch(err){notice(err.message);}};});};
 render();fitAll();window.addEventListener('resize',()=>applyView());if(data.people.length===0){notice('Start with Add person, or load the extensive sample from More.');}else{const last=Number(localStorage.getItem(KEY+'-lastbackup')||0);if(Date.now()-last>14*86400000)setTimeout(()=>notice('Consider exporting a JSON backup of your family atlas.'),900);}
+
+drawIndex();

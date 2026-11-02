@@ -150,3 +150,11 @@ The prior SVG white line casings and crossing bridges have been withdrawn. Ring-
 - SVG crossings receive a local 4.5-unit gap on lower-priority paths, not a continuous white casing. Parentage junctions are excluded from this masking and remain visible on a separate layer. The gap is a visual aid, not a guarantee of crossing-free routing; overlaps along identical tracks require separate routing.
 - Trace paths are rendered 6 units thick and prioritised above ordinary connections; the standalone SVG export retains this weight and the crossing masks.
 - Existing local collection JSON/schema remains unchanged. Regression tests are under `tests/`.
+
+## v0.14 · Index and persistent modal actions
+
+The Index panel provides Complete Atlas, Descendant Map (starting person or parentage group, depth limit, optional stopping person), and Between People (shortest recorded path). These are non-persistent perspectives on the same graph. Contextual partners and co-parents appear where relevant without recursively including unrelated ancestral branches. The family-detail tree remains available separately.
+
+The optional stopping person prevents further descendant traversal beyond that person; it does not constrain unrelated branches. Index parameters are not written into JSON.
+
+Modal edit/confirmation actions remain visible at the bottom while the form body scrolls. The scrollable area is separate from the modal footer. Existing button handlers are bound before the action group is moved.
