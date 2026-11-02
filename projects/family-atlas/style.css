@@ -131,3 +131,18 @@
 .batchList{margin:15px 0 5px;font-size:12px;line-height:1.7}
 .batchList ul{padding-left:20px;margin:7px 0}
 .batchFoot{border-top:1px solid #ddd;margin-top:18px;padding-top:12px}
+
+/* v0.13 — targeted crossing gaps and high-contrast trace */
+#junctions .junctionHit{fill:transparent;stroke:transparent;stroke-width:0;pointer-events:all;cursor:pointer}
+#junctions .junctionHit:focus-visible{fill:rgba(50,50,50,.12);stroke:#333;stroke-width:1;outline:none}
+.edgeGroup .link.routeLink,.link.routeLink{stroke:#111!important;stroke-width:6!important;stroke-opacity:1!important;stroke-dasharray:none!important}
+.batchPreviewScroll{max-height:55dvh;overflow:auto;border:1px solid #aaa;margin:14px 0}
+.batchPreview{border-collapse:collapse;width:100%;min-width:510px;font-size:12px;line-height:1.45}
+.batchPreview th,.batchPreview td{text-align:left;vertical-align:top;border-bottom:1px solid #ddd;border-right:1px solid #eee;padding:8px 9px;overflow-wrap:anywhere}
+.batchPreview th{position:sticky;top:0;background:#eee;font-weight:700;z-index:1}
+.batchPreview td:first-child{font-weight:600;min-width:120px}
+.batchPreview tr.previewUnchanged{color:#777;background:#fafafa}
+.batchPreview tr.previewChanged td:last-child{font-weight:700}
+.batchAction{padding:12px;border:1px solid #aaa;margin:14px 0}
+.batchAction h4{margin:0 0 6px;font-size:13px}
+.batchAction p{margin:6px 0 12px}

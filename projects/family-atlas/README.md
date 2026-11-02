@@ -140,3 +140,13 @@ Activate **Select multiple** in the toolbar. Click people in either atlas or fam
 Every batch modification requires a confirmation preview and enables one-step Undo. The entire previous JSON collection is retained in memory for Undo, but not stored in the export. Avoid editing concurrently in multiple tabs.
 
 The prior SVG white line casings and crossing bridges have been withdrawn. Ring-route spacing and actual junction markers are unchanged. Family-detail Parent/Child navigation now uses the current focus person; changing a destination dropdown navigates immediately.
+
+## v0.13 — Batch preview, junction selection and crossing gaps
+
+- Every batch review now shows a field-by-field **Current → Proposed** table for each affected record. Unchanged fields are included in a quieter style. No records are committed until confirmation.
+- In selection mode, parentage junctions retain their small visible dot but receive a 16-unit interactive target (including keyboard activation). Selecting one opens its parentage context.
+- **Family group → Review sibling connections** creates explicit reciprocal sibling records for all pairs among the selected children (or selected people without a junction). It does not create or modify parentage links. Sibling links may be suppressed in the drawing when already implied by shared parentage.
+- Adding a co-parent now previews every child’s current versus proposed parentage link.
+- SVG crossings receive a local 4.5-unit gap on lower-priority paths, not a continuous white casing. Parentage junctions are excluded from this masking and remain visible on a separate layer. The gap is a visual aid, not a guarantee of crossing-free routing; overlaps along identical tracks require separate routing.
+- Trace paths are rendered 6 units thick and prioritised above ordinary connections; the standalone SVG export retains this weight and the crossing masks.
+- Existing local collection JSON/schema remains unchanged. Regression tests are under `tests/`.

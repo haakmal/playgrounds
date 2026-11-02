@@ -1,0 +1,18 @@
+import fs from 'node:fs';
+import vm from 'node:vm';
+import assert from 'node:assert/strict';
+const source=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8');
+const block=(a,b)=>{const start=source.indexOf(a),end=source.indexOf(b,start);assert.ok(start>=0&&end>start);return source.slice(start,end);};
+const ctx={escapeHtml:s=>String(s)};vm.createContext(ctx);
+vm.runInContext(block('function previewField(', 'function reviewBatch(')+block('function segmentIntersection(', 'function crossingGaps(')+';this.api={previewField,previewTable,previewParentage,segmentIntersection};',ctx);
+const {previewField,previewTable,previewParentage,segmentIntersection}=ctx.api;
+assert.match(previewTable([previewField('Child A','Gender','', 'female')]),/Child A/);
+assert.match(previewTable([previewField('Child A','Gender','', 'female')]),/female/);
+assert.ok(previewParentage(null,{roles:['biological','legal'],parentRole:'father'},'Parent A → Child B').length>=4);
+const cross=segmentIntersection({x:0,y:0},{x:100,y:100},{x:0,y:100},{x:100,y:0});
+assert.ok(cross&&Math.abs(cross.x-50)<.0001);
+assert.equal(segmentIntersection({x:0,y:0},{x:100,y:0},{x:40,y:0},{x:80,y:0}),null);
+assert.match(source,/class:'junctionHit'/);
+assert.match(source,/Review sibling connections/);
+assert.match(source,/crossingGaps\(es,js\)/);
+console.log('PASS batch preview details, parentage fields, junction hit targets, sibling action, crossing intersection');

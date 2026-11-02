@@ -1,5 +1,5 @@
 import {radialAtlas, lineageDetail, parentageUnits} from './radial-layout.js';
-/* Family Atlas v0.12: radial descendant display, contextual lineage, local-first records. */
+/* Family Atlas v0.13: radial descendant display, contextual lineage, local-first records. */
 const $=s=>document.querySelector(s), svgNS='http://www.w3.org/2000/svg';
 const uid=()=>crypto.randomUUID();
 const blank=()=>({schemaVersion:'0.2',collection:{id:uid(),title:'My family atlas'},people:[],relationships:[],sources:[],assertions:[],identityMappings:[],importHistory:[]});
@@ -285,10 +285,69 @@ function addLink(layer,d,kind,tip,active=false,extra=''){
  const line=svg('path',{d,class:`link ${kind}${active?' routeLink':''} ${extra}`.trim()});
  line.append(svg('title',{},tip));g.append(line);layer.append(g);return line;
 }
-// Plain strokes: the previous crossing-bridge experiment has been withdrawn.
-// The independent routing algorithm is left intact for a future dedicated trial.
+// An unrelated crossing is a gap, not a shared junction. The lower-priority
+// route receives a small SVG mask at that intersection; no white side-casings.
+// Real parentage junctions are drawn in their own topmost SVG layer.
+function segmentIntersection(a,b,c,d){
+ const rx=b.x-a.x,ry=b.y-a.y,sx=d.x-c.x,sy=d.y-c.y;
+ const den=rx*sy-ry*sx;if(Math.abs(den)<1e-7)return null;
+ const qx=c.x-a.x,qy=c.y-a.y,t=(qx*sy-qy*sx)/den,u=(qx*ry-qy*rx)/den;
+ if(t<=.02||t>=.98||u<=.02||u>=.98)return null;
+ return {x:a.x+t*rx,y:a.y+t*ry};
+}
+function crossingGaps(edges,junctionLayer){
+ const old=edges.querySelector('#crossingMasks');if(old)old.remove();
+ const paths=[...edges.querySelectorAll(':scope > .edgeGroup > path.link')];
+ if(paths.length>350)return; // Avoid quadratic browser work on pathological imports.
+ const rank=p=>p.classList.contains('routeLink')?4:p.classList.contains('parentage')?3:p.classList.contains('partnership')?2:1;
+ const junctions=[...junctionLayer.querySelectorAll('circle.parentJunction')].map(c=>({x:+c.getAttribute('cx'),y:+c.getAttribute('cy')}));
+ const nodes=[...coords.values()];
+ const grid=new Map(),cell=32,collisions=new Map(),seen=new Set();
+ const insert=(key,item)=>{if(!grid.has(key))grid.set(key,[]);grid.get(key).push(item);};
+ for(let index=0;index<paths.length;index++){
+   const path=paths[index];let len;
+   try{len=path.getTotalLength();}catch{continue;}
+   if(!Number.isFinite(len)||len<3)continue;
+   const step=Math.max(5,Math.min(10,len/350));
+   let prev=path.getPointAtLength(0);
+   for(let n=1,total=Math.ceil(len/step);n<=total;n++){
+     const next=path.getPointAtLength(Math.min(len,n*len/total));
+     const seg={a:prev,b:next,index};prev=next;
+     const x0=Math.floor(Math.min(seg.a.x,seg.b.x)/cell),x1=Math.floor(Math.max(seg.a.x,seg.b.x)/cell);
+     const y0=Math.floor(Math.min(seg.a.y,seg.b.y)/cell),y1=Math.floor(Math.max(seg.a.y,seg.b.y)/cell);
+     for(let x=x0;x<=x1;x++)for(let y=y0;y<=y1;y++){
+       const k=x+':'+y;
+       for(const other of grid.get(k)||[]){
+         if(other.index===index)continue;
+         const found=segmentIntersection(other.a,other.b,seg.a,seg.b);
+         if(!found)continue;
+         const key=[Math.min(index,other.index),Math.max(index,other.index),Math.round(found.x/5),Math.round(found.y/5)].join(':');
+         if(seen.has(key))continue;seen.add(key);
+         // Crossings at actual junctions or at the ends of a person stem must not be broken.
+         if(junctions.some(p=>Math.hypot(found.x-p.x,found.y-p.y)<13))continue;
+         if(nodes.some(p=>Math.hypot(found.x-p.x,found.y-p.y)<23))continue;
+         const first=paths[other.index],second=path;
+         const lower=rank(first)<rank(second)?other.index:rank(first)>rank(second)?index:Math.min(index,other.index);
+         if(!collisions.has(lower))collisions.set(lower,[]);
+         if(!collisions.get(lower).some(p=>Math.hypot(p.x-found.x,p.y-found.y)<7))collisions.get(lower).push(found);
+       }
+       insert(k,seg);
+     }
+   }
+ }
+ if(!collisions.size)return;
+ const defs=svg('defs',{id:'crossingMasks'});edges.prepend(defs);
+ for(const [index,pts] of collisions){
+   const path=paths[index],box=path.getBBox(),id='crossGap-'+index;
+   const mask=svg('mask',{id,maskUnits:'userSpaceOnUse',maskContentUnits:'userSpaceOnUse',
+      x:box.x-12,y:box.y-12,width:Math.max(24,box.width+24),height:Math.max(24,box.height+24)});
+   mask.append(svg('rect',{x:box.x-12,y:box.y-12,width:Math.max(24,box.width+24),height:Math.max(24,box.height+24),fill:'white'}));
+   for(const pt of pts)mask.append(svg('circle',{cx:pt.x,cy:pt.y,r:4.5,fill:'black'}));
+   defs.append(mask);path.setAttribute('mask',`url(#${id})`);
+ }
+}
 function orderConnections(edges){
- const rank=g=>g.classList.contains('parentage')?3:g.classList.contains('partnership')?2:1;
+ const rank=g=>g.classList.contains('routeLink')?4:g.classList.contains('parentage')?3:g.classList.contains('partnership')?2:1;
  [...edges.querySelectorAll(':scope > .edgeGroup')].sort((a,b)=>rank(a)-rank(b)).forEach(g=>edges.append(g));
 }
 function renderGraph(){
@@ -384,8 +443,16 @@ function renderGraph(){
       }
     }
     const junction=svg('circle',{cx:j.x,cy:j.y,r:batchMode?7:3,class:'parentJunction'+(batchMode?' batchJunction':'')+(batchGroup&&sameGroup(batchGroup,u)?' batchChosen':'')});
-    if(batchMode){junction.setAttribute('role','button');junction.setAttribute('tabindex','0');junction.setAttribute('aria-label','Select parentage group');const choose=event=>{event.stopPropagation();selectBatchGroup(u);};junction.addEventListener('click',choose);junction.addEventListener('keydown',event=>{if(event.key==='Enter')choose(event);});}
     js.append(junction);
+    if(batchMode){
+      // Keep the junction visible at its original size but provide a generous target.
+      const hit=svg('circle',{cx:j.x,cy:j.y,r:16,class:'junctionHit',tabindex:'0',role:'button',
+        'aria-label':`Select family group: ${u.parents.map(id=>label(person(id))).join(', ')}; ${u.children.length} children`});
+      const choose=event=>{event.stopPropagation();selectBatchGroup(u);};
+      hit.addEventListener('click',choose);
+      hit.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();choose(event);}});
+      js.append(hit);
+    }
     for(const r of parentRels)if(u.parents.includes(r.from)&&u.children.includes(r.to))handledParents.add(r.id);
   }
   // Sibling assertions are preserved in JSON but suppressed when two people share recorded parentage.
@@ -430,6 +497,7 @@ function renderGraph(){
   }
   // Plain connection strokes; actual parentage junctions are drawn in the upper SVG layer.
   orderConnections(es);
+  crossingGaps(es,js);
   for(const [id,pos] of coords){
     const p=person(id),name=label(p),deceased=p.lifeStatus==='deceased';
     const g=svg('g',{class:'personNode'+(batchMode&&batchPeople.has(id)?' batchChosen':'')+(selected===id?' selected':'')+(viewMode==='detail'&&focus===id?' focused':''),transform:`translate(${pos.x} ${pos.y})`,'data-person-id':id,tabindex:'0',role:'button','aria-label':`${name}${deceased?', deceased':''}`});
@@ -461,7 +529,7 @@ function animateToPerson(id){const node=[...$('#nodes').querySelectorAll('.perso
 function moveBack(){if(!focusBack.length)return;const prev=focusBack.pop();focus=prev;selected=prev;renderGraph();drawSide();animateToPerson(prev);}
 function fitPerson(id){const p=coords.get(id);if(!p){fitAll();return;}zoom=Math.max(.8,Math.min(1.15,zoom));pan={x:$('#stage').clientWidth*.5-p.x*zoom,y:$('#stage').clientHeight*.45-p.y*zoom};applyView();}
 function zoomAt(scale,cx,cy){const nz=Math.max(.06,Math.min(3,zoom*scale)),r=nz/zoom;pan={x:cx-(cx-pan.x)*r,y:cy-(cy-pan.y)*r};zoom=nz;applyView();}
-const atlas=$('#atlas');atlas.addEventListener('pointerdown',e=>{if(e.button!==0||e.target.closest('.personNode'))return;drag={x:e.clientX,y:e.clientY,px:pan.x,py:pan.y};preventClick=false;atlas.setPointerCapture(e.pointerId);atlas.classList.add('dragging');});atlas.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>4)preventClick=true;pan={x:drag.px+dx,y:drag.py+dy};applyView();});atlas.addEventListener('pointerup',()=>{drag=null;atlas.classList.remove('dragging');setTimeout(()=>preventClick=false,30);});atlas.addEventListener('wheel',e=>{e.preventDefault();const rect=atlas.getBoundingClientRect();zoomAt(e.deltaY<0?1.13:1/1.13,e.clientX-rect.left,e.clientY-rect.top);},{passive:false});atlas.addEventListener('click',e=>{if(!preventClick&&!e.target.closest('.personNode')&&!batchMode){selected=null;drawSide();renderGraph();}});
+const atlas=$('#atlas');atlas.addEventListener('pointerdown',e=>{if(e.button!==0||e.target.closest('.personNode')||e.target.closest('.junctionHit')||e.target.closest('.batchEdge'))return;drag={x:e.clientX,y:e.clientY,px:pan.x,py:pan.y};preventClick=false;atlas.setPointerCapture(e.pointerId);atlas.classList.add('dragging');});atlas.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>4)preventClick=true;pan={x:drag.px+dx,y:drag.py+dy};applyView();});atlas.addEventListener('pointerup',()=>{drag=null;atlas.classList.remove('dragging');setTimeout(()=>preventClick=false,30);});atlas.addEventListener('wheel',e=>{e.preventDefault();const rect=atlas.getBoundingClientRect();zoomAt(e.deltaY<0?1.13:1/1.13,e.clientX-rect.left,e.clientY-rect.top);},{passive:false});atlas.addEventListener('click',e=>{if(!preventClick&&!e.target.closest('.personNode')&&!batchMode){selected=null;drawSide();renderGraph();}});
 function selectPerson(id){if(batchMode){toggleBatchPerson(id);return;}selected=id;if(viewMode==='detail'&&id!==focus){/* Selection alone does not change the family-detail reference. */}drawSide();renderGraph();}
 function enterFocus(id){if(!id)return notice('Select a person first');if(focus&&focus!==id)focusBack.push(focus);switchView('detail',id);}
 function chooseRoute(){
@@ -610,7 +678,8 @@ function drawBatchSide(){
        if(note)update.notes=[p.notes||'',values.note].filter(Boolean).join('\n');
        if(Object.keys(update).length)changes.push({id,update});
      }
-     reviewBatch(`Edit ${changes.length} people`,`${changes.length} person records will be updated. Only explicitly chosen fields change.`,()=>{for(const {id,update} of changes)Object.assign(person(id),update);});
+     const rows=changes.flatMap(({id,update})=>Object.entries(update).map(([field,to])=>previewField(label(person(id)),field,person(id)[field],to)));
+     reviewBatch(`Edit ${changes.length} people`,`${changes.length} person records will be updated. Only explicitly chosen fields change.`,()=>{for(const {id,update} of changes)Object.assign(person(id),update);},rows);
    };
  }else if(batchTab==='parentage'){
    root.innerHTML=`<h3>Parentage relationships</h3><p class="hint">Choose one reference parent. Other selected people become target children. Nothing is inferred from gender.</p>
@@ -631,13 +700,21 @@ function drawBatchSide(){
      if(pairs.some(x=>!x.record)&&!create)return notice('Some links are missing. Enable Create missing links or deselect these people.');
      const changes=pairs.map(x=>({id:x.id,record:x.record}));
      const cls=root.querySelector('#batchClass').value,rval=root.querySelector('#batchRole').value,lv=root.querySelector('#batchLegal').value;
+     const rows=changes.flatMap(change=>{
+       const before=change.record?deep(change.record):null;
+       const after=before?deep(before):{type:'parentage',from:batchReference,to:change.id,roles:[],parentRole:''};
+       if(classification){const retained=(after.roles||[]).filter(x=>!['biological','adoptive','foster'].includes(x));after.roles=[...retained,...(cls==='unspecified'?[]:[cls])];}
+       if(legal){const kept=(after.roles||[]).filter(x=>x!=='legal');after.roles=lv==='add'?[...kept,'legal']:kept;}
+       if(role)after.parentRole=rval;
+       return previewParentage(before,after,`${label(person(batchReference))} → ${label(person(change.id))}`);
+     });
      reviewBatch('Edit parentage',`${changes.length} parent–child links: ${changes.filter(x=>x.record).length} existing, ${changes.filter(x=>!x.record).length} to create. ${classification?'Primary classification: '+cls+'. ':''}${role?'Parental role: '+(rval||'Unspecified')+'. ':''}${legal?'Legal: '+lv+'. ':''}Other fields remain unchanged.`,()=>{
        for(const change of changes){let r=change.record;if(!r){if(!addRel('parentage',batchReference,change.id))throw Error('Cannot connect '+label(person(change.id))+' (duplicate or ancestry cycle)');r=data.relationships.find(x=>x.type==='parentage'&&x.from===batchReference&&x.to===change.id);}
          if(classification){const retained=(r.roles||[]).filter(x=>!['biological','adoptive','foster'].includes(x));r.roles=[...retained,...(cls==='unspecified'?[]:[cls])];}
          if(legal){const kept=(r.roles||[]).filter(x=>x!=='legal');r.roles=lv==='add'?[...kept,'legal']:kept;}
          if(role)r.parentRole=rval;
        }
-     });
+     },rows);
    };
  }else if(batchTab==='partnership'){
    const pairs=batchPartnerLinks();root.innerHTML=`<h3>Partnerships</h3><p class="hint">Click partnership lines while selecting multiple, or select exactly two people to create a connection.</p>
@@ -653,22 +730,64 @@ function drawBatchSide(){
      if(!create&&!pairs.length)return notice('Select partnership lines or choose Connect two people');
      if(!create&&!klass&&!status)return notice('Choose a partnership field');
      const cls=root.querySelector('#batchPartnerClass').value,st=root.querySelector('#batchPartnerStatus').value;
+     const previewPairs=[...pairs];
+     if(create&&ids.length===2&&!previewPairs.some(r=>[r.from,r.to].every(id=>ids.includes(id)))){
+       const existing=data.relationships.find(r=>relKind(r)==='partnership'&&[r.from,r.to].every(id=>ids.includes(id)));
+       previewPairs.push(existing||{from:ids[0],to:ids[1],classification:'partner',status:'current',_new:true});
+     }
+     const rows=previewPairs.flatMap(r=>{
+       const name=relationshipName(r);
+       return [previewField(name,'Record',r._new?'No link':'Existing partnership','Partnership link'),
+         previewField(name,'Classification',r._new?'':r.classification,klass?cls:r.classification||'partner'),
+         previewField(name,'Status',r._new?'':r.status,status?st:r.status||'current')];
+     });
      reviewBatch('Edit partnerships',`${pairs.length} existing partnership records${create?' and one requested connection':''}. ${klass?'Classification: '+cls+'. ':''}${status?'Status: '+st+'. ':''}`,()=>{
        const targets=[...pairs];if(create){addRel('partnership',ids[0],ids[1]);const pair=data.relationships.find(r=>relKind(r)==='partnership'&&[r.from,r.to].every(id=>ids.includes(id)));if(pair&&!targets.includes(pair))targets.push(pair);}
        for(const r of targets){if(klass)r.classification=cls;if(status)r.status=st;}
-     });
+     },rows);
    };
  }else{
-   const group=batchGroup;root.innerHTML=`<h3>Parentage group</h3><p class="hint">Select a junction on the canvas to act on its recorded children. Adding a co-parent does not create a partnership.</p>
-     ${group?`<p>${group.parents.length} parent${group.parents.length===1?'':'s'} · ${group.children.length} child${group.children.length===1?'':'ren'}</p><p class="small">Children: ${group.children.map(id=>escapeHtml(label(person(id)))).join(', ')}</p>`:'<p class="hint">No junction selected.</p>'}
-     <div class="field"><label>Find an additional co-parent</label><input id="batchCoSearch" placeholder="Search an existing person" autocomplete="off"><div id="batchCoResults" class="connectResults"></div></div>`;
+   const group=batchGroup;const siblings=group?[...group.children]:[...batchPeople];root.innerHTML=`<h3>Parentage group</h3><p class="hint">Select a junction on the canvas to act on its recorded children. Adding a co-parent does not create a partnership.</p>
+     ${group?`<p>${group.parents.length} parent${group.parents.length===1?'':'s'} · ${group.children.length} child${group.children.length===1?'':'ren'}</p><p class="small">Children: ${group.children.map(id=>escapeHtml(label(person(id)))).join(', ')}</p>`:'<p class="hint">No junction selected. You can still connect selected people as siblings below.</p>'}
+     <div class="batchAction"><h4>Sibling connections</h4><p class="hint">Create explicit sibling relationships among the ${siblings.length} selected children/people. This does not infer shared biological parents and does not replace existing parentage.</p><button id="batchSiblingReview" class="primary" ${siblings.length>=2?'':'disabled'}>Review sibling connections</button></div>
+     <div class="field"><label>Find an additional co-parent (junction required)</label><input ${group?'':'disabled'} id="batchCoSearch" placeholder="Search an existing person" autocomplete="off"><div id="batchCoResults" class="connectResults"></div></div>`;
+   root.querySelector('#batchSiblingReview').onclick=()=>{
+     const pairs=[];
+     for(let i=0;i<siblings.length;i++)for(let j=i+1;j<siblings.length;j++){
+       const a=siblings[i],b=siblings[j];
+       if(!person(a)||!person(b))continue;
+       const exists=data.relationships.find(r=>relKind(r)==='sibling'&&[r.from,r.to].includes(a)&&[r.from,r.to].includes(b));
+       pairs.push({a,b,exists:Boolean(exists)});
+     }
+     const missing=pairs.filter(p=>!p.exists);
+     if(!missing.length)return notice('Every selected pair already has an explicit sibling link.');
+     const rows=pairs.map(({a,b,exists})=>previewField(`${label(person(a))} ↔ ${label(person(b))}`,'Sibling link',exists?'Exists':'Not recorded','Explicit sibling link'));
+     reviewBatch('Connect siblings',`${missing.length} new explicit sibling relationships will be created among ${siblings.length} people. Existing relationships remain unchanged.`,()=>{
+       for(const {a,b} of missing)if(!addRel('sibling',a,b))throw Error('Could not connect '+label(person(a))+' and '+label(person(b)));
+     },rows);
+   };
    const search=root.querySelector('#batchCoSearch'),results=root.querySelector('#batchCoResults');
    search.oninput=()=>{const q=search.value.trim();results.innerHTML=!group?'':!q?'<p class="hint">Search by name.</p>':data.people.filter(p=>!group.parents.includes(p.id)&&!group.children.includes(p.id)).map(p=>({p,score:searchScore(q,label(p))})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,12).map(x=>`<button class="personItem" data-co-id="${x.p.id}">${escapeHtml(label(x.p))}</button>`).join('')||'<p class="hint">No matching people.</p>';
-     results.querySelectorAll('[data-co-id]').forEach(b=>b.onclick=()=>{const id=b.dataset.coId;reviewBatch('Add co-parent',`Connect ${label(person(id))} as an additional recorded parent of ${group.children.length} children. No partnership will be inferred.`,()=>{for(const child of group.children)if(!addRel('parentage',id,child))throw Error('Cannot create parentage connection for '+label(person(child)));});});};
+     results.querySelectorAll('[data-co-id]').forEach(b=>b.onclick=()=>{const id=b.dataset.coId;const missing=group.children.filter(child=>!data.relationships.some(r=>r.type==='parentage'&&r.from===id&&r.to===child));if(!missing.length)return notice('This person is already a recorded parent of every child in this group.');const rows=group.children.map(child=>previewField(`${label(person(id))} → ${label(person(child))}`,'Parentage',missing.includes(child)?'Not recorded':'Existing link','Parentage link'));reviewBatch('Add co-parent',`Connect ${label(person(id))} as an additional recorded parent of ${group.children.length} children. No partnership will be inferred.`,()=>{for(const child of missing)if(!addRel('parentage',id,child))throw Error('Cannot create parentage connection for '+label(person(child)));},rows);});};
  }
 }
-function reviewBatch(title,summary,operation){
- modal(title,`<p>${escapeHtml(summary)}</p><div class="callout">Only the stated records and fields will change. Review your selection before applying. One-step Undo will be available.</div><div class="row spread"><button id="batchCancelReview">Cancel</button><button id="batchApplyReview" class="primary">Apply changes</button></div>`,root=>{
+function previewField(subject,field,before,after){
+ const format=v=>Array.isArray(v)?v.join(', ')||'None':v===undefined||v===null||v===''?'Not specified':String(v);
+ return {subject,field,before:format(before),after:format(after)};
+}
+function previewTable(rows){
+ if(!rows.length)return '<p class="hint">No record-level changes were supplied.</p>';
+ return `<div class="batchPreviewScroll"><table class="batchPreview"><thead><tr><th>Record</th><th>Field</th><th>Current</th><th>Proposed</th></tr></thead><tbody>${rows.map(r=>`<tr class="${r.before===r.after?'previewUnchanged':'previewChanged'}"><td>${escapeHtml(r.subject)}</td><td>${escapeHtml(r.field)}</td><td>${escapeHtml(r.before)}</td><td>${escapeHtml(r.after)}</td></tr>`).join('')}</tbody></table></div>`;
+}
+function relationshipName(r){return `${label(person(r.from))} → ${label(person(r.to))}`;}
+function previewParentage(before,after,name){
+ return [previewField(name,'Record',before?'Existing link':'No link',after?'Parentage link':'No link'),
+   previewField(name,'Primary type',(before?.roles||[]).filter(x=>['biological','adoptive','foster'].includes(x)),(after?.roles||[]).filter(x=>['biological','adoptive','foster'].includes(x))),
+   previewField(name,'Parental role',before?.parentRole,after?.parentRole),
+   previewField(name,'Legal parent',before?.roles?.includes('legal')?'Yes':'No',after?.roles?.includes('legal')?'Yes':'No')];
+}
+function reviewBatch(title,summary,operation,rows=[]){
+ modal(title,`<p>${escapeHtml(summary)}</p>${previewTable(rows)}<div class="callout">Only the stated records and fields will change. Review your selection before applying. One-step Undo will be available.</div><div class="row spread"><button id="batchCancelReview">Cancel</button><button id="batchApplyReview" class="primary">Apply changes</button></div>`,root=>{
    root.querySelector('#batchCancelReview').onclick=closeModal;
    root.querySelector('#batchApplyReview').onclick=()=>{
      const prior=deep(data);try{operation();batchUndo=prior;clearBatchSelection();closeModal();save();notice('Batch changes applied. Undo is available in the selection workspace.');}
@@ -684,7 +803,7 @@ $('#traceBtn').onclick=chooseRoute;$('#addBtn').onclick=()=>newPerson(selected,'
 $('#batchBtn').onclick=toggleBatchMode;
 $('#searchBtn').onclick=()=>{modal('Find a person',`<div class="field"><label>Search by name</label><input id="globalSearch" placeholder="Search people…"></div><div id="searchResults"></div>`,root=>{const input=root.querySelector('input'),draw=()=>{const q=input.value.trim();root.querySelector('#searchResults').innerHTML=(q?data.people.map(p=>({p,score:searchScore(q,label(p))})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,25):data.people.map(p=>({p})).slice(0,25)).map(({p})=>`<button class="personItem" data-id="${p.id}"><span><strong>${escapeHtml(label(p))}</strong><small>${p.birth?'Born '+escapeHtml(p.birth):'Select to navigate'}</small></span></button>`).join('');root.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>{const id=b.dataset.id;if(viewMode==='detail'&&!graphSubset().has(id)){focus=id;renderGraph();}
 closeModal();selectPerson(id);fitPerson(id);});};input.oninput=draw;draw();input.focus();});};
-$('#exportBtn').onclick=()=>modal('Export family atlas',`<p>JSON is the complete, portable archive. SVG exports the current graph view.</p><div class="stack"><button id="jsonExport">Download complete JSON archive</button><button id="svgExport">Download current graph as SVG</button></div>`,root=>{root.querySelector('#jsonExport').onclick=()=>{backup();closeModal();};root.querySelector('#svgExport').onclick=()=>{const x=$('#atlas').cloneNode(true);x.setAttribute('xmlns',svgNS);x.setAttribute('viewBox',`${graphBounds.x} ${graphBounds.y} ${graphBounds.w} ${graphBounds.h}`);x.removeAttribute('width');x.removeAttribute('height');x.querySelector('#world').setAttribute('transform','');const style=document.createElementNS(svgNS,'style');style.textContent='.generationRing{fill:none;stroke:#aaa;stroke-opacity:.45;stroke-width:1}.clusterCaption text{fill:#555;font:11px Arial}.clusterCaption .nameplate{fill:#fff;stroke:#bbb}.parentJunction{fill:#fff;stroke:#333;stroke-width:1.2}.link{fill:none;stroke:#888;stroke-width:1.5}.link.parentage{stroke:#333;stroke-width:1.7}.link.sibling{stroke:#aaa;stroke-width:1}.link.crossQuiet{stroke-opacity:.2}.link.partnership{stroke-dasharray:6 4}.link.guardian,.link.other,.link.sibling{stroke-dasharray:3 4}.personNode circle{fill:white;stroke:#222;stroke-width:1.5}.personNode text{fill:#111;font:12px Arial}.personNode .nameplate{fill:white;stroke:#bbb}.personNode .initial{font-weight:bold}.personNode .lifeMarker{fill:#222;stroke:#222}.edgeStatus.status-divorced rect,.edgeStatus.status-separated rect{fill:#f5d7d7;stroke:#a86d6d}.edgeStatus.status-former rect,.edgeStatus.status-historical rect,.edgeStatus.status-ended-by-death rect{fill:#fff1ba;stroke:#c5a95c}.personNode .lifeMarkText{fill:#fff;font-weight:bold;font-size:9px}.edgeStatus rect{fill:white;stroke:#777;stroke-width:.75}.edgeStatus text{fill:#222;font:bold 10px Arial}.link.routeLink{stroke:#111;stroke-width:3.5;stroke-dasharray:none}.componentCircle{fill:#fafafa;stroke:#222;stroke-width:1.5}.componentDot{fill:#555}.componentNode .nameplate{fill:#fff;stroke:#aaa}.componentName{fill:#111;font:bold 13px Arial}.componentCount{fill:#555;font:11px Arial}.edgeGroup.status-separated .link,.edgeGroup.status-divorced .link{stroke:#b87575}.edgeGroup.status-former .link,.edgeGroup.status-historical .link,.edgeGroup.status-ended-by-death .link{stroke:#c4a85e}';x.prepend(style);download(new XMLSerializer().serializeToString(x),'family-atlas.svg','image/svg+xml');closeModal();};});
+$('#exportBtn').onclick=()=>modal('Export family atlas',`<p>JSON is the complete, portable archive. SVG exports the current graph view.</p><div class="stack"><button id="jsonExport">Download complete JSON archive</button><button id="svgExport">Download current graph as SVG</button></div>`,root=>{root.querySelector('#jsonExport').onclick=()=>{backup();closeModal();};root.querySelector('#svgExport').onclick=()=>{const x=$('#atlas').cloneNode(true);x.setAttribute('xmlns',svgNS);x.setAttribute('viewBox',`${graphBounds.x} ${graphBounds.y} ${graphBounds.w} ${graphBounds.h}`);x.removeAttribute('width');x.removeAttribute('height');x.querySelector('#world').setAttribute('transform','');const style=document.createElementNS(svgNS,'style');style.textContent='.generationRing{fill:none;stroke:#aaa;stroke-opacity:.45;stroke-width:1}.clusterCaption text{fill:#555;font:11px Arial}.clusterCaption .nameplate{fill:#fff;stroke:#bbb}.parentJunction{fill:#fff;stroke:#333;stroke-width:1.2}.link{fill:none;stroke:#888;stroke-width:1.5}.link.parentage{stroke:#333;stroke-width:1.7}.link.sibling{stroke:#aaa;stroke-width:1}.link.crossQuiet{stroke-opacity:.2}.link.partnership{stroke-dasharray:6 4}.link.guardian,.link.other,.link.sibling{stroke-dasharray:3 4}.personNode circle{fill:white;stroke:#222;stroke-width:1.5}.personNode text{fill:#111;font:12px Arial}.personNode .nameplate{fill:white;stroke:#bbb}.personNode .initial{font-weight:bold}.personNode .lifeMarker{fill:#222;stroke:#222}.edgeStatus.status-divorced rect,.edgeStatus.status-separated rect{fill:#f5d7d7;stroke:#a86d6d}.edgeStatus.status-former rect,.edgeStatus.status-historical rect,.edgeStatus.status-ended-by-death rect{fill:#fff1ba;stroke:#c5a95c}.personNode .lifeMarkText{fill:#fff;font-weight:bold;font-size:9px}.edgeStatus rect{fill:white;stroke:#777;stroke-width:.75}.edgeStatus text{fill:#222;font:bold 10px Arial}.link.routeLink{stroke:#111;stroke-width:5.5;stroke-dasharray:none}.componentCircle{fill:#fafafa;stroke:#222;stroke-width:1.5}.componentDot{fill:#555}.componentNode .nameplate{fill:#fff;stroke:#aaa}.componentName{fill:#111;font:bold 13px Arial}.componentCount{fill:#555;font:11px Arial}.edgeGroup.status-separated .link,.edgeGroup.status-divorced .link{stroke:#b87575}.edgeGroup.status-former .link,.edgeGroup.status-historical .link,.edgeGroup.status-ended-by-death .link{stroke:#c4a85e}';x.prepend(style);download(new XMLSerializer().serializeToString(x),'family-atlas.svg','image/svg+xml');closeModal();};});
 $('#importBtn').onclick=()=>{$('#fileInput').value='';$('#fileInput').click();};$('#fileInput').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const d=ensure(JSON.parse(await f.text()));if(d.people.length>5000)throw Error('File has too many people for this version');beginImport(d);}catch(err){modal('Import error',`<p>${escapeHtml(err.message)}</p>`);}};
 function sourceKey(collectionId,recordId){return `${collectionId}::${recordId}`;}
 function mappedId(collectionId,recordId){return data.identityMappings.find(m=>m.sourceKey===sourceKey(collectionId,recordId))?.personId||null;}
