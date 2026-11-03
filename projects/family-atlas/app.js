@@ -9,7 +9,7 @@ let data,selected=null,focus=null,focusBack=[],focusUp=2,focusDown=2,importCandi
 let route=null; // Shortest recorded path between two people, not a genealogical inference.
 let viewMode='atlas';
 let indexScope={kind:'all'},indexOpen=false;
-let showNames=true,relationshipFilter='all';
+let showNames=true,showGender=false,relationshipFilter='all';
 let batchMode=false,batchTab='people',batchPeople=new Set(),batchRelations=new Set(),batchGroup=null,batchReference=null,batchUndo=null;
 let zoom=1,pan={x:80,y:80},coords=new Map(),graphBounds={x:0,y:0,w:1,h:1},drag=null,preventClick=false;
 const deep=x=>JSON.parse(JSON.stringify(x));
@@ -194,19 +194,52 @@ function routeDescription(r,a,b){
 
 // Index operates on person IDs, relationship IDs, and generated parentage units.
 // It is not an additional hierarchy persisted into the JSON archive.
-function indexPeople(selected=''){
- return '<option value="">Choose a person</option>'+[...data.people].sort((a,b)=>label(a).localeCompare(label(b))).map(p=>
- `<option value="${escapeHtml(p.id)}" ${p.id===selected?'selected':''}>${escapeHtml(label(p))}${p.birth?' · '+escapeHtml(p.birth):''}</option>`).join('');
+
+function indexPicker(id,kind,selected='',placeholder='Search people'){
+ const items=kind==='group'?indexGroups().map(u=>({id:u.parents.join('|'),name:u.parents.map(k=>label(person(k))).join(' + ')||'Unknown parent',detail:u.children.length+' children'})):
+ data.people.map(p=>({id:p.id,name:label(p),detail:p.birth||''}));
+ const current=items.find(p=>p.id===selected);
+ return `<div class="indexPicker" data-picker="${id}" data-kind="${kind}" data-id="${escapeHtml(current?.id||'')}">
+  <input id="${id}" role="combobox" aria-autocomplete="list" aria-expanded="false" autocomplete="off" placeholder="${escapeHtml(placeholder)}" value="${escapeHtml(current?.name||'')}">
+  <button type="button" class="pickerClear" title="Clear selection" aria-label="Clear selection">×</button><div class="pickerResults hidden" role="listbox"></div></div>`;
 }
+function bindIndexPicker(picker){
+ const input=picker.querySelector('input'),list=picker.querySelector('.pickerResults'),id=picker.dataset.picker;
+ let matches=[],active=-1;
+ const records=()=>picker.dataset.kind==='group'?indexGroups().map(u=>({id:u.parents.join('|'),name:u.parents.map(k=>label(person(k))).join(' + ')||'Unknown parent',detail:u.children.length+' children'})):
+ data.people.map(p=>({id:p.id,name:label(p),detail:p.birth||''}));
+ function close(){list.classList.add('hidden');input.setAttribute('aria-expanded','false');active=-1;}
+ function select(p){input.value=p.name;picker.dataset.id=p.id;close();}
+ function refresh(){
+  const q=input.value.trim();
+  matches=records().map(p=>({...p,score:q?Math.max(searchScore(q,p.name),searchScore(q,p.name+' '+p.detail)):1}))
+   .filter(p=>p.score>0).sort((a,b)=>b.score-a.score||a.name.localeCompare(b.name)).slice(0,9);
+  list.replaceChildren();
+  for(const [i,p] of matches.entries()){
+   const button=document.createElement('button');button.type='button';button.className='pickerResult';button.setAttribute('role','option');button.textContent=p.name+(p.detail?' · '+p.detail:'');
+   button.addEventListener('mousedown',e=>e.preventDefault());button.onclick=()=>select(p);list.append(button);
+  }
+  if(!matches.length){const empty=document.createElement('div');empty.className='pickerEmpty';empty.textContent='No matches';list.append(empty);}
+  list.classList.remove('hidden');input.setAttribute('aria-expanded','true');active=-1;
+ }
+ input.onfocus=()=>{const p=records().find(x=>x.id===picker.dataset.id);if(p&&input.value===p.name)input.value='';refresh();};
+ input.oninput=()=>{picker.dataset.id='';refresh();};
+ input.onkeydown=e=>{
+  if(e.key==='Escape'){close();return;}
+  if(['ArrowDown','ArrowUp'].includes(e.key)){e.preventDefault();if(list.classList.contains('hidden'))refresh();if(!matches.length)return;active=(active+(e.key==='ArrowDown'?1:-1)+matches.length)%matches.length;[...list.children].forEach((b,i)=>b.classList.toggle('active',i===active));}
+  if(e.key==='Enter'&&!list.classList.contains('hidden')){e.preventDefault();if(matches.length)select(matches[active>=0?active:0]);}
+ };
+ input.onblur=()=>setTimeout(()=>{
+   close();
+   const chosen=records().find(p=>p.id===picker.dataset.id);
+   if(chosen)input.value=chosen.name;
+ },150);
+ picker.querySelector('.pickerClear').onclick=()=>{picker.dataset.id='';input.value='';input.focus();refresh();};
+}
+function chosenIndexPerson(pane,id){return pane.querySelector(`[data-picker="${id}"]`)?.dataset.id||'';}
 function indexGroups(){
  return parentageUnits(data.people.map(p=>p.id),data.relationships)
    .filter(u=>u.children.length).sort((a,b)=>a.parents.map(id=>label(person(id))).join().localeCompare(b.parents.map(id=>label(person(id))).join()));
-}
-function indexGroupOptions(selected=''){
- return '<option value="">Choose a parentage group</option>'+indexGroups().map(u=>{
- const key=u.parents.join('|');
- return `<option value="${escapeHtml(key)}" ${key===selected?'selected':''}>${escapeHtml(u.parents.map(id=>label(person(id))).join(' + ')||'Unknown parent')} · ${u.children.length} children</option>`;
- }).join('');
 }
 function indexedDescendants(spec){
  const roots=spec.startType==='group'?indexGroups().find(u=>u.parents.join('|')===spec.startId)?.parents||[]:[spec.startId];
@@ -241,32 +274,33 @@ function drawIndex(){
  <section class="indexSection"><h3>Complete atlas</h3><p>All connected and disconnected family networks.</p><button id="indexAll">Show all families</button></section>
  <section class="indexSection"><h3>Descendant map</h3><p>Begin from one person or a shared parentage junction. Move outward through recorded parent–child relationships.</p>
  <div class="field"><label>Starting point</label><select id="indexStartType"><option value="person" ${!isGroup?'selected':''}>Person</option><option value="group" ${isGroup?'selected':''}>Parentage group</option></select></div>
- <div class="field"><label id="startLabel">Starting ${isGroup?'group':'person'}</label><select id="indexStart">${isGroup?indexGroupOptions(start):indexPeople(start)}</select></div>
+ <div class="field"><label id="startLabel">Starting ${isGroup?'group':'person'}</label>${indexPicker('indexStart',isGroup?'group':'person',start,'Search starting person or group')}</div>
  <div class="field"><label>Descendant bands</label><select id="indexDepth">${[1,2,3,4,5,6,8,10,20,30].map(v=>`<option value="${v}" ${v===(indexScope.depth||3)?'selected':''}>${v===30?'All (maximum 30 bands)':v}</option>`).join('')}</select></div>
- <div class="field"><label>Stop expanding beyond person (optional)</label><select id="indexStop">${indexPeople(indexScope.kind==='lineage'?indexScope.stopId:'')}</select></div>
+ <div class="field"><label>Stop expanding beyond person (optional)</label>${indexPicker('indexStop','person',indexScope.kind==='lineage'?indexScope.stopId:'','Search stopping person')}</div>
  <button id="indexExplore" class="primary">Explore descendants</button></section>
  <section class="indexSection"><h3>Between people</h3><p>Trace a chain of recorded parentage, partnerships or other relationships from member to member.</p>
- <div class="field"><label>From</label><select id="indexFrom">${indexPeople(route?.ids?.[0]||selected||'')}</select></div>
- <div class="field"><label>To</label><select id="indexTo">${indexPeople(route?.ids?.at(-1)||'')}</select></div>
+ <div class="field"><label>From</label>${indexPicker('indexFrom','person',route?.ids?.[0]||selected||'','Search starting person')}</div>
+ <div class="field"><label>To</label>${indexPicker('indexTo','person',route?.ids?.at(-1)||'','Search destination person')}</div>
  <button id="indexPath">Trace this path</button></section>
  <div class="indexFoot"><strong>Current view</strong><p>${escapeHtml(indexTitle())}</p></div>`;
+ pane.querySelectorAll('.indexPicker').forEach(bindIndexPicker);
  pane.querySelector('#indexClose').onclick=()=>{indexOpen=false;drawIndex();};
  pane.querySelector('#indexAll').onclick=()=>setIndexScope({kind:'all'});
  pane.querySelector('#indexStartType').onchange=e=>{
   const group=e.target.value==='group';pane.querySelector('#startLabel').textContent=group?'Starting group':'Starting person';
-  pane.querySelector('#indexStart').innerHTML=group?indexGroupOptions():indexPeople(selected||'');
+  const holder=pane.querySelector('[data-picker="indexStart"]');holder.outerHTML=indexPicker('indexStart',group?'group':'person',group?'':selected||'','Search starting person or group');bindIndexPicker(pane.querySelector('[data-picker="indexStart"]'));
  };
  pane.querySelector('#indexExplore').onclick=()=>{
-  const startType=pane.querySelector('#indexStartType').value,startId=pane.querySelector('#indexStart').value;
+  const startType=pane.querySelector('#indexStartType').value,startId=chosenIndexPerson(pane,'indexStart');
   if(!startId)return notice('Choose a starting person or group');
-  const spec={kind:'lineage',startType,startId,depth:Number(pane.querySelector('#indexDepth').value),stopId:pane.querySelector('#indexStop').value||null};
+  const spec={kind:'lineage',startType,startId,depth:Number(pane.querySelector('#indexDepth').value),stopId:chosenIndexPerson(pane,'indexStop')||null};
   const people=indexedDescendants(spec);
   if(!people.size)return notice('No people found for this lineage');
   if(spec.stopId&&!people.has(spec.stopId))return notice('The stopping person is outside this lineage');
   setIndexScope(spec);
  };
  pane.querySelector('#indexPath').onclick=()=>{
-  const from=pane.querySelector('#indexFrom').value,to=pane.querySelector('#indexTo').value;
+  const from=chosenIndexPerson(pane,'indexFrom'),to=chosenIndexPerson(pane,'indexTo');
   if(!from||!to)return notice('Choose both members');
   const path=shortestPath(from,to);
   if(!path)return notice('No recorded path connects these people');
@@ -597,6 +631,8 @@ function renderGraph(){
     const display=name.length>27?name.slice(0,25)+'…':name;
     const plateWidth=Math.max(68,Math.min(226,display.length*7.4+25));
     g.append(svg('circle',{r:19,cx:0,cy:0}));
+    const gender=String(p.gender||'').toLowerCase();
+    if(showGender&&(gender==='female'||gender==='male'))g.append(svg('circle',{r:14.5,cx:0,cy:0,class:'genderRing gender-'+gender,'aria-hidden':'true'}));
     g.append(svg('text',{x:0,y:4,'text-anchor':'middle',class:'initial'},p.nameStatus==='unknown'?'?':name.charAt(0).toUpperCase()));
     if(deceased){g.append(svg('rect',{x:11,y:-27,width:29,height:17,rx:2,class:'lifeMarker status-deceased'}));g.append(svg('text',{x:25.5,y:-15,'text-anchor':'middle',class:'lifeMarkText'},'DEC'));}
     g.append(svg('rect',{x:-plateWidth/2,y:24,width:plateWidth,height:23,rx:2,class:'nameplate personName'}));
@@ -616,7 +652,7 @@ function renderGraph(){
   $('#status').textContent=`${batchMode?'BATCH SELECT · ':''}${indexTitle()} · ${ids.size} people · ${clusters.length||1} network${clusters.length===1?'':'s'} · Drag to pan · Scroll to zoom · DEC deceased`;
   renderFocusBar();
 }
-function applyView(){$('#stage').classList.toggle('namesHidden',!showNames);$('#toggleNames').textContent=showNames?'Hide names':'Show names';$('#toggleNames').setAttribute('aria-pressed',String(!showNames));$('#world').setAttribute('transform',`translate(${pan.x} ${pan.y}) scale(${zoom})`);$('#stage').classList.toggle('overviewScale',zoom<.43);}
+function applyView(){$('#toggleGender').textContent=showGender?'Hide gender':'Show gender';$('#toggleGender').setAttribute('aria-pressed',String(showGender));$('#stage').classList.toggle('namesHidden',!showNames);$('#toggleNames').textContent=showNames?'Hide names':'Show names';$('#toggleNames').setAttribute('aria-pressed',String(!showNames));$('#world').setAttribute('transform',`translate(${pan.x} ${pan.y}) scale(${zoom})`);$('#stage').classList.toggle('overviewScale',zoom<.43);}
 function fitAll(){const s=$('#stage'),w=s.clientWidth,h=s.clientHeight;if(!coords.size){zoom=1;pan={x:w/2,y:h/2};applyView();return;}zoom=Math.max(.06,Math.min(1.5,Math.min((w-95)/graphBounds.w,(h-110)/graphBounds.h)));pan={x:(w-graphBounds.w*zoom)/2-graphBounds.x*zoom,y:(h-graphBounds.h*zoom)/2-graphBounds.y*zoom};applyView();}
 function animateToPerson(id){const node=[...$('#nodes').querySelectorAll('.personNode')].find(n=>n.dataset.personId===id);node?.classList.add('navArrival');const world=$('#world');if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches)world.classList.add('viewportNavigating');fitPerson(id);setTimeout(()=>{world.classList.remove('viewportNavigating');node?.classList.remove('navArrival');},450);}
 function moveBack(){if(!focusBack.length)return;const prev=focusBack.pop();focus=prev;selected=prev;renderGraph();drawSide();animateToPerson(prev);}
@@ -890,13 +926,13 @@ function reviewBatch(title,summary,operation,rows=[]){
 }
 
 function render(){drawSide();renderGraph();$('#collectionTitle').textContent=data.collection.title||'Local collection';}
-$('#toggleNames').onclick=()=>{showNames=!showNames;applyView();};
+$('#toggleNames').onclick=()=>{showNames=!showNames;applyView();};$('#toggleGender').onclick=()=>{showGender=!showGender;renderGraph();};
 $('#detailBackBtn').onclick=()=>{focus=null;focusBack=[];switchView('atlas');};
 $('#indexBtn').onclick=()=>{indexOpen=!indexOpen;drawIndex();};$('#addBtn').onclick=()=>newPerson(selected,'sibling');$('#zoomFit').onclick=fitAll;$('#zoomIn').onclick=()=>zoomAt(1.2,$('#stage').clientWidth/2,$('#stage').clientHeight/2);$('#zoomOut').onclick=()=>zoomAt(1/1.2,$('#stage').clientWidth/2,$('#stage').clientHeight/2);
 $('#batchBtn').onclick=toggleBatchMode;
 $('#searchBtn').onclick=()=>{modal('Find a person',`<div class="field"><label>Search by name</label><input id="globalSearch" placeholder="Search people…"></div><div id="searchResults"></div>`,root=>{const input=root.querySelector('input'),draw=()=>{const q=input.value.trim();root.querySelector('#searchResults').innerHTML=(q?data.people.map(p=>({p,score:searchScore(q,label(p))})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,25):data.people.map(p=>({p})).slice(0,25)).map(({p})=>`<button class="personItem" data-id="${p.id}"><span><strong>${escapeHtml(label(p))}</strong><small>${p.birth?'Born '+escapeHtml(p.birth):'Select to navigate'}</small></span></button>`).join('');root.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>{const id=b.dataset.id;if(viewMode==='atlas'&&!indexedScopePeople().has(id))indexScope={kind:'all'};if(viewMode==='detail'&&!graphSubset().has(id)){focus=id;renderGraph();}
 closeModal();selectPerson(id);fitPerson(id);});};input.oninput=draw;draw();input.focus();});};
-$('#exportBtn').onclick=()=>modal('Export family atlas',`<p>JSON is the complete, portable archive. SVG exports the current graph view.</p><div class="stack"><button id="jsonExport">Download complete JSON archive</button><button id="svgExport">Download current graph as SVG</button></div>`,root=>{root.querySelector('#jsonExport').onclick=()=>{backup();closeModal();};root.querySelector('#svgExport').onclick=()=>{const x=$('#atlas').cloneNode(true);x.setAttribute('xmlns',svgNS);x.setAttribute('viewBox',`${graphBounds.x} ${graphBounds.y} ${graphBounds.w} ${graphBounds.h}`);x.removeAttribute('width');x.removeAttribute('height');x.querySelector('#world').setAttribute('transform','');const style=document.createElementNS(svgNS,'style');style.textContent='.generationRing{fill:none;stroke:#aaa;stroke-opacity:.45;stroke-width:1}.clusterCaption text{fill:#555;font:11px Arial}.clusterCaption .nameplate{fill:#fff;stroke:#bbb}.parentJunction{fill:#fff;stroke:#333;stroke-width:1.2}.link{fill:none;stroke:#888;stroke-width:1.5}.link.parentage{stroke:#333;stroke-width:1.7}.link.sibling{stroke:#aaa;stroke-width:1}.link.crossQuiet{stroke-opacity:.2}.link.partnership{stroke-dasharray:6 4}.link.guardian,.link.other,.link.sibling{stroke-dasharray:3 4}.personNode circle{fill:white;stroke:#222;stroke-width:1.5}.personNode text{fill:#111;font:12px Arial}.personNode .nameplate{fill:white;stroke:#bbb}.personNode .initial{font-weight:bold}.personNode .lifeMarker{fill:#222;stroke:#222}.edgeStatus.status-divorced rect,.edgeStatus.status-separated rect{fill:#f5d7d7;stroke:#a86d6d}.edgeStatus.status-former rect,.edgeStatus.status-historical rect,.edgeStatus.status-ended-by-death rect{fill:#fff1ba;stroke:#c5a95c}.personNode .lifeMarkText{fill:#fff;font-weight:bold;font-size:9px}.edgeStatus rect{fill:white;stroke:#777;stroke-width:.75}.edgeStatus text{fill:#222;font:bold 10px Arial}.link.routeLink{stroke:#111;stroke-width:5.5;stroke-dasharray:none}.componentCircle{fill:#fafafa;stroke:#222;stroke-width:1.5}.componentDot{fill:#555}.componentNode .nameplate{fill:#fff;stroke:#aaa}.componentName{fill:#111;font:bold 13px Arial}.componentCount{fill:#555;font:11px Arial}.edgeGroup.status-separated .link,.edgeGroup.status-divorced .link{stroke:#b87575}.edgeGroup.status-former .link,.edgeGroup.status-historical .link,.edgeGroup.status-ended-by-death .link{stroke:#c4a85e}';x.prepend(style);download(new XMLSerializer().serializeToString(x),'family-atlas.svg','image/svg+xml');closeModal();};});
+$('#exportBtn').onclick=()=>modal('Export family atlas',`<p>JSON is the complete, portable archive. SVG exports the current graph view.</p><div class="stack"><button id="jsonExport">Download complete JSON archive</button><button id="svgExport">Download current graph as SVG</button></div>`,root=>{root.querySelector('#jsonExport').onclick=()=>{backup();closeModal();};root.querySelector('#svgExport').onclick=()=>{const x=$('#atlas').cloneNode(true);x.setAttribute('xmlns',svgNS);x.setAttribute('viewBox',`${graphBounds.x} ${graphBounds.y} ${graphBounds.w} ${graphBounds.h}`);x.removeAttribute('width');x.removeAttribute('height');x.querySelector('#world').setAttribute('transform','');const style=document.createElementNS(svgNS,'style');style.textContent='.generationRing{fill:none;stroke:#aaa;stroke-opacity:.45;stroke-width:1}.clusterCaption text{fill:#555;font:11px Arial}.clusterCaption .nameplate{fill:#fff;stroke:#bbb}.parentJunction{fill:#fff;stroke:#333;stroke-width:1.2}.link{fill:none;stroke:#888;stroke-width:1.5}.link.parentage{stroke:#333;stroke-width:1.7}.link.sibling{stroke:#aaa;stroke-width:1}.link.crossQuiet{stroke-opacity:.2}.link.partnership{stroke-dasharray:6 4}.link.guardian,.link.other,.link.sibling{stroke-dasharray:3 4}.personNode circle{fill:white;stroke:#222;stroke-width:1.5} .personNode .genderRing{fill:none;stroke-width:2.8}.personNode .genderRing.gender-female{stroke:#e5a2bd}.personNode .genderRing.gender-male{stroke:#9cc7e8}.personNode text{fill:#111;font:12px Arial}.personNode .nameplate{fill:white;stroke:#bbb}.personNode .initial{font-weight:bold}.personNode .lifeMarker{fill:#222;stroke:#222}.edgeStatus.status-divorced rect,.edgeStatus.status-separated rect{fill:#f5d7d7;stroke:#a86d6d}.edgeStatus.status-former rect,.edgeStatus.status-historical rect,.edgeStatus.status-ended-by-death rect{fill:#fff1ba;stroke:#c5a95c}.personNode .lifeMarkText{fill:#fff;font-weight:bold;font-size:9px}.edgeStatus rect{fill:white;stroke:#777;stroke-width:.75}.edgeStatus text{fill:#222;font:bold 10px Arial}.link.routeLink{stroke:#111;stroke-width:5.5;stroke-dasharray:none}.componentCircle{fill:#fafafa;stroke:#222;stroke-width:1.5}.componentDot{fill:#555}.componentNode .nameplate{fill:#fff;stroke:#aaa}.componentName{fill:#111;font:bold 13px Arial}.componentCount{fill:#555;font:11px Arial}.edgeGroup.status-separated .link,.edgeGroup.status-divorced .link{stroke:#b87575}.edgeGroup.status-former .link,.edgeGroup.status-historical .link,.edgeGroup.status-ended-by-death .link{stroke:#c4a85e}';x.prepend(style);download(new XMLSerializer().serializeToString(x),'family-atlas.svg','image/svg+xml');closeModal();};});
 $('#importBtn').onclick=()=>{$('#fileInput').value='';$('#fileInput').click();};$('#fileInput').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const d=ensure(JSON.parse(await f.text()));if(d.people.length>5000)throw Error('File has too many people for this version');beginImport(d);}catch(err){modal('Import error',`<p>${escapeHtml(err.message)}</p>`);}};
 function sourceKey(collectionId,recordId){return `${collectionId}::${recordId}`;}
 function mappedId(collectionId,recordId){return data.identityMappings.find(m=>m.sourceKey===sourceKey(collectionId,recordId))?.personId||null;}

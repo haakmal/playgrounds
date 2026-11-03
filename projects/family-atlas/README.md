@@ -158,3 +158,17 @@ The Index panel provides Complete Atlas, Descendant Map (starting person or pare
 The optional stopping person prevents further descendant traversal beyond that person; it does not constrain unrelated branches. Index parameters are not written into JSON.
 
 Modal edit/confirmation actions remain visible at the bottom while the form body scrolls. The scrollable area is separate from the modal footer. Existing button handlers are bound before the action group is moved.
+
+## v0.15 — Searchable Index and gender view
+
+Index now uses searchable, fuzzy-matched person pickers for lineage starting people,
+stopping points and both person-to-person trace endpoints. Parentage-group starting
+points are searchable by the recorded parents' names. Typing does not change a
+selection until a result is chosen; arrow keys and Enter can select a result.
+
+The **Show gender** viewport toggle adds a pink inner ring for people whose
+optional gender is Female and a pale-blue inner ring for Male. Other and unknown
+remain uncoloured. The independent outer selection ring remains available in
+ordinary and batch selection. The toggle applies to radial and family-detail
+views and is preserved by redraws. The current overlay is embedded in SVG export.
+No archive schema or relationship data changes were made.

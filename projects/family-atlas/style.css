@@ -164,3 +164,13 @@
 .modalFooter>.row{width:100%;justify-content:space-between}
 .modalFooter button.primary{min-width:125px}
 @media(max-width:780px){.indexPanel{top:8px;bottom:8px;left:8px;width:min(380px,calc(100% - 16px))}.modalCard{max-height:92dvh}}
+
+.indexPicker{position:relative}.indexPicker input{width:100%;padding-right:38px}
+.pickerClear{position:absolute;right:4px;top:4px;padding:4px 9px;border:0;background:transparent;font-size:18px}
+.pickerResults{position:absolute;top:calc(100% + 2px);left:0;right:0;z-index:12;border:1px solid #777;background:#fff;max-height:235px;overflow:auto}
+.pickerResult{display:block;width:100%;text-align:left;padding:9px 10px;background:white;border:0;border-bottom:1px solid #eee;border-radius:0;font-size:12px}
+.pickerResult.active,.pickerResult:hover{background:#eee}.pickerEmpty{padding:10px;color:#666}
+.personNode circle.genderRing{fill:none;stroke-width:2.8;pointer-events:none}
+.personNode circle.genderRing.gender-female{stroke:#e5a2bd}
+.personNode circle.genderRing.gender-male{stroke:#9cc7e8}
+.personNode.batchChosen circle.genderRing,.personNode.selected circle.genderRing{fill:none;stroke-width:2.8}
