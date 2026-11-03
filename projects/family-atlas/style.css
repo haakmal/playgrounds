@@ -181,3 +181,55 @@
 .savedViewItem>button:not(.savedViewOpen){flex:0 0 auto;border:0;border-left:1px solid #ddd;background:white;padding:10px;font-size:11px}
 .savedViewItem button:hover{background:#eee}
 #saveCurrentView{font-size:11px;padding:7px 10px}
+
+/* Fast rendering toggle */
+
+.renderToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.renderSwitch {
+  width: 26px;
+  height: 14px;
+  border: 1px solid #333;
+  border-radius: 20px;
+  background: #fff;
+  position: relative;
+  flex-shrink: 0;
+  transition: background 150ms ease;
+}
+
+.renderSwitch::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  top: 2px;
+  left: 2px;
+  border-radius: 50%;
+  background: #333;
+  transition: transform 150ms ease,
+              background 150ms ease;
+}
+
+/* Fast rendering enabled */
+
+.renderToggle[aria-pressed="true"] .renderSwitch {
+  background: #333;
+}
+
+.renderToggle[aria-pressed="true"] .renderSwitch::after {
+  background: #fff;
+  transform: translateX(12px);
+}
+
+/* Reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  .renderSwitch,
+  .renderSwitch::after {
+    transition: none;
+  }
+}

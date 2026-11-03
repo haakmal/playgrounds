@@ -9,7 +9,8 @@ let data,selected=null,focus=null,focusBack=[],focusUp=2,focusDown=2,importCandi
 let route=null; // Shortest recorded path between two people, not a genealogical inference.
 let viewMode='atlas';
 let indexScope={kind:'all'},indexOpen=false;
-let dataRevision=0,layoutCache=null,fastRendering=false;
+// Make fast rendering the default
+let dataRevision=0,layoutCache=null,fastRendering=true;
 let showNames=true,showGender=false,relationshipFilter='all';
 let batchMode=false,batchTab='people',batchPeople=new Set(),batchRelations=new Set(),batchGroup=null,batchReference=null,batchUndo=null;
 let panFrame=0;
@@ -722,7 +723,7 @@ function renderGraph(){
   $('#status').textContent=`${batchMode?'BATCH SELECT · ':''}${indexTitle()} · ${ids.size} people · ${clusters.length||1} network${clusters.length===1?'':'s'} · Drag to pan · Scroll to zoom · DEC deceased`;
   renderFocusBar();
 }
-function applyView(){$('#toggleFast').textContent=fastRendering?'Precise lines':'Fast rendering';$('#toggleFast').setAttribute('aria-pressed',String(fastRendering));$('#toggleGender').textContent=showGender?'Hide gender':'Show gender';$('#toggleGender').setAttribute('aria-pressed',String(showGender));$('#stage').classList.toggle('namesHidden',!showNames);$('#toggleNames').textContent=showNames?'Hide names':'Show names';$('#toggleNames').setAttribute('aria-pressed',String(!showNames));$('#world').setAttribute('transform',`translate(${pan.x} ${pan.y}) scale(${zoom})`);$('#stage').classList.toggle('overviewScale',zoom<.43);}
+function applyView(){$('#toggleFast').setAttribute('aria-pressed', String(fastRendering));$('#toggleFast').setAttribute('title', fastRendering ? 'Fast rendering enabled' : 'Precise line rendering enabled');$('#toggleGender').textContent=showGender?'Hide gender':'Show gender';$('#toggleGender').setAttribute('aria-pressed',String(showGender));$('#stage').classList.toggle('namesHidden',!showNames);$('#toggleNames').textContent=showNames?'Hide names':'Show names';$('#toggleNames').setAttribute('aria-pressed',String(!showNames));$('#world').setAttribute('transform',`translate(${pan.x} ${pan.y}) scale(${zoom})`);$('#stage').classList.toggle('overviewScale',zoom<.43);}
 function fitAll(){const s=$('#stage'),w=s.clientWidth,h=s.clientHeight;if(!coords.size){zoom=1;pan={x:w/2,y:h/2};applyView();return;}zoom=Math.max(.06,Math.min(1.5,Math.min((w-95)/graphBounds.w,(h-110)/graphBounds.h)));pan={x:(w-graphBounds.w*zoom)/2-graphBounds.x*zoom,y:(h-graphBounds.h*zoom)/2-graphBounds.y*zoom};applyView();}
 function animateToPerson(id){const node=[...$('#nodes').querySelectorAll('.personNode')].find(n=>n.dataset.personId===id);node?.classList.add('navArrival');const world=$('#world');if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches)world.classList.add('viewportNavigating');fitPerson(id);setTimeout(()=>{world.classList.remove('viewportNavigating');node?.classList.remove('navArrival');},450);}
 function moveBack(){if(!focusBack.length)return;const prev=focusBack.pop();focus=prev;selected=prev;renderGraph();drawSide();animateToPerson(prev);}

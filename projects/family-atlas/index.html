@@ -1,8 +1,74 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Family Atlas</title><link rel="stylesheet" href="style.css"></head>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Family Atlas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
 <body>
-<header class="toolbar"><div class="identity"><strong>Family Atlas</strong><small id="collectionTitle">Local collection</small></div><div class="tools"><button id="detailBackBtn" class="hidden">← Radial atlas</button><button id="indexBtn" aria-controls="indexPanel" aria-expanded="false">Index</button><button id="searchBtn">Search</button><button id="batchBtn">Select multiple</button><button id="importBtn">Import</button><button id="exportBtn">Export</button><button id="menuBtn">More</button><button id="addBtn" class="primary">+ Add person</button></div></header>
-<div class="main"><div class="stage" id="stage"><aside id="indexPanel" class="indexPanel hidden" aria-label="Family index"></aside><svg id="atlas" role="group" aria-label="Radial descendant atlas"><g id="world"><g id="edges"></g><g id="junctions"></g><g id="nodes"></g><g id="annotations"></g></g></svg><details class="graphLegend"><summary>Relationship key</summary><div><span class="keyLine solid"></span>Parentage</div><div><span class="keyLine fine"></span>Explicit sibling</div><div><span class="keyLine dashed"></span>Partnership</div><div><span class="keyLine dotted"></span>Guardian / other</div><div class="legendSection">Status markers</div><div><span class="legendMarker marker-deceased">DEC</span>Deceased</div><div><span class="legendMarker marker-separation">SEP</span>Separated</div><div><span class="legendMarker marker-separation">DIV</span>Divorced</div><div><span class="legendMarker marker-history">FRM</span>Former</div><div><span class="legendMarker marker-history">HIS</span>Historical</div><div><span class="legendMarker marker-history">END</span>Ended by death</div><p>Rings represent descent, not age. Long connections are emphasised on selection or tracing.</p></details><div class="status" id="status">Drag to pan · Scroll to zoom · Select a person</div><div class="zoomControls"><button id="toggleFast" aria-pressed="false">Fast rendering</button><button id="toggleNames" aria-pressed="false">Hide names</button><button id="toggleGender" aria-pressed="false">Show gender</button><button id="zoomIn" aria-label="Zoom in">+</button><button id="zoomOut" aria-label="Zoom out">−</button><button id="zoomFit" aria-label="Fit view">Fit</button></div></div><aside id="side" class="side hidden"></aside></div>
-<div id="modal" class="modalBackdrop hidden"><section class="modalCard"><div class="modalHead"><strong id="modalTitle"></strong><button id="modalClose" aria-label="Close">×</button></div><div id="modalBody"></div><div id="modalFooter" class="modalFooter hidden"></div></section></div>
-<input id="fileInput" type="file" accept="application/json,.json" hidden><div id="toast" role="status" aria-live="polite"></div>
-<script type="module" src="app.js"></script></body></html>
+    <header class="toolbar">
+        <div class="identity"><strong>Family Atlas</strong><small id="collectionTitle">Local collection</small></div>
+        <div class="tools"><button id="detailBackBtn" class="hidden">← Radial atlas</button><button id="indexBtn"
+                aria-controls="indexPanel" aria-expanded="false">Index</button><button
+                id="searchBtn">Search</button><button id="batchBtn">Select multiple</button><button
+                id="importBtn">Import</button><button id="exportBtn">Export</button><button
+                id="menuBtn">More</button><button id="addBtn" class="primary">+ Add person</button></div>
+    </header>
+    <div class="main">
+        <div class="stage" id="stage">
+            <aside id="indexPanel" class="indexPanel hidden" aria-label="Family index"></aside><svg id="atlas"
+                role="group" aria-label="Radial descendant atlas">
+                <g id="world">
+                    <g id="edges"></g>
+                    <g id="junctions"></g>
+                    <g id="nodes"></g>
+                    <g id="annotations"></g>
+                </g>
+            </svg>
+            <details class="graphLegend">
+                <summary>Relationship key</summary>
+                <div><span class="keyLine solid"></span>Parentage</div>
+                <div><span class="keyLine fine"></span>Explicit sibling</div>
+                <div><span class="keyLine dashed"></span>Partnership</div>
+                <div><span class="keyLine dotted"></span>Guardian / other</div>
+                <div class="legendSection">Status markers</div>
+                <div><span class="legendMarker marker-deceased">DEC</span>Deceased</div>
+                <div><span class="legendMarker marker-separation">SEP</span>Separated</div>
+                <div><span class="legendMarker marker-separation">DIV</span>Divorced</div>
+                <div><span class="legendMarker marker-history">FRM</span>Former</div>
+                <div><span class="legendMarker marker-history">HIS</span>Historical</div>
+                <div><span class="legendMarker marker-history">END</span>Ended by death</div>
+                <p>Rings represent descent, not age. Long connections are emphasised on selection or tracing.</p>
+            </details>
+            <div class="status" id="status">Drag to pan · Scroll to zoom · Select a person</div>
+            <div class="zoomControls"><button id="toggleFast"
+        class="renderToggle"
+        aria-pressed="true"
+        title="Toggle fast rendering">
+  <span class="renderSwitch" aria-hidden="true"></span>
+  <span>Fast rendering</span>
+</button><button
+                    id="toggleNames" aria-pressed="false">Hide names</button><button id="toggleGender"
+                    aria-pressed="false">Show gender</button><button id="zoomIn" aria-label="Zoom in">+</button><button
+                    id="zoomOut" aria-label="Zoom out">−</button><button id="zoomFit" aria-label="Fit view">Fit</button>
+            </div>
+        </div>
+        <aside id="side" class="side hidden"></aside>
+    </div>
+    <div id="modal" class="modalBackdrop hidden">
+        <section class="modalCard">
+            <div class="modalHead"><strong id="modalTitle"></strong><button id="modalClose"
+                    aria-label="Close">×</button></div>
+            <div id="modalBody"></div>
+            <div id="modalFooter" class="modalFooter hidden"></div>
+        </section>
+    </div>
+    <input id="fileInput" type="file" accept="application/json,.json" hidden>
+    <div id="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="app.js"></script>
+</body>
+
+</html>
