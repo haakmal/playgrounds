@@ -1,27 +1,27 @@
-const fs = require("fs");
-const path = require("path");
-
-const projectsDir = path.join(__dirname, "projects");
-
-fs.readdirSync(projectsDir).forEach((project) => {
-  const indexPath = path.join(projectsDir, project, "index.html");
-
-  if (fs.existsSync(indexPath)) {
-    let contents = fs.readFileSync(indexPath, "utf8");
-
-    if (contents.includes("<!-- BEGIN RETURN LINK -->")) {
-      // Remove everything between the markers (include the markers)
-      contents = contents.replace(
-        /<!-- BEGIN RETURN LINK -->[\s\S]*?<!-- END RETURN LINK -->\s*/i,
-        "",
-      );
-
-      fs.writeFileSync(indexPath, contents, "utf8");
-      console.log(`🧹 Removed return link from: ${project}/index.html`);
-    } else {
-      console.log(`ℹ️ No return link found in: ${project}/index.html`);
-    }
-  } else {
-    console.log(`❌ No index.html found in: ${project}/`);
+/**
+ * Removes both legacy return links and the Playgrounds utility injection.
+ * Run from repository root: node remove-return-links.js
+ */
+const fs = require('node:fs');
+const path = require('node:path');
+const projectsDir = path.join(__dirname, 'projects');
+if (!fs.existsSync(projectsDir)) {
+  console.error('Missing projects/ directory.');
+  process.exit(1);
+}
+let removed = 0;
+for (const entry of fs.readdirSync(projectsDir, { withFileTypes: true })) {
+  if (!entry.isDirectory()) continue;
+  const filename = path.join(projectsDir, entry.name, 'index.html');
+  if (!fs.existsSync(filename)) continue;
+  const original = fs.readFileSync(filename, 'utf8');
+  const updated = original
+    .replace(/<!-- BEGIN RETURN LINK -->[\s\S]*?<!-- END RETURN LINK -->\s*/gi, '')
+    .replace(/<!-- BEGIN PLAYGROUNDS UTILITY -->[\s\S]*?<!-- END PLAYGROUNDS UTILITY -->\s*/gi, '');
+  if (updated !== original) {
+    fs.writeFileSync(filename, updated, 'utf8');
+    removed++;
+    console.log(`Removed: ${entry.name}/index.html`);
   }
-});
+}
+console.log(`Removed utility/legacy links from ${removed} project(s).`);

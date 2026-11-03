@@ -1,65 +1,65 @@
-const fs = require("fs");
-const path = require("path");
+/**
+ * Playgrounds utility injector. Run ONCE for initial installation and again
+ * only when new project directories are added.
+ *
+ * This script does NOT build configuration. Jekyll reads
+ * _data/playgrounds_utility.yml and renders the JSON endpoint automatically.
+ * No external Node packages required.
+ */
+'use strict';
+const fs = require('node:fs');
+const path = require('node:path');
+const root = __dirname;
+const projectDir = path.join(root, 'projects');
+const dataPath = path.join(root, '_data', 'playgrounds_utility.yml');
+const legacy = /<!-- BEGIN RETURN LINK -->[\s\S]*?<!-- END RETURN LINK -->\s*/gi;
+const injected = /<!-- BEGIN PLAYGROUNDS UTILITY -->[\s\S]*?<!-- END PLAYGROUNDS UTILITY -->\s*/gi;
+const validSlug = slug => /^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(slug);
 
-const projectsDir = path.join(__dirname, "projects");
+if (!fs.existsSync(projectDir)) throw new Error('Missing projects/ in repository root');
+if (!fs.existsSync(dataPath)) throw new Error('Missing _data/playgrounds_utility.yml');
 
-const returnLinkHTML = `
-<!-- BEGIN RETURN LINK -->
-<script>
-// inject-home-link.js
-(function () {
-	// Inject Font Awesome stylesheet
-	const fa = document.createElement("link");
-	fa.rel = "stylesheet";
-	fa.href = "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css";
-	fa.crossOrigin = "anonymous";
-	document.head.appendChild(fa);
-	
-	// Create the back link
-	const link = document.createElement("a");
-	link.href = "/";
-  	link.className = "print-remove";
-	link.innerHTML = '← Back to Playgrounds <i class="fab fa-github"><i>';
-	Object.assign(link.style, {
-	  position: "fixed",
-	  bottom: "20px",
-	  right: "20px",
-	  background: "#000",
-	  color: "#fff",
-	  padding: "8px 12px",
-	  zIndex: 1000,
-	  fontSize: "14px",
-	  opacity: 0.7,
-	  borderRadius: "6px",
-	  textDecoration: "none",
-    fontFamily: "Helvetica,Arial, sans-serif"
-	});
-	link.onmouseover = () => (link.style.opacity = "1");
-	link.onmouseout = () => (link.style.opacity = "0.7");
-	document.body.appendChild(link);
-})();
-</script>
-<!-- END RETURN LINK -->
-`;
+const planned = [];
+for (const entry of fs.readdirSync(projectDir, {withFileTypes:true})) {
+  if (!entry.isDirectory() || !validSlug(entry.name)) continue;
+  const filename = path.join(projectDir, entry.name, 'index.html');
+  if (!fs.existsSync(filename)) continue;
+  const before = fs.readFileSync(filename, 'utf8');
+  if (!/<\/body\s*>/i.test(before)) { console.warn('Skipped (no body):', entry.name); continue; }
+  const clean = before.replace(legacy,'').replace(injected,'');
+  const block = `<!-- BEGIN PLAYGROUNDS UTILITY -->\n<script defer src="/assets/playgrounds-utility.js" data-playgrounds-utility data-project="${entry.name}"></script>\n<!-- END PLAYGROUNDS UTILITY -->\n`;
+  const after = clean.replace(/<\/body\s*>/i, block + '</body>');
+  planned.push({slug:entry.name,filename,before,after});
+}
 
-fs.readdirSync(projectsDir).forEach((project) => {
-  const indexPath = path.join(projectsDir, project, "index.html");
-
-  if (fs.existsSync(indexPath)) {
-    const contents = fs.readFileSync(indexPath, "utf8");
-
-    // Check if return link already exists
-    if (!contents.includes("<!-- BEGIN RETURN LINK -->")) {
-      const updated = contents.replace(
-        /<\/body>/i,
-        `${returnLinkHTML}\n</body>`,
-      );
-      fs.writeFileSync(indexPath, updated, "utf8");
-      console.log(`✅ Injected return link into: ${project}/index.html`);
-    } else {
-      console.log(`☑️ Already has return link: ${project}/index.html`);
-    }
-  } else {
-    console.log(`❌ No index.html found in: ${project}/`);
-  }
-});
+// Keep annotations intact: append only new slug keys to the last YAML
+// top-level 'projects:' section. Jekyll parses the complete YAML at build.
+let yaml = fs.readFileSync(dataPath,'utf8');
+const lines = yaml.split(/\r?\n/);
+const projectIndices = lines.map((line,i)=> /^projects:\s*(?:\{\s*\})?\s*(?:#.*)?$/.test(line)?i:-1).filter(i=>i>=0);
+if (projectIndices.length !== 1) throw new Error('Expected exactly one top-level projects: mapping in YAML');
+const pos = projectIndices[0];
+if (lines.slice(pos+1).some(line=>/^[^\s#][^:]*:\s*/.test(line))) {
+  throw new Error('Expected projects: to be the final top-level YAML section. Move projects: to end of file.');
+}
+const existing = new Set();
+for (const line of lines.slice(pos+1)) {
+  const match = line.match(/^  ([A-Za-z0-9][A-Za-z0-9_-]*):(?:\s|$)/);
+  if (match) existing.add(match[1]);
+}
+const missing = planned.map(x=>x.slug).filter(slug=>!existing.has(slug)).sort();
+if (missing.length) {
+  lines[pos] = lines[pos].replace(/\{\s*\}/,'').replace(/\s+$/,'');
+  // Trim only trailing blank lines before appending; leave every comment intact.
+  while(lines.length>pos+1 && lines[lines.length-1]==='')lines.pop();
+  lines.push('',...missing.map(slug=>`  ${slug}: {}`),'');
+  yaml=lines.join('\n');
+  fs.writeFileSync(dataPath,yaml,'utf8');
+}
+let changed=0;
+for(const item of planned) if(item.before!==item.after) {
+  fs.writeFileSync(item.filename,item.after,'utf8');
+  console.log('Updated:',item.slug);changed++;
+}
+console.log(`Playgrounds utility: ${changed} HTML files updated; ${missing.length} YAML project entries added.`);
+console.log('Settings are applied by Jekyll automatically; no JSON sync is required.');

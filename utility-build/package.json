@@ -1,0 +1,7 @@
+{
+  "name": "playgrounds-utility-build",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Build-only YAML parser for Playgrounds Utility",
+  "dependencies": {"yaml": "^2.8.1"}
+}

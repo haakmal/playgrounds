@@ -1,0 +1,5 @@
+---
+layout: null
+permalink: /assets/playgrounds-utility-config.json
+---
+{{ site.data.playgrounds_utility | jsonify }}

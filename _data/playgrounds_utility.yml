@@ -1,0 +1,90 @@
+# PLAYGROUNDS UTILITY — CONFIGURATION
+# ----------------------------------
+# This YAML file is the only configuration file you should edit.
+# Jekyll reads this file automatically when building the site.
+# Edit, save, and refresh your Jekyll preview (or commit to publish).
+# No injector, synchronisation, watcher, or npm dependency is needed
+# when changing settings.
+#
+# Project entries are created automatically when an index.html is injected.
+# Each project inherits the defaults unless it overrides individual properties.
+# Values are case-sensitive. Positions are measured in CSS pixels.
+#
+# OPTIONS / REFERENCE
+# siteUrl             URL of the Playgrounds index (e.g. / or /playgrounds/).
+# repositoryUrl       Repository URL, without a trailing slash.
+# issuesUrl           URL for creating a new GitHub issue.
+# discussionsUrl      Repository GitHub Discussions URL.
+# discussionsEnabled  true shows discussion link; false hides it.
+# email               Public contact email. Empty string hides Contact.
+# side                Desktop attachment edge: left | right.
+# bottom              Desktop distance from viewport bottom, in pixels.
+# mobileSide          Mobile attachment edge: left | right.
+# mobileBottom        Mobile distance from viewport bottom, in pixels.
+# mobileInset         Mobile distance from chosen side edge, in pixels.
+# title               Project-only optional override for displayed title.
+#
+# You can also override general properties per project, such as email or
+# discussionsEnabled. `slug: {}` means use all global defaults.
+# YAML tips: use spaces, not tabs. Quote URLs and strings containing `#`.
+
+# GLOBAL DEFAULTS — applied to all projects unless explicitly overridden.
+defaults:
+  siteUrl: "/"
+  repositoryUrl: "https://github.com/haakmal/playgrounds"
+  issuesUrl: "https://github.com/haakmal/playgrounds/issues/new"
+  discussionsUrl: "https://github.com/haakmal/playgrounds/discussions"
+  discussionsEnabled: false
+  email: "h.akmal@unsw.edu.au"
+  side: right
+  bottom: 96
+  mobileSide: right
+  mobileBottom: 16
+  mobileInset: 16
+
+# PER-PROJECT OVERRIDES — the injector appends new projects automatically.
+# Example (uncomment and adapt after the project has been registered):
+#   family-atlas:
+#     side: left
+#     bottom: 155
+#     mobileBottom: 60
+#     title: "Family Atlas"
+# This is an empty YAML mapping (no project-specific overrides yet).
+# The injector registers project slugs automatically, on installation
+# or when you intentionally run it for newly added projects.
+projects:
+  accessibility-audit: {}
+  ai-client: {}
+  blindspots: {}
+  cardboard: {}
+  connecting-factors: {}
+  constraints: {}
+  contextual-modeller: {}
+  design-methods: {}
+  design-shuffler: {}
+  dice-generator: {}
+  emojidice: {}
+  family-atlas:
+    side: left
+    mobileSide: left
+  future-thing: {}
+  groupings: {}
+  inquiry-plates: {}
+  interaction-context-map: {}
+  interaction-map: {}
+  interaction-research-mapper-v11: {}
+  interaction-toolkit: {}
+  marking-minion: {}
+  my-pantry: {}
+  persona-map: {}
+  possibility-engine: {}
+  principles-mapper: {}
+  prototyping-companion: {}
+  provocator: {}
+  rail: {}
+  script-gallery: {}
+  seer-table: {}
+  systems-insight-lab: {}
+  systems-insight-lab2: {}
+  ui-forensics: {}
+  usability-reporting: {}

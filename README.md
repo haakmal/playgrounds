@@ -12,35 +12,35 @@ This is a sandbox-style GitHub repo intended for an assortment of curious (mostl
 
 <!-- PROJECTS:START -->
 
-| Project | Description | Status |
-|---|---|---|
-| [Marking Minion](https://play.hakmal.com/projects/marking-minion/) | A lightweight, local-first marking calculator for Moodle-style assessment rubrics. | Published |
-| [Possibility Engine](https://play.hakmal.com/projects/possibility-engine/) | An engine for idea disruption and exploring new perspectives and possibilities. | Published |
-| [Groupings Tool](https://play.hakmal.com/projects/groupings/) | A handy tool for creating and managing assigned groups. | Published |
-| [Cardboard](https://play.hakmal.com/projects/cardboard/) | A handy card deck maker for drafting, shuffling, and revealing card-based activities. | WIP |
-| [Interaction Principles Mapper](https://play.hakmal.com/projects/principles-mapper) | A tool for mapping scenarios against Norman's interaction principles. | Published |
-| [Design Shuffler](https://play.hakmal.com/projects/design-shuffler) | A tool for shuffling design contexts and factors to explore new design possibilities. | WIP |
-| [The Seer's Table](https://play.hakmal.com/projects/seer-table/) | A playful ideation guide to support designing for enchanted objects. | Published |
-| [Systems Insight Lab](https://play.hakmal.com/projects/systems-insight-lab/) | A systems mapping tool for collecting and analysing threads of information. | WIP |
-| [Interaction Mapper](https://play.hakmal.com/projects/interaction-map) | A simple tool for mapping interactions against human and system behaviours. | Published |
-| [Contextual Modelling Companion](https://play.hakmal.com/projects/contextual-modeller/) | A reference guide for helping students map research to contextual design models | Published |
-| [Heuristic Examination](https://play.hakmal.com/projects/ui-forensics/) | A UI forensics tool for learning heuristic evaluation. | Published |
-| [Interactive Prototyping Companion](https://play.hakmal.com/projects/prototyping-companion/) | A tool for creating and testing interactive prototypes aimed as companion tool for my students. | Published |
-| [Usability Reporting](https://play.hakmal.com/projects/usability-reporting/) | A toolkit for usability reporting shared with my students. | Published |
-| [Accessibility Audit](https://play.hakmal.com/projects/accessibility-audit/) | An accessibility audit tool for evaluating interactions. | Published |
-| [Interaction Context Map](https://play.hakmal.com/projects/interaction-context-map/) | A digital version of the Interaction Context Mapping tool provided to my students, good for understanding how people, technology, and contexts relate to each other to form an interaction. | WIP |
-| [Blindspots](https://hakmal.com/) | A play-based card system for finding hidden biases in the design process | Published |
-| [Dice Generator](https://play.hakmal.com/projects/dice-generator/) | A simple tool to generate custom dice. | WIP |
-| [Interaction Constraints](https://play.hakmal.com/projects/constraints/) | A handy constraint card deck for interaction design. | Published |
-| [My Pantry](https://play.hakmal.com/projects/my-pantry/) | A simple pantry management app using client-side JS and Supabase. | WIP |
-| [Script Gallery](https://play.hakmal.com/projects/script-gallery/) | A collection of scripts that I couldn't find a place for but wanted to share. | Published |
-| [Provocator 9000](https://play.hakmal.com/projects/provocator/) | An interactive AI scenario provocation generator, that can yield positive and negative outputs for a given scenario/idea/concept. | WIP |
-| [The (Provoked) Thing From The Future](https://play.hakmal.com/projects/future-thing/) | A handy generator for The Thing From The Future for ideation and critique aimed at AI-guided future provocations. | Published |
-| [MTG Calculator](https://haakmal.github.io/mtg-calculator/) | A Magic the Gathering attack calculator | WIP |
-| [EmojiDice](https://play.hakmal.com/projects/emojidice/) | A storydice variant using emojis, good for brainstorming. | Published |
-| [Design Research Methods](https://play.hakmal.com/projects/design-methods/) | A visual guide for understanding when to use design research methods along the Design Double Diamond. | WIP |
-| [Design by Play](https://thesis.hakmal.com/) | A thesis on using Object-Oriented Ontology to playfully design for the Internet of Things | Published |
-| [RAIL](https://play.hakmal.com/projects/rail/) | An exploration into responsible AI licensing futures made using Twine. | Published |
+| Project                                                                                      | Description                                                                                                                                                                                 | Status    |
+| -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| [Marking Minion](https://play.hakmal.com/projects/marking-minion/)                           | A lightweight, local-first marking calculator for Moodle-style assessment rubrics.                                                                                                          | Published |
+| [Possibility Engine](https://play.hakmal.com/projects/possibility-engine/)                   | An engine for idea disruption and exploring new perspectives and possibilities.                                                                                                             | Published |
+| [Groupings Tool](https://play.hakmal.com/projects/groupings/)                                | A handy tool for creating and managing assigned groups.                                                                                                                                     | Published |
+| [Cardboard](https://play.hakmal.com/projects/cardboard/)                                     | A handy card deck maker for drafting, shuffling, and revealing card-based activities.                                                                                                       | WIP       |
+| [Interaction Principles Mapper](https://play.hakmal.com/projects/principles-mapper)          | A tool for mapping scenarios against Norman's interaction principles.                                                                                                                       | Published |
+| [Design Shuffler](https://play.hakmal.com/projects/design-shuffler)                          | A tool for shuffling design contexts and factors to explore new design possibilities.                                                                                                       | WIP       |
+| [The Seer's Table](https://play.hakmal.com/projects/seer-table/)                             | A playful ideation guide to support designing for enchanted objects.                                                                                                                        | Published |
+| [Systems Insight Lab](https://play.hakmal.com/projects/systems-insight-lab/)                 | A systems mapping tool for collecting and analysing threads of information.                                                                                                                 | WIP       |
+| [Interaction Mapper](https://play.hakmal.com/projects/interaction-map)                       | A simple tool for mapping interactions against human and system behaviours.                                                                                                                 | Published |
+| [Contextual Modelling Companion](https://play.hakmal.com/projects/contextual-modeller/)      | A reference guide for helping students map research to contextual design models                                                                                                             | Published |
+| [Heuristic Examination](https://play.hakmal.com/projects/ui-forensics/)                      | A UI forensics tool for learning heuristic evaluation.                                                                                                                                      | Published |
+| [Interactive Prototyping Companion](https://play.hakmal.com/projects/prototyping-companion/) | A tool for creating and testing interactive prototypes aimed as companion tool for my students.                                                                                             | Published |
+| [Usability Reporting](https://play.hakmal.com/projects/usability-reporting/)                 | A toolkit for usability reporting shared with my students.                                                                                                                                  | Published |
+| [Accessibility Audit](https://play.hakmal.com/projects/accessibility-audit/)                 | An accessibility audit tool for evaluating interactions.                                                                                                                                    | Published |
+| [Interaction Context Map](https://play.hakmal.com/projects/interaction-context-map/)         | A digital version of the Interaction Context Mapping tool provided to my students, good for understanding how people, technology, and contexts relate to each other to form an interaction. | WIP       |
+| [Blindspots](https://hakmal.com/)                                                            | A play-based card system for finding hidden biases in the design process                                                                                                                    | Published |
+| [Dice Generator](https://play.hakmal.com/projects/dice-generator/)                           | A simple tool to generate custom dice.                                                                                                                                                      | WIP       |
+| [Interaction Constraints](https://play.hakmal.com/projects/constraints/)                     | A handy constraint card deck for interaction design.                                                                                                                                        | Published |
+| [My Pantry](https://play.hakmal.com/projects/my-pantry/)                                     | A simple pantry management app using client-side JS and Supabase.                                                                                                                           | WIP       |
+| [Script Gallery](https://play.hakmal.com/projects/script-gallery/)                           | A collection of scripts that I couldn't find a place for but wanted to share.                                                                                                               | Published |
+| [Provocator 9000](https://play.hakmal.com/projects/provocator/)                              | An interactive AI scenario provocation generator, that can yield positive and negative outputs for a given scenario/idea/concept.                                                           | WIP       |
+| [The (Provoked) Thing From The Future](https://play.hakmal.com/projects/future-thing/)       | A handy generator for The Thing From The Future for ideation and critique aimed at AI-guided future provocations.                                                                           | Published |
+| [MTG Calculator](https://haakmal.github.io/mtg-calculator/)                                  | A Magic the Gathering attack calculator                                                                                                                                                     | WIP       |
+| [EmojiDice](https://play.hakmal.com/projects/emojidice/)                                     | A storydice variant using emojis, good for brainstorming.                                                                                                                                   | Published |
+| [Design Research Methods](https://play.hakmal.com/projects/design-methods/)                  | A visual guide for understanding when to use design research methods along the Design Double Diamond.                                                                                       | WIP       |
+| [Design by Play](https://thesis.hakmal.com/)                                                 | A thesis on using Object-Oriented Ontology to playfully design for the Internet of Things                                                                                                   | Published |
+| [RAIL](https://play.hakmal.com/projects/rail/)                                               | An exploration into responsible AI licensing futures made using Twine.                                                                                                                      | Published |
 
 <!-- PROJECTS:END -->
 
@@ -63,16 +63,71 @@ For projects that are not in the `projects/` folder use `external: true` in YAML
 
 ### Injecting Navigation
 
-Since all projects are independent of the main Jekyll site, adding links back to the root index requires manually inserting a return link. This is tedious and unintutive because any change requires updating all links individually. As a work around the `inject-return-links.js` and `remove-return-links.js` scripts can be used to add/remove the return to root back-link at the bottom of each `index.html`.
+Since each playground operates independently of the main Jekyll site, a shared navigation utility is injected into individual projects. This provides access to the Playgrounds homepage, GitHub source, feedback, contribution options, and contact information without maintaining navigation separately within each project.
 
-Using the script is simple and can be done from the terminal.
+The utility is managed through two scripts, run from the repository root:
 
 ```bash
 node inject-return-links.js
 node remove-return-links.js
 ```
 
-When any changes are needed such as styling or adding/removing content from the links, the `inject-return-links.js` script can be updated.
+- **Inject:** Adds the shared utility reference to eligible `projects/[folder]/index.html` files and registers new projects in the configuration.
+- **Remove:** Removes the injected utility while preserving project configuration for future use.
+
+#### Configuration
+
+The utility uses `_data/playgrounds_utility.yml` as its **single source of truth**. This file includes annotated global settings and project-specific overrides, including desktop/mobile positioning, alignment, and navigation options.
+
+Each project is identified by its folder name:
+
+```yaml
+projects:
+  family-atlas:
+    side: left
+    bottom: 155
+    mobileSide: right
+    mobileBottom: 16
+    mobileInset: 0
+```
+
+Projects without overrides inherit the global defaults. Jekyll automatically converts the YAML configuration into browser-readable JSON during site builds. **Configuration changes do not require reinjection**—simply edit the YAML and rebuild or publish the site.
+
+The shared interface itself is maintained in `assets/playgrounds-utility.js`. Changes to its appearance or behaviour apply across all injected playgrounds without modifying their individual HTML files.
+
+For local testing, use the Jekyll commands documented below rather than a basic Python HTTP server, which cannot process the YAML configuration.
+
+#### Dependencies and Fresh Installation
+
+The navigation utility requires **Node.js** for the injection/removal scripts and **Ruby, Bundler, and Jekyll** for building the site locally. No additional npm packages or JavaScript build tools are required.
+
+On a fresh system (including Linux), ensure Node.js and Ruby are installed, then install the Jekyll dependencies from the repository root:
+
+```bash
+# Check installed prerequisites
+node --version
+ruby --version
+bundle --version
+
+# Install Ruby dependencies from the Gemfile
+bundle install
+```
+
+After cloning the repository, run the injector once if new projects require navigation:
+
+```bash
+node inject-return-links.js
+```
+
+Configuration is managed exclusively through `_data/playgrounds_utility.yml`. Jekyll automatically processes changes during builds, so updating configuration does not require running Node.js or reinjecting the utility.
+
+For local development, start the Jekyll server:
+
+```bash
+bundle exec jekyll serve --livereload
+```
+
+GitHub Pages processes the YAML configuration during deployment, so no separate npm build or configuration synchronisation is required.
 
 ### Local Testing
 
@@ -87,6 +142,7 @@ bundle install
 bundle exec jekyll serve --baseurl="/playgrounds"
 # use bottom if using DNS, config.yml needs to have blank baseurl
 bundle exec jekyll serve
+# refer to above --livereload if testing injection updates
 ```
 
 ## AI Collaboration
