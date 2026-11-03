@@ -1,4 +1,4 @@
-# Inquiry Plates — prototype v4
+# Inquiry Plates — prototype v5
 
 Single-page, dependency-free HTML/CSS/JavaScript teaching instrument. A composed, authored cultural-probe provocation sits beside a three-part **anatomy** (Look at / Invite / Question). Students can explore the relationship by changing individual parts while retaining the original statement for comparison.
 
@@ -66,11 +66,11 @@ python3 -m json.tool plates.json > /dev/null
 ## Interaction rules
 
 - Students select Discovery or Concept inquiry before seeing a plate.
-- **New plate** selects a new complete statement in the current orientation and resets the anatomy to match it.
+- **Browse plates** opens a searchable library of every authored statement, with orientation filters and a separate **Surprise me** action. Choosing a statement resets its anatomy to the authored version.
 - Clicking an underlined phrase or the corresponding anatomy heading reveals its additional questions.
-- The three ↻ controls vary **only the anatomy**, not the authored statement. Dashed leader lines and the `VARIATION` label signal the divergence.
+- The three ↻ controls offer **alternative perspectives on the same authored statement**, without changing the statement. A changed component shows its original alongside the alternative and opens the relevant follow-up questions. Dashed lines indicate a variation.
 - **Restore original** returns all three anatomy sections to the plate's authored version.
-- **Reframe all** changes all three anatomy sections together while leaving the statement fixed.
+- **Change all perspectives** changes all three anatomy sections together while leaving the original statement fixed.
 - Mode changes load a plate from the selected orientation. Each mode maintains a non-repeating shuffle queue during the session.
 - No local storage or response tracking is used; a reload restarts the experience.
 
@@ -80,3 +80,11 @@ python3 -m json.tool plates.json > /dev/null
 - `style.css` — responsive editorial layout, typography and leader lines
 - `app.js` — display, keyboard-accessible interactions, validation and shuffling
 - `plates.json` — tutor-editable content library (30 authored plates and 90 modular alternatives)
+
+## What does changing the anatomy mean?
+
+The left statement is a coherent, authored starting point. The right column begins as its literal anatomy. The circular-arrow controls do **not** rewrite or regenerate that statement: they offer alternative questions, actions or foci **in relation to it**. This is an invitation to rethink a scenario rather than a suggestion that the original question has been replaced. The changed module is visually distinguished, retains a reminder of the original, and immediately opens its own follow-up questions. The statement does not fade when you change a module.
+
+## Choosing from the library
+
+**Browse plates** opens a dialog containing all authored statements in `plates.json`. Search by words or plate ID, and filter by Discovery, Concept inquiry, or All. **Surprise me** selects a random plate from the current filter. New plates added by tutors automatically appear in the library. Nothing needs to be entered in the application, and there is no saved student data.

@@ -11,6 +11,8 @@
   const media = matchMedia('(prefers-reduced-motion: reduce)');
   let library, mode = 'discovery', plate = null, anatomy = {}, varied = new Set();
   let currentOpen = null, rendering = false, sequence = 0, raf = 0;
+  let libraryFilter = 'all';
+  const dialog = $('plate-dialog');
   const plateQueues = { discovery:[], concept:[] };
   const lastPlate = {discovery:null,concept:null};
   const moduleQueues = { discovery:{},concept:{} };
@@ -39,12 +41,16 @@
       for(const r of ROLES){const entries=data.modules[m]?.[r]; if(!Array.isArray(entries)||!entries.length||entries.some(e=>typeof e.id!=='string'||typeof e.label!=='string'||!e.label.trim()||!Array.isArray(e.questions)||!e.questions.length||e.questions.some(q=>typeof q!=='string'||!q.trim()))) throw Error(`Incomplete ${m}/${r} module bank.`);}
     }
   }
+  function setPlate(selected){
+    plate=selected;lastPlate[mode]=plate;
+    // Remove a manually selected plate from the pending random queue.
+    plateQueues[mode]=plateQueues[mode].filter(p=>p.id!==selected.id);
+    anatomy=Object.fromEntries(ROLES.map(r=>[r,plate.annotations[r]]));varied.clear();closeNotes();render();
+  }
   function nextPlate(){
     const pool=library.plates.filter(p=>p.mode===mode);
     if(!plateQueues[mode].length) plateQueues[mode]=shuffle(pool,lastPlate[mode]);
-    plate=plateQueues[mode].shift();lastPlate[mode]=plate;
-    anatomy=Object.fromEntries(ROLES.map(r=>[r,plate.annotations[r]]));varied.clear();closeNotes();
-    render();
+    setPlate(plateQueues[mode].shift());
   }
   function nextModule(role){
     const pool=library.modules[mode][role];
@@ -77,12 +83,15 @@
     renderStatement();renderAnatomy();
   }
   function renderAnatomy(){
-    $('anatomy-status').textContent=varied.size?'/ VARIATION':'/ ORIGINAL';
+    $('anatomy-status').textContent=varied.size?'/ ALTERNATIVE PERSPECTIVES':'/ ORIGINAL';
     $('restore').hidden=!varied.size;
     for(const role of ROLES){
       const note=document.querySelector(`.anatomy-note[data-role="${role}"]`);
       note.classList.toggle('is-varied',varied.has(role));
       $('value-'+role).textContent=anatomy[role].label;
+      const original=$('original-'+role);
+      original.hidden=!varied.has(role);
+      original.textContent=varied.has(role)?`In the original: ${plate.annotations[role].label}`:'';
       const list=$('questions-'+role);list.replaceChildren();
       for(const question of anatomy[role].questions){const li=document.createElement('li');li.textContent=question;list.append(li);}
     }
@@ -122,7 +131,7 @@
   }
   function restart(){++sequence;rendering=false;stage.classList.remove('is-fading');examination.hidden=true;intro.hidden=false;$('restart').hidden=true;$('begin').focus({preventScroll:true});}
   function changeMode(newMode){if(newMode===mode)return;changeWithFade(()=>{mode=newMode;nextPlate();});}
-  function restore(){changeWithFade(()=>{anatomy=Object.fromEntries(ROLES.map(r=>[r,plate.annotations[r]]));varied.clear();closeNotes();renderAnatomy();});}
+  function restore(){anatomy=Object.fromEntries(ROLES.map(r=>[r,plate.annotations[r]]));varied.clear();closeNotes();renderAnatomy();}
   function scheduleLines(){cancelAnimationFrame(raf);raf=requestAnimationFrame(drawLines);}
   function drawLines(){
     const svg=$('leader-layer');svg.replaceChildren();
@@ -153,12 +162,44 @@
   }
   $('begin').addEventListener('click',start);
   $('restart').addEventListener('click',restart);
-  $('new-plate').addEventListener('click',()=>changeWithFade(nextPlate));
-  $('reshuffle').addEventListener('click',()=>changeWithFade(()=>{ROLES.forEach(nextModule);closeNotes();renderAnatomy();}));
+  function visiblePlateText(p){return p.statement.replace(/{(?:focus|action|opening)\|([^{}]+)}/g,'$1');}
+  function openLibrary(){
+    libraryFilter=mode;
+    $('library-search').value='';
+    renderLibrary();
+    dialog.showModal();
+    $('library-search').focus();
+  }
+  function renderLibrary(){
+    const term=$('library-search').value.trim().toLocaleLowerCase();
+    const entries=library.plates.filter(p=>(libraryFilter==='all'||p.mode===libraryFilter)&&(p.id+' '+visiblePlateText(p)).toLocaleLowerCase().includes(term));
+    document.querySelectorAll('[data-filter]').forEach(btn=>btn.setAttribute('aria-pressed',String(btn.dataset.filter===libraryFilter)));
+    $('library-count').textContent=`${entries.length} ${entries.length===1?'statement':'statements'}`;
+    const list=$('library-list');list.replaceChildren();
+    for(const p of entries){
+      const item=document.createElement('button');item.type='button';item.className='library-item';
+      if(plate&&p.id===plate.id)item.classList.add('is-current');
+      const meta=document.createElement('span');meta.className='library-item-meta';meta.textContent=`${p.id} / ${p.mode==='discovery'?'DISCOVERY':'CONCEPT INQUIRY'}${plate&&p.id===plate.id?' / CURRENT':''}`;
+      const title=document.createElement('span');title.className='library-item-statement';title.textContent=visiblePlateText(p);
+      item.append(meta,title);
+      item.addEventListener('click',()=>{
+        dialog.close();
+        changeWithFade(()=>{mode=p.mode;setPlate(p);});
+      });
+      list.append(item);
+    }
+    if(!entries.length){const empty=document.createElement('p');empty.className='library-empty';empty.textContent='No statements match this search.';list.append(empty);}
+  }
+  $('new-plate').addEventListener('click',openLibrary);
+  $('library-close').addEventListener('click',()=>dialog.close());
+  $('library-search').addEventListener('input',renderLibrary);
+  document.querySelectorAll('[data-filter]').forEach(btn=>btn.addEventListener('click',()=>{libraryFilter=btn.dataset.filter;renderLibrary();}));
+  $('library-random').addEventListener('click',()=>{dialog.close();changeWithFade(()=>{const available=library.plates.filter(p=>libraryFilter==='all'||p.mode===libraryFilter);const options=available.length>1?available.filter(p=>p.id!==plate?.id):available;const chosen=options[Math.floor(Math.random()*options.length)];mode=chosen.mode;setPlate(chosen);});});
+  $('reshuffle').addEventListener('click',()=>{ROLES.forEach(nextModule);closeNotes();renderAnatomy();});
   $('restore').addEventListener('click',restore);
   document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>changeMode(b.dataset.mode)));
   document.querySelectorAll('.anatomy-trigger').forEach(b=>b.addEventListener('click',()=>toggleNote(b.dataset.role)));
-  document.querySelectorAll('[data-shuffle]').forEach(b=>b.addEventListener('click',()=>changeWithFade(()=>{nextModule(b.dataset.shuffle);closeNotes();renderAnatomy();})));
+  document.querySelectorAll('[data-shuffle]').forEach(b=>b.addEventListener('click',()=>{nextModule(b.dataset.shuffle);currentOpen=b.dataset.shuffle;renderAnatomy();}));
   window.addEventListener('resize',scheduleLines,{passive:true});
   if('ResizeObserver' in window)new ResizeObserver(scheduleLines).observe(stage);
   if(document.fonts)document.fonts.ready.then(scheduleLines);
