@@ -172,3 +172,15 @@ remain uncoloured. The independent outer selection ring remains available in
 ordinary and batch selection. The toggle applies to radial and family-detail
 views and is preserved by redraws. The current overlay is embedded in SVG export.
 No archive schema or relationship data changes were made.
+
+## v0.16 Saved views and rendering performance
+Index > Saved views stores named Complete Atlas, Descendant Map or Between People
+definitions in the same portable JSON collection under `savedViews`, including
+start/stop person IDs, depth limits and display preferences. The underlying
+people and relationships are never duplicated. Saved traces are recalculated
+against the latest recorded connections when reopened.
+
+Fast rendering skips expensive crossing-gap detection while retaining nodes,
+connections, junctions and editable behaviour. Precise lines restores gaps.
+Layout geometry is cached across selection/style-only redraws and panning is
+coalesced to animation frames. SVG is still used throughout.
