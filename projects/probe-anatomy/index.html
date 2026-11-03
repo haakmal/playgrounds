@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f7f5">
+  <meta name="description" content="Probe Anatomy is a quiet provocation instrument for imagining cultural probe activities.">
+  <title>Probe Anatomy — An instrument for cultural probing</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="data.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="masthead">
+      <div class="identity"><span class="identity-mark" aria-hidden="true">✳</span><div><h1>PROBE ANATOMY</h1><p>An instrument for cultural probing</p></div></div>
+      <button class="text-button" id="about-toggle" type="button" aria-expanded="false" aria-controls="about-panel">About <span aria-hidden="true">↗</span></button>
+    </header>
+    <section class="about-panel" id="about-panel" hidden>
+      <div><span class="micro">FIELD NOTE / 00</span><h2>Consider the invitation, not the answer.</h2></div>
+      <div><p>Bring a scenario or emerging concept. Read the provocation as a speculative possibility, then examine what it asks you to look at, invite and question. Imagine an object, activity or experience in response. Nothing is entered, assessed or saved.</p><p>Discovery opens up everyday experiences. Concept inquiry examines assumptions beneath an emerging design idea. These provocations are starting points, not prescriptions.</p></div>
+    </section>
+    <main>
+      <section class="toolbar" aria-label="Orientation">
+        <div><div class="micro">ORIENTATION / SELECT A LENS</div><div class="mode-switch" role="group" aria-label="Choose a mode"><button type="button" class="mode active" data-mode="discovery" aria-pressed="true">Discovery</button><button type="button" class="mode" data-mode="concept" aria-pressed="false">Concept inquiry</button></div></div>
+        <div class="toolbar-aside"><span class="micro">READING THE PROVOCATION</span><span class="toolbar-subtitle" id="mode-description">Look beyond what is already visible.</span></div>
+      </section>
+      <section class="plate" aria-label="Annotated provocation">
+        <div class="plate-meta"><span>FIG. <span id="specimen-no">D—01</span></span><span>ANATOMY OF A PROVOCATION</span></div>
+        <div class="anatomy-stage" id="anatomy-stage">
+          <svg class="connectors" id="connectors" aria-hidden="true"></svg>
+          <div class="annotation annotation-focus" data-role="focus"><button type="button" class="annotation-trigger" data-role="focus" aria-label="Examine focus of scrutiny"><span class="annotation-index">01</span><span class="annotation-heading">LOOK AT</span></button><h3 id="focus-label"></h3><p id="focus-nudge"></p></div>
+          <div class="annotation annotation-action" data-role="action"><button type="button" class="annotation-trigger" data-role="action" aria-label="Examine expressive action"><span class="annotation-index">02</span><span class="annotation-heading">INVITE</span></button><h3 id="action-label"></h3><p id="action-nudge"></p></div>
+          <div class="annotation annotation-opening" data-role="opening"><button type="button" class="annotation-trigger" data-role="opening" aria-label="Examine interpretive opening"><span class="annotation-index">03</span><span class="annotation-heading">QUESTION</span></button><h3 id="opening-label"></h3><p id="opening-nudge"></p></div>
+          <div class="specimen"><div class="micro specimen-overline">A POSSIBILITY TO CONSIDER</div><p class="statement" id="statement" aria-live="polite" aria-atomic="true"></p><span class="specimen-footnote">Select an underlined phrase to examine its anatomy.</span></div>
+        </div>
+        <div class="plate-foot"><span class="micro">INTERPRETATION / YOUR OWN</span><p>What might this become as an <em>object</em>, <em>activity</em> or <em>experience</em>?</p></div>
+      </section>
+      <footer class="controls"><div class="control-note"><span class="status-dot" aria-hidden="true"></span><span>No response required. Return to your sketching at any point.</span></div><button id="next" class="next-button" type="button">Another provocation <span aria-hidden="true">→</span></button></footer>
+    </main>
+    <div class="page-footer"><span>PROBE ANATOMY / STUDY 01</span><span>DISCOVER · INTERROGATE · IMAGINE</span></div>
+  </div>
+</body>
+</html>
