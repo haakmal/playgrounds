@@ -1,10 +1,10 @@
-# Inquiry Plates — prototype v5
+# Inquiry Plates — prototype v6
 
 Single-page, dependency-free HTML/CSS/JavaScript teaching instrument. A composed, authored cultural-probe provocation sits beside a three-part **anatomy** (Look at / Invite / Question). Students can explore the relationship by changing individual parts while retaining the original statement for comparison.
 
 ## Run locally
 
-Unzip, open a terminal in the `inquiry-plates-v4` folder, and run:
+Unzip, open a terminal in the `inquiry-plates-v6` folder, and run:
 
 ```sh
 python3 -m http.server 8000
@@ -17,7 +17,7 @@ Visit `http://localhost:8000/`. Opening `index.html` using `file://` does not wo
 **Edit only `plates.json`.** It contains two collections:
 
 - `plates`: complete authored provocations for Discovery (`"discovery"`) and Concept inquiry (`"concept"`).
-- `modules`: independent alternative prompts for the three anatomy dimensions, organised by orientation. These are used by each individual shuffle control and **Reframe all**.
+- `modules`: independent alternative prompts for the three anatomy dimensions, organised by orientation. These are used by each individual shuffle control and **Change perspectives**.
 
 Copy an existing plate object from the `plates` array, paste it after the last object (with a comma between objects), and change its ID, orientation, statement and annotations. An example:
 
@@ -88,3 +88,13 @@ The left statement is a coherent, authored starting point. The right column begi
 ## Choosing from the library
 
 **Browse plates** opens a dialog containing all authored statements in `plates.json`. Search by words or plate ID, and filter by Discovery, Concept inquiry, or All. **Surprise me** selects a random plate from the current filter. New plates added by tutors automatically appear in the library. Nothing needs to be entered in the application, and there is no saved student data.
+
+
+## Version 6 interface notes
+
+- The Discovery / Concept inquiry orientation switch sits beside the composed provocation.
+- Browse plates and Change perspectives are together beneath the statement.
+- The anatomy's individual shuffle controls are local to each annotation.
+- Underlined phrases open their corresponding anatomical notes.
+- Expanded notes animate; modified anatomical content crossfades without replacing the authored statement.
+- Sentence punctuation is kept attached at render time; tutors can continue writing ordinary punctuation outside `{role|phrase}` tags.

@@ -1,4 +1,4 @@
-/* Inquiry Plates v4 — composed plate + independently adjustable anatomy.
+/* Inquiry Plates v6 — composed plate + independently adjustable anatomy.
    All authored content lives in plates.json. No persistence, tracking or user data. */
 (() => {
   'use strict';
@@ -11,6 +11,7 @@
   const media = matchMedia('(prefers-reduced-motion: reduce)');
   let library, mode = 'discovery', plate = null, anatomy = {}, varied = new Set();
   let currentOpen = null, rendering = false, sequence = 0, raf = 0;
+  const changingRoles = new Set();
   let libraryFilter = 'all';
   const dialog = $('plate-dialog');
   const plateQueues = { discovery:[], concept:[] };
@@ -71,14 +72,22 @@
     while((match=pattern.exec(plate.statement))!==null){
       h.append(document.createTextNode(plate.statement.slice(offset,match.index)));
       const btn=document.createElement('button');btn.type='button';btn.className='annotated';btn.dataset.role=match[1];btn.setAttribute('aria-expanded','false');btn.setAttribute('aria-controls',`details-${match[1]}`);btn.textContent=match[2];
-      btn.addEventListener('click',()=>toggleNote(match[1]));h.append(btn);
-      offset=pattern.lastIndex;
+      btn.addEventListener('click',()=>toggleNote(match[1]));
+      // If punctuation immediately follows the last marked phrase, keep it inside
+      // the same inline element so the browser cannot orphan the question mark.
+      let nextOffset=pattern.lastIndex;
+      const rest=plate.statement.slice(nextOffset);
+      if (/^[?!](?:\s*)$/.test(rest)) { btn.textContent += rest.trim(); nextOffset=plate.statement.length; }
+      h.append(btn);
+      offset=nextOffset;
     }
-    h.append(document.createTextNode(plate.statement.slice(offset)));
+    // U+2060 WORD JOINER keeps sentence punctuation attached to the preceding word.
+    // It is inserted at render time so tutors can author normal punctuation in JSON.
+    const trailing = plate.statement.slice(offset).replace(/([\p{L}\p{N}])([?!,.;:])/gu, '$1\u2060$2');
+    h.append(document.createTextNode(trailing));
   }
   function render(){
     $('plate-id').textContent=plate.id;
-    $('plate-identity').textContent=`${mode==='discovery'?'DISCOVERY':'CONCEPT INQUIRY'} / ${plate.id}`;
     for(const btn of document.querySelectorAll('[data-mode]'))btn.setAttribute('aria-pressed',String(btn.dataset.mode===mode));
     renderStatement();renderAnatomy();
   }
@@ -104,7 +113,9 @@
       const note=document.querySelector(`.anatomy-note[data-role="${role}"]`);
       note.classList.toggle('is-active',selected);
       const button=note.querySelector('.anatomy-trigger');button.setAttribute('aria-expanded',String(selected));
-      $('details-'+role).hidden=!selected;
+      const detail=$('details-'+role);
+      detail.setAttribute('aria-hidden',String(!selected));
+      detail.inert=!selected;
       const phrase=document.querySelector(`.annotated[data-role="${role}"]`);
       if(phrase){phrase.classList.toggle('selected',selected);phrase.setAttribute('aria-expanded',String(selected));}
     }
@@ -195,11 +206,23 @@
   $('library-search').addEventListener('input',renderLibrary);
   document.querySelectorAll('[data-filter]').forEach(btn=>btn.addEventListener('click',()=>{libraryFilter=btn.dataset.filter;renderLibrary();}));
   $('library-random').addEventListener('click',()=>{dialog.close();changeWithFade(()=>{const available=library.plates.filter(p=>libraryFilter==='all'||p.mode===libraryFilter);const options=available.length>1?available.filter(p=>p.id!==plate?.id):available;const chosen=options[Math.floor(Math.random()*options.length)];mode=chosen.mode;setPlate(chosen);});});
-  $('reshuffle').addEventListener('click',()=>{ROLES.forEach(nextModule);closeNotes();renderAnatomy();});
+  $('reshuffle').addEventListener('click',()=>{
+    if(changingRoles.size)return;
+    if(media.matches){ROLES.forEach(nextModule);closeNotes();renderAnatomy();return;}
+    ROLES.forEach(role=>document.querySelector(`.anatomy-note[data-role=\"${role}\"]`).classList.add('is-switching'));
+    setTimeout(()=>{ROLES.forEach(nextModule);closeNotes();renderAnatomy();requestAnimationFrame(()=>{ROLES.forEach(role=>document.querySelector(`.anatomy-note[data-role=\"${role}\"]`).classList.remove('is-switching'));scheduleLines();});},155);
+  });
   $('restore').addEventListener('click',restore);
   document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>changeMode(b.dataset.mode)));
   document.querySelectorAll('.anatomy-trigger').forEach(b=>b.addEventListener('click',()=>toggleNote(b.dataset.role)));
-  document.querySelectorAll('[data-shuffle]').forEach(b=>b.addEventListener('click',()=>{nextModule(b.dataset.shuffle);currentOpen=b.dataset.shuffle;renderAnatomy();}));
+  document.querySelectorAll('[data-shuffle]').forEach(b=>b.addEventListener('click',()=>{
+    const role=b.dataset.shuffle;
+    if(changingRoles.has(role))return;
+    if(media.matches){nextModule(role);currentOpen=role;renderAnatomy();return;}
+    const note=document.querySelector(`.anatomy-note[data-role=\"${role}\"]`);
+    changingRoles.add(role);note.classList.add('is-switching');
+    setTimeout(()=>{nextModule(role);currentOpen=role;renderAnatomy();requestAnimationFrame(()=>{note.classList.remove('is-switching');changingRoles.delete(role);scheduleLines();});},155);
+  }));
   window.addEventListener('resize',scheduleLines,{passive:true});
   if('ResizeObserver' in window)new ResizeObserver(scheduleLines).observe(stage);
   if(document.fonts)document.fonts.ready.then(scheduleLines);
