@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f9f9f9">
+  <meta name="description" content="Inquiry Plates — annotated provocations for cultural probe ideation.">
+  <title>Inquiry Plates — Cultural probe studies</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="data.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div class="brand"><span class="brand-symbol" aria-hidden="true">◎</span><div><h1>INQUIRY PLATES</h1><span class="brand-caption">CULTURAL PROBE STUDIES</span></div></div>
+    <button class="text-control" type="button" id="reset" hidden>Start again</button>
+  </header>
+  <main class="workspace">
+    <section class="introduction" id="introduction" aria-labelledby="introduction-title">
+      <div class="intro-index">FIELD STUDY / 01</div>
+      <div class="intro-content"><p class="eyebrow">BEFORE YOU BEGIN</p><h2 id="introduction-title">Bring a scenario to mind.</h2><p class="intro-instruction">Choose what you are examining. A provocation will follow.</p>
+        <fieldset class="orientation"><legend>What are you examining?</legend>
+          <label class="choice"><input type="radio" name="orientation" value="discovery" checked><span><strong>Discovery</strong><small>An experience you want to understand.</small></span></label>
+          <label class="choice"><input type="radio" name="orientation" value="concept"><span><strong>Concept inquiry</strong><small>An assumption behind an emerging idea.</small></span></label>
+        </fieldset>
+        <button type="button" class="primary-button" id="begin">Examine a provocation <span aria-hidden="true">→</span></button>
+      </div>
+      <div class="intro-mark" aria-hidden="true"><svg viewBox="0 0 290 290"><circle cx="145" cy="145" r="111"/><circle cx="145" cy="145" r="69"/><circle cx="145" cy="145" r="19"/><path d="M145 0 V290 M0 145 H290 M43 43 L247 247 M247 43 L43 247"/></svg><span>FIG. 00</span></div>
+    </section>
+    <section class="examination" id="examination" aria-label="Anatomy of a provocation" hidden>
+      <div class="plate-head"><div class="plate-label"><span>FIG. <span id="plate-id">D01</span></span><span class="plate-heading">ANATOMY OF AN INQUIRY</span></div><div class="mode-set" role="group" aria-label="Inquiry orientation"><button type="button" class="mode-button" data-mode="discovery" aria-pressed="true">Discovery</button><button type="button" class="mode-button" data-mode="concept" aria-pressed="false">Concept inquiry</button></div></div>
+      <div class="plate-body" id="plate-body">
+        <svg class="connectors" id="connectors" aria-hidden="true"></svg>
+        <div class="specimen"><p class="specimen-label">THE PROVOCATION</p><p class="statement" id="statement" aria-live="polite" aria-atomic="true"></p></div>
+        <section class="note note-focus" data-role="focus"><button class="note-trigger" type="button" data-role="focus" aria-expanded="false" aria-controls="detail-focus"><span class="note-no">01</span><span class="note-name">LOOK AT</span><span class="note-plus" aria-hidden="true">+</span></button><h3 id="focus-label"></h3><div class="note-detail" id="detail-focus" hidden><p class="note-intro">Consider further</p><ul class="note-queries" id="focus-queries"></ul></div></section>
+        <section class="note note-action" data-role="action"><button class="note-trigger" type="button" data-role="action" aria-expanded="false" aria-controls="detail-action"><span class="note-no">02</span><span class="note-name">INVITE</span><span class="note-plus" aria-hidden="true">+</span></button><h3 id="action-label"></h3><div class="note-detail" id="detail-action" hidden><p class="note-intro">Consider further</p><ul class="note-queries" id="action-queries"></ul></div></section>
+        <section class="note note-opening" data-role="opening"><button class="note-trigger" type="button" data-role="opening" aria-expanded="false" aria-controls="detail-opening"><span class="note-no">03</span><span class="note-name">QUESTION</span><span class="note-plus" aria-hidden="true">+</span></button><h3 id="opening-label"></h3><div class="note-detail" id="detail-opening" hidden><p class="note-intro">Consider further</p><ul class="note-queries" id="opening-queries"></ul></div></section>
+      </div>
+      <div class="plate-bottom"><p>What might this become as an <em>object</em>, <em>activity</em> or <em>experience</em>?</p><button type="button" class="primary-button" id="next">Another provocation <span aria-hidden="true">→</span></button></div>
+    </section>
+  </main>
+  <footer class="footer"><span>INQUIRY PLATES</span><span>STUDY / 01</span></footer>
+</div>
+</body>
+</html>
