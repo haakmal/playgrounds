@@ -1,0 +1,1403 @@
+{
+  "schemaVersion": 1,
+  "plates": [
+    {
+      "id": "D01",
+      "mode": "discovery",
+      "statement": "What could someone {action|collect} from {focus|an ordinary routine} that reveals {opening|what normally escapes their attention}?",
+      "annotations": {
+        "focus": {
+          "label": "Everyday routines",
+          "questions": [
+            "Which parts of a familiar day have become almost invisible?"
+          ]
+        },
+        "action": {
+          "label": "Collect",
+          "questions": [
+            "What might count as a fragment worth keeping?"
+          ]
+        },
+        "opening": {
+          "label": "Overlooked details",
+          "questions": [
+            "What might surprise someone about their own choices?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "D02",
+      "mode": "discovery",
+      "statement": "How might someone {action|interrupt} {focus|a familiar habit} to notice {opening|what they depend on without realising}?",
+      "annotations": {
+        "focus": {
+          "label": "Familiar habits",
+          "questions": [
+            "What is repeated without much conscious thought?"
+          ]
+        },
+        "action": {
+          "label": "Interrupt",
+          "questions": [
+            "How might a small change make the familiar strange?"
+          ]
+        },
+        "opening": {
+          "label": "Hidden dependencies",
+          "questions": [
+            "What becomes apparent only when something changes?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "D03",
+      "mode": "discovery",
+      "statement": "What small {action|ritual could someone repeat} to explore {focus|a changing everyday experience} and notice {opening|what stays unexpectedly consistent}?",
+      "annotations": {
+        "focus": {
+          "label": "Changes in experience",
+          "questions": [
+            "Which moments appear similar but feel different?"
+          ]
+        },
+        "action": {
+          "label": "Repeat a ritual",
+          "questions": [
+            "What might repetition allow someone to recognise?"
+          ]
+        },
+        "opening": {
+          "label": "Unexpected constants",
+          "questions": [
+            "What remains steady when circumstances change?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "D04",
+      "mode": "discovery",
+      "statement": "What might someone {action|mark} to distinguish {focus|being in a place} from {opening|feeling that they belong there}?",
+      "annotations": {
+        "focus": {
+          "label": "Place and presence",
+          "questions": [
+            "Where does physical location fail to tell the whole story?"
+          ]
+        },
+        "action": {
+          "label": "Mark",
+          "questions": [
+            "What might someone choose as a meaningful moment or position?"
+          ]
+        },
+        "opening": {
+          "label": "Sense of belonging",
+          "questions": [
+            "Could presence and attachment tell different stories?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "D05",
+      "mode": "discovery",
+      "statement": "How could someone {action|exchange something} to explore {focus|their everyday relationships} and reveal {opening|what they value in those exchanges}?",
+      "annotations": {
+        "focus": {
+          "label": "Everyday relationships",
+          "questions": [
+            "What is given, expected or reciprocated?"
+          ]
+        },
+        "action": {
+          "label": "Exchange",
+          "questions": [
+            "What might become significant through giving or receiving?"
+          ]
+        },
+        "opening": {
+          "label": "Personal value",
+          "questions": [
+            "What do these exchanges mean to different people?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "D06",
+      "mode": "discovery",
+      "statement": "What could someone {action|rearrange} about {focus|a familiar environment} to express {opening|where they feel most at home}?",
+      "annotations": {
+        "focus": {
+          "label": "Familiar environments",
+          "questions": [
+            "What makes a place personally meaningful?"
+          ]
+        },
+        "action": {
+          "label": "Rearrange",
+          "questions": [
+            "How might shifting relationships express a perspective?"
+          ]
+        },
+        "opening": {
+          "label": "Personal territory",
+          "questions": [
+            "What feels like home without being owned?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "D07",
+      "mode": "discovery",
+      "statement": "What might someone {action|preserve} from {focus|a fleeting experience} that later reveals {opening|what memory tends to leave behind}?",
+      "annotations": {
+        "focus": {
+          "label": "Fleeting experiences",
+          "questions": [
+            "Which moments are difficult to hold onto?"
+          ]
+        },
+        "action": {
+          "label": "Preserve",
+          "questions": [
+            "What might act as a reminder without explaining everything?"
+          ]
+        },
+        "opening": {
+          "label": "The edges of memory",
+          "questions": [
+            "What disappears when an experience becomes a recollection?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "D08",
+      "mode": "discovery",
+      "statement": "How could someone {action|represent twice} {focus|a remembered event} to expose {opening|the distance between experience and recollection}?",
+      "annotations": {
+        "focus": {
+          "label": "Remembered events",
+          "questions": [
+            "How stable are accounts of something that happened?"
+          ]
+        },
+        "action": {
+          "label": "Represent twice",
+          "questions": [
+            "What could change between two versions?"
+          ]
+        },
+        "opening": {
+          "label": "Memory versus experience",
+          "questions": [
+            "What is altered by the act of remembering?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "D09",
+      "mode": "discovery",
+      "statement": "What could someone {action|accumulate over time} to make {focus|a gradual change} visible in {opening|ways a single snapshot would miss}?",
+      "annotations": {
+        "focus": {
+          "label": "Gradual change",
+          "questions": [
+            "What unfolds too slowly to notice at once?"
+          ]
+        },
+        "action": {
+          "label": "Accumulate",
+          "questions": [
+            "How might many small contributions work together?"
+          ]
+        },
+        "opening": {
+          "label": "Patterns over time",
+          "questions": [
+            "What only becomes meaningful in a sequence?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "D10",
+      "mode": "discovery",
+      "statement": "What might someone {action|transform} to communicate {focus|a difficult-to-name feeling} and expose {opening|what words struggle to hold}?",
+      "annotations": {
+        "focus": {
+          "label": "Difficult feelings",
+          "questions": [
+            "Which experiences resist clear labels?"
+          ]
+        },
+        "action": {
+          "label": "Transform",
+          "questions": [
+            "How might a change carry personal meaning?"
+          ]
+        },
+        "opening": {
+          "label": "Beyond words",
+          "questions": [
+            "What can be expressed without being explained?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "D11",
+      "mode": "discovery",
+      "statement": "How could someone {action|pair unrelated things} to express {focus|a personal association} that reveals {opening|an unexpected way of seeing the familiar}?",
+      "annotations": {
+        "focus": {
+          "label": "Personal associations",
+          "questions": [
+            "What connections exist only for this participant?"
+          ]
+        },
+        "action": {
+          "label": "Pair",
+          "questions": [
+            "What could become meaningful through juxtaposition?"
+          ]
+        },
+        "opening": {
+          "label": "Unexpected connections",
+          "questions": [
+            "What does the pairing reveal without a correct interpretation?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "D12",
+      "mode": "discovery",
+      "statement": "What might someone {action|invent} to represent {focus|the atmosphere of a familiar situation} and disclose {opening|a perspective others do not share}?",
+      "annotations": {
+        "focus": {
+          "label": "Atmosphere and feeling",
+          "questions": [
+            "How does the same situation feel to different people?"
+          ]
+        },
+        "action": {
+          "label": "Invent",
+          "questions": [
+            "What might a participant create without a given vocabulary?"
+          ]
+        },
+        "opening": {
+          "label": "Subjective perspectives",
+          "questions": [
+            "What personal qualities become visible?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "D13",
+      "mode": "discovery",
+      "statement": "What could someone {action|leave deliberately incomplete} when representing {focus|an ordinary day}, and what might {opening|those gaps invite us to question}?",
+      "annotations": {
+        "focus": {
+          "label": "The ordinary day",
+          "questions": [
+            "Which parts of an account are assumed to be complete?"
+          ]
+        },
+        "action": {
+          "label": "Leave incomplete",
+          "questions": [
+            "How could omission be a meaningful choice?"
+          ]
+        },
+        "opening": {
+          "label": "Meaningful gaps",
+          "questions": [
+            "Does silence necessarily indicate absence?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "D14",
+      "mode": "discovery",
+      "statement": "How might someone {action|trace what they avoid} within {focus|a familiar situation} to reveal {opening|boundaries no one has explicitly drawn}?",
+      "annotations": {
+        "focus": {
+          "label": "Avoidance",
+          "questions": [
+            "Where does behaviour change without obvious explanation?"
+          ]
+        },
+        "action": {
+          "label": "Trace avoidance",
+          "questions": [
+            "How might absence or detour become expressive?"
+          ]
+        },
+        "opening": {
+          "label": "Invisible boundaries",
+          "questions": [
+            "What conventions or concerns remain unspoken?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "D15",
+      "mode": "discovery",
+      "statement": "What might someone {action|arrange in contrast} to explore {focus|their intentions and actual actions} and uncover {opening|contradictions they find meaningful}?",
+      "annotations": {
+        "focus": {
+          "label": "Intention and action",
+          "questions": [
+            "Where does what people plan diverge from what they do?"
+          ]
+        },
+        "action": {
+          "label": "Arrange in contrast",
+          "questions": [
+            "How could difference become tangible?"
+          ]
+        },
+        "opening": {
+          "label": "Lived contradictions",
+          "questions": [
+            "Must every inconsistency be resolved?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "C01",
+      "mode": "concept",
+      "statement": "How might someone {action|give form to} {focus|a key idea beneath your concept} and reveal {opening|a meaning different from the one you assumed}?",
+      "annotations": {
+        "focus": {
+          "label": "The central idea",
+          "questions": [
+            "Which concept does your proposal take for granted?"
+          ]
+        },
+        "action": {
+          "label": "Give form",
+          "questions": [
+            "What could someone make or express without being shown your solution?"
+          ]
+        },
+        "opening": {
+          "label": "Alternative meanings",
+          "questions": [
+            "What if their definition is unlike yours?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "C02",
+      "mode": "concept",
+      "statement": "What could someone {action|rearrange} to explore {focus|relationships your idea relies on} and expose {opening|connections you have overlooked}?",
+      "annotations": {
+        "focus": {
+          "label": "Assumed relationships",
+          "questions": [
+            "Which elements have you already connected in your mind?"
+          ]
+        },
+        "action": {
+          "label": "Rearrange",
+          "questions": [
+            "How might a participant establish their own connections?"
+          ]
+        },
+        "opening": {
+          "label": "Unanticipated connections",
+          "questions": [
+            "Which relationships might differ from your model?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "C03",
+      "mode": "concept",
+      "statement": "How might someone {action|invent their own representation} of {focus|a concept you have already defined} to suggest {opening|a different interpretation}?",
+      "annotations": {
+        "focus": {
+          "label": "Established definitions",
+          "questions": [
+            "Where has your design already assigned meaning?"
+          ]
+        },
+        "action": {
+          "label": "Invent a representation",
+          "questions": [
+            "How much space can participants have to redefine it?"
+          ]
+        },
+        "opening": {
+          "label": "Different interpretations",
+          "questions": [
+            "Could an alternative meaning still be valid?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "C04",
+      "mode": "concept",
+      "statement": "What could someone {action|anticipate through a small activity} about {focus|a situation your idea addresses} that reveals {opening|expectations your concept may not meet}?",
+      "annotations": {
+        "focus": {
+          "label": "Situated expectations",
+          "questions": [
+            "What do people imagine will happen next?"
+          ]
+        },
+        "action": {
+          "label": "Anticipate",
+          "questions": [
+            "How might expectation become an expressive act?"
+          ]
+        },
+        "opening": {
+          "label": "Mismatched expectations",
+          "questions": [
+            "Which expectations might your idea unintentionally contradict?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "C05",
+      "mode": "concept",
+      "statement": "How might someone {action|reconstruct a sequence} around {focus|an anticipated encounter} and show {opening|where their expectations diverge from yours}?",
+      "annotations": {
+        "focus": {
+          "label": "Anticipated encounters",
+          "questions": [
+            "What order seems natural to a participant?"
+          ]
+        },
+        "action": {
+          "label": "Reconstruct",
+          "questions": [
+            "What could someone put into their own sequence?"
+          ]
+        },
+        "opening": {
+          "label": "Different sequences",
+          "questions": [
+            "What does a different order imply for the design?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "C06",
+      "mode": "concept",
+      "statement": "What could someone {action|alter} about {focus|an imagined outcome} to communicate {opening|what they expected instead}?",
+      "annotations": {
+        "focus": {
+          "label": "Imagined outcomes",
+          "questions": [
+            "What conclusion does your proposal presume people want?"
+          ]
+        },
+        "action": {
+          "label": "Alter",
+          "questions": [
+            "How could a participant rework a possibility?"
+          ]
+        },
+        "opening": {
+          "label": "Unmet expectations",
+          "questions": [
+            "What alternative outcome matters to them?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "C07",
+      "mode": "concept",
+      "statement": "How might someone {action|rearrange} {focus|competing priorities} to reveal {opening|what they are unwilling to compromise}?",
+      "annotations": {
+        "focus": {
+          "label": "Competing priorities",
+          "questions": [
+            "Which needs compete in your proposed situation?"
+          ]
+        },
+        "action": {
+          "label": "Rearrange",
+          "questions": [
+            "What could someone move, order or change in relation to other things?"
+          ]
+        },
+        "opening": {
+          "label": "Non-negotiable values",
+          "questions": [
+            "What matters even when the situation changes?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "C08",
+      "mode": "concept",
+      "statement": "What could someone {action|exchange or surrender} to explore {focus|what they value in a decision} and reveal {opening|what they refuse to trade away}?",
+      "annotations": {
+        "focus": {
+          "label": "Decision values",
+          "questions": [
+            "What matters when the choice has a cost?"
+          ]
+        },
+        "action": {
+          "label": "Exchange or surrender",
+          "questions": [
+            "What might giving something up make tangible?"
+          ]
+        },
+        "opening": {
+          "label": "Limits of compromise",
+          "questions": [
+            "What would someone protect despite the trade-off?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "C09",
+      "mode": "concept",
+      "statement": "What might someone {action|choose to preserve} when {focus|their options are restricted}, revealing {opening|priorities your idea has not considered}?",
+      "annotations": {
+        "focus": {
+          "label": "Constrained choices",
+          "questions": [
+            "How do conditions affect what feels possible?"
+          ]
+        },
+        "action": {
+          "label": "Choose to preserve",
+          "questions": [
+            "How might selection express value?"
+          ]
+        },
+        "opening": {
+          "label": "Unexpected priorities",
+          "questions": [
+            "What might they protect that your proposal overlooks?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "C10",
+      "mode": "concept",
+      "statement": "How could someone {action|connect and order} {focus|parts of an interaction} to demonstrate {opening|a logic different from your proposed sequence}?",
+      "annotations": {
+        "focus": {
+          "label": "Interaction relationships",
+          "questions": [
+            "How are the parts of your concept connected?"
+          ]
+        },
+        "action": {
+          "label": "Connect and order",
+          "questions": [
+            "Could participants establish a sequence themselves?"
+          ]
+        },
+        "opening": {
+          "label": "Alternative logics",
+          "questions": [
+            "What if their sequence is coherent but unfamiliar?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "C11",
+      "mode": "concept",
+      "statement": "What might someone {action|physically rearrange} to express {focus|how an experience should unfold} and reveal {opening|an assumption built into your concept}?",
+      "annotations": {
+        "focus": {
+          "label": "Experience sequence",
+          "questions": [
+            "Where have you decided the order of events?"
+          ]
+        },
+        "action": {
+          "label": "Physically rearrange",
+          "questions": [
+            "What does manipulating a sequence make possible?"
+          ]
+        },
+        "opening": {
+          "label": "Built-in assumptions",
+          "questions": [
+            "Which steps might a participant combine, omit or reverse?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "C12",
+      "mode": "concept",
+      "statement": "How could someone {action|represent an overlooked connection} within {focus|the situation behind your concept} and expose {opening|a relationship the proposal does not yet address}?",
+      "annotations": {
+        "focus": {
+          "label": "Context of the idea",
+          "questions": [
+            "Who or what may be absent from your current model?"
+          ]
+        },
+        "action": {
+          "label": "Represent a connection",
+          "questions": [
+            "How might relationships become tangible?"
+          ]
+        },
+        "opening": {
+          "label": "Missing relationships",
+          "questions": [
+            "What new obligation or tension might this connection introduce?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "C13",
+      "mode": "concept",
+      "statement": "What might someone {action|change about a familiar situation} to challenge {focus|an assumption supporting your idea} and explore {opening|when that assumption no longer holds}?",
+      "annotations": {
+        "focus": {
+          "label": "Conceptual assumptions",
+          "questions": [
+            "What must be true for your idea to make sense?"
+          ]
+        },
+        "action": {
+          "label": "Change a situation",
+          "questions": [
+            "What small alteration might expose a dependency?"
+          ]
+        },
+        "opening": {
+          "label": "Limits of the premise",
+          "questions": [
+            "Under what conditions might your concept break down?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "C14",
+      "mode": "concept",
+      "statement": "What might someone {action|refuse or reinterpret} within {focus|the situation your idea proposes} to reveal {opening|where their experience resists your model}?",
+      "annotations": {
+        "focus": {
+          "label": "The proposed situation",
+          "questions": [
+            "Which forms of participation have you presumed?"
+          ]
+        },
+        "action": {
+          "label": "Refuse or reinterpret",
+          "questions": [
+            "Can declining or adapting the invitation be meaningful?"
+          ]
+        },
+        "opening": {
+          "label": "Resistance to the model",
+          "questions": [
+            "What does a refusal make you reconsider?"
+          ]
+        }
+      }
+    },
+    {
+      "id": "C15",
+      "mode": "concept",
+      "statement": "How might someone {action|construct an alternative} to {focus|the situation your concept addresses} and uncover {opening|a possibility you did not think to offer}?",
+      "annotations": {
+        "focus": {
+          "label": "The problem framing",
+          "questions": [
+            "What version of the situation have you assumed?"
+          ]
+        },
+        "action": {
+          "label": "Construct an alternative",
+          "questions": [
+            "How might participants imagine something else?"
+          ]
+        },
+        "opening": {
+          "label": "Unanticipated possibilities",
+          "questions": [
+            "What if their alternative changes the problem itself?"
+          ]
+        }
+      }
+    }
+  ],
+  "modules": {
+    "discovery": {
+      "focus": [
+        {
+          "id": "D-FOCUS-01",
+          "label": "The routines that go unnoticed.",
+          "questions": [
+            "What parts of an ordinary day have become invisible through repetition?"
+          ]
+        },
+        {
+          "id": "D-FOCUS-02",
+          "label": "The difference between presence and belonging.",
+          "questions": [
+            "When is being somewhere different from feeling part of it?"
+          ]
+        },
+        {
+          "id": "D-FOCUS-03",
+          "label": "Small moments of hesitation.",
+          "questions": [
+            "Where might uncertainty occur without being openly expressed?"
+          ]
+        },
+        {
+          "id": "D-FOCUS-04",
+          "label": "What people choose to keep.",
+          "questions": [
+            "Which fragments acquire personal significance?"
+          ]
+        },
+        {
+          "id": "D-FOCUS-05",
+          "label": "Unspoken exchanges between people.",
+          "questions": [
+            "What is offered, expected, accepted or returned?"
+          ]
+        },
+        {
+          "id": "D-FOCUS-06",
+          "label": "The boundaries of familiar places.",
+          "questions": [
+            "Which boundaries are felt rather than formally defined?"
+          ]
+        },
+        {
+          "id": "D-FOCUS-07",
+          "label": "Experiences that fade from memory.",
+          "questions": [
+            "What tends to disappear when people recall an event?"
+          ]
+        },
+        {
+          "id": "D-FOCUS-08",
+          "label": "Changes too gradual to notice.",
+          "questions": [
+            "What shifts over days rather than minutes?"
+          ]
+        },
+        {
+          "id": "D-FOCUS-09",
+          "label": "Feelings without obvious names.",
+          "questions": [
+            "What may resist direct description?"
+          ]
+        },
+        {
+          "id": "D-FOCUS-10",
+          "label": "Unexpected personal associations.",
+          "questions": [
+            "What may make sense to one person but not another?"
+          ]
+        },
+        {
+          "id": "D-FOCUS-11",
+          "label": "The atmosphere of everyday situations.",
+          "questions": [
+            "How does the same setting feel different to different people?"
+          ]
+        },
+        {
+          "id": "D-FOCUS-12",
+          "label": "Things deliberately left incomplete.",
+          "questions": [
+            "When might an omission have its own meaning?"
+          ]
+        },
+        {
+          "id": "D-FOCUS-13",
+          "label": "Places and actions people avoid.",
+          "questions": [
+            "Where might avoidance reveal an invisible constraint?"
+          ]
+        },
+        {
+          "id": "D-FOCUS-14",
+          "label": "Contradictions between intention and action.",
+          "questions": [
+            "Where do plans and lived experiences diverge?"
+          ]
+        },
+        {
+          "id": "D-FOCUS-15",
+          "label": "The meanings of ordinary objects.",
+          "questions": [
+            "What makes something mundane matter to its owner?"
+          ]
+        }
+      ],
+      "action": [
+        {
+          "id": "D-ACTION-01",
+          "label": "Invite someone to collect fragments.",
+          "questions": [
+            "What could count as a fragment, and who decides?"
+          ]
+        },
+        {
+          "id": "D-ACTION-02",
+          "label": "Invite someone to mark a moment.",
+          "questions": [
+            "What might be worth marking without defining it in advance?"
+          ]
+        },
+        {
+          "id": "D-ACTION-03",
+          "label": "Invite someone to rearrange relationships.",
+          "questions": [
+            "What might moving things in relation to one another express?"
+          ]
+        },
+        {
+          "id": "D-ACTION-04",
+          "label": "Invite someone to alter something familiar.",
+          "questions": [
+            "How could a small change make their perspective tangible?"
+          ]
+        },
+        {
+          "id": "D-ACTION-05",
+          "label": "Invite someone to repeat a small ritual.",
+          "questions": [
+            "What could repetition make newly noticeable?"
+          ]
+        },
+        {
+          "id": "D-ACTION-06",
+          "label": "Invite someone to preserve a trace.",
+          "questions": [
+            "What could remain after the experience has passed?"
+          ]
+        },
+        {
+          "id": "D-ACTION-07",
+          "label": "Invite someone to exchange something.",
+          "questions": [
+            "What might giving or receiving come to mean?"
+          ]
+        },
+        {
+          "id": "D-ACTION-08",
+          "label": "Invite someone to make an association.",
+          "questions": [
+            "What unexpected connections might a person choose?"
+          ]
+        },
+        {
+          "id": "D-ACTION-09",
+          "label": "Invite someone to invent a representation.",
+          "questions": [
+            "What expressive vocabulary could they create for themselves?"
+          ]
+        },
+        {
+          "id": "D-ACTION-10",
+          "label": "Invite someone to interrupt a habit.",
+          "questions": [
+            "What might an interruption make apparent?"
+          ]
+        },
+        {
+          "id": "D-ACTION-11",
+          "label": "Invite someone to trace a change.",
+          "questions": [
+            "How might change be expressed without measuring it?"
+          ]
+        },
+        {
+          "id": "D-ACTION-12",
+          "label": "Invite someone to leave something out.",
+          "questions": [
+            "Can withholding become a valid expressive choice?"
+          ]
+        },
+        {
+          "id": "D-ACTION-13",
+          "label": "Invite someone to reinterpret an ordinary thing.",
+          "questions": [
+            "How could meaning change without changing the object?"
+          ]
+        },
+        {
+          "id": "D-ACTION-14",
+          "label": "Invite someone to reconstruct a memory.",
+          "questions": [
+            "What might the act of reconstruction alter?"
+          ]
+        },
+        {
+          "id": "D-ACTION-15",
+          "label": "Invite someone to imagine an alternative.",
+          "questions": [
+            "What possibility might they introduce that you would not?"
+          ]
+        }
+      ],
+      "opening": [
+        {
+          "id": "D-OPENING-01",
+          "label": "What might remain invisible to direct observation?",
+          "questions": [
+            "Consider what a participant can express that a researcher may not see."
+          ]
+        },
+        {
+          "id": "D-OPENING-02",
+          "label": "Whose interpretation might differ from yours?",
+          "questions": [
+            "What counts as meaningful to someone else?"
+          ]
+        },
+        {
+          "id": "D-OPENING-03",
+          "label": "What could an unexpected absence suggest?",
+          "questions": [
+            "Avoid assuming that a blank response means nothing."
+          ]
+        },
+        {
+          "id": "D-OPENING-04",
+          "label": "What changes when participants set the rules?",
+          "questions": [
+            "Who determines what constitutes a response?"
+          ]
+        },
+        {
+          "id": "D-OPENING-05",
+          "label": "Could the same trace carry opposing meanings?",
+          "questions": [
+            "What interpretations might coexist?"
+          ]
+        },
+        {
+          "id": "D-OPENING-06",
+          "label": "What emerges only after some time has passed?",
+          "questions": [
+            "How could duration change the meaning of a response?"
+          ]
+        },
+        {
+          "id": "D-OPENING-07",
+          "label": "What might someone resist explaining?",
+          "questions": [
+            "Can expression remain personal or ambiguous?"
+          ]
+        },
+        {
+          "id": "D-OPENING-08",
+          "label": "Which familiar assumption might not hold?",
+          "questions": [
+            "What does the invitation take for granted?"
+          ]
+        },
+        {
+          "id": "D-OPENING-09",
+          "label": "What does a contradiction make possible?",
+          "questions": [
+            "Must tension be resolved to be useful?"
+          ]
+        },
+        {
+          "id": "D-OPENING-10",
+          "label": "What could be meaningful precisely because it is mundane?",
+          "questions": [
+            "What ordinary thing could deserve closer attention?"
+          ]
+        },
+        {
+          "id": "D-OPENING-11",
+          "label": "What might participants change about your invitation?",
+          "questions": [
+            "Could adaptation become part of the encounter?"
+          ]
+        },
+        {
+          "id": "D-OPENING-12",
+          "label": "What might an unusual pairing bring forward?",
+          "questions": [
+            "What can juxtaposition express without explanation?"
+          ]
+        },
+        {
+          "id": "D-OPENING-13",
+          "label": "Where might personal meaning escape a category?",
+          "questions": [
+            "Does the participant need your vocabulary?"
+          ]
+        },
+        {
+          "id": "D-OPENING-14",
+          "label": "What if the response is not what you expected?",
+          "questions": [
+            "What could make that difference productive?"
+          ]
+        },
+        {
+          "id": "D-OPENING-15",
+          "label": "What might an unfinished response still communicate?",
+          "questions": [
+            "What does incompleteness allow?"
+          ]
+        }
+      ]
+    },
+    "concept": {
+      "focus": [
+        {
+          "id": "C-FOCUS-01",
+          "label": "The assumption beneath your emerging idea.",
+          "questions": [
+            "What must be true for the idea to make sense?"
+          ]
+        },
+        {
+          "id": "C-FOCUS-02",
+          "label": "How people define a central concept.",
+          "questions": [
+            "Where have you already assigned a particular meaning?"
+          ]
+        },
+        {
+          "id": "C-FOCUS-03",
+          "label": "Relationships your design presumes.",
+          "questions": [
+            "Which things have you linked without checking?"
+          ]
+        },
+        {
+          "id": "C-FOCUS-04",
+          "label": "Expectations before an interaction.",
+          "questions": [
+            "What does someone imagine will happen next?"
+          ]
+        },
+        {
+          "id": "C-FOCUS-05",
+          "label": "The sequence a situation is expected to follow.",
+          "questions": [
+            "Whose ordering has been treated as natural?"
+          ]
+        },
+        {
+          "id": "C-FOCUS-06",
+          "label": "What counts as a successful outcome.",
+          "questions": [
+            "Does the participant want the outcome you expect?"
+          ]
+        },
+        {
+          "id": "C-FOCUS-07",
+          "label": "Priorities when needs compete.",
+          "questions": [
+            "Which needs may matter more in particular circumstances?"
+          ]
+        },
+        {
+          "id": "C-FOCUS-08",
+          "label": "What people will not compromise.",
+          "questions": [
+            "What remains important even when options are limited?"
+          ]
+        },
+        {
+          "id": "C-FOCUS-09",
+          "label": "Choices made under constraints.",
+          "questions": [
+            "How might limits change the way a decision is made?"
+          ]
+        },
+        {
+          "id": "C-FOCUS-10",
+          "label": "Connections between parts of an experience.",
+          "questions": [
+            "What relationship might your model omit?"
+          ]
+        },
+        {
+          "id": "C-FOCUS-11",
+          "label": "The roles people assume in a situation.",
+          "questions": [
+            "Who is expected to decide, act or respond?"
+          ]
+        },
+        {
+          "id": "C-FOCUS-12",
+          "label": "The context surrounding your concept.",
+          "questions": [
+            "What has your concept simplified or left outside?"
+          ]
+        },
+        {
+          "id": "C-FOCUS-13",
+          "label": "Circumstances where your premise fails.",
+          "questions": [
+            "When does an apparently sensible assumption break down?"
+          ]
+        },
+        {
+          "id": "C-FOCUS-14",
+          "label": "People who resist the proposed interaction.",
+          "questions": [
+            "Who might adapt or decline the invitation?"
+          ]
+        },
+        {
+          "id": "C-FOCUS-15",
+          "label": "Alternatives to the problem as framed.",
+          "questions": [
+            "What other version of the situation is conceivable?"
+          ]
+        }
+      ],
+      "action": [
+        {
+          "id": "C-ACTION-01",
+          "label": "Invite someone to establish their own categories.",
+          "questions": [
+            "What happens if your labels are not provided?"
+          ]
+        },
+        {
+          "id": "C-ACTION-02",
+          "label": "Invite someone to rearrange priorities.",
+          "questions": [
+            "How might trade-offs become tangible?"
+          ]
+        },
+        {
+          "id": "C-ACTION-03",
+          "label": "Invite someone to reconstruct an expected sequence.",
+          "questions": [
+            "What can they omit, combine or reverse?"
+          ]
+        },
+        {
+          "id": "C-ACTION-04",
+          "label": "Invite someone to change a condition.",
+          "questions": [
+            "What dependency might one small alteration expose?"
+          ]
+        },
+        {
+          "id": "C-ACTION-05",
+          "label": "Invite someone to imagine a different outcome.",
+          "questions": [
+            "What could matter more than the outcome you assumed?"
+          ]
+        },
+        {
+          "id": "C-ACTION-06",
+          "label": "Invite someone to give an idea a form.",
+          "questions": [
+            "How might they express it without seeing your solution?"
+          ]
+        },
+        {
+          "id": "C-ACTION-07",
+          "label": "Invite someone to negotiate an exchange.",
+          "questions": [
+            "What becomes valuable when something must be surrendered?"
+          ]
+        },
+        {
+          "id": "C-ACTION-08",
+          "label": "Invite someone to draw a connection.",
+          "questions": [
+            "Whose relationships are missing from your model?"
+          ]
+        },
+        {
+          "id": "C-ACTION-09",
+          "label": "Invite someone to interrupt a presumed sequence.",
+          "questions": [
+            "What is revealed when the expected order changes?"
+          ]
+        },
+        {
+          "id": "C-ACTION-10",
+          "label": "Invite someone to refuse part of an activity.",
+          "questions": [
+            "Could nonparticipation be informative without being penalised?"
+          ]
+        },
+        {
+          "id": "C-ACTION-11",
+          "label": "Invite someone to reinterpret a familiar situation.",
+          "questions": [
+            "What alternate framing might they construct?"
+          ]
+        },
+        {
+          "id": "C-ACTION-12",
+          "label": "Invite someone to express an expectation indirectly.",
+          "questions": [
+            "What could they show rather than explain?"
+          ]
+        },
+        {
+          "id": "C-ACTION-13",
+          "label": "Invite someone to invent a constraint.",
+          "questions": [
+            "What limitation would they introduce and why?"
+          ]
+        },
+        {
+          "id": "C-ACTION-14",
+          "label": "Invite someone to compare two possibilities.",
+          "questions": [
+            "What differences would matter in their own terms?"
+          ]
+        },
+        {
+          "id": "C-ACTION-15",
+          "label": "Invite someone to construct an alternative.",
+          "questions": [
+            "What would they propose before seeing your prototype?"
+          ]
+        }
+      ],
+      "opening": [
+        {
+          "id": "C-OPENING-01",
+          "label": "What if the concept means something else to them?",
+          "questions": [
+            "How might another interpretation change the model?"
+          ]
+        },
+        {
+          "id": "C-OPENING-02",
+          "label": "Where could your assumed sequence break down?",
+          "questions": [
+            "What would a different ordering make possible?"
+          ]
+        },
+        {
+          "id": "C-OPENING-03",
+          "label": "What does someone value that the idea overlooks?",
+          "questions": [
+            "Which priority has been left outside the proposal?"
+          ]
+        },
+        {
+          "id": "C-OPENING-04",
+          "label": "What expectation might the concept contradict?",
+          "questions": [
+            "Where is your assumed outcome not shared?"
+          ]
+        },
+        {
+          "id": "C-OPENING-05",
+          "label": "Which relationship could be missing?",
+          "questions": [
+            "Who or what is absent from your conceptual map?"
+          ]
+        },
+        {
+          "id": "C-OPENING-06",
+          "label": "What if the participant chooses not to engage?",
+          "questions": [
+            "What should refusal make you reconsider?"
+          ]
+        },
+        {
+          "id": "C-OPENING-07",
+          "label": "When would the proposed idea be inappropriate?",
+          "questions": [
+            "What contextual condition changes its suitability?"
+          ]
+        },
+        {
+          "id": "C-OPENING-08",
+          "label": "What might be lost when experience becomes a category?",
+          "questions": [
+            "What nuance disappears through simplification?"
+          ]
+        },
+        {
+          "id": "C-OPENING-09",
+          "label": "What if a different goal is more important?",
+          "questions": [
+            "Who decides what counts as success?"
+          ]
+        },
+        {
+          "id": "C-OPENING-10",
+          "label": "What would invalidate your core assumption?",
+          "questions": [
+            "What would you need to rethink before building?"
+          ]
+        },
+        {
+          "id": "C-OPENING-11",
+          "label": "What could a contradiction reveal about your concept?",
+          "questions": [
+            "Can competing interpretations both be reasonable?"
+          ]
+        },
+        {
+          "id": "C-OPENING-12",
+          "label": "What unexpected trade-off might emerge?",
+          "questions": [
+            "Who bears the cost of a design decision?"
+          ]
+        },
+        {
+          "id": "C-OPENING-13",
+          "label": "Which participant would interpret this differently?",
+          "questions": [
+            "How does perspective change the interaction premise?"
+          ]
+        },
+        {
+          "id": "C-OPENING-14",
+          "label": "What might the activity reveal without a prototype?",
+          "questions": [
+            "What can be explored before an interface exists?"
+          ]
+        },
+        {
+          "id": "C-OPENING-15",
+          "label": "What possibility has your framing excluded?",
+          "questions": [
+            "Could the inquiry change the problem itself?"
+          ]
+        }
+      ]
+    }
+  }
+}

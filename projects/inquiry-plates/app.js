@@ -1,193 +1,167 @@
-/* Inquiry Plates / v2. No accounts, storage, analytics, or user-data collection.
-   The authored data remains separate; this file only presents and annotates it. */
+/* Inquiry Plates v4 — composed plate + independently adjustable anatomy.
+   All authored content lives in plates.json. No persistence, tracking or user data. */
 (() => {
   'use strict';
-  const bank = window.PROVOCATIONS;
-  const roles = ['focus', 'action', 'opening'];
-  const modeButtons = [...document.querySelectorAll('.mode-button')];
-  const introduction = document.getElementById('introduction');
-  const examination = document.getElementById('examination');
-  const stage = document.getElementById('plate-body');
-  const statement = document.getElementById('statement');
-  const svg = document.getElementById('connectors');
-  const svgNS = 'http://www.w3.org/2000/svg';
-  const queues = {discovery: [], concept: []};
-  const previous = {discovery: null, concept: null};
-  const deeper = {
-    discovery: {
-      focus: ['Which part of your own scenario might you be taking for granted?', 'Whose experience could complicate your current understanding?'],
-      action: ['How might this become an invitation rather than a request for an answer?', 'What could the participant choose, change or interpret for themselves?'],
-      opening: ['What response might you not anticipate?', 'What would an unexpected interpretation prompt you to reconsider?']
-    },
-    concept: {
-      focus: ['Which assumption must be true for your emerging idea to make sense?', 'What aspect of the context have you not yet examined?'],
-      action: ['How could this be explored without presenting your finished design?', 'What could the participant adapt or challenge in the activity?'],
-      opening: ['What might contradict the conceptual model you currently hold?', 'How could a different response alter what you prototype next?']
-    }
-  };
-  let mode = 'discovery';
-  let current = null;
-  let expanded = null;
-  let frame = 0;
+  const ROLES = ['focus','action','opening'];
+  const MODES = ['discovery','concept'];
+  const $ = id => document.getElementById(id);
+  const stage = $('plate-stage');
+  const intro = $('intro');
+  const examination = $('examination');
+  const media = matchMedia('(prefers-reduced-motion: reduce)');
+  let library, mode = 'discovery', plate = null, anatomy = {}, varied = new Set();
+  let currentOpen = null, rendering = false, sequence = 0, raf = 0;
+  const plateQueues = { discovery:[], concept:[] };
+  const lastPlate = {discovery:null,concept:null};
+  const moduleQueues = { discovery:{},concept:{} };
+  const lastModule = { discovery:{},concept:{} };
 
-  const safeArray = value => Array.isArray(value) && value.length > 0;
-  function validBank() {
-    return bank && safeArray(bank.discovery) && safeArray(bank.concept);
+  function shuffle(items, avoid) {
+    const result = [...items];
+    for (let i=result.length-1;i>0;i--) {const j=Math.floor(Math.random()*(i+1));[result[i],result[j]]=[result[j],result[i]];}
+    if (result.length>1 && result[0]===avoid) [result[0],result[1]]=[result[1],result[0]];
+    return result;
   }
-  function shuffled(count, excluded) {
-    const items = Array.from({length: count}, (_, i) => i);
-    for (let i = items.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [items[i], items[j]] = [items[j], items[i]];
+  function check(data) {
+    if (!data || data.schemaVersion!==1 || !Array.isArray(data.plates) || !data.modules) throw Error('Unsupported or incomplete plates.json.');
+    const ids=new Set();
+    const tag=/{(focus|action|opening)\|([^{}]+)}/g;
+    for(const p of data.plates){
+      if(typeof p.id!=='string'||!p.id.trim()||ids.has(p.id)) throw Error('Missing or duplicate plate ID.');
+      ids.add(p.id);
+      if(!MODES.includes(p.mode)||typeof p.statement!=='string') throw Error(`Invalid mode or statement: ${p.id}`);
+      const found=[...p.statement.matchAll(tag)].map(m=>m[1]);
+      if(found.length!==3 || ROLES.some(r=>found.filter(x=>x===r).length!==1)) throw Error(`Plate ${p.id}: mark exactly one {focus|...}, {action|...} and {opening|...} in the statement.`);
+      for(const r of ROLES){if(typeof p.annotations?.[r]?.label!=='string'||!p.annotations[r].label.trim()||!Array.isArray(p.annotations[r].questions)||!p.annotations[r].questions.length||p.annotations[r].questions.some(q=>typeof q!=='string'||!q.trim())) throw Error(`Incomplete ${r} annotation in ${p.id}.`);}
     }
-    if (items.length > 1 && items[0] === excluded) {
-      const j = items.findIndex(i => i !== excluded);
-      [items[0], items[j]] = [items[j], items[0]];
+    for(const m of MODES){
+      if(!data.plates.some(p=>p.mode===m)) throw Error(`No ${m} plates.`);
+      for(const r of ROLES){const entries=data.modules[m]?.[r]; if(!Array.isArray(entries)||!entries.length||entries.some(e=>typeof e.id!=='string'||typeof e.label!=='string'||!e.label.trim()||!Array.isArray(e.questions)||!e.questions.length||e.questions.some(q=>typeof q!=='string'||!q.trim()))) throw Error(`Incomplete ${m}/${r} module bank.`);}
     }
-    return items;
   }
-  function renderParts(source) {
-    const fragment = document.createDocumentFragment();
-    const rx = /\{(focus|action|opening)\|([^{}]+)\}/g;
-    let offset = 0;
-    let match;
-    const seen = [];
-    while ((match = rx.exec(source)) !== null) {
-      fragment.append(document.createTextNode(source.slice(offset, match.index)));
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'phrase';
-      button.dataset.role = match[1];
-      button.textContent = match[2];
-      button.setAttribute('aria-label', `${match[2]} — examine ${match[1] === 'focus' ? 'Look at' : match[1] === 'action' ? 'Invite' : 'Question'}`);
-      button.setAttribute('aria-expanded', 'false');
-      button.addEventListener('click', () => toggle(match[1]));
-      fragment.append(button);
-      seen.push(match[1]);
-      offset = rx.lastIndex;
-    }
-    fragment.append(document.createTextNode(source.slice(offset)));
-    if (roles.some(role => seen.filter(item => item === role).length !== 1)) {
-      console.warn('Each statement needs exactly one phrase per anatomy role:', source);
-    }
-    return fragment;
-  }
-  function fillNote(role) {
-    document.getElementById(`${role}-label`).textContent = current[role][0];
-    const list = document.getElementById(`${role}-queries`);
-    const questions = [current[role][1], ...deeper[mode][role]];
-    list.replaceChildren(...questions.map(question => {
-      const li = document.createElement('li');
-      li.textContent = question;
-      return li;
-    }));
-  }
-  function closeAll() {
-    expanded = null;
-    roles.forEach(role => {
-      const note = stage.querySelector(`.note[data-role="${role}"]`);
-      note.classList.remove('is-open');
-      const trigger = note.querySelector('.note-trigger');
-      trigger.setAttribute('aria-expanded', 'false');
-      document.getElementById(`detail-${role}`).hidden = true;
-      const phrase = statement.querySelector(`.phrase[data-role="${role}"]`);
-      if (phrase) {
-        phrase.classList.remove('selected');
-        phrase.setAttribute('aria-expanded', 'false');
-      }
-    });
-    scheduleDraw();
-  }
-  function toggle(role) {
-    const shouldOpen = expanded !== role;
-    closeAll();
-    if (shouldOpen) {
-      expanded = role;
-      const note = stage.querySelector(`.note[data-role="${role}"]`);
-      note.classList.add('is-open');
-      note.querySelector('.note-trigger').setAttribute('aria-expanded', 'true');
-      document.getElementById(`detail-${role}`).hidden = false;
-      const phrase = statement.querySelector(`.phrase[data-role="${role}"]`);
-      if (phrase) { phrase.classList.add('selected'); phrase.setAttribute('aria-expanded', 'true'); }
-    }
-    scheduleDraw();
-  }
-  function render() {
-    if (!current) return;
-    document.getElementById('plate-id').textContent = current.id;
-    statement.replaceChildren(renderParts(current.text));
-    roles.forEach(fillNote);
-    modeButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.mode === mode)));
-    closeAll();
-  }
-  function next() {
-    if (!validBank()) return;
-    if (!queues[mode].length) queues[mode] = shuffled(bank[mode].length, previous[mode]);
-    const index = queues[mode].shift();
-    previous[mode] = index;
-    current = bank[mode][index];
+  function nextPlate(){
+    const pool=library.plates.filter(p=>p.mode===mode);
+    if(!plateQueues[mode].length) plateQueues[mode]=shuffle(pool,lastPlate[mode]);
+    plate=plateQueues[mode].shift();lastPlate[mode]=plate;
+    anatomy=Object.fromEntries(ROLES.map(r=>[r,plate.annotations[r]]));varied.clear();closeNotes();
     render();
   }
-  function scheduleDraw() {
-    cancelAnimationFrame(frame);
-    frame = requestAnimationFrame(drawConnectors);
+  function nextModule(role){
+    const pool=library.modules[mode][role];
+    if(!moduleQueues[mode][role]?.length) moduleQueues[mode][role]=shuffle(pool,lastModule[mode][role]);
+    let entry=moduleQueues[mode][role].shift();
+    // Avoid replacing a phrase with the same visible value where possible.
+    if(pool.length>1 && entry.label===anatomy[role].label){
+      if(!moduleQueues[mode][role].length) moduleQueues[mode][role]=shuffle(pool,entry);
+      const alternate=moduleQueues[mode][role].shift(); moduleQueues[mode][role].unshift(entry);entry=alternate;
+    }
+    lastModule[mode][role]=entry;
+    anatomy[role]=entry;varied.add(role);
   }
-  function drawConnectors() {
-    svg.replaceChildren();
-    if (examination.hidden || matchMedia('(max-width:760px)').matches || !current) return;
-    const containerRect = stage.getBoundingClientRect();
-    const relative = (rect, x, y) => ({x: rect.left - containerRect.left + x, y: rect.top - containerRect.top + y});
-    roles.forEach(role => {
-      const phrase = statement.querySelector(`.phrase[data-role="${role}"]`);
-      const note = stage.querySelector(`.note[data-role="${role}"]`);
-      if (!phrase || !note) return;
-      const rects = Array.from(phrase.getClientRects());
-      if (!rects.length) return;
-      // Connect to the underline, a few pixels BELOW its text fragment.
-      // This prevents a leader line from entering the letterforms.
-      const side = role === 'focus' ? 'left' : 'right';
-      const fragment = side === 'left' ? rects[0] : rects[rects.length - 1];
-      const target = relative(fragment, side === 'left' ? 0 : fragment.width, fragment.height + 5);
-      const nr = note.getBoundingClientRect();
-      const anchor = relative(nr, side === 'left' ? nr.width : 0, 38);
-      // Run the leader in the empty line-gutter below the phrase, then along
-      // the outer column. Avoid routing through the statement text bounding box.
-      const bend = side === 'left' ? anchor.x + 15 : anchor.x - 15;
-      const path = document.createElementNS(svgNS, 'path');
-      path.setAttribute('d', `M ${anchor.x} ${anchor.y} H ${bend} V ${target.y} H ${target.x}`);
-      if (expanded === role) path.classList.add('active');
+  function renderStatement(){
+    const h=$('statement');h.replaceChildren();
+    const pattern=/{(focus|action|opening)\|([^{}]+)}/g;
+    let offset=0, match;
+    while((match=pattern.exec(plate.statement))!==null){
+      h.append(document.createTextNode(plate.statement.slice(offset,match.index)));
+      const btn=document.createElement('button');btn.type='button';btn.className='annotated';btn.dataset.role=match[1];btn.setAttribute('aria-expanded','false');btn.setAttribute('aria-controls',`details-${match[1]}`);btn.textContent=match[2];
+      btn.addEventListener('click',()=>toggleNote(match[1]));h.append(btn);
+      offset=pattern.lastIndex;
+    }
+    h.append(document.createTextNode(plate.statement.slice(offset)));
+  }
+  function render(){
+    $('plate-id').textContent=plate.id;
+    $('plate-identity').textContent=`${mode==='discovery'?'DISCOVERY':'CONCEPT INQUIRY'} / ${plate.id}`;
+    for(const btn of document.querySelectorAll('[data-mode]'))btn.setAttribute('aria-pressed',String(btn.dataset.mode===mode));
+    renderStatement();renderAnatomy();
+  }
+  function renderAnatomy(){
+    $('anatomy-status').textContent=varied.size?'/ VARIATION':'/ ORIGINAL';
+    $('restore').hidden=!varied.size;
+    for(const role of ROLES){
+      const note=document.querySelector(`.anatomy-note[data-role="${role}"]`);
+      note.classList.toggle('is-varied',varied.has(role));
+      $('value-'+role).textContent=anatomy[role].label;
+      const list=$('questions-'+role);list.replaceChildren();
+      for(const question of anatomy[role].questions){const li=document.createElement('li');li.textContent=question;list.append(li);}
+    }
+    reflectOpen();scheduleLines();
+  }
+  function closeNotes(){currentOpen=null;reflectOpen();}
+  function reflectOpen(){
+    for(const role of ROLES){
+      const selected=currentOpen===role;
+      const note=document.querySelector(`.anatomy-note[data-role="${role}"]`);
+      note.classList.toggle('is-active',selected);
+      const button=note.querySelector('.anatomy-trigger');button.setAttribute('aria-expanded',String(selected));
+      $('details-'+role).hidden=!selected;
+      const phrase=document.querySelector(`.annotated[data-role="${role}"]`);
+      if(phrase){phrase.classList.toggle('selected',selected);phrase.setAttribute('aria-expanded',String(selected));}
+    }
+    scheduleLines();
+  }
+  function toggleNote(role){currentOpen=currentOpen===role?null:role;reflectOpen();}
+  function changeWithFade(fn){
+    if(rendering)return;
+    rendering=true;const id=++sequence;
+    if(media.matches){fn();rendering=false;return;}
+    stage.classList.add('is-fading');
+    setTimeout(()=>{
+      if(id!==sequence)return;
+      fn();requestAnimationFrame(()=>{stage.classList.remove('is-fading');rendering=false;scheduleLines();});
+    },190);
+  }
+  function start(){
+    if(!library)return;
+    mode=document.querySelector('input[name="intro-mode"]:checked').value;
+    intro.hidden=true;examination.hidden=false;$('restart').hidden=false;
+    nextPlate();
+    if(!media.matches){stage.classList.add('is-fading');requestAnimationFrame(()=>requestAnimationFrame(()=>stage.classList.remove('is-fading')));}
+    $('new-plate').focus({preventScroll:true});
+  }
+  function restart(){++sequence;rendering=false;stage.classList.remove('is-fading');examination.hidden=true;intro.hidden=false;$('restart').hidden=true;$('begin').focus({preventScroll:true});}
+  function changeMode(newMode){if(newMode===mode)return;changeWithFade(()=>{mode=newMode;nextPlate();});}
+  function restore(){changeWithFade(()=>{anatomy=Object.fromEntries(ROLES.map(r=>[r,plate.annotations[r]]));varied.clear();closeNotes();renderAnatomy();});}
+  function scheduleLines(){cancelAnimationFrame(raf);raf=requestAnimationFrame(drawLines);}
+  function drawLines(){
+    const svg=$('leader-layer');svg.replaceChildren();
+    if(examination.hidden||window.innerWidth<=740)return;
+    const stageRect=stage.getBoundingClientRect();
+    const svgNS='http://www.w3.org/2000/svg';
+    for(const role of ROLES){
+      const phrase=document.querySelector(`.annotated[data-role="${role}"]`);
+      const note=document.querySelector(`.anatomy-note[data-role="${role}"]`);
+      if(!phrase||!note)continue;
+      const segments=[...phrase.getClientRects()].filter(r=>r.width>0);
+      if(!segments.length)continue;
+      // Start at the RIGHT EDGE of the underlined annotated phrase, BELOW the glyphs.
+      // Then run in the whitespace between the two columns. No connector crosses letterforms.
+      const segment=segments[segments.length-1];
+      const sx=segment.right-stageRect.left+1, sy=segment.bottom-stageRect.top+5;
+      const nr=note.getBoundingClientRect();
+      const ex=nr.left-stageRect.left-5, ey=nr.top-stageRect.top+34;
+      const channel=Math.min(ex-13,Math.max(sx+13,(document.querySelector('.plate-left').getBoundingClientRect().right-stageRect.left+ex)/2));
+      if(channel<=sx||ex<=sx)continue;
+      const path=document.createElementNS(svgNS,'path');
+      path.setAttribute('d',`M ${sx} ${sy} H ${channel} V ${ey} H ${ex}`);
+      if(role===currentOpen)path.classList.add('active');
+      if(varied.has(role))path.classList.add('varied');
       svg.append(path);
-    });
+      const end=document.createElementNS(svgNS,'circle');end.setAttribute('cx',ex);end.setAttribute('cy',ey);end.setAttribute('r','2');svg.append(end);
+    }
   }
-  function start() {
-    if (!validBank()) { alert('The provocation library could not be loaded.'); return; }
-    mode = document.querySelector('input[name="orientation"]:checked').value;
-    introduction.hidden = true;
-    examination.hidden = false;
-    document.getElementById('reset').hidden = false;
-    next();
-    document.getElementById('next').focus({preventScroll:true});
-  }
-  function reset() {
-    introduction.hidden = false;
-    examination.hidden = true;
-    document.getElementById('reset').hidden = true;
-    current = null;
-    svg.replaceChildren();
-    document.getElementById('begin').focus({preventScroll:true});
-  }
-  document.getElementById('begin').addEventListener('click', start);
-  document.getElementById('reset').addEventListener('click', reset);
-  document.getElementById('next').addEventListener('click', next);
-  modeButtons.forEach(button => button.addEventListener('click', () => {
-    if (mode !== button.dataset.mode) {mode = button.dataset.mode;next();}
-  }));
-  stage.querySelectorAll('.note-trigger').forEach(button => button.addEventListener('click', () => toggle(button.dataset.role)));
-  window.addEventListener('resize', scheduleDraw, {passive: true});
-  if (document.fonts) document.fonts.ready.then(scheduleDraw);
-  if ('ResizeObserver' in window) new ResizeObserver(scheduleDraw).observe(stage);
-  if (!validBank()) {
-    document.getElementById('begin').disabled = true;
-    document.querySelector('.intro-instruction').textContent = 'The provocation library could not be loaded.';
-  }
+  $('begin').addEventListener('click',start);
+  $('restart').addEventListener('click',restart);
+  $('new-plate').addEventListener('click',()=>changeWithFade(nextPlate));
+  $('reshuffle').addEventListener('click',()=>changeWithFade(()=>{ROLES.forEach(nextModule);closeNotes();renderAnatomy();}));
+  $('restore').addEventListener('click',restore);
+  document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>changeMode(b.dataset.mode)));
+  document.querySelectorAll('.anatomy-trigger').forEach(b=>b.addEventListener('click',()=>toggleNote(b.dataset.role)));
+  document.querySelectorAll('[data-shuffle]').forEach(b=>b.addEventListener('click',()=>changeWithFade(()=>{nextModule(b.dataset.shuffle);closeNotes();renderAnatomy();})));
+  window.addEventListener('resize',scheduleLines,{passive:true});
+  if('ResizeObserver' in window)new ResizeObserver(scheduleLines).observe(stage);
+  if(document.fonts)document.fonts.ready.then(scheduleLines);
+  fetch('plates.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error(`Could not load plates.json (${r.status}).`);return r.json();}).then(data=>{check(data);library=data;$('begin').disabled=false;}).catch(error=>{$('begin').disabled=true;$('load-status').hidden=false;$('load-status').textContent=`Plate library unavailable: ${error.message} Open this folder using a local web server rather than file://. See README.md.`;console.error('[Inquiry Plates]',error);});
+  $('begin').disabled=true;
 })();
