@@ -34,7 +34,7 @@ defaults:
   repositoryUrl: "https://github.com/haakmal/playgrounds"
   issuesUrl: "https://github.com/haakmal/playgrounds/issues/new"
   discussionsUrl: "https://github.com/haakmal/playgrounds/discussions"
-  discussionsEnabled: false
+  discussionsEnabled: true
   email: "h.akmal@unsw.edu.au"
   side: right
   bottom: 96
@@ -58,7 +58,8 @@ projects:
   blindspots: {}
   cardboard: {}
   connecting-factors: {}
-  constraints: {}
+  constraints:
+    side: left
   contextual-modeller: {}
   design-methods: {}
   design-shuffler: {}
@@ -83,7 +84,8 @@ projects:
   provocator: {}
   rail: {}
   script-gallery: {}
-  seer-table: {}
+  seer-table:
+    side: left
   systems-insight-lab: {}
   systems-insight-lab2: {}
   ui-forensics: {}

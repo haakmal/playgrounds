@@ -199,7 +199,7 @@
   panel.appendChild(nav);
   const footer = document.createElement("div");
   footer.className = "meta";
-  footer.textContent = "An independent project from Playgrounds";
+  footer.textContent = "Playgrounds are everywhere.";
   panel.appendChild(footer);
   const trigger = document.createElement("button");
   trigger.type = "button";
