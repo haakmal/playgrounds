@@ -3,19 +3,22 @@ import {radialAtlas, lineageDetail, parentageUnits} from './radial-layout.js';
 /* Family Atlas v0.14: radial descendant display, contextual lineage, local-first records. */
 const $=s=>document.querySelector(s), svgNS='http://www.w3.org/2000/svg';
 const uid=()=>crypto.randomUUID();
-const blank=()=>({schemaVersion:'0.2',collection:{id:uid(),title:'My family atlas'},people:[],relationships:[],sources:[],assertions:[],identityMappings:[],importHistory:[]});
+const blank=()=>({schemaVersion:'0.2',collection:{id:uid(),title:'My family atlas'},people:[],relationships:[],sources:[],assertions:[],identityMappings:[],importHistory:[],savedViews:[]});
 const KEY='family-atlas-v02';
 let data,selected=null,focus=null,focusBack=[],focusUp=2,focusDown=2,importCandidate=null,importChoices={};
 let route=null; // Shortest recorded path between two people, not a genealogical inference.
 let viewMode='atlas';
 let indexScope={kind:'all'},indexOpen=false;
+// Make fast rendering the default
+let dataRevision=0,layoutCache=null,fastRendering=true;
 let showNames=true,showGender=false,relationshipFilter='all';
 let batchMode=false,batchTab='people',batchPeople=new Set(),batchRelations=new Set(),batchGroup=null,batchReference=null,batchUndo=null;
+let panFrame=0;
 let zoom=1,pan={x:80,y:80},coords=new Map(),graphBounds={x:0,y:0,w:1,h:1},drag=null,preventClick=false;
 const deep=x=>JSON.parse(JSON.stringify(x));
-const ensure=d=>{const c=blank();if(!d||!Array.isArray(d.people)||!Array.isArray(d.relationships))throw Error('Not a valid Family Atlas collection');return {...c,...d,collection:{...c.collection,...(d.collection||{})},people:d.people.map(p=>({...p,id:p.id||uid()})),relationships:d.relationships.map(r=>({...r,id:r.id||uid()})),sources:d.sources||[],assertions:d.assertions||[],identityMappings:d.identityMappings||[],importHistory:d.importHistory||[]};};
+const ensure=d=>{const c=blank();if(!d||!Array.isArray(d.people)||!Array.isArray(d.relationships))throw Error('Not a valid Family Atlas collection');return {...c,...d,collection:{...c.collection,...(d.collection||{})},people:d.people.map(p=>({...p,id:p.id||uid()})),relationships:d.relationships.map(r=>({...r,id:r.id||uid()})),sources:d.sources||[],assertions:d.assertions||[],identityMappings:d.identityMappings||[],importHistory:d.importHistory||[],savedViews:Array.isArray(d.savedViews)?d.savedViews:[]};};
 try{data=ensure(JSON.parse(localStorage.getItem(KEY)));}catch{data=blank();}
-const save=()=>{route=null;if(indexScope.kind==='path')indexScope={kind:'all'};data.collection.updatedAt=new Date().toISOString();try{localStorage.setItem(KEY,JSON.stringify(data));}catch{notice('Browser storage is full. Export your archive.');}render();drawIndex();};
+const save=()=>{dataRevision++;layoutCache=null;route=null;if(indexScope.kind==='path')indexScope={kind:'all'};data.collection.updatedAt=new Date().toISOString();try{localStorage.setItem(KEY,JSON.stringify(data));}catch{notice('Browser storage is full. Export your archive.');}render();drawIndex();};
 const person=id=>data.people.find(p=>p.id===id);
 const label=p=>(p?.nameStatus==='unknown'||!p?.name)?'Unknown person':p.name;
 const related=(r,id)=>r.from===id?r.to:r.to===id?r.from:null;
@@ -263,6 +266,63 @@ function setIndexScope(spec){
  if(batchMode){batchMode=false;clearBatchSelection();$('#batchBtn').classList.remove('primary');$('#batchBtn').textContent='Select multiple';}
  render();fitAll();drawIndex();
 }
+
+function viewDefinition(){
+ const scope=deep(indexScope);
+ if(scope.kind==='path'){
+   if(!route?.ids?.length)return null;
+   scope.fromId=route.ids[0];scope.toId=route.ids.at(-1);
+ }
+ return {scope,showNames,showGender};
+}
+function persistViewSettings(){
+ data.collection.updatedAt=new Date().toISOString();
+ try{localStorage.setItem(KEY,JSON.stringify(data));}catch{notice('Browser storage is full. Export your archive.');}
+}
+function saveViewPrompt(){
+ const definition=viewDefinition();if(!definition)return notice('Choose a map before saving');
+ modal('Save current view',`<p class="hint">Save this indexing perspective in your family archive without duplicating people or relationships.</p>
+ <div class="field"><label for="savedViewName">View name</label><input id="savedViewName" maxlength="100" placeholder="Family map name" value="${escapeHtml(indexTitle())}"></div>
+ <p class="small muted">${escapeHtml(indexTitle())}</p>
+ <div class="row spread"><button id="cancelView">Cancel</button><button id="confirmView" class="primary">Save view</button></div>`,body=>{
+  body.querySelector('#cancelView').onclick=closeModal;
+  body.querySelector('#confirmView').onclick=()=>{
+   const name=body.querySelector('#savedViewName').value.trim();
+   if(!name)return notice('Enter a view name');
+   data.savedViews.push({id:uid(),name,definition,createdAt:new Date().toISOString()});
+   persistViewSettings();closeModal();drawIndex();notice('View saved in the family archive');
+  };
+ });
+}
+function openSavedView(id){
+ const record=data.savedViews.find(v=>v.id===id);if(!record)return;
+ const definition=record.definition||{},spec=definition.scope||{kind:'all'};
+ if(spec.kind==='lineage'){
+  const roots=spec.startType==='group'?indexGroups().find(u=>u.parents.join('|')===spec.startId)?.parents:person(spec.startId)?[spec.startId]:null;
+  if(!roots?.length)return notice('Starting relatives are no longer present.');
+  if(spec.stopId&&!person(spec.stopId))return notice('The stopping person is no longer present.');
+ }
+ if(spec.kind==='path'){
+  if(!person(spec.fromId)||!person(spec.toId))return notice('A person in this saved path is no longer present.');
+  const path=shortestPath(spec.fromId,spec.toId);
+  if(!path)return notice('These people are no longer connected.');
+  route=path;
+ }
+ showNames=definition.showNames!==false;showGender=!!definition.showGender;
+ setIndexScope(deep(spec));notice('Opened '+record.name);
+}
+function renameSavedView(id){
+ const record=data.savedViews.find(v=>v.id===id);if(!record)return;
+ const name=prompt('Rename saved view',record.name)?.trim();
+ if(!name)return;
+ record.name=name.slice(0,100);persistViewSettings();drawIndex();
+}
+function deleteSavedView(id){
+ const record=data.savedViews.find(v=>v.id===id);
+ if(!record||!confirm('Delete saved view "'+record.name+'"? Family records will remain unchanged.'))return;
+ data.savedViews=data.savedViews.filter(v=>v.id!==id);persistViewSettings();drawIndex();
+}
+
 function drawIndex(){
  const pane=$('#indexPanel');pane.classList.toggle('hidden',!indexOpen);
  $('#indexBtn').setAttribute('aria-expanded',String(indexOpen));
@@ -271,6 +331,9 @@ function drawIndex(){
  const start=indexScope.kind==='lineage'?indexScope.startId:selected||data.people[0]?.id||'';
  pane.innerHTML=`<div class="indexHead"><div><small>ATLAS NAVIGATION</small><h2>Index</h2></div><button id="indexClose" aria-label="Close index">×</button></div>
  <p class="hint">Choose a perspective on the same family archive. No people or relationships are duplicated.</p>
+ <section class="indexSection"><div class="row spread"><h3>Saved views</h3><button id="saveCurrentView" class="primary">+ Save current view</button></div>
+ <p>Keep separate perspectives on connected families without copying their records.</p>
+ <div id="savedViewList">${data.savedViews.length?data.savedViews.map(v=>`<div class="savedViewItem"><button type="button" class="savedViewOpen" data-open-view="${escapeHtml(v.id)}"><strong>${escapeHtml(v.name)}</strong><small>${escapeHtml(v.definition?.scope?.kind==='lineage'?'Descendant map':v.definition?.scope?.kind==='path'?'Between people':'Complete atlas')}</small></button><button type="button" data-rename-view="${escapeHtml(v.id)}">Edit</button><button type="button" data-delete-view="${escapeHtml(v.id)}">×</button></div>`).join(''):'<p class="hint">No saved views yet.</p>'}</div></section>
  <section class="indexSection"><h3>Complete atlas</h3><p>All connected and disconnected family networks.</p><button id="indexAll">Show all families</button></section>
  <section class="indexSection"><h3>Descendant map</h3><p>Begin from one person or a shared parentage junction. Move outward through recorded parent–child relationships.</p>
  <div class="field"><label>Starting point</label><select id="indexStartType"><option value="person" ${!isGroup?'selected':''}>Person</option><option value="group" ${isGroup?'selected':''}>Parentage group</option></select></div>
@@ -284,6 +347,10 @@ function drawIndex(){
  <button id="indexPath">Trace this path</button></section>
  <div class="indexFoot"><strong>Current view</strong><p>${escapeHtml(indexTitle())}</p></div>`;
  pane.querySelectorAll('.indexPicker').forEach(bindIndexPicker);
+ pane.querySelector('#saveCurrentView').onclick=saveViewPrompt;
+ pane.querySelectorAll('[data-open-view]').forEach(b=>b.onclick=()=>openSavedView(b.dataset.openView));
+ pane.querySelectorAll('[data-rename-view]').forEach(b=>b.onclick=()=>renameSavedView(b.dataset.renameView));
+ pane.querySelectorAll('[data-delete-view]').forEach(b=>b.onclick=()=>deleteSavedView(b.dataset.deleteView));
  pane.querySelector('#indexClose').onclick=()=>{indexOpen=false;drawIndex();};
  pane.querySelector('#indexAll').onclick=()=>setIndexScope({kind:'all'});
  pane.querySelector('#indexStartType').onchange=e=>{
@@ -481,11 +548,15 @@ function renderGraph(){
   let ids,layout;
   if(viewMode==='detail'){
     ids=route?new Set(route.ids):graphSubset();
-    layout=lineageDetail([...ids],data.relationships,id=>label(person(id)));
+    const cacheKey='detail|'+dataRevision+'|'+[...ids].sort().join('|');
+    if(layoutCache?.key===cacheKey)layout=layoutCache.layout;
+    else {layout=lineageDetail([...ids],data.relationships,id=>label(person(id)));layoutCache={key:cacheKey,layout};}
     coords=layout.positions;
   }else{
     const allowed=indexedScopePeople();
-    layout=radialAtlas(data.people.filter(p=>allowed.has(p.id)),data.relationships.filter(r=>allowed.has(r.from)&&allowed.has(r.to)),id=>label(person(id)));
+    const cacheKey='atlas|'+dataRevision+'|'+[...allowed].sort().join('|');
+    if(layoutCache?.key===cacheKey)layout=layoutCache.layout;
+    else {layout=radialAtlas(data.people.filter(p=>allowed.has(p.id)),data.relationships.filter(r=>allowed.has(r.from)&&allowed.has(r.to)),id=>label(person(id)));layoutCache={key:cacheKey,layout};}
     coords=layout.positions;
     ids=new Set(coords.keys());
   }
@@ -624,7 +695,7 @@ function renderGraph(){
   }
   // Plain connection strokes; actual parentage junctions are drawn in the upper SVG layer.
   orderConnections(es);
-  crossingGaps(es,js);
+  if(!fastRendering)crossingGaps(es,js);
   for(const [id,pos] of coords){
     const p=person(id),name=label(p),deceased=p.lifeStatus==='deceased';
     const g=svg('g',{class:'personNode'+(batchMode&&batchPeople.has(id)?' batchChosen':'')+(selected===id?' selected':'')+(viewMode==='detail'&&focus===id?' focused':''),transform:`translate(${pos.x} ${pos.y})`,'data-person-id':id,tabindex:'0',role:'button','aria-label':`${name}${deceased?', deceased':''}`});
@@ -652,13 +723,13 @@ function renderGraph(){
   $('#status').textContent=`${batchMode?'BATCH SELECT · ':''}${indexTitle()} · ${ids.size} people · ${clusters.length||1} network${clusters.length===1?'':'s'} · Drag to pan · Scroll to zoom · DEC deceased`;
   renderFocusBar();
 }
-function applyView(){$('#toggleGender').textContent=showGender?'Hide gender':'Show gender';$('#toggleGender').setAttribute('aria-pressed',String(showGender));$('#stage').classList.toggle('namesHidden',!showNames);$('#toggleNames').textContent=showNames?'Hide names':'Show names';$('#toggleNames').setAttribute('aria-pressed',String(!showNames));$('#world').setAttribute('transform',`translate(${pan.x} ${pan.y}) scale(${zoom})`);$('#stage').classList.toggle('overviewScale',zoom<.43);}
+function applyView(){$('#toggleFast').setAttribute('aria-pressed', String(fastRendering));$('#toggleFast').setAttribute('title', fastRendering ? 'Fast rendering enabled' : 'Precise line rendering enabled');$('#toggleGender').textContent=showGender?'Hide gender':'Show gender';$('#toggleGender').setAttribute('aria-pressed',String(showGender));$('#stage').classList.toggle('namesHidden',!showNames);$('#toggleNames').textContent=showNames?'Hide names':'Show names';$('#toggleNames').setAttribute('aria-pressed',String(!showNames));$('#world').setAttribute('transform',`translate(${pan.x} ${pan.y}) scale(${zoom})`);$('#stage').classList.toggle('overviewScale',zoom<.43);}
 function fitAll(){const s=$('#stage'),w=s.clientWidth,h=s.clientHeight;if(!coords.size){zoom=1;pan={x:w/2,y:h/2};applyView();return;}zoom=Math.max(.06,Math.min(1.5,Math.min((w-95)/graphBounds.w,(h-110)/graphBounds.h)));pan={x:(w-graphBounds.w*zoom)/2-graphBounds.x*zoom,y:(h-graphBounds.h*zoom)/2-graphBounds.y*zoom};applyView();}
 function animateToPerson(id){const node=[...$('#nodes').querySelectorAll('.personNode')].find(n=>n.dataset.personId===id);node?.classList.add('navArrival');const world=$('#world');if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches)world.classList.add('viewportNavigating');fitPerson(id);setTimeout(()=>{world.classList.remove('viewportNavigating');node?.classList.remove('navArrival');},450);}
 function moveBack(){if(!focusBack.length)return;const prev=focusBack.pop();focus=prev;selected=prev;renderGraph();drawSide();animateToPerson(prev);}
 function fitPerson(id){const p=coords.get(id);if(!p){fitAll();return;}zoom=Math.max(.8,Math.min(1.15,zoom));pan={x:$('#stage').clientWidth*.5-p.x*zoom,y:$('#stage').clientHeight*.45-p.y*zoom};applyView();}
 function zoomAt(scale,cx,cy){const nz=Math.max(.06,Math.min(3,zoom*scale)),r=nz/zoom;pan={x:cx-(cx-pan.x)*r,y:cy-(cy-pan.y)*r};zoom=nz;applyView();}
-const atlas=$('#atlas');atlas.addEventListener('pointerdown',e=>{if(e.button!==0||e.target.closest('.personNode')||e.target.closest('.junctionHit')||e.target.closest('.batchEdge'))return;drag={x:e.clientX,y:e.clientY,px:pan.x,py:pan.y};preventClick=false;atlas.setPointerCapture(e.pointerId);atlas.classList.add('dragging');});atlas.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>4)preventClick=true;pan={x:drag.px+dx,y:drag.py+dy};applyView();});atlas.addEventListener('pointerup',()=>{drag=null;atlas.classList.remove('dragging');setTimeout(()=>preventClick=false,30);});atlas.addEventListener('wheel',e=>{e.preventDefault();const rect=atlas.getBoundingClientRect();zoomAt(e.deltaY<0?1.13:1/1.13,e.clientX-rect.left,e.clientY-rect.top);},{passive:false});atlas.addEventListener('click',e=>{if(!preventClick&&!e.target.closest('.personNode')&&!batchMode){selected=null;drawSide();renderGraph();}});
+const atlas=$('#atlas');atlas.addEventListener('pointerdown',e=>{if(e.button!==0||e.target.closest('.personNode')||e.target.closest('.junctionHit')||e.target.closest('.batchEdge'))return;drag={x:e.clientX,y:e.clientY,px:pan.x,py:pan.y};preventClick=false;atlas.setPointerCapture(e.pointerId);atlas.classList.add('dragging');});atlas.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>4)preventClick=true;pan={x:drag.px+dx,y:drag.py+dy};if(!panFrame)panFrame=requestAnimationFrame(()=>{panFrame=0;applyView();});});atlas.addEventListener('pointerup',()=>{drag=null;atlas.classList.remove('dragging');setTimeout(()=>preventClick=false,30);});atlas.addEventListener('wheel',e=>{e.preventDefault();const rect=atlas.getBoundingClientRect();zoomAt(e.deltaY<0?1.13:1/1.13,e.clientX-rect.left,e.clientY-rect.top);},{passive:false});atlas.addEventListener('click',e=>{if(!preventClick&&!e.target.closest('.personNode')&&!batchMode){selected=null;drawSide();renderGraph();}});
 function selectPerson(id){if(batchMode){toggleBatchPerson(id);return;}selected=id;if(viewMode==='detail'&&id!==focus){/* Selection alone does not change the family-detail reference. */}drawSide();renderGraph();}
 function enterFocus(id){if(!id)return notice('Select a person first');if(focus&&focus!==id)focusBack.push(focus);switchView('detail',id);}
 function chooseRoute(){
@@ -926,7 +997,7 @@ function reviewBatch(title,summary,operation,rows=[]){
 }
 
 function render(){drawSide();renderGraph();$('#collectionTitle').textContent=data.collection.title||'Local collection';}
-$('#toggleNames').onclick=()=>{showNames=!showNames;applyView();};$('#toggleGender').onclick=()=>{showGender=!showGender;renderGraph();};
+$('#toggleFast').onclick=()=>{fastRendering=!fastRendering;renderGraph();};$('#toggleNames').onclick=()=>{showNames=!showNames;applyView();};$('#toggleGender').onclick=()=>{showGender=!showGender;renderGraph();};
 $('#detailBackBtn').onclick=()=>{focus=null;focusBack=[];switchView('atlas');};
 $('#indexBtn').onclick=()=>{indexOpen=!indexOpen;drawIndex();};$('#addBtn').onclick=()=>newPerson(selected,'sibling');$('#zoomFit').onclick=fitAll;$('#zoomIn').onclick=()=>zoomAt(1.2,$('#stage').clientWidth/2,$('#stage').clientHeight/2);$('#zoomOut').onclick=()=>zoomAt(1/1.2,$('#stage').clientWidth/2,$('#stage').clientHeight/2);
 $('#batchBtn').onclick=toggleBatchMode;

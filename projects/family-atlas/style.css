@@ -174,3 +174,62 @@
 .personNode circle.genderRing.gender-female{stroke:#e5a2bd}
 .personNode circle.genderRing.gender-male{stroke:#9cc7e8}
 .personNode.batchChosen circle.genderRing,.personNode.selected circle.genderRing{fill:none;stroke-width:2.8}
+
+.savedViewItem{display:flex;align-items:center;border:1px solid #ddd;margin:6px 0;min-width:0}
+.savedViewOpen{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;text-align:left;border:0;background:white;padding:10px}
+.savedViewOpen strong{font-size:12px;overflow-wrap:anywhere}.savedViewOpen small{font-size:10px;color:#666}
+.savedViewItem>button:not(.savedViewOpen){flex:0 0 auto;border:0;border-left:1px solid #ddd;background:white;padding:10px;font-size:11px}
+.savedViewItem button:hover{background:#eee}
+#saveCurrentView{font-size:11px;padding:7px 10px}
+
+/* Fast rendering toggle */
+
+.renderToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.renderSwitch {
+  width: 26px;
+  height: 14px;
+  border: 1px solid #333;
+  border-radius: 20px;
+  background: #fff;
+  position: relative;
+  flex-shrink: 0;
+  transition: background 150ms ease;
+}
+
+.renderSwitch::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  top: 2px;
+  left: 2px;
+  border-radius: 50%;
+  background: #333;
+  transition: transform 150ms ease,
+              background 150ms ease;
+}
+
+/* Fast rendering enabled */
+
+.renderToggle[aria-pressed="true"] .renderSwitch {
+  background: #333;
+}
+
+.renderToggle[aria-pressed="true"] .renderSwitch::after {
+  background: #fff;
+  transform: translateX(12px);
+}
+
+/* Reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  .renderSwitch,
+  .renderSwitch::after {
+    transition: none;
+  }
+}
