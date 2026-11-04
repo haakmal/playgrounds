@@ -182,54 +182,80 @@
 .savedViewItem button:hover{background:#eee}
 #saveCurrentView{font-size:11px;padding:7px 10px}
 
-/* Fast rendering toggle */
 
+/* v0.16.1 · Unified docked panels and viewport status bar.
+   The panel area is the flexing region; the bar is outside it. */
+html,body{height:100%;min-height:0}
+body{display:flex;flex-direction:column;height:100dvh;overflow:hidden}
+.toolbar{flex:0 0 auto}
+.main{flex:1 1 auto;min-height:0;height:auto;position:relative;overflow:hidden}
+.stage{min-height:0}
+.side{flex:0 0 min(390px,42vw);height:100%;min-height:0;position:relative;top:auto;right:auto;bottom:auto;box-shadow:none}
+.indexPanel{left:0;top:0;bottom:0;width:min(390px,100%);border:0;border-right:1px solid #aaa;border-radius:0;box-shadow:none;padding:17px}
+.statusBar{flex:0 0 auto;min-height:48px;display:flex;align-items:center;gap:14px;padding:6px 14px;background:#242424;border-top:1px solid #111;color:#f1f1f1;position:relative;z-index:10}
+.statusBar .status{position:static;flex:1 1 auto;min-width:0;max-width:none;pointer-events:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:none;border:0;padding:0;color:#dedede;font-size:11px}
+.statusBar .zoomControls{position:static;display:flex;align-items:center;flex:0 0 auto;gap:5px;background:none}
+.statusBar .zoomControls button{background:#303030;color:#f8f8f8;border:1px solid #666;border-radius:2px;min-width:34px;padding:6px 9px;font-size:12px;white-space:nowrap}
+.statusBar .zoomControls button:hover{background:#444;border-color:#aaa}
+.statusBar .zoomControls button:focus-visible{outline:2px solid white;outline-offset:2px}
+.statusBar .zoomControls button[aria-pressed="true"]{border-color:#fff;background:#4b4b4b}
+.statusBar .renderSwitch{border-color:#ddd}
+.statusBar .renderToggle[aria-pressed="true"] .renderSwitch{background:#fff}
+.statusBar .renderToggle[aria-pressed="true"] .renderSwitch::after{background:#242424}
+@media(max-width:780px){
+ .main{height:auto;min-height:0;flex:1 1 auto}
+ .side{position:absolute;right:0;top:0;bottom:0;width:min(95vw,390px);height:auto;flex:none;border-left:1px solid #aaa}
+ .indexPanel{left:0;top:0;bottom:0;width:min(95vw,390px)}
+ .statusBar{padding:5px 8px;gap:7px;min-height:46px}
+ .statusBar .status{font-size:10px}
+ .statusBar .zoomControls{max-width:75%;overflow-x:auto;scrollbar-width:thin}
+ .statusBar .zoomControls button{padding:6px 8px}
+}
+@media(max-width:520px){
+ .statusBar{flex-wrap:wrap;gap:3px;min-height:0}
+ .statusBar .zoomControls{order:0;max-width:100%;width:100%;justify-content:flex-start}
+ .statusBar .status{order:1;flex-basis:100%;font-size:10px;line-height:1.6}
+}
+@media print{body{display:block;height:auto;overflow:visible}.main{height:100vh}.statusBar{display:none!important}}
+
+/* v0.16.2 — persistent label and stateful fast-rendering switch */
 .renderToggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  white-space:nowrap;
 }
-
 .renderSwitch {
-  width: 26px;
-  height: 14px;
-  border: 1px solid #333;
-  border-radius: 20px;
-  background: #fff;
-  position: relative;
-  flex-shrink: 0;
-  transition: background 150ms ease;
+  width:26px;
+  height:14px;
+  border:1px solid currentColor;
+  border-radius:20px;
+  background:#fff;
+  position:relative;
+  box-sizing:content-box;
+  flex-shrink:0;
 }
-
 .renderSwitch::after {
-  content: "";
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  top: 2px;
-  left: 2px;
-  border-radius: 50%;
-  background: #333;
-  transition: transform 150ms ease,
-              background 150ms ease;
+  content:"";
+  position:absolute;
+  width:8px;
+  height:8px;
+  top:2px;
+  left:2px;
+  border-radius:50%;
+  background:#333;
+  transition:transform 150ms ease, background 150ms ease;
 }
-
-/* Fast rendering enabled */
-
 .renderToggle[aria-pressed="true"] .renderSwitch {
-  background: #333;
+  background:#333;
 }
-
 .renderToggle[aria-pressed="true"] .renderSwitch::after {
-  background: #fff;
-  transform: translateX(12px);
+  background:#fff;
+  transform:translateX(12px);
+}
+@media (prefers-reduced-motion:reduce) {
+  .renderSwitch::after { transition:none; }
 }
 
-/* Reduced motion */
-
-@media (prefers-reduced-motion: reduce) {
-  .renderSwitch,
-  .renderSwitch::after {
-    transition: none;
-  }
-}
+.renderToggle { color:inherit; }
+.renderToggle[aria-pressed="true"] .renderSwitch { border-color:#aaa; }

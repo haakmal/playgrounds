@@ -151,6 +151,43 @@ export function radialAtlas(people,relationships,nameOf) {
 
 
 /**
+ * Arrange partnership blocks using their actual links, not alphabetical names.
+ * In particular, two individuals partnered with the same person must flank the
+ * shared partner, rather than forming a misleading A -- B -- C chain.
+ * This only sets display order; the JSON and relationship assertions are intact.
+ */
+export function orderPartnerBlock(people, relationships, nameOf) {
+  const members=new Set(people), neighbours=new Map(people.map(id=>[id,new Set()]));
+  for(const r of relationships){
+    if(!['partnership','marriage'].includes(r.type)||!members.has(r.from)||!members.has(r.to)||r.from===r.to)continue;
+    neighbours.get(r.from).add(r.to);neighbours.get(r.to).add(r.from);
+  }
+  const named=(a,b)=>nameOf(a).localeCompare(nameOf(b))||String(a).localeCompare(String(b));
+  const degree=id=>neighbours.get(id).size;
+  // A three-person V is the critical case: the shared partner is central.
+  if(people.length===3){
+    const hub=people.find(id=>degree(id)===2);
+    if(hub){
+      const ends=people.filter(id=>id!==hub).sort(named);
+      return [ends[0],hub,ends[1]];
+    }
+  }
+  // For larger connected blocks, use a link-aware ordering. Neighbours of
+  // people already placed are favoured over unrelated alphabetical adjacency.
+  const remaining=new Set(people),ordered=[];
+  const start=[...remaining].sort((a,b)=>degree(a)-degree(b)||named(a,b))[0];
+  ordered.push(start);remaining.delete(start);
+  while(remaining.size){
+    const last=ordered.at(-1);
+    const options=[...remaining].sort((a,b)=>
+      Number(neighbours.get(last).has(b))-Number(neighbours.get(last).has(a))||
+      degree(a)-degree(b)||named(a,b));
+    const next=options[0];ordered.push(next);remaining.delete(next);
+  }
+  return ordered;
+}
+
+/**
  * Family detail is organised as descendant subtrees rather than independent
  * alphabetical rows. Coordinates are derived only for display and never saved.
  * A partnered block reserves room for its children and their descendants,
@@ -180,8 +217,8 @@ export function lineageDetail(ids, relationships, nameOf) {
       const key=find(id);if(!groups.has(key))groups.set(key,[]);groups.get(key).push(id);
     }
     for(const group of groups.values()){
-      group.sort((a,b)=>nameOf(a).localeCompare(nameOf(b)));
-      const block={id:blocks.length,level,people:group,children:[],parent:null,width:0};
+      const ordered=orderPartnerBlock(group,relevant,nameOf);
+      const block={id:blocks.length,level,people:ordered,children:[],parent:null,width:0};
       blocks.push(block);
       for(const id of group)byPerson.set(id,block);
     }
