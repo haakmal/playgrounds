@@ -1,22 +1,22 @@
 # Speed Test
 
-A standalone, offline-friendly classroom speed-testing pairing tool. Open `index.html` in any modern browser; no build steps or external dependencies are needed.
+A standalone classroom pairing and timed testing tool. Open `index.html` in a modern browser. No dependencies, installation or internet connection required.
 
-## Using it
+## Using the tool
 
-1. Enter one student name per line and select **Generate pairings**.
-2. Set the duration in minutes (0.25 to 120), then select **Start timer**.
-3. When the countdown finishes, select **Next round** for a new set of partners. You can also advance early.
-4. Use **Full screen** when projecting. Press **Space** to start or pause when focus is not on a control.
+1. Enter student names (one per line) and select **Generate pairings**.
+2. Adjust the round duration (0.25–120 minutes), then select **Start timer**. **Space** toggles the timer when not typing or focusing a button.
+3. Select **Next round** to rotate partners. **Previous** returns to the exact earlier round (including across cycle boundaries). Navigation resets the timer and stops any running countdown.
+4. Use the circular **Settings** button for **Edit roster**, **Full screen** and **New sequence**.
 
-## Pairing logic
+With an odd number of students, the person sitting out is displayed under the pairs. Each person sits out once per round-robin cycle.
 
-The tool uses a randomized round-robin (circle method) pairing rotation. Each student meets every other student once during a complete cycle. For odd-sized rosters, a virtual BYE rotates so each student sits out exactly once per cycle. After a cycle, another randomized sequence is generated, trying to avoid immediate pairing repeats across cycle boundaries. A cycle has `N - 1` rounds when `N` is even and `N` rounds when `N` is odd.
+## How rounds work
 
-## Data and behaviour
+A randomized round-robin rotation ensures each student meets every other student once within a cycle. New cycles are generated after the previous cycle finishes, with an attempt to avoid repeating the immediately preceding pairings. Previously visited rounds are saved as a history, allowing deterministic backward and forward navigation.
 
-- Names, round position, and timer duration are stored locally in your browser (localStorage).
-- No network requests, accounts, trackers, or external libraries.
-- The running countdown is not persisted; on reload the timer resets to the configured duration while the pairing round is retained.
-- Editing the roster generates a new sequence. **New sequence** also resets the rotation.
-- Pairings are generated in browser memory; no student information is transmitted.
+## Storage and privacy
+
+Student names, rounds/history and timer duration are saved only in the local browser's `localStorage` (key `speed-test-v2`). Existing `speed-test-v1` rosters are migrated when possible. No information is sent to a server. The running timer is deliberately reset when reloading the page.
+
+Editing the roster or selecting **New sequence** replaces round history. This is an offline, single-file app.
