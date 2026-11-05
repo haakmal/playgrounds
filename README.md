@@ -14,7 +14,7 @@ This is a sandbox-style GitHub repo intended for an assortment of curious (mostl
 
 | Project | Description | Status |
 |---|---|---|
-| [Speed Testing](https://play.hakmal.com/projects/speed-testing/) | A quick way to do speed tests in class with students. | WIP |
+| [Speed Testing](https://play.hakmal.com/projects/speed-testing/) | A quick way to do speed tests in class with students. | Published |
 | [Inquiry Plates](https://play.hakmal.com/projects/inquiry-plates/) | A set of inquiry-based learning materials for exploring cultural probing directions. | WIP |
 | [Family Atlas](https://play.hakmal.com/projects/family-atlas/) | A family tree management and visualisation tool. | WIP |
 | [Marking Minion](https://play.hakmal.com/projects/marking-minion/) | A lightweight, local-first marking calculator for Moodle-style assessment rubrics. | Published |
