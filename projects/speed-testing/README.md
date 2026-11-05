@@ -1,21 +1,17 @@
-# Speed Test — v3
+# Speed Test — v5
 
-A standalone, offline classroom pairing and countdown application. Open `index.html` in a modern browser; no installation or dependencies required.
+Standalone, offline classroom pairing and timer utility. Open `index.html` in a modern browser. No installation or build is required.
 
-## Workflow
+## Layout
 
-1. Add one student name per line.
-2. Set the test duration (0.25–120 minutes), then start the countdown. During the final ten seconds, the entire timer panel pulses once per second. At zero, the timer becomes white on black.
-3. Move between rounds with Previous and Next. Earlier pairings are restored exactly; navigation resets the timer.
-4. Optionally select **Start review**. Pairings are temporarily replaced with a review prompt and an independent review duration (0.25–120 minutes). Start the review timer when ready; select **End review** to return to the same pairing round.
-5. Use the settings icon for roster editing, full screen, or a new shuffled sequence. Space toggles the active timer when a control is not focused.
+The pairing grid preserves a readable, consistent card height and large name typography rather than stretching cards vertically to fill available space. Its column count responds to the active pairing count: 1 pair = 1 column; 2–4 pairs = 2; 5–9 pairs = 3; 10–12 pairs = 4. At 1920 × 1080, the maximum roster of 24 students displays as a 4 × 3 grid. Card backgrounds are transparent, with subtle borders only. Smaller viewport sizes use responsive layouts and can scroll as needed. Long names wrap inside their cards.
 
-## Metrics and pairing logic
+## Use
 
-**Students** is the active roster size. **Tests / student** is the number of distinct partners each student can encounter in one full round-robin cycle (`students − 1`), not the number completed so far. **Rounds / cycle** is `students − 1` for even rosters and `students` for odd rosters.
+1. Enter 2–24 student names in the roster editor, one per line.
+2. Set the speed-test duration and start, pause, or reset the countdown. The last 10 seconds pulse; at zero, the timer becomes white on black.
+3. Navigate Previous / Next for a new pairing round; previous rounds retain exact pairings.
+4. Optionally select Start review to show a reflection prompt and switch to an independently adjustable review countdown. End review returns to the same pairings.
+5. Use the settings icon to edit the roster, enter fullscreen or begin a new sequence.
 
-An odd-numbered roster rotates the sitting-out student fairly, once per full cycle. Pairing history is saved, so Previous and Next do not regenerate previously visited rounds.
-
-## Data and persistence
-
-Rosters, round history, test duration and review duration stay in browser `localStorage` (`speed-test-v2`). Older compatible data is reused. Active timers and review mode reset on reload. Nothing is sent to a server. Editing the roster or starting a new sequence replaces the current round history.
+The metrics display the roster size, maximum distinct partners per student, and number of rounds in one round-robin cycle. An odd-numbered roster rotates the student sitting out fairly. Roster, settings and pairing history are saved locally in the browser (`localStorage`).

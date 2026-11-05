@@ -46,6 +46,75 @@
 @keyframes countdown-beat{0%{background:#e8a08d}75%{background:#f4c8ba}100%{background:#f4c8ba}}
 @media(max-width:720px){.stage-head{align-items:flex-start;flex-direction:column}.metrics{justify-content:flex-start;gap:22px}.metric strong{font-size:22px}}
 @media(prefers-reduced-motion:reduce){.control.urgent.beat{animation:none}}
+
+/* Pairing cards are sized for readable names, not stretched to fill the stage.
+   At 1080p: 10–12 pairs use four columns and three rows; smaller rosters use
+   fewer columns and cards retain the same generous typography and height. */
+.pair-grid{
+  --pair-columns:3;
+  display:grid;
+  grid-template-columns:repeat(var(--pair-columns),minmax(0,1fr));
+  grid-auto-rows:clamp(154px,17.5vh,190px);
+  gap:12px;
+  flex:none;
+  align-content:start;
+  align-self:start;
+  width:100%;
+  max-width:calc(var(--pair-columns) * 320px + (var(--pair-columns) - 1) * 12px);
+  min-height:0;
+}
+.pair{
+  background:transparent!important;
+  border:1px solid var(--line);
+  min-height:0;
+  height:100%;
+  border-radius:16px;
+  padding:clamp(17px,1.4vw,26px);
+  gap:clamp(7px,0.8vh,11px);
+  justify-content:center;
+}
+.pair:nth-child(n){background:transparent!important}
+.pair .name{
+  font-size:clamp(28px,1.8vw,36px);
+  line-height:1.09;
+  letter-spacing:-.045em;
+  font-weight:760;
+  overflow-wrap:anywhere;
+}
+.pair .connector{font-size:12px}
+@media (min-width:981px){
+  .app{height:100dvh;min-height:0;padding:clamp(14px,1.5vw,26px);gap:clamp(10px,1.1vw,19px)}
+  .dashboard{min-height:0}
+  .control{min-height:0;padding:clamp(19px,2vw,35px)}
+  .stage{min-height:0;overflow:hidden;padding:clamp(16px,1.65vw,30px);gap:clamp(9px,1.15vh,16px)}
+  .stage h2{font-size:clamp(22px,1.7vw,31px)}
+  .stage-footer{padding-top:0;flex-shrink:0}
+  .stage-head{flex-shrink:0}
+  .clock{font-size:clamp(72px,8vw,150px)}
+}
+@media (min-width:981px) and (max-height:850px){
+  .pair-grid{grid-auto-rows:clamp(130px,17vh,160px);gap:9px}
+  .pair{padding:12px 16px;gap:5px}
+  .pair .name{font-size:clamp(23px,1.7vw,32px)}
+  .stage{gap:8px}
+  .btn{min-height:43px;padding:10px 13px}
+}
+@media (min-width:981px) and (max-width:1450px){
+  .dashboard{grid-template-columns:minmax(290px,.72fr) minmax(0,1.5fr)}
+  .pair .name{font-size:clamp(24px,2vw,33px)}
+  .metrics{gap:11px}
+}
+@media (min-width:561px) and (max-width:980px){
+  .pair-grid{--pair-columns:3!important;grid-auto-rows:minmax(160px,auto);align-self:stretch;max-width:none}
+  .pair{min-height:160px}
+  .pair .name{font-size:clamp(25px,3vw,34px)}
+}
+@media (max-width:560px){
+  .pair-grid{--pair-columns:2!important;grid-auto-rows:minmax(135px,auto);max-width:none;align-self:stretch;gap:9px}
+  .pair{min-height:135px;padding:13px;gap:6px}
+  .pair .name{font-size:clamp(19px,5vw,27px)}
+}
+@media (max-width:380px){.pair-grid{--pair-columns:1!important}}
 </style>
 </head>
 <body>
@@ -111,7 +180,11 @@ resetTimer();
 }
 function updateClock(){if(!running)return;remaining=Math.max(0,(deadline-performance.now())/1000);if(remaining<=0)stop();renderTimer()}
 function toggleTimer(){if(roster.length<2)return;if(running)stop();else{if(remaining<=0)remaining=activeDuration();deadline=performance.now()+remaining*1000;running=true;tickId=setInterval(updateClock,80)}renderTimer()}
-function renderRound(){el.grid.replaceChildren();el.bye.replaceChildren();const round=history[cursor];el.prev.disabled=!round||cursor===0;el.next.disabled=mode==='review'||roster.length<2;el.position.textContent=round?`Round ${cursor+1}`:'';$('studentMetric').textContent=String(roster.length);$('testMetric').textContent=String(Math.max(0,roster.length-1));$('roundMetric').textContent=String(schedule.length);el.reviewToggle.disabled=roster.length<2;if(!round){const empty=document.createElement('div');empty.className='empty';const heading=document.createElement('h3');heading.textContent='Ready to pair up?';const p=document.createElement('p');p.textContent='Add your class roster to start.';const btn=document.createElement('button');btn.className='btn primary';btn.textContent='Add students';btn.addEventListener('click',openRoster);empty.append(heading,p,btn);el.grid.append(empty);return}
+function renderRound(){el.grid.replaceChildren();el.bye.replaceChildren();const round=history[cursor];
+// Choose the number of columns from the number of pairs, not the viewport width alone.
+// A small roster therefore keeps substantial, consistently-sized pairing cards.
+const pairCount=round?.pairs?.length||0;
+el.grid.style.setProperty('--pair-columns',String(pairCount<=1?1:pairCount<=4?2:pairCount<=9?3:4));el.prev.disabled=!round||cursor===0;el.next.disabled=mode==='review'||roster.length<2;el.position.textContent=round?`Round ${cursor+1}`:'';$('studentMetric').textContent=String(roster.length);$('testMetric').textContent=String(Math.max(0,roster.length-1));$('roundMetric').textContent=String(schedule.length);el.reviewToggle.disabled=roster.length<2;if(!round){const empty=document.createElement('div');empty.className='empty';const heading=document.createElement('h3');heading.textContent='Ready to pair up?';const p=document.createElement('p');p.textContent='Add your class roster to start.';const btn=document.createElement('button');btn.className='btn primary';btn.textContent='Add students';btn.addEventListener('click',openRoster);empty.append(heading,p,btn);el.grid.append(empty);return}
 round.pairs.forEach(([a,b],i)=>{const card=document.createElement('article');card.className='pair';card.style.animationDelay=Math.min(i*30,220)+'ms';const first=document.createElement('div');first.className='name';first.textContent=roster[a];const link=document.createElement('div');link.className='connector';link.textContent='WITH';const second=document.createElement('div');second.className='name';second.textContent=roster[b];card.append(first,link,second);el.grid.append(card)});
 if(round.bye!==null){const box=document.createElement('div');box.className='bye';const intro=document.createElement('span');intro.textContent='Sitting out this round';const name=document.createElement('strong');name.textContent=roster[round.bye];box.append(intro,name);el.bye.append(box)}}
 function nextRound(){if(roster.length<2||mode==="review")return;if(cursor<history.length-1)cursor++;else{if(scheduleIndex<schedule.length-1)scheduleIndex++;else{const avoid=new Set(schedule[schedule.length-1].pairs.map(p=>pairKey(...p)));schedule=makeSchedule(roster,avoid);scheduleIndex=0;cycle++}history.push(snapshot());cursor=history.length-1}resetTimer();renderRound();persist()}
@@ -120,11 +193,11 @@ function setMenu(open){el.menu.classList.toggle('hidden',!open);el.settings.setA
 function openRoster(){setMenu(false);el.roster.value=roster.join('\n');updateRosterCount();el.overlay.classList.remove('hidden');el.roster.focus()}
 function closeRoster(){el.overlay.classList.add('hidden');el.settings.focus()}
 function parseRoster(){return el.roster.value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean)}
-function updateRosterCount(){const n=parseRoster().length;el.rosterCount.textContent=`${n} ${n===1?'student':'students'}`}
-function saveRoster(){const names=parseRoster();if(names.length<2){el.rosterCount.textContent='Enter at least two names.';return}const seen=new Set();for(const name of names){const key=name.toLocaleLowerCase();if(seen.has(key)){el.rosterCount.textContent=`Duplicate name: ${name}. Add an initial to distinguish students.`;return}seen.add(key)}setup(names);closeRoster()}
+function updateRosterCount(){const n=parseRoster().length;el.rosterCount.textContent=`${n} / 24 students${n>24?' — maximum exceeded':''}`}
+function saveRoster(){const names=parseRoster();if(names.length<2){el.rosterCount.textContent='Enter at least two names.';return}if(names.length>24){el.rosterCount.textContent='Maximum 24 students. Remove '+(names.length-24)+' to continue.';return}const seen=new Set();for(const name of names){const key=name.toLocaleLowerCase();if(seen.has(key)){el.rosterCount.textContent=`Duplicate name: ${name}. Add an initial to distinguish students.`;return}seen.add(key)}setup(names);closeRoster()}
 function restart(){setMenu(false);if(roster.length<2){openRoster();return}if(!confirm('Start a new shuffled sequence? Current round history will be replaced.'))return;setup(roster)}
 function validRound(r){return r&&Array.isArray(r.pairs)&&r.pairs.every(p=>Array.isArray(p)&&p.length===2&&p.every(x=>Number.isInteger(x)&&x>=0&&x<roster.length))&&(r.bye===null||(Number.isInteger(r.bye)&&r.bye>=0&&r.bye<roster.length))}
-function restore(){try{let saved=JSON.parse(localStorage.getItem(KEY)||'null');if(!saved){const old=JSON.parse(localStorage.getItem(OLD_KEY)||'null');if(old?.roster)saved={...old,history:[],cursor:0,scheduleIndex:old.roundIndex||0}}if(!saved||!Array.isArray(saved.roster)||saved.roster.length<2||!saved.roster.every(x=>typeof x==='string'))return;roster=saved.roster;duration=Number(saved.duration)>=15&&Number(saved.duration)<=7200?Number(saved.duration):120;el.minutes.value=String(duration/60);reviewDuration=Number(saved.reviewDuration)>=15&&Number(saved.reviewDuration)<=7200?Number(saved.reviewDuration):60;el.reviewMinutes.value=String(reviewDuration/60);schedule=Array.isArray(saved.schedule)&&saved.schedule.length&&saved.schedule.every(validRound)?saved.schedule:makeSchedule(roster,new Set());scheduleIndex=Math.min(Math.max(0,Number(saved.scheduleIndex)||0),schedule.length-1);cycle=Math.max(1,Number(saved.cycle)||1);history=Array.isArray(saved.history)&&saved.history.length&&saved.history.every(validRound)?saved.history:[];if(!history.length){history=[snapshot()]}cursor=Math.min(Math.max(0,Number(saved.cursor)||0),history.length-1)}catch(e){/* clean state */}}
+function restore(){try{let saved=JSON.parse(localStorage.getItem(KEY)||'null');if(!saved){const old=JSON.parse(localStorage.getItem(OLD_KEY)||'null');if(old?.roster)saved={...old,history:[],cursor:0,scheduleIndex:old.roundIndex||0}}if(!saved||!Array.isArray(saved.roster)||saved.roster.length<2||saved.roster.length>24||!saved.roster.every(x=>typeof x==='string'))return;roster=saved.roster;duration=Number(saved.duration)>=15&&Number(saved.duration)<=7200?Number(saved.duration):120;el.minutes.value=String(duration/60);reviewDuration=Number(saved.reviewDuration)>=15&&Number(saved.reviewDuration)<=7200?Number(saved.reviewDuration):60;el.reviewMinutes.value=String(reviewDuration/60);schedule=Array.isArray(saved.schedule)&&saved.schedule.length&&saved.schedule.every(validRound)?saved.schedule:makeSchedule(roster,new Set());scheduleIndex=Math.min(Math.max(0,Number(saved.scheduleIndex)||0),schedule.length-1);cycle=Math.max(1,Number(saved.cycle)||1);history=Array.isArray(saved.history)&&saved.history.length&&saved.history.every(validRound)?saved.history:[];if(!history.length){history=[snapshot()]}cursor=Math.min(Math.max(0,Number(saved.cursor)||0),history.length-1)}catch(e){/* clean state */}}
 el.settings.addEventListener('click',()=>setMenu(el.menu.classList.contains('hidden')));document.addEventListener('pointerdown',e=>{if(!el.wrap.contains(e.target))setMenu(false)});$('editRoster').addEventListener('click',openRoster);$('cancelRoster').addEventListener('click',closeRoster);$('saveRoster').addEventListener('click',saveRoster);$('restart').addEventListener('click',restart);el.roster.addEventListener('input',updateRosterCount);el.overlay.addEventListener('click',e=>{if(e.target===el.overlay)closeRoster()});el.start.addEventListener('click',toggleTimer);$('resetTimer').addEventListener('click',resetTimer);el.minutes.addEventListener('change',e=>setDuration(e.target.value,'test'));
     el.reviewMinutes.addEventListener('change',e=>setDuration(e.target.value,'review'));
     el.reviewToggle.addEventListener('click',()=>setMode(mode==='review'?'test':'review'));el.next.addEventListener('click',nextRound);el.prev.addEventListener('click',previousRound);$('fullscreen').addEventListener('click',()=>{setMenu(false);if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();else document.exitFullscreen?.()});document.addEventListener('fullscreenchange',()=>{$('fullscreenText').textContent=document.fullscreenElement?'Exit full screen':'Full screen'});document.addEventListener('keydown',e=>{if(e.key==='Escape'){setMenu(false);if(!el.overlay.classList.contains('hidden'))closeRoster()}if(e.code==='Space'&&!e.repeat&&el.overlay.classList.contains('hidden')&&!['INPUT','TEXTAREA','BUTTON'].includes(document.activeElement?.tagName)){e.preventDefault();toggleTimer()}});
