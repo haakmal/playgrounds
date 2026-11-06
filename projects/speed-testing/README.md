@@ -16,3 +16,7 @@ Use the gear menu in the top-right of Pairings to edit the roster, toggle full s
 ## v7 polish
 
 The timer title is a heading sized to match Pairings, with a separate Ready / Running / Paused / Finished status badge. The settings gear rotates smoothly on hover, keyboard focus, and while the dropdown is open. Panel geometry, pairing grid, and core logic are unchanged.
+
+## Countdown sound (v8)
+
+The last ten seconds of **both** test and review countdowns use a short synthesised tone on each visible pulse, followed by a slightly longer end tone at zero. The **Sound on / Sound off** button beside **Start review** toggles sound without affecting the visual countdown; the preference is saved in browser storage. Sound is on by default. No audio assets, downloads, or external services are needed. Browsers require a user gesture before playing audio, so pressing Start or Resume enables the sound context. Pausing, resetting, switching mode, or changing round stops the countdown cues.
