@@ -247,10 +247,10 @@ body{display:flex;flex-direction:column;height:100dvh;overflow:hidden}
   transition:transform 150ms ease, background 150ms ease;
 }
 .renderToggle[aria-pressed="true"] .renderSwitch {
-  background:#333;
+  background:#333 !important;
 }
 .renderToggle[aria-pressed="true"] .renderSwitch::after {
-  background:#fff;
+  background:#fff !important;
   transform:translateX(12px);
 }
 @media (prefers-reduced-motion:reduce) {
